@@ -74,7 +74,7 @@ U 1 1 60A05FF0
 P 9650 1850
 F 0 "P1" H 9757 3117 50  0000 C CNN
 F 1 "USB_C_Plug" H 9757 3026 50  0000 C CNN
-F 2 "" H 9800 1850 50  0001 C CNN
+F 2 "footprints:USB_C_Receptacle_JAE_DX07S024WJ3R400" H 9800 1850 50  0001 C CNN
 F 3 "https://www.usb.org/sites/default/files/documents/usb_type-c.zip" H 9800 1850 50  0001 C CNN
 	1    9650 1850
 	1    0    0    -1  
@@ -85,7 +85,7 @@ U 1 1 60A0D248
 P 1750 6200
 F 0 "J2" H 1807 6667 50  0000 C CNN
 F 1 "USB_A" H 1807 6576 50  0000 C CNN
-F 2 "Connector_USB:USB_A_Wuerth_61400826021_Horizontal_Stacked" H 1900 6150 50  0001 C CNN
+F 2 "footprints:USB_A_Molex_105057_Vertical_2" H 1900 6150 50  0001 C CNN
 F 3 " ~" H 1900 6150 50  0001 C CNN
 	1    1750 6200
 	1    0    0    -1  

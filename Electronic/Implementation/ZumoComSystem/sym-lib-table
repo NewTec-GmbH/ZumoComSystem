@@ -1,3 +1,5 @@
 (sym_lib_table
   (lib (name 1043)(type Legacy)(uri ${KIPRJMOD}/libs/1043.lib)(options "")(descr ""))
+  (lib (name UJ2-AV-W4-TH)(type Legacy)(uri ${KIPRJMOD}/libs/UJ2-AV-W4-TH.lib)(options "")(descr ""))
+  (lib (name USB4120-03-C_REVA)(type Legacy)(uri ${KIPRJMOD}/libs/USB4120-03-C_REVA.lib)(options "")(descr ""))
 )
