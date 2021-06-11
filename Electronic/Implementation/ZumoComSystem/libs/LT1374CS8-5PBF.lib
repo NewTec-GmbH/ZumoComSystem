@@ -1,0 +1,31 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#(c) SnapEDA 2016 (snapeda.com)
+#This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA) with Design Exception 1.0
+#
+# LT1374CS8-5PBF
+#
+DEF LT1374CS8-5PBF U 0 40 Y Y 1 L N
+F0 "U" 1416 360 50 H V L BNN
+F1 "LT1374CS8-5PBF" 1389 259 50 H V L BNN
+F2 "SO-8_S" 0 0 50 H I L BNN
+F3 "" 0 0 50 H I L BNN
+F4 "lt1374cs85#pbf" 0 0 50 H I L BNN "MANUFACTURER_PART_NUMBER"
+F5 "Linear Technology" 0 0 50 H I L BNN "VENDOR"
+DRAW
+P 2 0 0 6 300 200 300 -500 N
+P 2 0 0 6 300 -500 2900 -500 N
+P 2 0 0 6 2900 -500 2900 200 N
+P 2 0 0 6 2900 200 300 200 N
+X VIN 1 0 0 300 R 40 40 0 0 I 
+X BOOST 2 0 -100 300 R 40 40 0 0 I 
+X FB/SENSE 3 0 -200 300 R 40 40 0 0 I 
+X FGND 4 0 -300 300 R 40 40 0 0 W 
+X BIAS 5 3200 -300 300 L 40 40 0 0 I 
+X VC 6 3200 -200 300 L 40 40 0 0 O 
+X SYNC/*SHDN 7 3200 -100 300 L 40 40 0 0 B 
+X VSW 8 3200 0 300 L 40 40 0 0 I 
+ENDDRAW
+ENDDEF
+#
+# End Library
