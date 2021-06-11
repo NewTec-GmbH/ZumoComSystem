@@ -25,12 +25,18 @@ jobs:
     
     - name: Compile target complatform
       run: platformio run --environment complatform
+      with:
+        working-directory: './server/complatform/'
 
     - name: Perform static checks on native environment
       run: platformio check --environment native
+      with:
+        working-directory: './server/complatform/'
 
     - name: Run tests on native environment
       run: platformio test --environment native
+      with:
+        working-directory: './server/complatform/'
 
     - name: Set up graphviz
       uses: ts-graphviz/setup-graphviz@v1
