@@ -1,0 +1,36 @@
+@startuml
+interface "Store" as Store
+
+interface "NVS" as nvshalinterface
+interface "Serialize" as serializer
+
+package Data {
+    component "Store" as store
+    component "Permission" as persmissions
+    component "User" as users
+    component "Network Credentials" as netcredentials
+    component "Session" as sessions
+    component "APIKey" as apikey
+    component "KeyCert" as keycert
+
+    note right of store : Manages, (un-)loads, buffers,\nupdates and (async-)saves\nspecified data structures to flash memory
+    note right of netcredentials : Stores SSID and pre-shared key\nfor external WiFi network
+    note right of apikey : Stores the volatile API keys\nwhich are bound to a specific\nuser with specific rights\n and are discarded after timeout
+    note right of users : Stores all registered users,\nthis includes username and password
+    note right of persmissions : Stores the system permissions,\nsuch as flash rights,\nfor each registered user
+    note right of sessions : Stores all active user sessions\nwhich bind the API key\nto a session
+    note right of keycert : Stores private key and\ncertificate for HTTPs and WSS servers
+
+    store -up- Store
+
+    store "0..1" o--> "0..1" keycert
+    store "0..1" o--> "0..1" sessions
+    store "0..1" o--> "0..1" netcredentials
+    store "0..1" o--> "0..*" apikey
+    store "1" o-- "1..*" users
+    users "0..1" *--> "1" persmissions
+
+    store -down-(nvshalinterface
+    store -down-(serializer
+}
+@enduml

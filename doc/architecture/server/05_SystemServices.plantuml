@@ -1,0 +1,70 @@
+@startuml
+interface "FWCheck" as FWCheck
+interface "Serialize" as Serialize
+interface "File" as File
+interface "Crypt" as Crypt
+interface "NVS" as nvs
+interface "Timer" as Timer
+
+interface "Crypt" as crypthal
+interface "mbedTLS" as mbedtlshal
+interface "NVS" as nvshal
+interface "FS" as fshal
+interface "ReadKey" as readkey
+interface "WiFi" as wifihal
+interface "DNS" as dnshal
+interface "Store" as store
+interface "Timer" as timerhal
+
+package SystemServices {
+    component "COMInit" as initcom
+    component "FirmwareChecker" as firmwarecheck
+    component "FirmwareDeserializer" as fwdeserializer
+    component "InitAPMode" as spawnwifi
+    component "InitSTAMode" as connectwifi
+    component "CryptoServices" as cryptoservices
+    component "ObjectDeSerializer" as serializer
+    component "ArduinoJson" as arduinojson
+    component "FileManager" as filemanager
+    component "NVSManager" as nvsmanager
+    component "Timer" as timer
+
+    note right of cryptoservices : Provides hardware-accelerated\nSHA256, BLAKE2b, RSA2048 and TRNG
+    note right of fwdeserializer : Converts binary firmware\nfile to object
+    note right of firmwarecheck : Checks target system\nand signature of firmware.\nPublic key hardcoded
+    note right of filemanager : Provides abstraction\nfor easy use of\n(buffered) file operations
+    note right of nvsmanager : Provides abstraction to store\nkey-value pairs in\nnon-volatile storage
+    note left of initcom : Boots the ComPlatform and\ninitializes all system services
+    note right of spawnwifi : Starts own WiFi access\npoint for clients to\nconnect to
+    note right of connectwifi : Connects to external WiFi\naccess point to become part\nof existing IP network
+    note right of serializer : Provides abstraction for\neasy conversion of C++\nobjects to JSON string
+    note right of arduinojson : Library which serializes\nC/C++ objects to JSON
+    note right of timer: Provides easy to use\ntime-based ISRs/callbacks
+
+    filemanager -up- File
+    serializer -up- Serialize
+    firmwarecheck -up- FWCheck
+    cryptoservices -up- Crypt
+    nvsmanager -up- nvs
+    timer -up-Timer
+
+    initcom --> spawnwifi
+    initcom --> connectwifi
+    spawnwifi --> initcom
+    connectwifi --> initcom
+    firmwarecheck *--> fwdeserializer
+    serializer *--> arduinojson
+
+    initcom -down-(readkey
+    firmwarecheck -down-(crypthal
+    nvsmanager -down-(nvshal
+    filemanager -down-(fshal
+    spawnwifi -down-(dnshal
+    spawnwifi -down-(wifihal
+    connectwifi -down-(wifihal
+    connectwifi -down-(store
+    cryptoservices -down-(crypthal
+    cryptoservices -down(mbedtlshal
+    timer -down-(timerhal
+}
+@enduml

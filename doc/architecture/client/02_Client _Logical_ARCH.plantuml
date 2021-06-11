@@ -1,0 +1,136 @@
+@startuml
+interface "HTTPS" as https
+interface "WSS" as wss
+
+note left of https : Used to fetch the\nweb interface application
+note right of wss : Used to consume the\nendpoint services 
+package Client {
+    interface "RequestResponseManager" as requestresponsemanager
+
+    component "VuexStore" as store
+    component "WebSocketClient" as websocketclient
+    component "RequestResponseHandler" as requestresponsehandler
+    component "Router" as router
+
+    requestresponsehandler -up- requestresponsemanager
+
+    websocketclient -down-(wss
+    websocketclient -down-(requestresponsemanager
+
+    package Assets {
+    }
+
+    package Libraries {
+        component "FileSaver" as filesaver
+
+        note right of filesaver : Allows download of large\nblobs to local FS
+    }
+
+    package Components {
+        package Dialogs {
+            component "AuthDialog" as authdialog
+            component "ConfirmDialog" as confirmdialog
+
+            note right of authdialog : Dialog which provides\nuser input for credentials
+            note right of confirmdialog : Dialog which provides confirmation
+        }
+    }
+
+    package Utility {
+        component "DeSerializer" as deserializer
+        component "Persistence" as persistence
+        component "FirmwareSerializer" as firmwareserializer
+
+        note right of deserializer : Serializes JS objects\ninto JSON string
+        note right of persistence : Writes key/value pairs into\nlocal web browser storage
+        note right of firmwareserializer : Serializes firmware image\nand signed hash to binary format
+    }
+
+    package Models {
+        package API {
+            package "RequestModels" as requestmodels {
+                component "Request" as request
+
+                component "UserCredentials" as usercredentials
+                component "NetworkCredentials" as networkcredentials
+            }
+
+            package "ResponseModels" as responsemodels {
+                component "Response" as response
+
+                component "Info" as info
+                component "DebugLog" as debuglog
+                component "FirmwareInfo" as firmwareinfo
+            }
+
+            package "SharedModels" {
+                component "APIKey" as apikey
+            }
+        }
+    }
+
+    package Modules {
+        package Home {
+            package Components_Home {
+            }
+
+            package Modules_Home {
+            }
+
+            component Store_Home
+        }
+
+        package Debug {
+            package Components_Debug {
+            }
+
+            package Modules_Debug {
+            }
+
+            component Store_Debug
+        }
+
+        package Upload {
+            package Components_Upload {
+            }
+
+            package Modules_Upload {
+            }
+
+            component Store_Upload
+        }
+
+        package Flash {
+            package Components_Flash {
+            }
+
+            package Modules_Flash {
+            }
+
+            component Store_Flash
+        }
+
+        package Reset {
+            package Components_Reset {
+            }
+
+            package Modules_Reset {
+            }
+
+            component Store_Reset
+        }
+    }
+
+    package Shared {
+    }
+
+    package Styles {
+    }
+}
+
+package ComPlatform {
+    component Server
+    Server -- https
+    Server -- wss
+}
+@enduml

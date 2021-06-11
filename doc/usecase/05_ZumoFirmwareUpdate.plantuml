@@ -1,0 +1,30 @@
+@startuml
+left to right direction
+
+' Define the actors
+actor Administrator
+actor SPIUSBAdapter
+actor ZumoRobotAVR
+
+' Define the inheritance between base and specialized users
+User <|-- Administrator
+
+' Define the system border
+rectangle "Zumo Robot System (Firmware Flash)"{
+   usecase "Flash ZumoRobot firmware" as flashRobot
+   usecase "Upload firmware" as uploadRobot
+   usecase "Reboot ZumoRobot" as rebootRobot
+
+' Define the include relations between the use cases
+ flashRobot .> uploadRobot : include
+ flashRobot .> rebootRobot :include
+ Administrator --> rebootRobot
+ User --> uploadRobot
+ Administrator --> flashRobot
+
+' Define the secondary actor-use-case relationships
+ flashRobot -- SPIUSBAdapter
+ rebootRobot -- ZumoRobotAVR 
+ SPIUSBAdapter -- ZumoRobotAVR : "connected to"
+}
+@enduml

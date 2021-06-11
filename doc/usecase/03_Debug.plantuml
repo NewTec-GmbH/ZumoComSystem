@@ -1,0 +1,25 @@
+@startuml
+left to right direction
+
+' Define the actors
+actor Developer
+
+actor SPIUSBAdapter
+actor ZumoRobotAVR
+
+' Define the inheritance between base and specialized users
+User <|-- Developer
+
+' Define the system border
+rectangle "Zumo Robot System (Debug)" {
+
+ usecase "Debug ZumoRobot" as debug
+ 
+ Developer --> debug
+
+' Define the secondary actor-use-case relationships
+ debug -- SPIUSBAdapter
+ 
+ SPIUSBAdapter -- ZumoRobotAVR : "connected to"
+}
+@enduml

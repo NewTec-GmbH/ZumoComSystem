@@ -1,0 +1,111 @@
+@startuml
+interface "WSS" as WSS
+interface "HTTPS" as HTTPS
+
+component "Client" as client {
+    client -down-(WSS
+    client -down-(HTTPS
+}
+
+component "Hardware" as hardware {
+    port " " as hardwareport
+}
+
+package ComPlatform {
+    interface "NVS" as nvshalinterface
+    interface "Debug" as Debug
+    interface "FlashRobot" as FlashRobot
+    interface "RobotReset" as RobotReset
+    interface "COMReset" as ComReset
+    interface "ReadKey" as ReadKey
+    interface "Crypto" as Crypto
+    interface "mbedTLS" as mbedtls
+    interface "WiFi" as WiFi
+    interface "DNS" as DNS
+    interface "FS" as FS
+    interface "OTA" as ota
+    interface "Timer" as timer
+
+    component "HAL" as hal {
+        hal -up- Debug
+        hal -up- FlashRobot
+        hal -up- RobotReset
+        hal -up- ComReset
+        hal -up- ReadKey
+        hal -up- Crypto
+        hal -up- mbedtls
+        hal -up- WiFi
+        hal -up- DNS
+        hal -up- nvshalinterface
+        hal -up- FS
+        hal -up- ota
+        hal -up- timer
+
+        hal -down-> hardwareport
+    }
+    note right of hal : Provides hardware\nabstraction/drivers
+
+    interface "FWCheck" as FWCheck
+    interface "Serialize" as Serialize
+    interface "File" as File
+    interface "Crypt" as Crypt
+    interface "NVS" as nvs
+    interface "Timer" as Timer
+
+    interface "Store" as Store
+
+    component "Data" as data {
+        data -up- Store
+
+        data -down-(Serialize
+        data -down-(nvs
+    }
+    note right of data : Provides centralized data\nstorage manager/saver
+
+    component "API" as api {
+        api -down-(File
+        api -down-(ota
+        api -down-(Store
+        api -down-(FWCheck
+        api -down-(ComReset
+        api -down-(Debug
+        api -down-(RobotReset
+        api -down-(FlashRobot
+    }
+    note right of api : The actual service controller\nand API service implementations
+
+    component "Server" as server {
+        server -up- WSS
+        server -up- HTTPS
+
+        server -down-(File
+        server -down-(Serialize
+        server -down-(Store
+        server -down-(Crypt
+        server -down-(Timer
+
+        server --> api
+    }
+    note right of server : The server with authentication\nwhich provides HTTPs and WSS
+
+    component "SystemServices" as systemservices {
+        systemservices -up- FWCheck
+        systemservices -up- Serialize
+        systemservices -up- File
+        systemservices -up- Crypt
+        systemservices -up- nvs
+        systemservices -up- Timer
+
+        systemservices -down-(ReadKey
+        systemservices -down-(Crypto
+        systemservices -down-(mbedtls
+        systemservices -down-(FS
+        systemservices -down-(WiFi
+        systemservices -down-(DNS
+        systemservices -down-(nvshalinterface
+        systemservices -down-(Store
+        systemservices -down-(timer
+    }
+    note right of systemservices : Helper/Init functions which\nfurther abstract existing HAL
+}
+@enduml

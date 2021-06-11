@@ -1,0 +1,58 @@
+@startuml
+interface "WSS" as WSS
+interface "HTTPS" as HTTPS
+
+interface "File" as File
+interface "Crypt" as Crypt
+interface "Store" as Store
+interface "Serialize" as Serialize
+interface "Timer" as Timer
+
+package "API" as api {
+    component "Servicecontroller" as servicecontroller
+}
+
+package Server {
+    package "HTTPs Library" {
+        component "HTTPs Server" as https
+        component "Secure WebSocket Endpoint" as wss
+
+        note right of https : Serves the static HTML/JS/CSS\nfiles for web interface
+        note left of wss : Provides access to\nall endpoint services
+
+        wss -up- WSS
+        https -up- HTTPS
+
+        https -down-(File
+        https -down-(Store
+    }
+
+    component "SessionManager" as sessionsmgmt
+    component "AccessManager" as accessmgmt
+    component "UserManager" as usermgmt
+    component "RequestResponseHandler" as requesthandler
+
+    note right of sessionsmgmt : Manages the user sessions
+    note right of accessmgmt : Generates and provides\nAPI keys with timeout for authorized users
+    note right of requesthandler : Parses the incoming JSON request,\nchecks the permission of the\nuser and forwards the request\nto controller
+    note right of usermgmt : Checks the username and password\nof the current user
+
+    interface "RequestResponseManager" as Request
+    requesthandler -up- Request
+
+    requesthandler *--> servicecontroller : forwards requests
+    requesthandler *--> sessionsmgmt : checks/requests\naccess/session
+    sessionsmgmt *--> accessmgmt : Check/aquire/renew\nAPI key
+    accessmgmt *--> usermgmt : Check existence\nof user and\nits rights
+
+    wss -down-(Request
+    wss -down-(Store
+    sessionsmgmt -down-(Store
+    requesthandler -down-(Serialize : needs serializer to\n(de-)serialize payload data stream
+    accessmgmt -down-(Store
+    accessmgmt -down-(Crypt : consume TRNG
+    accessmgmt -down-(Timer : consumes timer\nfor timeout
+    usermgmt -down-(Store
+    usermgmt -down-(Crypt
+}
+@enduml

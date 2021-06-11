@@ -1,0 +1,17 @@
+@startuml
+left to right direction
+
+' Define the actors
+actor Administrator
+
+' Define the inheritance between base and specialized users
+User <|-- Administrator
+
+' Define the system border
+rectangle "Zumo Robot System (Configuration)" {
+ 
+ usecase "Configure external network access" as config
+
+ Administrator --> config
+}
+@enduml

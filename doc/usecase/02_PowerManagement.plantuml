@@ -1,0 +1,45 @@
+@startuml
+left to right direction
+
+' Define the actors
+actor Administrator
+actor ZumoRobotAVR
+actor PowerButton
+
+' Define the inheritance between base and specialized users
+User <|-- Administrator
+
+' Define the system border
+rectangle "Zumo Robot System (Power Management)" {
+ 
+ ' Define the use cases
+ usecase "Start ComPlatform" as activate
+ usecase "Reboot ZumoRobot" as rebootRobot
+ usecase "Reboot ComPlatform" as rebootCom
+ usecase "Spawn network" as spawn
+ usecase "Connect to external IP network" as extConn
+
+ ' Define the include relationships
+ activate .> spawn : include
+ activate .> extConn: include
+ spawn .> extConn : include
+ spawn .> activate : include
+ extConn .> spawn : include
+ rebootCom .> activate: include
+
+ ' Define the primary actor usecase relationships
+ User --> activate : "presses power button and triggers"
+ User --> spawn : "presses WiFiKey during boot to"
+ Administrator --> extConn
+ Administrator --> rebootRobot
+ Administrator --> rebootCom
+}
+
+' Define the secondary actor use-case relationships
+ rebootRobot -- ZumoRobotAVR 
+ spawn -- WiFiKey  : "by pressing"
+ spawn -- ClientComputer : "own AP connected with"
+ activate -- PowerButton : "by pressing"
+ extConn -- AP : connected
+ AP -- ClientComputer : connected
+@enduml
