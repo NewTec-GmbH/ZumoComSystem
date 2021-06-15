@@ -38,3 +38,7 @@ void loop()
 
     delay(1000);
 }
+
+int main()
+{
+}

@@ -42,7 +42,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __LOGGING_H__
 #define __LOGGING_H__
 
+#ifdef TESTFAKE
+#include "ArduinoFake.h"
+#else
 #include "Arduino.h"
+#endif
 
 #ifdef DEBUGCOM
 /** Macro for logging debug messages */
