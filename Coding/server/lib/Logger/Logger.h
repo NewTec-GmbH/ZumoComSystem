@@ -109,7 +109,7 @@ public:
     * @param[in] level The log level to be used 
     * @param[in] msg The log message to be written
    */
-   void writeLog(LogLevel level, String msg);
+   void writeLog(LogLevel level, const char* msg);
 
 private:
    /** The log level which is used to determine what to print */

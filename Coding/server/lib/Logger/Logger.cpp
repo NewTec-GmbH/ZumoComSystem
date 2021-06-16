@@ -54,9 +54,9 @@ void Log::setLogLevel(LogLevel level)
    }
 }
 
-void Log::writeLog(LogLevel level, String msg)
+void Log::writeLog(LogLevel level, const char *msg)
 {
-   if (level <= m_LogLevel && 0 < msg.length())
+   if (level <= m_LogLevel && 0 < strlen(msg))
    {
       Serial.println(msg);
    }
