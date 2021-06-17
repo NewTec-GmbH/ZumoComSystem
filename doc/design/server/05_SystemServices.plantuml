@@ -1,0 +1,24 @@
+@startuml
+package SystemServices {
+    enum LogLevel
+    {
+        LEVEL_DEBUG
+        LEVEL_INFO
+        LEVEL_WARN
+        LEVEL_ERROR
+    }
+
+    class Log
+    {
+        - m_LogLevel : LogLevel = DEBUG
+
+        - Log()
+        - ~Log()
+        + getInstance(): Log&
+        + getLogLevel(): LogLevel
+        + setLogLevel(level: LogLevel): void
+        + writeLog(level: LogLevel, msg: const char*): void
+    }
+    Log *--> LogLevel
+}
+@enduml

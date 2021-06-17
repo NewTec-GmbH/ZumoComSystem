@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file Log.hpp
+ * @file Logger.h
  * @author Luis Moser
  * @brief Loggging header
  * @date 06/14/2021
@@ -109,7 +109,7 @@ public:
     * @param[in] level The log level to be used 
     * @param[in] msg The log message to be written
    */
-   void writeLog(LogLevel level, const char* msg);
+   void writeLog(LogLevel level, String msg);
 
 private:
    /** The log level which is used to determine what to print */

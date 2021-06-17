@@ -31,33 +31,80 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file Log.cpp
+ * @file NetworkCredentials.h
  * @author Luis Moser
- * @brief Loggging class
- * @date 06/14/2021
+ * @brief NetworkCredentials header
+ * @date 06/16/2021
  * 
  * @{
  */
 
-#include "Logger.h"
+#ifndef __NETWORKCREDENTIALS_H__
+#define __NETWORKCREDENTIALS_H__
 
-Log::LogLevel Log::getLogLevel()
-{
-   return m_LogLevel;
-}
+#include <Arduino.h>
+#include <ArduinoJson.h>
 
-void Log::setLogLevel(LogLevel level)
+class NetworkCredentials
 {
-   if (LEVEL_DEBUG == level || LEVEL_ERROR == level || LEVEL_INFO == level || LEVEL_WARN == level)
-   {
-      m_LogLevel = level;
-   }
-}
+private:
+    /** The SSID to be stored */
+    String m_ssid;
 
-void Log::writeLog(LogLevel level, String msg)
-{
-   if (level <= m_LogLevel && 0 < msg.length())
-   {
-      Serial.println(msg);
-   }
-}
+    /** The PSK to be stored */
+    String m_psk;
+
+public:
+    /** Custom constructor with arguments */
+    NetworkCredentials(String ssid, String psk) : m_ssid(ssid), m_psk(psk)
+    {
+    }
+
+    /** Default constructor */
+    NetworkCredentials()
+    {
+    }
+
+    /** Destructor */
+    ~NetworkCredentials()
+    {
+    }
+
+    /** Returns Service Set Identifier 
+     * 
+     * @return Returns the SSID string
+    */
+    String getSSID();
+
+    /** Sets Service Set Identifier
+     * 
+     * @param[in] ssid The SSID to be set
+     */
+    void setSSID(String ssid);
+
+    /** Returns Pre Shared Key
+     * 
+     * @return Returns the PSK string
+     */
+    String getPSK();
+
+    /** Sets Pre Shared Key
+     * 
+     * @param[in] psk The PSK to be set
+     */
+    void setPSK(String psk);
+
+    /** Returns JSON string
+     * 
+     * @return Returns the serialized object in JSON string
+     */
+    String serialize();
+
+    /** Re-creates object from serialized JSON string
+     * 
+     * @param serial The serialized JSON string
+     * @return Returns false in case of failure, true in case of success
+     */
+    bool deserialize(String serial);
+};
+#endif /** __NETWORKCREDENTIALS_H__ */

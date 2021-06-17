@@ -5,7 +5,6 @@ interface "HTTPS" as HTTPS
 interface "File" as File
 interface "Crypt" as Crypt
 interface "Store" as Store
-interface "Serialize" as Serialize
 interface "Timer" as Timer
 
 package "API" as api {
@@ -48,7 +47,6 @@ package Server {
     wss -down-(Request
     wss -down-(Store
     sessionsmgmt -down-(Store
-    requesthandler -down-(Serialize : needs serializer to\n(de-)serialize payload data stream
     accessmgmt -down-(Store
     accessmgmt -down-(Crypt : consume TRNG
     accessmgmt -down-(Timer : consumes timer\nfor timeout

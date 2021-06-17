@@ -46,7 +46,6 @@ package ComPlatform {
     note right of hal : Provides hardware\nabstraction/drivers
 
     interface "FWCheck" as FWCheck
-    interface "Serialize" as Serialize
     interface "File" as File
     interface "Crypt" as Crypt
     interface "NVS" as nvs
@@ -57,7 +56,6 @@ package ComPlatform {
     component "Data" as data {
         data -up- Store
 
-        data -down-(Serialize
         data -down-(nvs
     }
     note right of data : Provides centralized data\nstorage manager/saver
@@ -79,7 +77,6 @@ package ComPlatform {
         server -up- HTTPS
 
         server -down-(File
-        server -down-(Serialize
         server -down-(Store
         server -down-(Crypt
         server -down-(Timer
@@ -90,7 +87,6 @@ package ComPlatform {
 
     component "SystemServices" as systemservices {
         systemservices -up- FWCheck
-        systemservices -up- Serialize
         systemservices -up- File
         systemservices -up- Crypt
         systemservices -up- nvs

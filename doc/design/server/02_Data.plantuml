@@ -1,0 +1,20 @@
+@startuml
+package Data 
+{
+    class NetworkCredentials
+    {
+        - m_ssid: String
+        - m_psk: String
+
+        + NetworkCredentials(ssid: String, psk: String)
+        + NetworkCredentials()
+        + ~NetworkCredentials()
+        + getSSID(): String
+        + setSSID(ssid: String): void
+        + getPSK(): String
+        + setPSK(psk: String): void
+        + serialize(): String
+        + deserialize(serial: String): bool
+    }
+}
+@enduml

@@ -1,6 +1,5 @@
 @startuml
 interface "FWCheck" as FWCheck
-interface "Serialize" as Serialize
 interface "File" as File
 interface "Crypt" as Crypt
 interface "NVS" as nvs
@@ -23,8 +22,6 @@ package SystemServices {
     component "InitAPMode" as spawnwifi
     component "InitSTAMode" as connectwifi
     component "CryptoServices" as cryptoservices
-    component "ObjectDeSerializer" as serializer
-    component "ArduinoJson" as arduinojson
     component "FileManager" as filemanager
     component "NVSManager" as nvsmanager
     component "Timer" as timer
@@ -37,12 +34,9 @@ package SystemServices {
     note left of initcom : Boots the ComPlatform and\ninitializes all system services
     note right of spawnwifi : Starts own WiFi access\npoint for clients to\nconnect to
     note right of connectwifi : Connects to external WiFi\naccess point to become part\nof existing IP network
-    note right of serializer : Provides abstraction for\neasy conversion of C++\nobjects to JSON string
-    note right of arduinojson : Library which serializes\nC/C++ objects to JSON
     note right of timer: Provides easy to use\ntime-based ISRs/callbacks
 
     filemanager -up- File
-    serializer -up- Serialize
     firmwarecheck -up- FWCheck
     cryptoservices -up- Crypt
     nvsmanager -up- nvs
@@ -53,7 +47,6 @@ package SystemServices {
     spawnwifi --> initcom
     connectwifi --> initcom
     firmwarecheck *--> fwdeserializer
-    serializer *--> arduinojson
 
     initcom -down-(readkey
     firmwarecheck -down-(crypthal

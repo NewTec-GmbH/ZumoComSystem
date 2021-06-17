@@ -2,7 +2,6 @@
 interface "Store" as Store
 
 interface "NVS" as nvshalinterface
-interface "Serialize" as serializer
 
 package Data {
     component "Store" as store
@@ -31,6 +30,5 @@ package Data {
     users "0..1" *--> "1" persmissions
 
     store -down-(nvshalinterface
-    store -down-(serializer
 }
 @enduml

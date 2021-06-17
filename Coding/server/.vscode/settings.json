@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "string": "cpp",
+        "random": "cpp",
+        "array": "cpp",
+        "initializer_list": "cpp",
+        "utility": "cpp"
+    }
+}
