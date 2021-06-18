@@ -39,8 +39,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @{
  */
 
-#include "NetworkCredentials.h"
-#include "Logger.h"
+#include <NetworkCredentials.h>
+#include <Logger.h>
+
+NetworkCredentials::NetworkCredentials(String ssid, String psk) : m_ssid(ssid), m_psk(psk)
+{
+    LOG_DEBUG("New network credentials generated");
+}
+
+NetworkCredentials::NetworkCredentials()
+{
+    LOG_DEBUG("New network credentials generated");
+}
+
+NetworkCredentials::~NetworkCredentials()
+{
+    LOG_DEBUG("Network credentials destructed");
+}
 
 String NetworkCredentials::getSSID()
 {
@@ -102,7 +117,7 @@ bool NetworkCredentials::deserialize(String serial)
     uint32_t bufferSize = strlen(serial.c_str()) + 1;
     char *buffer = new char[bufferSize];
     serial.toCharArray(buffer, bufferSize);
-    
+
     DeserializationError retCode = deserializeJson(jsonDocument, buffer);
 
     /** retCode > 0 in case of arbitrary error */

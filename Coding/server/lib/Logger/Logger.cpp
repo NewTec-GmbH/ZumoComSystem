@@ -39,7 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @{
  */
 
-#include "Logger.h"
+#include <Logger.h>
 
 Log::LogLevel Log::getLogLevel()
 {
@@ -51,6 +51,7 @@ void Log::setLogLevel(LogLevel level)
    if (LEVEL_DEBUG == level || LEVEL_ERROR == level || LEVEL_INFO == level || LEVEL_WARN == level)
    {
       m_LogLevel = level;
+      LOG_DEBUG("Loglevel has been changed to" + m_LogLevel);
    }
 }
 

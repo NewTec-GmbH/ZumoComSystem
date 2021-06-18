@@ -20,5 +20,18 @@ package SystemServices {
         + writeLog(level: LogLevel, msg: const char*): void
     }
     Log *--> LogLevel
+
+    class NVSManager
+    {
+        - m_preferences: Preferences
+
+        + NVSManager()
+        + ~NVSManager()
+        + createEntry(key: String, value: String): bool
+        + deleteEntry(key: String): bool
+        + updateEntry(key: String, value: String): bool
+        + readEntry(key: String): String
+        + wipeNVS(): bool
+    }
 }
 @enduml

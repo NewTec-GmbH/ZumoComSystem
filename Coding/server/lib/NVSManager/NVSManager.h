@@ -31,75 +31,78 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file NetworkCredentials.h
+ * @file NVSManager.h
  * @author Luis Moser
- * @brief NetworkCredentials header
- * @date 06/16/2021
+ * @brief NVSManager header
+ * @date 06/17/2021
  * 
  * @{
  */
 
-#ifndef __NETWORKCREDENTIALS_H__
-#define __NETWORKCREDENTIALS_H__
+#ifndef __NVSMANAGER_H__
 
 #include <Arduino.h>
-#include <ArduinoJson.h>
+#include <Preferences.h>
 
-/** Data structure for network credentials which supports JSON serialization */
-class NetworkCredentials
+
+/** Hardware abstraction to easily store and retrieve key-value string pairs */
+class NVSManager
 {
 private:
-    /** The SSID to be stored */
-    String m_ssid;
-
-    /** The PSK to be stored */
-    String m_psk;
+    Preferences m_preferences;
 
 public:
-    /** Custom constructor with arguments */
-    NetworkCredentials(String ssid, String psk);
-
-    /** Default constructor */
-    NetworkCredentials();
-
-    /** Destructor */
-    ~NetworkCredentials();
-
-    /** Returns Service Set Identifier 
-     * 
-     * @return Returns the SSID string
-    */
-    String getSSID();
-
-    /** Sets Service Set Identifier
-     * 
-     * @param[in] ssid The SSID to be set
+    /**
+     * Default constructor
      */
-    void setSSID(String ssid);
+    NVSManager();
 
-    /** Returns Pre Shared Key
-     * 
-     * @return Returns the PSK string
+    /**
+     * Destructor
      */
-    String getPSK();
+    ~NVSManager();
 
-    /** Sets Pre Shared Key
+    /**
+     * Creates a new key-value pair in persistent storage
      * 
-     * @param[in] psk The PSK to be set
+     * @param[in] key The key name of passed value
+     * @param[in] value The string value to be saved
+     * @return Returns true if successful, false if error occured
      */
-    void setPSK(String psk);
+    bool createEntry(String key, String value);
 
-    /** Returns JSON string
+    /**
+     * Deletes a key-value pair from persistent storage
      * 
-     * @return Returns the serialized object in JSON string
+     * @param[in] key The key-value pair to be removed
+     * @return Returns true if successful, false if error occured
      */
-    String serialize();
+    bool deleteEntry(String key);
 
-    /** Re-creates object from serialized JSON string
+    /**
+     * Updates an existing value in persistent storage
      * 
-     * @param serial The serialized JSON string
-     * @return Returns false in case of failure, true in case of success
+     * @param[in] key The key-value pair to be updated
+     * @param[in] value The new string value for the specified key
+     * @return Returns true if successful, false if error occured
      */
-    bool deserialize(String serial);
+    bool updateEntry(String key, String value);
+
+    /**
+     * Returns the string value of the key-value pair from persistent storage
+     * 
+     * @param[in] key The key-value pair to be read
+     * @return Returns value in case of success and "null" in case of failure
+     */
+    String readEntry(String key);
+
+    /**
+     * Completely removes all key-value pairs from persistent storage
+     *
+     * @returns Returns true if successful, false if error occured
+     */
+    bool wipeNVS();
 };
-#endif /** __NETWORKCREDENTIALS_H__ */
+
+#define __NVSMANAGER_H__
+#endif /** __NVSMANAGER_H__ */

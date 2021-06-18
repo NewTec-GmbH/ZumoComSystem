@@ -43,9 +43,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __LOGGING_H__
 
 #ifdef TESTFAKE
-#include "ArduinoFake.h"
+#include <ArduinoFake.h>
 #else
-#include "Arduino.h"
+#include <Arduino.h>
 #endif
 
 #ifdef DEBUGCOM
