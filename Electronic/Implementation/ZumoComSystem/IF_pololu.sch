@@ -75,4 +75,18 @@ F 3 "~" H 6250 5300 50  0001 C CNN
 	1    6250 5300
 	1    0    0    -1  
 $EndComp
+Text HLabel 2350 2900 0    50   Output ~ 0
+BUTTON_A
+Text HLabel 2350 3050 0    50   Output ~ 0
+BUTTON_B
+Text HLabel 2350 3200 0    50   Output ~ 0
+BUTTON_C
+Text HLabel 2350 3700 0    50   Input ~ 0
+LED_A
+Text HLabel 2350 3800 0    50   Input ~ 0
+LED_B
+Text HLabel 2350 3900 0    50   Input ~ 0
+LED_C
+Text HLabel 2350 4250 0    50   Input ~ 0
+ON
 $EndSCHEMATC
