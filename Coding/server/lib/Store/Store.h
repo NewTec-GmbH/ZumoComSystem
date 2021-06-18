@@ -31,79 +31,79 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file NVSManager.h
+ * @file Store.h
  * @author Luis Moser
- * @brief NVSManager header
- * @date 06/17/2021
+ * @brief Store header
+ * @date 06/18/2021
  * 
  * @{
  */
 
-#ifndef __NVSMANAGER_H__
+#ifndef __STORE_H__
+#define __STORE_H__
 
-#include <Arduino.h>
-#include <Preferences.h>
+#include <NVSManager.h>
+#include <NetworkCredentials.h>
+#include <Logger.h>
 
-/** Hardware abstraction to easily store and retrieve key-value string pairs */
-class NVSManager
+/** Manages, buffers, loads and saves all required data structures for the ComPlatform */
+class Store
 {
 private:
-    /* Instance of ESP32 preferences */
-    Preferences m_preferences;
+    /** Instance of NVSManager for making data persistent */
+    NVSManager m_nvsmgr;
+
+    /** Instance of NetworkCredentials to manage SSID and PSK */
+    NetworkCredentials m_netCredentials;
+
+    /** Default constructor */
+    Store()
+    {
+    }
+
+    /** Destructor */
+    ~Store()
+    {
+    }
 
 public:
-    /**
-     * Default constructor
-     */
-    NVSManager();
-
-    /**
-     * Destructor
-     */
-    ~NVSManager();
-
-    /**
-     * Creates a new key-value pair in persistent storage
+    /** 
+     * Get Store instance
      * 
-     * @param[in] key The key name of passed value
-     * @param[in] value The string value to be saved
+     * @return Returns Store singleton instance
+     */
+    static Store &getInstance()
+    {
+        static Store instance;
+        return instance;
+    }
+
+    /** 
+     * Save non-volatile data to disk
+     * 
      * @return Returns true if successful, false if error occured
      */
-    bool createEntry(String key, String value);
+    bool save();
 
     /**
-     * Deletes a key-value pair from persistent storage
+     * Load non-volatile data from disk to store
      * 
-     * @param[in] key The key-value pair to be removed
-     * @return Returns true if successful, false if error occured
+     * @return Returns true if succesful, false if error occured
      */
-    bool deleteEntry(String key);
+    bool load();
 
-    /**
-     * Updates an existing value in persistent storage.
-     * If the key does not exist, it will be created
+    /** 
+     * Get the network credentials 
      * 
-     * @param[in] key The key-value pair to be updated
-     * @param[in] value The new string value for the specified key
-     * @return Returns true if successful, false if error occured
+     * @return Returns the NetworkCredentials instance
      */
-    bool updateEntry(String key, String value);
+    NetworkCredentials getNetworkCredentials();
 
     /**
-     * Returns the string value of the key-value pair from persistent storage
+     * Set the network credentials
      * 
-     * @param[in] key The key-value pair to be read
-     * @return Returns value in case of success and "null" in case of failure
+     * @param[in] credentials The new NetworkCredentials instance to be saved
      */
-    String readEntry(String key);
-
-    /**
-     * Completely removes all key-value pairs from persistent storage
-     *
-     * @returns Returns true if successful, false if error occured
-     */
-    bool wipeNVS();
+    void setNetworkCredentials(NetworkCredentials credentials);
 };
-
-#define __NVSMANAGER_H__
-#endif /** __NVSMANAGER_H__ */
+#endif /** __STORE_H__ */

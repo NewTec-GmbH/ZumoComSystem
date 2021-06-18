@@ -22,10 +22,10 @@ package Data {
 
     store -up- Store
 
-    store "0..1" o--> "0..1" keycert
-    store "0..1" o--> "0..1" sessions
-    store "0..1" o--> "0..1" netcredentials
-    store "0..1" o--> "0..*" apikey
+    store "0..1" *--> "1" keycert
+    store "0..1" *--> "1" sessions
+    store "0..1" *--> "1" netcredentials
+    store "0..1" *--> "1" apikey
     store "1" o-- "1..*" users
     users "0..1" *--> "1" persmissions
 

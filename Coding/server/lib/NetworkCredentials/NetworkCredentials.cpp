@@ -119,21 +119,19 @@ bool NetworkCredentials::deserialize(String serial)
     serial.toCharArray(buffer, bufferSize);
 
     DeserializationError retCode = deserializeJson(jsonDocument, buffer);
-
     /** retCode > 0 in case of arbitrary error */
-    if (retCode)
+    if (DeserializationError::Ok == retCode)
+    {
+        m_ssid = jsonDocument["ssid"].as<String>();
+        m_psk = jsonDocument["psk"].as<String>();
+        delete[] buffer;
+        return true;
+    }
+    else
     {
         delete[] buffer;
         LOG_ERROR("Error on deserializing the JSON object");
         LOG_ERROR(retCode.c_str());
         return false;
-    }
-    else
-    {
-        m_ssid = jsonDocument["ssid"].as<String>();
-        m_psk = jsonDocument["psk"].as<String>();
-        delete[] buffer;
-        LOG_DEBUG("JSON string successfully deserialized");
-        return true;
     }
 }

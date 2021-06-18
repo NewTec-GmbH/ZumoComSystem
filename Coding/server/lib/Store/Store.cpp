@@ -31,70 +31,51 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file NVSManager.cpp
+ * @file Store.cpp
  * @author Luis Moser
- * @brief NVSManager class
- * @date 06/17/2021
+ * @brief Store class
+ * @date 06/18/2021
  * 
  * @{
  */
 
-#include <NVSManager.h>
-#include <Logger.h>
+#include <Store.h>
 
-NVSManager::NVSManager()
+bool Store::save()
 {
+    /** Generate the JSON string */
+    String json = m_netCredentials.serialize();
+    bool retCode = m_nvsmgr.updateEntry("netCredentials", json);
+    if (false == retCode)
+    {
+        LOG_ERROR("Could not save network credentials to disk");
+    }
+    return retCode;
+}
+
+bool Store::load()
+{
+    /** Fetch JSON string from disk */
+    String json = m_nvsmgr.readEntry("netCredentials");
+
     /** 
-     * Open/Create the namespace for
-     * key-value pairs with r/w access
+     * If there are saved credentials, restore them,
+     * else, leave the object with its default values
      */
-    m_preferences.begin("complatform", false);
-    LOG_DEBUG("Opened complatform namespace for NVS");
-}
-
-NVSManager::~NVSManager()
-{
-    /** Close the currently opened namespace */
-    m_preferences.end();
-    LOG_DEBUG("Closed complatform namespacfe for NVS");
-}
-
-bool NVSManager::createEntry(String key, String value)
-{
-    bool retCode = (m_preferences.putString(key.c_str(), value) > 0);
+    bool retCode = (String("null") != json && m_netCredentials.deserialize(json));
     if (retCode == false)
     {
-        LOG_ERROR("Could not create/update NVS entry");
+        LOG_ERROR("Could not load network credentials from disk");
     }
     return retCode;
 }
 
-bool NVSManager::updateEntry(String key, String value)
+NetworkCredentials Store::getNetworkCredentials()
 {
-    return createEntry(key, value);
+    return m_netCredentials;
 }
 
-bool NVSManager::deleteEntry(String key)
+void Store::setNetworkCredentials(NetworkCredentials credentials)
 {
-    bool retCode = m_preferences.remove(key.c_str());
-    if (false == retCode)
-    {
-        LOG_ERROR("NVS entry could not be deleted");
-    }
-    return retCode;
-}
-
-String NVSManager::readEntry(String key)
-{
-    return m_preferences.getString(key.c_str(), "null");
-}
-
-bool NVSManager::wipeNVS()
-{
-    bool retCode = m_preferences.clear();
-    if (false == retCode)
-    {
-        LOG_ERROR("NVS could not be wiped");
-    }
-    return retCode;
+    m_netCredentials = credentials;
 }

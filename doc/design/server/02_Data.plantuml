@@ -1,5 +1,11 @@
 @startuml
-package Data 
+package SystemService
+{
+    class NVSManager
+    {
+    }
+}
+package Data
 {
     class NetworkCredentials
     {
@@ -16,5 +22,21 @@ package Data
         + serialize(): String
         + deserialize(serial: String): bool
     }
+
+    class Store
+    {
+        - m_nvsmgr: NVSManager
+        - m_netCredentials: NetworkCredentials
+
+        - Store()
+        - ~Store()
+        {static} + getInstance(): Store&
+        + save(): bool
+        + load(): bool
+        + getNetworkCredentials(): NetworkCredentials
+        + setNetworkCredentials(credentials: NetworkCredentials): void
+    }
+    Store "0..*" *--> "1" NVSManager
+    Store "0..*" *--> "1" NetworkCredentials
 }
 @enduml

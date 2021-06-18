@@ -14,7 +14,7 @@ package SystemServices {
 
         - Log()
         - ~Log()
-        + getInstance(): Log&
+        {static} + getInstance(): Log&
         + getLogLevel(): LogLevel
         + setLogLevel(level: LogLevel): void
         + writeLog(level: LogLevel, msg: const char*): void
