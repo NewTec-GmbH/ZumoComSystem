@@ -33,5 +33,10 @@ package SystemServices {
         + readEntry(key: String): String
         + wipeNVS(): bool
     }
+
+    class System
+    {
+        + reset(): void
+    }
 }
 @enduml

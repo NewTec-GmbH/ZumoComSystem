@@ -26,6 +26,8 @@ package ComPlatform {
     interface "OTA" as ota
     interface "Timer" as timer
 
+    interface "System" as System
+
     component "HAL" as hal {
         hal -up- Debug
         hal -up- FlashRobot
@@ -42,6 +44,7 @@ package ComPlatform {
         hal -up- timer
 
         hal -down-> hardwareport
+        hal -down-( System
     }
     note right of hal : Provides hardware\nabstraction/drivers
 
@@ -50,7 +53,6 @@ package ComPlatform {
     interface "Crypt" as Crypt
     interface "NVS" as nvs
     interface "Timer" as Timer
-
     interface "Store" as Store
 
     component "Data" as data {
@@ -91,6 +93,7 @@ package ComPlatform {
         systemservices -up- Crypt
         systemservices -up- nvs
         systemservices -up- Timer
+        systemservices -up- System
 
         systemservices -down-(ReadKey
         systemservices -down-(Crypto

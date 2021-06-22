@@ -1,0 +1,30 @@
+@startuml
+package HAL 
+{
+    package "Arduino Core"
+    {
+        class "Digital I/O" as ioclass
+    }
+
+    class IO 
+    {
+        {static} - WIFI_AND_RESET_KEY_PIN: uint8_t {readonly} = 0
+        {static} - ROBOT_RESET_PIN: uint8_t {readonly} = 2
+        {static} - ROBOT_RESET_TIME: uint32_t {readonly} = 500
+        {static} - LONG_PRESS_TIME: uint32_t = 1000
+        {static} - DEBOUNCE_DELAY_TIME: uint8_t = 50
+        - ioMutex: SemaphoreHandle_t
+
+        - IO()
+        - ~IO()
+        {static} - debouncedRead(gpio: uint8_t): uint8_t
+        {static} - systemResetISR(): void
+        {static} - resetTask(parameter: void*): void
+        + getInstance(): IO&
+        + resetRobotNow(): void
+        + registerSystemReset(): void
+        + blockingCheckWiFiKeyLongPress(): bool
+    }
+    IO  ..> ioclass : uses
+}
+@enduml

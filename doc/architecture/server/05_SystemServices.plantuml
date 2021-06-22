@@ -14,6 +14,7 @@ interface "WiFi" as wifihal
 interface "DNS" as dnshal
 interface "Store" as store
 interface "Timer" as timerhal
+interface "System" as systemhal
 
 package SystemServices {
     component "COMInit" as initcom
@@ -25,6 +26,7 @@ package SystemServices {
     component "FileManager" as filemanager
     component "NVSManager" as nvsmanager
     component "Timer" as timer
+    component "System" as system
 
     note right of cryptoservices : Provides hardware-accelerated\nSHA256, BLAKE2b, RSA2048 and TRNG
     note right of fwdeserializer : Converts binary firmware\nfile to object
@@ -35,12 +37,14 @@ package SystemServices {
     note right of spawnwifi : Starts own WiFi access\npoint for clients to\nconnect to
     note right of connectwifi : Connects to external WiFi\naccess point to become part\nof existing IP network
     note right of timer: Provides easy to use\ntime-based ISRs/callbacks
+    note right of system: Provides system services\nsuch as restart etc.
 
     filemanager -up- File
     firmwarecheck -up- FWCheck
     cryptoservices -up- Crypt
     nvsmanager -up- nvs
     timer -up-Timer
+    system -up- systemhal
 
     initcom --> spawnwifi
     initcom --> connectwifi

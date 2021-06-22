@@ -31,40 +31,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file main.cpp
+ * @file System.cpp
  * @author Luis Moser
- * @brief main()
- * @date 06/17/2021
+ * @brief System class
+ * @date 06/22/2021
  * 
  * @{
  */
 
-#include <Arduino.h>
-#include <IO.h>
+#include <System.h>
+#include <Logger.h>
 
-/**
- * Setup function which initializes the ESP32
- */
-void setup()
+void System::reset()
 {
-    Serial.begin(9600);
-
-    IO& io = IO::getInstance();
-    io.registerSystemReset();
-}
-
-/**
- * Loop function which represents the super-loop
- */
-void loop()
-{
-   IO& io = IO::getInstance();
-   Serial.println("Start");
-   Serial.println(io.blockingCheckWifiKeyLongPress());
-   Serial.println("End");
-   delay(2000);
-}
-
-int main()
-{
+    LOG_DEBUG("ComPlatform will be restarted");
+    ESP.restart();
 }
