@@ -44,6 +44,20 @@ class System
 {
 public:
    /**
+    * Default Constructor
+    */
+   System()
+   {
+   }
+
+   /**
+    * Destructor
+    */
+   ~System()
+   {
+   }
+
+   /**
     * Shuts down all services
     * and reboots the ComPlatform
     */

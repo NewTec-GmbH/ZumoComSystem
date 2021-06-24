@@ -49,23 +49,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** Manages, buffers, loads and saves all required data structures for the ComPlatform */
 class Store
 {
-private:
-    /** Instance of NVSManager for making data persistent */
-    NVSManager m_nvsmgr;
-
-    /** Instance of NetworkCredentials to manage SSID and PSK */
-    NetworkCredentials m_netCredentials;
-
-    /** Default constructor */
-    Store()
-    {
-    }
-
-    /** Destructor */
-    ~Store()
-    {
-    }
-
 public:
     /** 
      * Get Store instance
@@ -105,5 +88,22 @@ public:
      * @param[in] credentials The new NetworkCredentials instance to be saved
      */
     void setNetworkCredentials(NetworkCredentials credentials);
+
+private:
+    /** Default constructor */
+    Store()
+    {
+    }
+
+    /** Destructor */
+    ~Store()
+    {
+    }
+
+    /** Instance of NVSManager for making data persistent */
+    NVSManager m_nvsmgr;
+
+    /** Instance of NetworkCredentials to manage SSID and PSK */
+    NetworkCredentials m_netCredentials;
 };
 #endif /** __STORE_H__ */

@@ -52,16 +52,6 @@ using namespace httpsserver;
 /** Data structure for HTTPS/WSS server which supports JSON serialization */
 class KeyCert
 {
-private:
-   /** 
-    * The DER-X509 certificate
-    * which stores the private RSA key
-    * as well as the public certificate.
-    * This data structure is used by
-    * the HTTPs/WSS servers
-    */
-   SSLCert *m_Cert;
-
 public:
    /**
     * Default Constructor
@@ -125,5 +115,15 @@ public:
      * true in case of success
      */
    bool deserialize(String serial);
+
+private:
+   /** 
+    * The DER-X509 certificate
+    * which stores the private RSA key
+    * as well as the public certificate.
+    * This data structure is used by
+    * the HTTPs/WSS servers
+    */
+   SSLCert *m_Cert;
 };
 #endif

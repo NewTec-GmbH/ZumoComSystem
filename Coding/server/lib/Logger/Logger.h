@@ -61,10 +61,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** Macro for logging error messages */
 #define LOG_ERROR(msg) ((Log::getInstance().writeLog(Log::LEVEL_ERROR, msg)))
 #else
-#define LOG_DEBUG(msg) do{}while(0)
-#define LOG_INFO(msg) do{}while(0)
-#define LOG_WARN(msg) do{}while(0)
-#define LOG_ERROR(msg) do{}while(0)
+#define LOG_DEBUG(msg) \
+   do                  \
+   {                   \
+   } while (0)
+#define LOG_INFO(msg) \
+   do                 \
+   {                  \
+   } while (0)
+#define LOG_WARN(msg) \
+   do                 \
+   {                  \
+   } while (0)
+#define LOG_ERROR(msg) \
+   do                  \
+   {                   \
+   } while (0)
 #endif
 
 /** Singleton logging class used for logging events */
@@ -112,9 +124,6 @@ public:
    void writeLog(LogLevel level, String msg);
 
 private:
-   /** The log level which is used to determine what to print */
-   LogLevel m_LogLevel;
-
    /** Constructor */
    Log() : m_LogLevel(LEVEL_DEBUG)
    {
@@ -124,5 +133,8 @@ private:
    ~Log()
    {
    }
+
+   /** The log level which is used to determine what to print */
+   LogLevel m_LogLevel;
 };
 #endif /* __LOGGING_H__ */
