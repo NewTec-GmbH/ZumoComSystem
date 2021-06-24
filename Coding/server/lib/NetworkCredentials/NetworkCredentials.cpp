@@ -44,17 +44,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 NetworkCredentials::NetworkCredentials(String ssid, String psk) : m_ssid(ssid), m_psk(psk)
 {
-    LOG_DEBUG("New network credentials generated");
 }
 
 NetworkCredentials::NetworkCredentials()
 {
-    LOG_DEBUG("New network credentials generated");
 }
 
 NetworkCredentials::~NetworkCredentials()
 {
-    LOG_DEBUG("Network credentials destructed");
 }
 
 String NetworkCredentials::getSSID()

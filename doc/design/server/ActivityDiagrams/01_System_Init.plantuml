@@ -1,0 +1,39 @@
+@startuml
+(*) --> "Turn on ComPlatform"
+--> "Register Reset-ISR"
+--> "Blocking read of WiFi/Reset key"
+
+if "WiFi/Reset key pressed for two seconds" then
+--> [true] "Set UseAP = true"
+--> "Load KeyCert" as loadkeycert
+else
+--> [false] "Set UseAP = false"
+--> loadkeycert
+endif
+
+if "KeyCert available" then
+    --> [true] "Check UseAP"
+else 
+    --> [false] "Generate new KeyCert"
+    --> "Save new KeyCert"
+    --> "Check UseAP"
+endif
+
+if "UseAP is" then
+    --> [true] "Init AP" as initap
+else 
+    --> [false] "Load NetworkCredentials"
+    if "Credetentials available" then
+        --> [true] "Init STA"
+        --> "Load Users"
+    else 
+        --> [false] initap
+    endif
+endif
+
+--> "Load Users"
+--> "Load Permissions"
+--> "Init HTTPs Server"
+--> "Init WSS Server"
+--> (*)
+@enduml

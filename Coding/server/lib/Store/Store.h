@@ -43,8 +43,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __STORE_H__
 
 #include <NVSManager.h>
-#include <NetworkCredentials.h>
 #include <Logger.h>
+#include <NetworkCredentials.h>
+#include <KeyCert.h>
 
 /** Manages, buffers, loads and saves all required data structures for the ComPlatform */
 class Store
@@ -62,18 +63,32 @@ public:
     }
 
     /** 
-     * Save non-volatile data to disk
+     * Save NetworkCredentials to disk
      * 
      * @return Returns true if successful, false if error occured
      */
-    bool save();
+    bool saveNetworkCredentials();
+
+    /** 
+     * Save KeyCert to disk
+     * 
+     * @return Returns true if successful, false if error occured
+     */
+    bool saveKeyCert();
 
     /**
-     * Load non-volatile data from disk to store
+     * Load NetworkCredentials from disk to store
      * 
      * @return Returns true if succesful, false if error occured
      */
-    bool load();
+    bool loadNetworkCredentials();
+
+    /**
+     * Load KeyCert from disk to store
+     * 
+     * @return Returns true if succesful, false if error occured
+     */
+    bool loadKeyCert();
 
     /** 
      * Get the network credentials 
@@ -88,6 +103,20 @@ public:
      * @param[in] credentials The new NetworkCredentials instance to be saved
      */
     void setNetworkCredentials(NetworkCredentials credentials);
+
+    /** 
+     * Get the private RSA key and the public certificate
+     * 
+     * @return Returns the KeyCert instance
+     */
+    KeyCert getKeyCert();
+
+    /**
+     * Set the private RSA key and the public certificate
+     * 
+     * @param[in] keycert The new KeyCert instance to be saved
+     */
+    void setKeyCert(KeyCert keycert);
 
 private:
     /** Default constructor */
@@ -105,5 +134,10 @@ private:
 
     /** Instance of NetworkCredentials to manage SSID and PSK */
     NetworkCredentials m_netCredentials;
+
+    /** Instance of KeyCert to store private RSA key as well as
+     * public certificate for HTTPs and WSS servers
+     */
+    KeyCert m_KeyCert;
 };
 #endif /** __STORE_H__ */

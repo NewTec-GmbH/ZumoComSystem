@@ -40,9 +40,35 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #ifndef __SYSTEM_H__
+#define __SYSTEM_H__
+
 class System
 {
 public:
+   /** 
+     * Get System instance
+     * 
+     * @return Returns System singleton instance
+     */
+   static System &getInstance()
+   {
+      static System instance;
+      return instance;
+   }
+
+   /**
+    * Initializes the ComPlatform
+    * and starts all services
+    */
+   void init();
+
+   /**
+    * Shuts down all services
+    * and reboots the ComPlatform
+    */
+   void reset();
+
+private:
    /**
     * Default Constructor
     */
@@ -56,12 +82,5 @@ public:
    ~System()
    {
    }
-
-   /**
-    * Shuts down all services
-    * and reboots the ComPlatform
-    */
-   void reset();
 };
-#define __SYSTEM_H__
 #endif /** __SYSTEM_H__ */
