@@ -43,7 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 bool Store::save()
 {
-    /** Generate the JSON string */
+    // Generate the JSON string
     String json = m_netCredentials.serialize();
     bool retCode = m_nvsmgr.updateEntry("netCredentials", json);
     if (false == retCode)
@@ -55,13 +55,13 @@ bool Store::save()
 
 bool Store::load()
 {
-    /** Fetch JSON string from disk */
+    // Fetch JSON string from disk
     String json = m_nvsmgr.readEntry("netCredentials");
 
-    /** 
-     * If there are saved credentials, restore them,
-     * else, leave the object with its default values
-     */
+    /* 
+    If there are saved credentials, restore them,
+    else, leave the object with its default values
+    */
     bool retCode = (String("null") != json && m_netCredentials.deserialize(json));
     if (retCode == false)
     {
