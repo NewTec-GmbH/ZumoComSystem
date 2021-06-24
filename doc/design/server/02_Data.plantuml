@@ -23,6 +23,20 @@ package Data
         + deserialize(serial: String): bool
     }
 
+    class KeyCert
+    {
+        - m_Cert: SSLCert
+
+        + KeyCert()
+        + KeyCert(certificate: SSLCert*)
+        + ~KeyCert()
+        + generateNewCert(): bool
+        + setCert(certificate: SSLCert*): void
+        + getCert(): SSLCert*
+        + serialize(): String
+        + deserialize(serial: String): bool
+    }
+
     class Store
     {
         - m_nvsmgr: NVSManager

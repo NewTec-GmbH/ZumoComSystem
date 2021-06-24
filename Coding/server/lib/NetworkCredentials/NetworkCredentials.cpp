@@ -130,7 +130,7 @@ bool NetworkCredentials::deserialize(String serial)
     else
     {
         delete[] buffer;
-        LOG_ERROR("Error on deserializing the JSON object");
+        LOG_ERROR("Error on deserializing the NetworkCredentials JSON object");
         LOG_ERROR(retCode.c_str());
         return false;
     }

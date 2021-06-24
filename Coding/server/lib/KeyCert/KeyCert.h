@@ -31,77 +31,99 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file NetworkCredentials.h
+ * @file KeyCert.h
  * @author Luis Moser
- * @brief NetworkCredentials header
- * @date 06/16/2021
+ * @brief KeyCert header
+ * @date 06/22/2021
  * 
  * @{
  */
 
-#ifndef __NETWORKCREDENTIALS_H__
-#define __NETWORKCREDENTIALS_H__
+#ifndef __KEYCERT_H__
+#define __KEYCERT_H__
 
+#include <SSLCert.hpp>
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include <Logger.h>
 
-/** Data structure for network credentials which supports JSON serialization */
-class NetworkCredentials
+using namespace httpsserver;
+
+/** Data structure for HTTPS/WSS server which supports JSON serialization */
+class KeyCert
 {
 private:
-    /** The SSID to be stored */
-    String m_ssid;
-
-    /** The PSK to be stored */
-    String m_psk;
+   /** 
+    * The DER-X509 certificate
+    * which stores the private RSA key
+    * as well as the public certificate.
+    * This data structure is used by
+    * the HTTPs/WSS servers
+    */
+   SSLCert *m_Cert;
 
 public:
-    /** Custom constructor with arguments */
-    NetworkCredentials(String ssid, String psk);
-
-    /** Default constructor */
-    NetworkCredentials();
-
-    /** Destructor */
-    ~NetworkCredentials();
-
-    /** Returns Service Set Identifier 
-     * 
-     * @return Returns the SSID string
+   /**
+    * Default Constructor
     */
-    String getSSID();
+   KeyCert()
+   {
+      m_Cert = new SSLCert();
+   }
 
-    /** Sets Service Set Identifier
+   /**
+    * Constructor
+    * 
+    * @param[in] certificate The
+    * certificate to be saved
+    */
+   KeyCert(SSLCert *certificate)
+   {
+      m_Cert = certificate;
+   }
+
+   /**
+    * Destructor
+    */
+   ~KeyCert()
+   {
+      delete m_Cert;
+   }
+
+   /**
+    * Generates a new SSLCert
+    * for this class instance
+    */
+   bool generateNewCert();
+
+   /**
+    * Sets a new certificate and private key
+    * 
+    * @param[in] certificate The certificate
+    * to be saved
+    */
+   void setCert(SSLCert *certificate);
+
+   /**
+    * Returns the certificate and private key
+    * 
+    * @return Returns the SSLCert
+    */
+   SSLCert *getCert();
+
+   /** Returns JSON string
      * 
-     * @param[in] ssid The SSID to be set
+     * @return Returns the serialized object
+     * in JSON string
      */
-    void setSSID(String ssid);
+   String serialize();
 
-    /** Returns Pre Shared Key
-     * 
-     * @return Returns the PSK string
-     */
-    String getPSK();
-
-    /** Sets Pre Shared Key
-     * 
-     * @param[in] psk The PSK to be set
-     */
-    void setPSK(String psk);
-
-    /** Returns JSON string
-     * 
-     * @return Returns the serialized object in JSON string
-     */
-    String serialize();
-
-    /** Re-creates object from
-     * serialized JSON string
+   /** Re-creates object from serialized JSON string
      * 
      * @param serial The serialized JSON string
      * @return Returns false in case of failure,
      * true in case of success
      */
-    bool deserialize(String serial);
+   bool deserialize(String serial);
 };
-#endif /** __NETWORKCREDENTIALS_H__ */
+#endif

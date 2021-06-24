@@ -41,16 +41,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Arduino.h>
 #include <IO.h>
+#include <KeyCert.h>
+#include <SSLCert.hpp>
 
 /**
  * Setup function which initializes the ESP32
  */
 void setup()
 {
-    Serial.begin(9600);
-
-    IO& io = IO::getInstance();
-    io.registerSystemReset();
+   Serial.begin(9600);
 }
 
 /**
@@ -58,11 +57,42 @@ void setup()
  */
 void loop()
 {
-   IO& io = IO::getInstance();
-   Serial.println("Start");
-   Serial.println(io.blockingCheckWifiKeyLongPress());
-   Serial.println("End");
-   delay(2000);
+   KeyCert keyCert;
+   keyCert.generateNewCert();
+   String s = keyCert.serialize();
+
+   KeyCert serial;
+   serial.deserialize(s); 
+
+   unsigned char *original = keyCert.getCert()->getPKData();
+   unsigned char *copy = serial.getCert()->getPKData();
+
+   bool success = true;
+   for (uint32_t i = 0; i < keyCert.getCert()->getPKLength(); i++)
+   {
+      if (original[i] != copy[i])
+      {
+         success = false;
+         break;
+      }
+   }
+   Serial.println(success);
+
+   unsigned char *original2 = keyCert.getCert()->getCertData();
+   unsigned char *copy2 = serial.getCert()->getCertData();
+
+   bool success2 = true;
+   for (uint32_t i = 0; i < keyCert.getCert()->getCertLength(); i++)
+   {
+      if (original2[i] != copy2[i])
+      {
+         success2 = false;
+         break;
+      }
+   }
+   Serial.println(success2);
+
+   Serial.println("Done");
 }
 
 int main()
