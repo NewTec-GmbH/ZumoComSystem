@@ -43,7 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <System.h>
 
 uint8_t IO::debouncedRead(uint8_t gpio)
-{  
+{
    // Code taken and modified from:
    // https://www.arduino.cc/en/Tutorial/BuiltInExamples/Debounce
 
@@ -78,8 +78,7 @@ void IO::resetTask(void *parameter)
 {
    if (LOW == debouncedRead(WIFI_AND_RESET_KEY_PIN))
    {
-      System system;
-      system.reset();
+      System::getInstance().reset();
    }
 
    // Destroy this task

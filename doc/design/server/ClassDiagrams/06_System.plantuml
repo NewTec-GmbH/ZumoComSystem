@@ -1,0 +1,10 @@
+@startuml
+class System
+{
+    - System()
+    - ~System()
+    + {static} getInstance(): System&
+    + init(): bool
+    + reset(): void 
+}
+@enduml

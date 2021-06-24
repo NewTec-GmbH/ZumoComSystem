@@ -42,6 +42,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <System.h>
 #include <Logger.h>
 
+bool System::init()
+{
+   return false;
+}
+
 void System::reset()
 {
     LOG_DEBUG("ComPlatform will be restarted");
