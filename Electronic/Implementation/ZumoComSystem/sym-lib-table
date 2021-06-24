@@ -2,4 +2,8 @@
   (lib (name 1043)(type Legacy)(uri ${KIPRJMOD}/libs/1043.lib)(options "")(descr ""))
   (lib (name UJ2-AV-W4-TH)(type Legacy)(uri ${KIPRJMOD}/libs/UJ2-AV-W4-TH.lib)(options "")(descr ""))
   (lib (name USB4120-03-C_REVA)(type Legacy)(uri ${KIPRJMOD}/libs/USB4120-03-C_REVA.lib)(options "")(descr ""))
+  (lib (name TPS62056DGS)(type Legacy)(uri ${KIPRJMOD}/libs/TPS62056DGS.lib)(options "")(descr ""))
+  (lib (name LT1374CS8-5PBF)(type Legacy)(uri ${KIPRJMOD}/libs/LT1374CS8-5PBF.lib)(options "")(descr ""))
+  (lib (name MAX3421EEHJ_T)(type Legacy)(uri ${KIPRJMOD}/libs/MAX3421EEHJ_T.lib)(options "")(descr ""))
+  (lib (name MLL1200S)(type Legacy)(uri ${KIPRJMOD}/libs/MLL1200S.lib)(options "")(descr ""))
 )

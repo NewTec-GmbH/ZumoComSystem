@@ -1,0 +1,77 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 2 7
+Title "Zumo Communication System"
+Date "2021-06-11"
+Rev "V1.0"
+Comp "NewTec GmbH"
+Comment1 "Schneider, Niklas"
+Comment2 "Schneider, Niklas"
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L TPS62056DGS:TPS62056DGS U2
+U 1 1 60C6791C
+P 4500 2000
+F 0 "U2" H 4500 2670 50  0000 C CNN
+F 1 "TPS62056DGS" H 4500 2579 50  0000 C CNN
+F 2 "SOP50P490X110-10N" H 4500 2000 50  0001 L BNN
+F 3 "" H 4500 2000 50  0001 L BNN
+	1    4500 2000
+	1    0    0    -1  
+$EndComp
+$Comp
+L LT1374CS8-5PBF:LT1374CS8-5PBF U1
+U 1 1 60C689A1
+P 3700 4200
+F 0 "U1" H 5300 4565 50  0000 C CNN
+F 1 "LT1374CS8-5PBF" H 5300 4474 50  0000 C CNN
+F 2 "SO-8_S" H 3700 4200 50  0001 L BNN
+F 3 "" H 3700 4200 50  0001 L BNN
+F 4 "lt1374cs85#pbf" H 3700 4200 50  0001 L BNN "MANUFACTURER_PART_NUMBER"
+F 5 "Linear Technology" H 3700 4200 50  0001 L BNN "VENDOR"
+	1    3700 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:L L1
+U 1 1 60C698F7
+P 5650 1800
+F 0 "L1" V 5840 1800 50  0000 C CNN
+F 1 "15uH" V 5749 1800 50  0000 C CNN
+F 2 "Inductor_SMD:L_Wuerth_HCI-1040" H 5650 1800 50  0001 C CNN
+F 3 "~" H 5650 1800 50  0001 C CNN
+	1    5650 1800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:L L2
+U 1 1 60C6A253
+P 7300 4200
+F 0 "L2" V 7490 4200 50  0000 C CNN
+F 1 "6uH" V 7399 4200 50  0000 C CNN
+F 2 "footprints:L_Wuerth_HCI-1350_3D" H 7300 4200 50  0001 C CNN
+F 3 "~" H 7300 4200 50  0001 C CNN
+	1    7300 4200
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	5200 1800 5500 1800
+Wire Wire Line
+	6900 4200 7150 4200
+$Comp
+L Connector:AudioJack2_SwitchT J1
+U 1 1 60C7E950
+P 1150 1700
+F 0 "J1" H 970 1633 50  0000 R CNN
+F 1 "AudioJack2_SwitchT" H 970 1724 50  0000 R CNN
+F 2 "Button_Switch_THT:SW_E-Switch_EG1224_SPDT_Angled" H 1150 1700 50  0001 C CNN
+F 3 "~" H 1150 1700 50  0001 C CNN
+	1    1150 1700
+	-1   0    0    1   
+$EndComp
+$EndSCHEMATC
