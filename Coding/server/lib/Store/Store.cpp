@@ -41,31 +41,44 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Store.h>
 
-bool Store::save()
+bool Store::saveNetworkCredentials()
 {
-    // Generate the JSON string
-    String json = m_netCredentials.serialize();
-    bool retCode = m_nvsmgr.updateEntry("netCredentials", json);
+    bool retCode = m_nvsmgr.updateEntry("netCredentials", m_netCredentials.serialize());
     if (false == retCode)
     {
-        LOG_ERROR("Could not save network credentials to disk");
+        LOG_ERROR("Could not save NetworkCredentials to disk");
     }
     return retCode;
 }
 
-bool Store::load()
+bool Store::saveKeyCert()
 {
-    // Fetch JSON string from disk
-    String json = m_nvsmgr.readEntry("netCredentials");
-
-    /* 
-    If there are saved credentials, restore them,
-    else, leave the object with its default values
-    */
-    bool retCode = (String("null") != json && m_netCredentials.deserialize(json));
-    if (retCode == false)
+    bool retCode = m_nvsmgr.updateEntry("keyCert", m_KeyCert.serialize());
+    if (false == retCode)
     {
-        LOG_ERROR("Could not load network credentials from disk");
+        LOG_ERROR("Could not save KeyCert to disk");
+    }
+    return retCode;
+}
+
+bool Store::loadNetworkCredentials()
+{
+    String json = m_nvsmgr.readEntry("netCredentials");
+    bool retCode = (String("null") != json && true == m_netCredentials.deserialize(json));
+    if (false == retCode)
+    {
+        LOG_ERROR("Could not load NetworkCredentials from disk");
+    }
+    return retCode;
+}
+
+bool Store::loadKeyCert()
+{
+    String json = m_nvsmgr.readEntry("keyCert");
+    bool retCode = (String("null") != json && true == m_KeyCert.deserialize(json));
+    if (false == retCode)
+    {
+        LOG_ERROR("Could not load KeyCert from disk");
     }
     return retCode;
 }
@@ -78,4 +91,14 @@ NetworkCredentials Store::getNetworkCredentials()
 void Store::setNetworkCredentials(NetworkCredentials credentials)
 {
     m_netCredentials = credentials;
+}
+
+KeyCert Store::getKeyCert()
+{
+    return m_KeyCert;
+}
+
+void Store::setKeyCert(KeyCert keycert)
+{
+    m_KeyCert = keycert;
 }

@@ -40,6 +40,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #ifndef __SYSTEM_H__
+#define __SYSTEM_H__
+
 class System
 {
 public:
@@ -58,7 +60,7 @@ public:
     * Initializes the ComPlatform
     * and starts all services
     */
-   bool init();
+   void init();
 
    /**
     * Shuts down all services
@@ -81,5 +83,4 @@ private:
    {
    }
 };
-#define __SYSTEM_H__
 #endif /** __SYSTEM_H__ */

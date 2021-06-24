@@ -137,7 +137,7 @@ bool KeyCert::deserialize(String serial)
    serial.toCharArray(buffer, bufferSize);
 
    DeserializationError retCode = deserializeJson(jsonDocument, buffer);
-   // retCode > 0 in case of arbitrary error
+   // retCode > 0 in case of arbitrary error */
    if (DeserializationError::Ok == retCode)
    {
       uint16_t keyLength = jsonDocument["keyLength"];

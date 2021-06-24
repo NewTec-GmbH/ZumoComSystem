@@ -39,16 +39,66 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @{
  */
 
-#include <System.h>
+#include <IO.h>
 #include <Logger.h>
+#include <Store.h>
+#include <KeyCert.h>
+#include <System.h>
 
-bool System::init()
+void System::init()
 {
-   return false;
+   // Register an ISR for ComPlatform reset on Reset key push
+   IO::getInstance().registerSystemReset();
+   LOG_DEBUG("Reset-ISR registered");
+
+   // Read WiFi key if AP should be spawned
+   bool useAP = IO::getInstance().blockingCheckWifiKeyLongPress();
+
+   Store &store = Store::getInstance();
+
+   // Generate and save a new KeyCert
+   bool retCode = store.loadKeyCert();
+   if (false == retCode)
+   {
+      LOG_DEBUG("Missing KeyCert. Generating new SSLCert...");
+      KeyCert keycert = store.getKeyCert();
+      keycert.generateNewCert();
+      store.setKeyCert(keycert);
+      LOG_DEBUG("New KeyCert created");
+
+      store.saveKeyCert();
+      LOG_DEBUG("New KeyCert saved");
+   }
+
+   if (true == useAP)
+   {
+      // Init AP
+      LOG_DEBUG("AP spawned");
+   }
+   else
+   {
+      // Load NetworkCredentials
+      if (true == store.loadNetworkCredentials())
+      {
+         // Init STA
+         LOG_DEBUG("STA mode initialized");
+      }
+      else
+      {
+         LOG_ERROR("No NetworkCredentials available");
+         // Init AP
+         LOG_DEBUG("AP spwaned because there are no network credentials available");
+      }
+   }
+
+   // Load Users
+   // Load Permissions
+   // Init HTTPs Server
+   // Init WSS Server
 }
 
 void System::reset()
 {
-    LOG_DEBUG("ComPlatform will be restarted");
-    ESP.restart();
+   LOG_DEBUG("ComPlatform will be restarted");
+   ESP.restart();
 }
