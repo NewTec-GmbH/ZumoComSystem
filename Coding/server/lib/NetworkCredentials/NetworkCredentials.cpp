@@ -79,19 +79,19 @@ void NetworkCredentials::setPSK(String psk)
 
 String NetworkCredentials::serialize()
 {
-    /** 
-     * Reserve memory on stack for JSON structure
-     * which consists of two key-value pairs 
-     */
+    /*
+    Reserve memory on stack for JSON structure
+    which consists of two key-value pairs 
+    */
     const uint8_t size = JSON_OBJECT_SIZE(2);
     StaticJsonDocument<size> jsonDocument;
 
-    /**
-     * Pass the const/non-volatile char*
-     * pointers to ArduinoJson so that
-     * ArduinoJson will not copy/duplicate
-     * the string values
-     */
+    /*
+    Pass the const/non-volatile char*
+    pointers to ArduinoJson so that
+    ArduinoJson will not copy/duplicate
+    the string values
+    */
     jsonDocument["ssid"] = m_ssid.c_str();
     jsonDocument["psk"] = m_psk.c_str();
 
@@ -103,23 +103,23 @@ String NetworkCredentials::serialize()
 
 bool NetworkCredentials::deserialize(String serial)
 {
-    /** 
-     * Reserve memory on stack for JSON structure
-     * which consists of two key-value pairs
-     */
+    /* 
+    Reserve memory on stack for JSON structure
+    which consists of two key-value pairs
+    */
     StaticJsonDocument<32> jsonDocument;
 
-    /** 
-     * Get a dynamic r/w buffer for deserialization
-     * so that ArduinoJson can replace JSON syntax
-     * with \0 terminators for each string value
+    /*
+    Get a dynamic r/w buffer for deserialization
+    so that ArduinoJson can replace JSON syntax
+    with \0 terminators for each string value
     */
     uint32_t bufferSize = strlen(serial.c_str()) + 1;
     char *buffer = new char[bufferSize];
     serial.toCharArray(buffer, bufferSize);
 
     DeserializationError retCode = deserializeJson(jsonDocument, buffer);
-    /** retCode > 0 in case of arbitrary error */
+    // retCode > 0 in case of arbitrary error
     if (DeserializationError::Ok == retCode)
     {
         m_ssid = jsonDocument["ssid"].as<String>();

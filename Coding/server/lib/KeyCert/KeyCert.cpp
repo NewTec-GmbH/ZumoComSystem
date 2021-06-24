@@ -70,12 +70,12 @@ SSLCert *KeyCert::getCert()
 
 String KeyCert::serialize()
 {
-   /**
-    * Convert the binary-encoded
-    * private key and certificate to Base64 to
-    * store the private key and certificate
-    * as ASCII strings
-    */
+   /*
+   Convert the binary-encoded
+   private key and certificate to Base64 to
+   store the private key and certificate
+   as ASCII strings
+   */
    unsigned char *binaryKey = m_Cert->getPKData();
    uint16_t keyLength = m_Cert->getPKLength();
 
@@ -96,12 +96,12 @@ String KeyCert::serialize()
       const uint8_t size = JSON_OBJECT_SIZE(4);
       StaticJsonDocument<size> jsonDocument;
 
-      /**
-       * Pass the const/non-volatile char*
-       * pointers to ArduinoJson so that
-       * ArduinoJson will not copy/duplicate
-       * the string values
-       */
+      /*
+      Pass the const/non-volatile char*
+      pointers to ArduinoJson so that
+      ArduinoJson will not copy/duplicate
+      the string values
+      */
       jsonDocument["keyLength"] = (const uint16_t)keyLength;
       jsonDocument["certLength"] = (const uint16_t)certLength;
       jsonDocument["keyData"] = (const char *)keyBase64String;
@@ -126,10 +126,10 @@ String KeyCert::serialize()
 
 bool KeyCert::deserialize(String serial)
 {
-   /** 
-    * Reserve memory on stack for JSON structure
-    * which consists of two key-value pairs
-    */
+   /*
+   Reserve memory on stack for JSON structure
+   which consists of two key-value pairs
+   */
    StaticJsonDocument<64> jsonDocument;
 
    uint32_t bufferSize = strlen(serial.c_str()) + 1;
@@ -137,7 +137,7 @@ bool KeyCert::deserialize(String serial)
    serial.toCharArray(buffer, bufferSize);
 
    DeserializationError retCode = deserializeJson(jsonDocument, buffer);
-   /** retCode > 0 in case of arbitrary error */
+   // retCode > 0 in case of arbitrary error
    if (DeserializationError::Ok == retCode)
    {
       uint16_t keyLength = jsonDocument["keyLength"];

@@ -48,13 +48,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** Data structure for network credentials which supports JSON serialization */
 class NetworkCredentials
 {
-private:
-    /** The SSID to be stored */
-    String m_ssid;
-
-    /** The PSK to be stored */
-    String m_psk;
-
 public:
     /** Custom constructor with arguments */
     NetworkCredentials(String ssid, String psk);
@@ -103,5 +96,12 @@ public:
      * true in case of success
      */
     bool deserialize(String serial);
+
+private:
+    /** The SSID to be stored */
+    String m_ssid;
+
+    /** The PSK to be stored */
+    String m_psk;
 };
 #endif /** __NETWORKCREDENTIALS_H__ */

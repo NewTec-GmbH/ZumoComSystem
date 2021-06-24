@@ -47,10 +47,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** Hardware abstraction to easily store and retrieve key-value string pairs */
 class NVSManager
 {
-private:
-    /* Instance of ESP32 preferences */
-    Preferences m_preferences;
-
 public:
     /**
      * Default constructor
@@ -103,6 +99,10 @@ public:
      * @returns Returns true if successful, false if error occured
      */
     bool wipeNVS();
+
+private:
+    /* Instance of ESP32 preferences */
+    Preferences m_preferences;
 };
 
 #define __NVSMANAGER_H__

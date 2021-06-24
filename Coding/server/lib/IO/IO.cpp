@@ -43,11 +43,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <System.h>
 
 uint8_t IO::debouncedRead(uint8_t gpio)
-{
-   /**
-    * Code taken and modified from:
-    * https://www.arduino.cc/en/Tutorial/BuiltInExamples/Debounce
-    */
+{  
+   // Code taken and modified from:
+   // https://www.arduino.cc/en/Tutorial/BuiltInExamples/Debounce
 
    // The last time a debounce took place
    unsigned long lastDebounceTime = 0;
@@ -62,10 +60,7 @@ uint8_t IO::debouncedRead(uint8_t gpio)
       // Voltage level transition occured
       if (reading != lastKeyState)
       {
-         /**
-          * Stop time from now on to decide
-          * if next reading should be ignored
-          */
+         // Stop time from now on to decideif next reading should be ignored
          lastDebounceTime = millis();
       }
 

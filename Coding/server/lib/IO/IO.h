@@ -45,78 +45,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** Provides abstraction for IO functionality for ComPlatform */
 class IO
 {
-private:
-    /** The GPIO input pin used for the WiFi enable/system reset button*/
-    static const uint8_t WIFI_AND_RESET_KEY_PIN = 0;
-
-    /** The GPIO output pin used to write the RESET line of robot*/
-    static const uint8_t ROBOT_RESET_PIN = 2;
-
-    /** The time in ms while RESET line is pulled down*/
-    static const uint32_t ROBOT_RESET_TIME = 500;
-
-    /** The time in ms until interaction is long button press */
-    static const uint32_t LONG_PRESS_TIME = 1000;
-
-    /** 
-     * The timespan between two two level transitions
-     * (in ms) in which level changes are ignored 
-     */
-    static const uint8_t DEBOUNCE_DELAY_TIME = 50;
-
-    /**
-     * Mutex which is used to avoid that two or more concurrent
-     * tasks, which use the IO class, can have write access to
-     * the GPIOs at once
-     */
-    SemaphoreHandle_t ioMutex;
-
-    /**
-     * Default constructor
-     */
-    IO()
-    {
-        pinMode(WIFI_AND_RESET_KEY_PIN, INPUT_PULLUP);
-        pinMode(ROBOT_RESET_PIN, OUTPUT);
-
-        ioMutex = xSemaphoreCreateMutex();
-
-        if(NULL == ioMutex)
-        {
-            LOG_ERROR("IO-Mutex could not be created!");
-        }
-    }
-
-    /**
-     * Destructor
-     */
-    ~IO()
-    {
-    }
-
-    /**
-     * Reads value of GPIO with bouncing button
-     * 
-     * @param[in] gpio The GPIO to be read
-     * @return Returns LOW if button has been pressed,
-     * returns HIGH if button has not been pressed
-     */
-    static uint8_t debouncedRead(uint8_t gpio);
-
-    /**
-     * ISR which resets the ComPlatform
-     * which will be inovked
-     * when WiFi/Reset key is being pressed
-     */
-    static void systemResetISR();
-
-    /**
-     * FreeRTOS task to reset system
-     */
-    static void resetTask(void* parameter);
-
 public:
-    /** 
+    /**
      * Get IO instance
      * 
      * @return Returns the IO singleton instance
@@ -153,4 +83,74 @@ public:
      * for specified time duration LONG_PRESS_TIME
      */
     bool blockingCheckWifiKeyLongPress();
+
+private:
+    /**
+     * Default constructor
+     */
+    IO()
+    {
+        pinMode(WIFI_AND_RESET_KEY_PIN, INPUT_PULLUP);
+        pinMode(ROBOT_RESET_PIN, OUTPUT);
+
+        ioMutex = xSemaphoreCreateMutex();
+
+        if (NULL == ioMutex)
+        {
+            LOG_ERROR("IO-Mutex could not be created!");
+        }
+    }
+
+    /**
+     * Destructor
+     */
+    ~IO()
+    {
+    }
+
+    /**
+     * Reads value of GPIO with bouncing button
+     * 
+     * @param[in] gpio The GPIO to be read
+     * @return Returns LOW if button has been pressed,
+     * returns HIGH if button has not been pressed
+     */
+    static uint8_t debouncedRead(uint8_t gpio);
+
+    /**
+     * ISR which resets the ComPlatform
+     * which will be inovked
+     * when WiFi/Reset key is being pressed
+     */
+    static void systemResetISR();
+
+    /**
+     * Mutex which is used to avoid that two or more concurrent
+     * tasks, which use the IO class, can have write access to
+     * the GPIOs at once
+     */
+    SemaphoreHandle_t ioMutex;
+
+    /**
+     * FreeRTOS task to reset system
+     */
+    static void resetTask(void *parameter);
+
+    /** The GPIO input pin used for the WiFi enable/system reset button*/
+    static const uint8_t WIFI_AND_RESET_KEY_PIN = 0;
+
+    /** The GPIO output pin used to write the RESET line of robot*/
+    static const uint8_t ROBOT_RESET_PIN = 2;
+
+    /** The time in ms while RESET line is pulled down*/
+    static const uint32_t ROBOT_RESET_TIME = 500;
+
+    /** The time in ms until interaction is long button press */
+    static const uint32_t LONG_PRESS_TIME = 1000;
+
+    /** 
+     * The timespan between two two level transitions
+     * (in ms) in which level changes are ignored 
+     */
+    static const uint8_t DEBOUNCE_DELAY_TIME = 50;
 };

@@ -43,9 +43,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class System
 {
 public:
-   /** Shuts down all services
-     * and reboots the ComPlatform
-     */
+   /**
+    * Default Constructor
+    */
+   System()
+   {
+   }
+
+   /**
+    * Destructor
+    */
+   ~System()
+   {
+   }
+
+   /**
+    * Shuts down all services
+    * and reboots the ComPlatform
+    */
    void reset();
 };
 #define __SYSTEM_H__

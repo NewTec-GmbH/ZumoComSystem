@@ -44,17 +44,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 NVSManager::NVSManager()
 {
-    /** 
-     * Open/Create the namespace for
-     * key-value pairs with r/w access
-     */
+    /*
+    Open/Create the namespace for
+    key-value pairs with r/w access
+    */
     m_preferences.begin("complatform", false);
     LOG_DEBUG("Opened complatform namespace for NVS");
 }
 
 NVSManager::~NVSManager()
 {
-    /** Close the currently opened namespace */
+    // Close the currently opened namespace
     m_preferences.end();
     LOG_DEBUG("Closed complatform namespacfe for NVS");
 }
