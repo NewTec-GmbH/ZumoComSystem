@@ -31,61 +31,62 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file IO.cpp
+ * @file Key.cpp
  * @author Luis Moser
- * @brief IO class
- * @date 06/21/2021
+ * @brief Key class
+ * @date 06/25/2021
  * 
  * @{
  */
 
-#include <IO.h>
+#include <Key.h>
 
-void IO::setPinMode(uint8_t gpio, uint8_t mode)
+bool Key::blockingCheckWifiKeyLongPress()
 {
-   pinMode(gpio, mode);
+    // Stop time from now on
+    unsigned long startTime = millis();
+
+    // Store the current time when next reading is done
+    unsigned long currentTime;
+
+    do
+    {
+        // Registered a released key. Abort
+        if (HIGH == m_io.readGPIODebounced(WIFI_AND_RESET_KEY_PIN))
+        {
+            return false;
+        }
+        currentTime = millis();
+    } while ((currentTime - startTime) < LONG_PRESS_TIME);
+
+    return true;
 }
 
-uint8_t IO::readGPIODebounced(uint8_t gpio)
+void Key::registerSystemReset()
 {
-   // Code taken and modified from:
-   // https://www.arduino.cc/en/Tutorial/BuiltInExamples/Debounce
-
-   // The last time a debounce took place
-   unsigned long lastDebounceTime = 0;
-
-   // The previous WiFiKey/Reset key reading
-   uint8_t lastKeyState = HIGH;
-
-   do
-   {
-      uint8_t reading = digitalRead(gpio);
-
-      // Voltage level transition occured
-      if (reading != lastKeyState)
-      {
-         // Stop time from now on to decideif next reading should be ignored
-         lastDebounceTime = millis();
-      }
-
-      // Check if bouncing timespan elapsed. Evaluate current level
-      if ((millis() - lastDebounceTime) > DEBOUNCE_DELAY_TIME)
-      {
-         return reading;
-      }
-
-      lastKeyState = reading;
-   } while (true);
+    attachInterrupt(WIFI_AND_RESET_KEY_PIN, Key::systemResetISR, FALLING);
+    LOG_DEBUG("System-Reset ISR registered");
 }
 
-uint8_t IO::readGPIO(uint8_t gpio)
+void Key::resetTask(void *parameter)
 {
-   return digitalRead(gpio);
+    if (LOW == IO::getInstance().readGPIODebounced(WIFI_AND_RESET_KEY_PIN))
+    {
+        System::getInstance().reset();
+    }
+
+    // Destroy this task
+    vTaskDelete(NULL);
 }
 
-void IO::writeGPIO(uint8_t gpio, uint8_t value)
+void Key::systemResetISR()
 {
-   xSemaphoreTake(ioMutex, portMAX_DELAY);
-   digitalWrite(gpio, value);
-   xSemaphoreGive(ioMutex);
+    // Create a new FreeRTOS task
+    xTaskCreate(
+        resetTask,
+        "SystemReset",
+        16384,
+        NULL,
+        1,
+        NULL);
 }

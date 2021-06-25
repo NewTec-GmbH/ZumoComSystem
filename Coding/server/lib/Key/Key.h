@@ -31,96 +31,91 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file IO.h
+ * @file Key.h
  * @author Luis Moser
- * @brief IO header
- * @date 06/21/2021
+ * @brief Key header
+ * @date 06/25/2021
  * 
  * @{
  */
 
-#include <Arduino.h>
-#include <Logger.h>
+#ifndef __KEY_H__
+#define __KEY_H__
 
-/** Provides abstraction for IO functionality for ComPlatform */
-class IO
+#include <Arduino.h>
+#include <IO.h>
+#include <System.h>
+
+/** Class for accessing Reset/WiFi key */
+class Key
 {
 public:
     /**
-     * Get IO instance
+     * Get Key instance
      * 
-     * @return Returns the IO singleton instance
+     * @return Returns singleton instance
      */
-    static IO &getInstance()
+    static Key &getInstance()
     {
-        static IO instance;
+        static Key instance;
         return instance;
     }
 
     /**
-     * Specifies the GPIO pin direction
-     * 
-     * @param[in] gpio The GPIO pin to be set
-     * @param[in] mode The direction of the GPIO pin
+     * Registers an ISR which resets the
+     * ComPlatform system and which is 
+     * invoked when WiFi/Reset key is pressed
      */
-    void setPinMode(uint8_t gpio, uint8_t mode);
+    void registerSystemReset();
 
     /**
-     * Reads the specified GPIO input
-     * but also works with bouncing
-     * input signals (e.g. from push keys)
+     * Checks if the button is pressed,
+     * while this method is called, blocks
+     * while the button is pressed
+     * for max. LONG_PRESS_TIME.
+     * Checks if the key has been held for
+     * thath long.
      * 
-     * @param[in] gpio The GPIO pin to be read
-     * @return Returns the read GPIO value
+     * @return Returns true if key has been pressed
+     * for specified time duration LONG_PRESS_TIME
      */
-    uint8_t readGPIODebounced(uint8_t gpio);
-
-    /**
-     * Reads the specified GPIO input
-     * 
-     * @param[in] gpio The GPIO pin to be read
-     * @return Returns the read GPIO value
-     */
-    uint8_t readGPIO(uint8_t gpio);
-
-    /**
-     * Writes to the specified GPIO output
-     * 
-     * @param[in] gpio The GPIO pin to be written to
-     * @param[in] value The value to be written
-     */
-    void writeGPIO(uint8_t gpio, uint8_t value);
+    bool blockingCheckWifiKeyLongPress();
 
 private:
     /**
-     * Default constructor
+     * Default Constructor
      */
-    IO()
+    Key()
     {
-        ioMutex = xSemaphoreCreateMutex();
-        if (NULL == ioMutex)
-        {
-            LOG_ERROR("IO mutex could not be created!");
-        }
     }
 
     /**
      * Destructor
      */
-    ~IO()
+    ~Key()
     {
     }
 
     /**
-     * Mutex which is used to avoid that two or more concurrent
-     * tasks, which use the IO class, can have write access to
-     * the GPIOs at once
+     * Task which checks the Reset key
+     * level and resets the ComPlatform
      */
-    SemaphoreHandle_t ioMutex;
+    static void resetTask(void *parameter);
 
-    /** 
-     * The timespan between two two level transitions
-     * (in ms) in which level changes are ignored 
+    /**
+     * ISR which resets the ComPlatform
+     * which will be inovked
+     * when WiFi/Reset key is being pressed
      */
-    static const uint8_t DEBOUNCE_DELAY_TIME = 50;
+    static void systemResetISR();
+
+    /** Reference to IO class */
+    IO &m_io = IO::getInstance();
+
+    /** The GPIO input pin used for the WiFi enable/system reset button*/
+    static const uint8_t WIFI_AND_RESET_KEY_PIN = 0;
+
+    /** The time in ms until interaction is long button press */
+    static const uint32_t LONG_PRESS_TIME = 1000;
 };
+#endif /** __KEY_H__ */

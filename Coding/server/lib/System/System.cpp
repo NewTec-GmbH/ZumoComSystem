@@ -39,20 +39,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @{
  */
 
-#include <IO.h>
 #include <Logger.h>
 #include <Store.h>
 #include <KeyCert.h>
 #include <System.h>
+#include <Key.h>
 
 void System::init()
 {
    // Register an ISR for ComPlatform reset on Reset key push
-   IO::getInstance().registerSystemReset();
+   Key::getInstance().registerSystemReset();
    LOG_DEBUG("Reset-ISR registered");
 
    // Read WiFi key if AP should be spawned
-   bool useAP = IO::getInstance().blockingCheckWifiKeyLongPress();
+   bool useAP = Key::getInstance().blockingCheckWifiKeyLongPress();
 
    Store &store = Store::getInstance();
 

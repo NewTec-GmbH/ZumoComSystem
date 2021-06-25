@@ -31,61 +31,65 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file IO.cpp
+ * @file Robot.h
  * @author Luis Moser
- * @brief IO class
- * @date 06/21/2021
+ * @brief Robot header
+ * @date 06/25/2021
  * 
  * @{
  */
 
+#ifndef __ROBOT_H__
+#define __ROBOT_H__
+
+#include <Arduino.h>
 #include <IO.h>
 
-void IO::setPinMode(uint8_t gpio, uint8_t mode)
+/** Class for accessing robot */
+class Robot
 {
-   pinMode(gpio, mode);
-}
+public:
+    /**
+     * Get Robot instance
+     * 
+     * @return Returns singleton instance
+     */
+    static Robot &getInstance()
+    {
+        static Robot instance;
+        return instance;
+    }
 
-uint8_t IO::readGPIODebounced(uint8_t gpio)
-{
-   // Code taken and modified from:
-   // https://www.arduino.cc/en/Tutorial/BuiltInExamples/Debounce
+    /**
+     * Reset the connected robot
+     * with the help of the RESET line
+     * which is connected to the GPIOs
+     */
+    void resetRobotNow();
 
-   // The last time a debounce took place
-   unsigned long lastDebounceTime = 0;
+private:
+    /**
+     * Default Constructor
+     */
+    Robot()
+    {
+        m_io.setPinMode(ROBOT_RESET_PIN, OUTPUT);
+    }
 
-   // The previous WiFiKey/Reset key reading
-   uint8_t lastKeyState = HIGH;
+    /**
+     * Destructor
+     */
+    ~Robot()
+    {
+    }
 
-   do
-   {
-      uint8_t reading = digitalRead(gpio);
+    /** Reference to IO class */
+    IO &m_io = IO::getInstance();
 
-      // Voltage level transition occured
-      if (reading != lastKeyState)
-      {
-         // Stop time from now on to decideif next reading should be ignored
-         lastDebounceTime = millis();
-      }
+    /** The GPIO output pin used to write the RESET line of robot*/
+    static const uint8_t ROBOT_RESET_PIN = 2;
 
-      // Check if bouncing timespan elapsed. Evaluate current level
-      if ((millis() - lastDebounceTime) > DEBOUNCE_DELAY_TIME)
-      {
-         return reading;
-      }
-
-      lastKeyState = reading;
-   } while (true);
-}
-
-uint8_t IO::readGPIO(uint8_t gpio)
-{
-   return digitalRead(gpio);
-}
-
-void IO::writeGPIO(uint8_t gpio, uint8_t value)
-{
-   xSemaphoreTake(ioMutex, portMAX_DELAY);
-   digitalWrite(gpio, value);
-   xSemaphoreGive(ioMutex);
-}
+    /** The time in ms while RESET line is pulled down*/
+    static const uint32_t ROBOT_RESET_TIME = 500;
+};
+#endif /** __ROBOT_H__ */

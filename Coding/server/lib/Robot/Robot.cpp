@@ -31,61 +31,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file IO.cpp
+ * @file Robot.cpp
  * @author Luis Moser
- * @brief IO class
- * @date 06/21/2021
+ * @brief Robot class
+ * @date 06/25/2021
  * 
  * @{
  */
 
-#include <IO.h>
+#include <Robot.h>
 
-void IO::setPinMode(uint8_t gpio, uint8_t mode)
+void Robot::resetRobotNow()
 {
-   pinMode(gpio, mode);
-}
+    // Pull down RESET line for ROBOT_RESET_TIME
+    m_io.writeGPIO(ROBOT_RESET_PIN, LOW);
+    delay(ROBOT_RESET_TIME);
+    m_io.writeGPIO(ROBOT_RESET_PIN, HIGH);
 
-uint8_t IO::readGPIODebounced(uint8_t gpio)
-{
-   // Code taken and modified from:
-   // https://www.arduino.cc/en/Tutorial/BuiltInExamples/Debounce
-
-   // The last time a debounce took place
-   unsigned long lastDebounceTime = 0;
-
-   // The previous WiFiKey/Reset key reading
-   uint8_t lastKeyState = HIGH;
-
-   do
-   {
-      uint8_t reading = digitalRead(gpio);
-
-      // Voltage level transition occured
-      if (reading != lastKeyState)
-      {
-         // Stop time from now on to decideif next reading should be ignored
-         lastDebounceTime = millis();
-      }
-
-      // Check if bouncing timespan elapsed. Evaluate current level
-      if ((millis() - lastDebounceTime) > DEBOUNCE_DELAY_TIME)
-      {
-         return reading;
-      }
-
-      lastKeyState = reading;
-   } while (true);
-}
-
-uint8_t IO::readGPIO(uint8_t gpio)
-{
-   return digitalRead(gpio);
-}
-
-void IO::writeGPIO(uint8_t gpio, uint8_t value)
-{
-   xSemaphoreTake(ioMutex, portMAX_DELAY);
-   digitalWrite(gpio, value);
-   xSemaphoreGive(ioMutex);
+    LOG_DEBUG("Robot will be restarted");
 }

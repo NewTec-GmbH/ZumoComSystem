@@ -13,6 +13,7 @@ package HAL
         - IO()
         - ~IO()
         + {static} getInstance(): IO&
+        + setPinMode(gpio: uint8_t, mode: uint8_t): void
         + readGPIODebounced(gpio: uint8_t): uint8_t
         + readGPIO(gpio: uint8_t): uint8_t
         + writeGPIO(gpio: uint8_t, value: uint8_t): void
@@ -21,6 +22,7 @@ package HAL
 
     class Key
     {
+        - m_io : IO&
         {static} - WIFI_AND_RESET_KEY_PIN: uint8_t {readonly} = 0
         {static} - LONG_PRESS_TIME: uint32_t {readonly}  = 1000
         - Key()
@@ -34,6 +36,7 @@ package HAL
 
     class Robot
     {
+        - m_io : IO&
         {static} - ROBOT_RESET_PIN: uint8_t {readonly} = 2
         {static} - ROBOT_RESET_TIME: uint32_t {readonly} = 500
         - Robot()

@@ -41,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Arduino.h>
 #include <System.h>
+#include <Robot.h>
 
 /**
  * Setup function which initializes the ESP32

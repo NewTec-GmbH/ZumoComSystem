@@ -12,6 +12,7 @@
         "vector": "cpp",
         "system_error": "cpp",
         "new": "cpp",
-        "atomic": "cpp"
+        "atomic": "cpp",
+        "algorithm": "cpp"
     }
 }
