@@ -93,12 +93,13 @@ void Store::setNetworkCredentials(NetworkCredentials credentials)
     m_netCredentials = credentials;
 }
 
-KeyCert Store::getKeyCert()
+KeyCert& Store::getKeyCert()
 {
     return m_KeyCert;
 }
 
 void Store::setKeyCert(KeyCert keycert)
 {
+    // TODO: Remove
     m_KeyCert = keycert;
 }

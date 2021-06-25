@@ -7,7 +7,7 @@ package Data {
     component "Store" as store
     component "Permission" as persmissions
     component "User" as users
-    component "Network Credentials" as netcredentials
+    component "NetworkCredentials" as netcredentials
     component "Session" as sessions
     component "APIKey" as apikey
     component "KeyCert" as keycert

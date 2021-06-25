@@ -12,7 +12,7 @@ component "Hardware" as hardware {
 }
 
 package ComPlatform {
-    interface "NVS" as nvshalinterface
+    interface "Preferences" as preferences
     interface "Debug" as Debug
     interface "FlashRobot" as FlashRobot
     interface "RobotReset" as RobotReset
@@ -28,6 +28,15 @@ package ComPlatform {
 
     interface "System" as System
 
+    interface "FWCheck" as FWCheck
+    interface "File" as File
+    interface "Crypt" as Crypt
+    interface "NVS" as nvs
+    interface "Timer" as Timer
+    interface "Store" as Store
+    interface "Logging" as Logging
+    interface "NVS" as NVSHAL
+
     component "HAL" as hal {
         hal -up- Debug
         hal -up- FlashRobot
@@ -38,7 +47,7 @@ package ComPlatform {
         hal -up- mbedtls
         hal -up- WiFi
         hal -up- DNS
-        hal -up- nvshalinterface
+        hal -up- preferences
         hal -up- FS
         hal -up- ota
         hal -up- timer
@@ -48,17 +57,10 @@ package ComPlatform {
     }
     note right of hal : Provides hardware\nabstraction/drivers
 
-    interface "FWCheck" as FWCheck
-    interface "File" as File
-    interface "Crypt" as Crypt
-    interface "NVS" as nvs
-    interface "Timer" as Timer
-    interface "Store" as Store
-
     component "Data" as data {
         data -up- Store
 
-        data -down-(nvs
+        data -down-(NVSHAL
     }
     note right of data : Provides centralized data\nstorage manager/saver
 
@@ -94,6 +96,8 @@ package ComPlatform {
         systemservices -up- nvs
         systemservices -up- Timer
         systemservices -up- System
+        systemservices -up- Logging
+        systemservices -up- NVSHAL
 
         systemservices -down-(ReadKey
         systemservices -down-(Crypto
@@ -101,7 +105,7 @@ package ComPlatform {
         systemservices -down-(FS
         systemservices -down-(WiFi
         systemservices -down-(DNS
-        systemservices -down-(nvshalinterface
+        systemservices -down-(preferences
         systemservices -down-(Store
         systemservices -down-(timer
     }

@@ -109,7 +109,7 @@ public:
      * 
      * @return Returns the KeyCert instance
      */
-    KeyCert getKeyCert();
+    KeyCert& getKeyCert();
 
     /**
      * Set the private RSA key and the public certificate
