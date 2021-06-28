@@ -31,62 +31,72 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file Key.cpp
+ * @file System.h
  * @author Luis Moser
- * @brief Key class
- * @date 06/25/2021
+ * @brief System header
+ * @date 06/22/2021
  * 
  * @{
  */
 
+#ifndef __SYSTEM_H__
+#define __SYSTEM_H__
+
+#include <WiFiManager.h>
+#include <Logger.h>
+#include <Store.h>
+#include <KeyCert.h>
 #include <Key.h>
 
-bool Key::blockingCheckWifiKeyLongPress()
+class System
 {
-    // Stop time from now on
-    unsigned long startTime = millis();
+public:
+   /** 
+     * Get System instance
+     * 
+     * @return Returns System singleton instance
+     */
+   static System &getInstance()
+   {
+      static System instance;
+      return instance;
+   }
 
-    // Store the current time when next reading is done
-    unsigned long currentTime;
+   /**
+    * Initializes the ComPlatform
+    * and starts all services
+    */
+   void init();
 
-    do
-    {
-        // Registered a released key. Abort
-        if (HIGH == m_io.readGPIODebounced(WIFI_AND_RESET_KEY_PIN))
-        {
-            return false;
-        }
-        currentTime = millis();
-    } while ((currentTime - startTime) < LONG_PRESS_TIME);
+   /**
+    * This method needs to be called
+    * in loop() so that all required
+    * services can receive CPU time
+    */
+   void handleServices();
 
-    return true;
-}
+   /**
+    * Shuts down all services
+    * and reboots the ComPlatform
+    */
+   void reset();
 
-void Key::registerSystemReset()
-{
-    attachInterrupt(WIFI_AND_RESET_KEY_PIN, Key::systemResetISR, FALLING);
-    LOG_DEBUG("System-Reset ISR registered");
-}
+private:
 
-void Key::resetTask(void *parameter)
-{
-    if (LOW == IO::getInstance().readGPIODebounced(WIFI_AND_RESET_KEY_PIN))
-    {
-        System::getInstance().reset();
-    }
+   WiFiManager m_wifimgr;
 
-    // Destroy this task
-    vTaskDelete(NULL);
-}
+   /**
+    * Default Constructor
+    */
+   System()
+   {
+   }
 
-void Key::systemResetISR()
-{
-    // Create a new FreeRTOS task
-    xTaskCreate(
-        resetTask,
-        "SystemReset",
-        16384,
-        NULL,
-        1,
-        NULL);
-}
+   /**
+    * Destructor
+    */
+   ~System()
+   {
+   }
+};
+#endif /** __SYSTEM_H__ */

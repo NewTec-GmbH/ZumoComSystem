@@ -41,15 +41,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Arduino.h>
 #include <System.h>
-#include <Robot.h>
+
+
 
 /**
- * Setup function which initializes the ESP32
+ * Setup function which initializes the ComPlatform
  */
 void setup()
 {
    Serial.begin(115200);
-   System::getInstance().init();
+   System &sys = System::getInstance();
+   sys.init();
 }
 
 /**
@@ -57,4 +59,6 @@ void setup()
  */
 void loop()
 {
+   System &sys = System::getInstance();
+   sys.handleServices();
 }

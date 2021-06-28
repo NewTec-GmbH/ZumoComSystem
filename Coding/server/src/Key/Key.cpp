@@ -31,74 +31,62 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file System.cpp
+ * @file Key.cpp
  * @author Luis Moser
- * @brief System class
- * @date 06/22/2021
+ * @brief Key class
+ * @date 06/25/2021
  * 
  * @{
  */
 
-#include <Logger.h>
-#include <Store.h>
-#include <KeyCert.h>
-#include <System.h>
 #include <Key.h>
 
-void System::init()
+bool Key::blockingCheckWifiKeyLongPress()
 {
-   // Register an ISR for ComPlatform reset on Reset key push
-   Key::getInstance().registerSystemReset();
-   LOG_DEBUG("Reset-ISR registered");
+    // Stop time from now on
+    unsigned long startTime = millis();
 
-   // Read WiFi key if AP should be spawned
-   bool useAP = Key::getInstance().blockingCheckWifiKeyLongPress();
+    // Store the current time when next reading is done
+    unsigned long currentTime;
 
-   Store &store = Store::getInstance();
+    do
+    {
+        // Registered a released key. Abort
+        if (HIGH == m_io.readGPIODebounced(WIFI_AND_RESET_KEY_PIN))
+        {
+            return false;
+        }
+        currentTime = millis();
+    } while ((currentTime - startTime) < LONG_PRESS_TIME);
 
-   // Generate and save a new KeyCert
-   bool retCode = store.loadKeyCert();
-   if (false == retCode)
-   {
-      LOG_DEBUG("Missing KeyCert. Generating new SSLCert...");
-      KeyCert keycert = store.getKeyCert();
-      keycert.generateNewCert();
-      store.setKeyCert(keycert);
-      LOG_DEBUG("New KeyCert created");
-
-      store.saveKeyCert();
-      LOG_DEBUG("New KeyCert saved");
-   }
-
-   if (true == useAP)
-   {
-      // Init AP
-      LOG_DEBUG("AP spawned");
-   }
-   else
-   {
-      // Load NetworkCredentials
-      if (true == store.loadNetworkCredentials())
-      {
-         // Init STA
-         LOG_DEBUG("STA mode initialized");
-      }
-      else
-      {
-         LOG_ERROR("No NetworkCredentials available");
-         // Init AP
-         LOG_DEBUG("AP spwaned because there are no network credentials available");
-      }
-   }
-
-   // Load Users
-   // Load Permissions
-   // Init HTTPs Server
-   // Init WSS Server
+    return true;
 }
 
-void System::reset()
+void Key::registerSystemReset()
 {
-   LOG_DEBUG("ComPlatform will be restarted");
-   ESP.restart();
+    attachInterrupt(WIFI_AND_RESET_KEY_PIN, Key::systemResetISR, FALLING);
+    LOG_DEBUG("System-Reset ISR registered");
+}
+
+void Key::systemResetISR()
+{
+    // Create a new FreeRTOS task
+    xTaskCreate(
+        resetTask,
+        "SystemReset",
+        16384,
+        NULL,
+        1,
+        NULL);
+}
+
+void Key::resetTask(void *parameter)
+{
+    if (LOW == IO::getInstance().readGPIODebounced(WIFI_AND_RESET_KEY_PIN))
+    {
+        System::getInstance().reset();
+    }
+
+    // Destroy this task
+    vTaskDelete(NULL);
 }

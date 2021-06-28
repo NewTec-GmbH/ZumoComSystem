@@ -31,56 +31,77 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file System.h
+ * @file System.cpp
  * @author Luis Moser
- * @brief System header
+ * @brief System class
  * @date 06/22/2021
  * 
  * @{
  */
+#include <System.h>
 
-#ifndef __SYSTEM_H__
-#define __SYSTEM_H__
-
-class System
+void System::init()
 {
-public:
-   /** 
-     * Get System instance
-     * 
-     * @return Returns System singleton instance
-     */
-   static System &getInstance()
+   // Register an ISR for ComPlatform reset on Reset key push
+   Key::getInstance().registerSystemReset();
+   LOG_DEBUG("Reset-ISR registered");
+
+   // Read WiFi key if AP should be spawned
+   bool useAP = Key::getInstance().blockingCheckWifiKeyLongPress();
+
+   Store &store = Store::getInstance();
+
+   // Generate and save a new KeyCert
+   bool retCode = store.loadKeyCert();
+   if (false == retCode)
    {
-      static System instance;
-      return instance;
+      LOG_DEBUG("Missing KeyCert. Generating new SSLCert...");
+      KeyCert keycert = store.getKeyCert();
+      keycert.generateNewCert();
+      LOG_DEBUG("New KeyCert created");
+
+      store.saveKeyCert();
+      LOG_DEBUG("New KeyCert saved");
    }
 
-   /**
-    * Initializes the ComPlatform
-    * and starts all services
-    */
-   void init();
-
-   /**
-    * Shuts down all services
-    * and reboots the ComPlatform
-    */
-   void reset();
-
-private:
-   /**
-    * Default Constructor
-    */
-   System()
+   if (true == useAP)
    {
+      m_wifimgr.startAP();
+   }
+   else
+   {
+      // Load NetworkCredentials
+      if (true == store.loadNetworkCredentials())
+      {
+         m_wifimgr.startSTA();
+      }
+      else
+      {
+         LOG_ERROR("No NetworkCredentials available");
+         m_wifimgr.startAP();
+         LOG_DEBUG("AP spwaned because there are no network credentials available");
+      }
    }
 
-   /**
-    * Destructor
-    */
-   ~System()
-   {
-   }
-};
-#endif /** __SYSTEM_H__ */
+   Serial.println("ComPlatform successfully booted up");
+
+   // Load Users
+   // Load Permissions
+   // Init HTTPs Server
+   // Init WSS Server
+}
+
+void System::handleServices()
+{
+   m_wifimgr.handleAP_DNS();
+   delay(1);
+}
+
+void System::reset()
+{
+   LOG_DEBUG("ComPlatform will be restarted");
+   m_wifimgr.stopAP();
+   m_wifimgr.stopSTA();
+   ESP.restart();
+}
+
