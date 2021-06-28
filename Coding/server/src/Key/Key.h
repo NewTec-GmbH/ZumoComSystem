@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <IO.h>
 #include <System.h>
 
-/** Class for accessing Reset/WiFi key */
+/** Class for accessing active-low push keys */
 class Key
 {
 public:
@@ -64,22 +64,21 @@ public:
     /**
      * Registers an ISR which resets the
      * ComPlatform system and which is 
-     * invoked when WiFi/Reset key is pressed
+     * invoked when key is pressed
      */
     void registerSystemReset();
 
     /**
-     * Checks if the button is pressed,
+     * Checks if the button is being pressed,
      * while this method is called, blocks
      * while the button is pressed
      * for max. LONG_PRESS_TIME.
      * Checks if the key has been held for
-     * thath long.
+     * that long.
      * 
-     * @return Returns true if key has been pressed
-     * for specified time duration LONG_PRESS_TIME
+     * @return Returns true, if button has been pressed, otherwise false
      */
-    bool blockingCheckWifiKeyLongPress();
+    bool checkKeyLongPress(uint8_t gpio);
 
 private:
     /**
@@ -97,7 +96,7 @@ private:
     }
 
     /**
-     * Task which checks the Reset key
+     * Task which checks the push key
      * level and resets the ComPlatform
      */
     static void resetTask(void *parameter);
@@ -105,17 +104,18 @@ private:
     /**
      * ISR which resets the ComPlatform
      * which will be inovked
-     * when WiFi/Reset key is being pressed
+     * when push key is being pressed
      */
     static void systemResetISR();
 
     /** Reference to IO class */
     IO &m_io = IO::getInstance();
 
-    /** The GPIO input pin used for the WiFi enable/system reset button*/
-    static const uint8_t WIFI_AND_RESET_KEY_PIN = 0;
+    /** Specifies push duration for a long-press event */
+    static const uint32_t LONG_PRESS_TIME_MS = 1000;
 
-    /** The time in ms until interaction is long button press */
-    static const uint32_t LONG_PRESS_TIME = 1000;
+public:
+    /** The GPIO input pin used for the button which resets the ComPlatform or spawns WiFi*/
+    static const uint8_t WIFI_AND_RESET_KEY_PIN = 0;
 };
 #endif /** __KEY_H__ */

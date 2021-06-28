@@ -48,13 +48,12 @@ void IO::setPinMode(uint8_t gpio, uint8_t mode)
 
 uint8_t IO::readGPIODebounced(uint8_t gpio)
 {
-   // Code taken and modified from:
-   // https://www.arduino.cc/en/Tutorial/BuiltInExamples/Debounce
+   // Code taken and modified from: https://www.arduino.cc/en/Tutorial/BuiltInExamples/Debounce
 
-   // The last time a debounce took place
-   unsigned long lastDebounceTime = 0;
+   // The last time a bounce took place
+   unsigned long lastBounceTime = 0;
 
-   // The previous WiFiKey/Reset key reading
+   // The previous GPIO reading. Assume active-low input
    uint8_t lastKeyState = HIGH;
 
    do
@@ -64,12 +63,12 @@ uint8_t IO::readGPIODebounced(uint8_t gpio)
       // Voltage level transition occured
       if (reading != lastKeyState)
       {
-         // Stop time from now on to decideif next reading should be ignored
-         lastDebounceTime = millis();
+         // Stop time from now on to decide if next reading should be ignored
+         lastBounceTime = millis();
       }
 
       // Check if bouncing timespan elapsed. Evaluate current level
-      if ((millis() - lastDebounceTime) > DEBOUNCE_DELAY_TIME)
+      if ((millis() - lastBounceTime) > DEBOUNCE_DELAY_TIME_MS)
       {
          return reading;
       }
@@ -85,7 +84,7 @@ uint8_t IO::readGPIO(uint8_t gpio)
 
 void IO::writeGPIO(uint8_t gpio, uint8_t value)
 {
-   xSemaphoreTake(ioMutex, portMAX_DELAY);
+   xSemaphoreTake(m_ioMutex, portMAX_DELAY);
    digitalWrite(gpio, value);
-   xSemaphoreGive(ioMutex);
+   xSemaphoreGive(m_ioMutex);
 }

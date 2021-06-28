@@ -45,9 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <SSLCert.hpp>
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include <Logger.h>
-
-using namespace httpsserver;
+#include <Log.h>
 
 /** Data structure for HTTPS/WSS server which supports JSON serialization */
 class KeyCert
@@ -58,18 +56,17 @@ public:
     */
    KeyCert()
    {
-      m_Cert = new SSLCert();
+      m_cert = new httpsserver::SSLCert();
    }
 
    /**
     * Constructor
     * 
-    * @param[in] certificate The
-    * certificate to be saved
+    * @param[in] certificate The certificate to be saved
     */
-   KeyCert(SSLCert *certificate)
+   KeyCert(httpsserver::SSLCert *certificate)
    {
-      m_Cert = certificate;
+      m_cert = certificate;
    }
 
    /**
@@ -77,12 +74,14 @@ public:
     */
    ~KeyCert()
    {
-      delete m_Cert;
+      delete m_cert;
    }
 
    /**
     * Generates a new SSLCert
     * for this class instance
+    * 
+    * @return Returns true if successful, else false
     */
    bool generateNewCert();
 
@@ -92,27 +91,25 @@ public:
     * @param[in] certificate The certificate
     * to be saved
     */
-   void setCert(SSLCert *certificate);
+   void setCert(httpsserver::SSLCert *certificate);
 
    /**
     * Returns the certificate and private key
     * 
     * @return Returns the SSLCert
     */
-   SSLCert *getCert();
+   httpsserver::SSLCert *getCert();
 
    /** Returns JSON string
      * 
-     * @return Returns the serialized object
-     * in JSON string
+     * @return Returns the serialized object as JSON string
      */
    String serialize();
 
    /** Re-creates object from serialized JSON string
      * 
      * @param serial The serialized JSON string
-     * @return Returns false in case of failure,
-     * true in case of success
+     * @return Returns true if successful, else false
      */
    bool deserialize(String serial);
 
@@ -124,6 +121,6 @@ private:
     * This data structure is used by
     * the HTTPs/WSS servers
     */
-   SSLCert *m_Cert;
+   httpsserver::SSLCert *m_cert;
 };
 #endif

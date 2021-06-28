@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Arduino.h>
 #include <IO.h>
 
-/** Class for accessing robot */
+/** Class for accessing the robot, connected by GPIOs */
 class Robot
 {
 public:
@@ -90,6 +90,6 @@ private:
     static const uint8_t ROBOT_RESET_PIN = 2;
 
     /** The time in ms while RESET line is pulled down*/
-    static const uint32_t ROBOT_RESET_TIME = 500;
+    static const uint32_t ROBOT_RESET_TIME_MS = 500;
 };
 #endif /** __ROBOT_H__ */

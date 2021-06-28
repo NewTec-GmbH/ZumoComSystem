@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  * @file test.cpp
  * @author Luis Moser
- * @brief Test suite
+ * @brief Test class
  * @date 06/17/2021
  * 
  * @{
@@ -42,7 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unity.h>
 #include <ArduinoFake.h>
 
-#include <Logger.h>
+#include <Log.h>
 
 /**
  * Test the logging functionality
@@ -55,19 +55,19 @@ void test_Logging()
     Log &logger = Log::getInstance();
 
     /* Test if default log level is set to DEBUG */
-    Log::LogLevel actual = logger.getLogLevel();
-    TEST_ASSERT_EQUAL(Log::LEVEL_DEBUG, actual);
+    Log::LogLevel current = logger.getLogLevel();
+    TEST_ASSERT_EQUAL(Log::LEVEL_DEBUG, current);
 
     /* Test if the log level is set correctly */
     logger.setLogLevel(Log::LEVEL_ERROR);
-    actual = logger.getLogLevel();
-    TEST_ASSERT_EQUAL(Log::LEVEL_ERROR, actual);
+    current = logger.getLogLevel();
+    TEST_ASSERT_EQUAL(Log::LEVEL_ERROR, current);
 
     /* Test if only valid log levels can be set */
     logger.setLogLevel(Log::LEVEL_INFO);
     logger.setLogLevel(static_cast<Log::LogLevel>(4));
-    actual = logger.getLogLevel();
-    TEST_ASSERT_EQUAL(Log::LEVEL_INFO, actual);
+    current = logger.getLogLevel();
+    TEST_ASSERT_EQUAL(Log::LEVEL_INFO, current);
 
     // /* Test if logs are written correctly */
     // const char *testString = "Test";

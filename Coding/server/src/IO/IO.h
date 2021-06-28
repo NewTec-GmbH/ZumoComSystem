@@ -40,7 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <Arduino.h>
-#include <Logger.h>
+#include <Log.h>
 
 /** Provides abstraction for IO functionality for ComPlatform */
 class IO
@@ -97,8 +97,8 @@ private:
      */
     IO()
     {
-        ioMutex = xSemaphoreCreateMutex();
-        if (NULL == ioMutex)
+        m_ioMutex = xSemaphoreCreateMutex();
+        if (NULL == m_ioMutex)
         {
             LOG_ERROR("IO mutex could not be created!");
         }
@@ -116,11 +116,11 @@ private:
      * tasks, which use the IO class, can have write access to
      * the GPIOs at once
      */
-    SemaphoreHandle_t ioMutex;
+    SemaphoreHandle_t m_ioMutex;
 
     /** 
      * The timespan between two two level transitions
-     * (in ms) in which level changes are ignored 
+     * in which level changes are ignored 
      */
-    static const uint8_t DEBOUNCE_DELAY_TIME = 50;
+    static const uint8_t DEBOUNCE_DELAY_TIME_MS = 50;
 };

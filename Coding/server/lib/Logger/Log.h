@@ -31,24 +31,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file Logger.h
+ * @file Log.h
  * @author Luis Moser
- * @brief Loggging header
+ * @brief Log header
  * @date 06/14/2021
  * 
  * @{
  */
 
-#ifndef __LOGGING_H__
-#define __LOGGING_H__
+#ifndef __LOG_H__
+#define __LOG_H__
 
-#ifdef TESTFAKE
+#ifdef USE_ARDUINO_FAKE
 #include <ArduinoFake.h>
 #else
 #include <Arduino.h>
-#endif
+#endif /* USE_ARDUINO_FAKE */
 
-#ifdef DEBUGCOM
+#ifdef ACTIVATE_LOGGING
 /** Macro for logging debug messages */
 #define LOG_DEBUG(msg) ((Log::getInstance().writeLog(Log::LEVEL_DEBUG, msg)))
 
@@ -77,7 +77,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    do                  \
    {                   \
    } while (0)
-#endif
+#endif /* ACTIVATE_LOGGING */
 
 /** Singleton logging class used for logging events */
 class Log
@@ -125,7 +125,7 @@ public:
 
 private:
    /** Constructor */
-   Log() : m_LogLevel(LEVEL_DEBUG)
+   Log() : m_logLevel(LEVEL_DEBUG)
    {
    }
 
@@ -135,6 +135,6 @@ private:
    }
 
    /** The log level which is used to determine what to print */
-   LogLevel m_LogLevel;
+   LogLevel m_logLevel;
 };
-#endif /* __LOGGING_H__ */
+#endif /* __LOG_H__ */

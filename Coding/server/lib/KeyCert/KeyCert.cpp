@@ -45,8 +45,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 bool KeyCert::generateNewCert()
 {
    int retCode = createSelfSignedCert(
-       *m_Cert,
-       KEYSIZE_2048,
+       *m_cert,
+       httpsserver::KEYSIZE_2048,
        "CN=complatform.local,O=ComPlatform,C=DE",
        "20210101000000",
        "20310101000000");
@@ -58,14 +58,14 @@ bool KeyCert::generateNewCert()
    return (0 == retCode);
 }
 
-void KeyCert::setCert(SSLCert *certificate)
+void KeyCert::setCert(httpsserver::SSLCert *certificate)
 {
-   m_Cert = certificate;
+   m_cert = certificate;
 }
 
-SSLCert *KeyCert::getCert()
+httpsserver::SSLCert *KeyCert::getCert()
 {
-   return m_Cert;
+   return m_cert;
 }
 
 String KeyCert::serialize()
@@ -76,11 +76,11 @@ String KeyCert::serialize()
    store the private key and certificate
    as ASCII strings
    */
-   unsigned char *binaryKey = m_Cert->getPKData();
-   uint16_t keyLength = m_Cert->getPKLength();
+   unsigned char *binaryKey = m_cert->getPKData();
+   uint16_t keyLength = m_cert->getPKLength();
 
-   unsigned char *binaryCert = m_Cert->getCertData();
-   uint16_t certLength = m_Cert->getCertLength();
+   unsigned char *binaryCert = m_cert->getCertData();
+   uint16_t certLength = m_cert->getCertLength();
 
    uint16_t keyBase64StringLength = encode_base64_length(keyLength) + 1;
    uint16_t certBase64StringLength = encode_base64_length(certLength) + 1;
@@ -91,9 +91,12 @@ String KeyCert::serialize()
    uint32_t writtenKeyBase64StringBytes = encode_base64(binaryKey, keyLength, keyBase64String) + 1;
    uint32_t writtenCertBase64StringBytes = encode_base64(binaryCert, certLength, certBase64String) + 1;
 
-   if (writtenKeyBase64StringBytes == keyBase64StringLength && writtenCertBase64StringBytes == certBase64StringLength)
+   String serialized;
+
+   if ((writtenKeyBase64StringBytes == keyBase64StringLength) && (writtenCertBase64StringBytes == certBase64StringLength))
    {
-      const uint8_t size = JSON_OBJECT_SIZE(4);
+      const uint8_t DOC_SIZE = 4;
+      const uint8_t size = JSON_OBJECT_SIZE(DOC_SIZE);
       StaticJsonDocument<size> jsonDocument;
 
       /*
@@ -107,12 +110,10 @@ String KeyCert::serialize()
       jsonDocument["keyData"] = (const char *)keyBase64String;
       jsonDocument["certData"] = (const char *)certBase64String;
 
-      String serialized;
       serializeJson(jsonDocument, serialized);
 
       delete[] keyBase64String;
       delete[] certBase64String;
-      return serialized;
    }
    else
    {
@@ -120,8 +121,9 @@ String KeyCert::serialize()
       delete[] certBase64String;
 
       LOG_ERROR("Could not serialize key and certificate");
-      return "null";
+      serialized = "null";
    }
+   return serialized;
 }
 
 bool KeyCert::deserialize(String serial)
@@ -130,15 +132,17 @@ bool KeyCert::deserialize(String serial)
    Reserve memory on stack for JSON structure
    which consists of two key-value pairs
    */
-   StaticJsonDocument<64> jsonDocument;
+   const uint8_t DOC_SIZE = 64;
+   StaticJsonDocument<DOC_SIZE> jsonDocument;
 
    uint32_t bufferSize = strlen(serial.c_str()) + 1;
    char *buffer = new char[bufferSize];
    serial.toCharArray(buffer, bufferSize);
 
-   DeserializationError retCode = deserializeJson(jsonDocument, buffer);
-   // retCode > 0 in case of arbitrary error */
-   if (DeserializationError::Ok == retCode)
+   DeserializationError jsonRet = deserializeJson(jsonDocument, buffer);
+
+   bool retCode = false;
+   if (DeserializationError::Ok == jsonRet)
    {
       uint16_t keyLength = jsonDocument["keyLength"];
       uint16_t certLength = jsonDocument["certLength"];
@@ -156,22 +160,22 @@ bool KeyCert::deserialize(String serial)
 
       if (writtenKeyBytes == keyLength && writtenCertBytes == certLength)
       {
-         m_Cert->setPK(binaryKey, keyLength);
-         m_Cert->setCert(binaryCert, certLength);
-         return true;
+         m_cert->setPK(binaryKey, keyLength);
+         m_cert->setCert(binaryCert, certLength);
+         retCode = true;
       }
       else
       {
          LOG_ERROR("Error on decoding the KeyCert Base64 string");
-         return false;
+         retCode = false;
       }
-      return true;
    }
    else
    {
       delete[] buffer;
       LOG_ERROR("Error on deserializing the KeyCert JSON object");
-      LOG_ERROR(retCode.c_str());
-      return false;
+      LOG_ERROR(jsonRet.c_str());
+      retCode = false;
    }
+   return retCode;
 }

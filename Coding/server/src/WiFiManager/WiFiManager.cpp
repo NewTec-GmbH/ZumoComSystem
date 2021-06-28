@@ -31,9 +31,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file WiFiManager.h
+ * @file WiFiManager.cpp
  * @author Luis Moser
- * @brief WiFiManager header
+ * @brief WiFiManager class
  * @date 06/25/2021
  * 
  * @{
@@ -46,11 +46,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 bool WiFiManager::startAP()
 {
-    if (false == m_staActive && false == m_apActive)
+    if ((false == m_staActive) && (false == m_apActive))
     {
         // Start AP and DNS services
-        m_apActive = WiFi.softAP(AP_SSID, AP_PSK, 1, false, 4);
+        const uint8_t CHANNEL_NR = 1;
+        const uint8_t MAX_CLIENT_NR = 4;
+        const uint16_t REBOOT_DELAY_TIME_MS = 2000;
+
+        m_apActive = WiFi.softAP(AP_SSID, AP_PSK, CHANNEL_NR, false, MAX_CLIENT_NR);
         IPAddress ipaddr = WiFi.softAPIP();
+
         if (true == m_apActive)
         {
             LOG_DEBUG("AP successfully started");
@@ -58,7 +63,7 @@ bool WiFiManager::startAP()
             LOG_DEBUG("IP-Address: " + ipaddr.toString());
 
             // Register A-Record which translates to current IP address (DNS)
-            m_dnsRetCode = m_dnsServer->start(53, "complatform.local", ipaddr);
+            m_dnsRetCode = m_dnsServer->start(DNS_PORT, HOSTNAME, ipaddr);
             if (true == m_dnsRetCode)
             {
                 LOG_DEBUG("mDNS server successfully started");
@@ -67,14 +72,14 @@ bool WiFiManager::startAP()
             else
             {
                 LOG_ERROR("Could not start DNS service. Rebooting in 2 seconds...");
-                delay(2000);
+                delay(REBOOT_DELAY_TIME_MS);
                 System::getInstance().reset();
             }
         }
         else
         {
             LOG_ERROR("Could not start AP mode. Rebooting in 2 seconds...");
-            delay(2000);
+            delay(REBOOT_DELAY_TIME_MS);
             System::getInstance().reset();
         }
     }
@@ -88,7 +93,7 @@ bool WiFiManager::startAP()
 
 void WiFiManager::handleAP_DNS()
 {
-    if (true == m_apActive && true == m_dnsRetCode)
+    if ((true == m_apActive) && (true == m_dnsRetCode))
     {
         m_dnsServer->processNextRequest();
     }
@@ -121,13 +126,16 @@ bool WiFiManager::stopAP()
 
 bool WiFiManager::startSTA()
 {
-    if (false == m_apActive && false == m_staActive)
+    if ((false == m_apActive) && (false == m_staActive))
     {
+        const uint16_t RECONECCT_RETRY_DELAY_MS = 500;
+        const uint16_t REBOOT_DELAY_TIME_MS = 2000;
+
         NetworkCredentials credentials = m_store.getNetworkCredentials();
         WiFi.begin(credentials.getSSID().c_str(), credentials.getPSK().c_str());
         while (WL_CONNECTED != WiFi.status())
         {
-            delay(500);
+            delay(RECONECCT_RETRY_DELAY_MS);
             LOG_DEBUG("Connecting to external network...");
         }
 
@@ -146,7 +154,7 @@ bool WiFiManager::startSTA()
         {
             m_staActive = false;
             LOG_ERROR("Could not start STA mode. Rebooting in 2 seconds...");
-            delay(2000);
+            delay(REBOOT_DELAY_TIME_MS);
             System::getInstance().reset();
         }
     }

@@ -40,7 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <NVSManager.h>
-#include <Logger.h>
+#include <Log.h>
 
 NVSManager::NVSManager()
 {
@@ -69,11 +69,6 @@ bool NVSManager::createEntry(String key, String value)
     return retCode;
 }
 
-bool NVSManager::updateEntry(String key, String value)
-{
-    return createEntry(key, value);
-}
-
 bool NVSManager::deleteEntry(String key)
 {
     bool retCode = m_preferences.remove(key.c_str());
@@ -82,6 +77,11 @@ bool NVSManager::deleteEntry(String key)
         LOG_ERROR("NVS entry could not be deleted");
     }
     return retCode;
+}
+
+bool NVSManager::updateEntry(String key, String value)
+{
+    return createEntry(key, value);
 }
 
 String NVSManager::readEntry(String key)

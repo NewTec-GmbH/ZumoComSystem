@@ -28,7 +28,7 @@ package HAL
         - Key()
         - ~Key()
         {static} + getInstance(): Key&
-        + blockingCheckWiFiKeyLongPress(): bool
+        + checkKeyLongPress(uint8_t gpio): bool
         + registerSystemReset(): void
         - {static} systemResetISR(): void
     }

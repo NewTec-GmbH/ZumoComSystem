@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  * @file main.cpp
  * @author Luis Moser
- * @brief main()
+ * @brief main function
  * @date 06/17/2021
  * 
  * @{

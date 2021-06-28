@@ -40,19 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <NetworkCredentials.h>
-#include <Logger.h>
-
-NetworkCredentials::NetworkCredentials(String ssid, String psk) : m_ssid(ssid), m_psk(psk)
-{
-}
-
-NetworkCredentials::NetworkCredentials()
-{
-}
-
-NetworkCredentials::~NetworkCredentials()
-{
-}
+#include <Log.h>
 
 String NetworkCredentials::getSSID()
 {
@@ -80,7 +68,8 @@ String NetworkCredentials::serialize()
     Reserve memory on stack for JSON structure
     which consists of two key-value pairs 
     */
-    const uint8_t size = JSON_OBJECT_SIZE(2);
+    const uint8_t DOC_SIZE = 2;
+    const uint8_t size = JSON_OBJECT_SIZE(DOC_SIZE);
     StaticJsonDocument<size> jsonDocument;
 
     /*
@@ -104,7 +93,8 @@ bool NetworkCredentials::deserialize(String serial)
     Reserve memory on stack for JSON structure
     which consists of two key-value pairs
     */
-    StaticJsonDocument<32> jsonDocument;
+    const uint8_t DOC_SIZE = 32;
+    StaticJsonDocument<DOC_SIZE> jsonDocument;
 
     /*
     Get a dynamic r/w buffer for deserialization
@@ -115,20 +105,22 @@ bool NetworkCredentials::deserialize(String serial)
     char *buffer = new char[bufferSize];
     serial.toCharArray(buffer, bufferSize);
 
-    DeserializationError retCode = deserializeJson(jsonDocument, buffer);
-    // retCode > 0 in case of arbitrary error
-    if (DeserializationError::Ok == retCode)
+    DeserializationError jsonRet = deserializeJson(jsonDocument, buffer);
+
+    bool retCode = false;
+    if (DeserializationError::Ok == jsonRet)
     {
         m_ssid = jsonDocument["ssid"].as<String>();
         m_psk = jsonDocument["psk"].as<String>();
         delete[] buffer;
-        return true;
+        retCode = true;
     }
     else
     {
         delete[] buffer;
         LOG_ERROR("Error on deserializing the NetworkCredentials JSON object");
-        LOG_ERROR(retCode.c_str());
-        return false;
+        LOG_ERROR(jsonRet.c_str());
+        retCode = false;
     }
+    return retCode;
 }

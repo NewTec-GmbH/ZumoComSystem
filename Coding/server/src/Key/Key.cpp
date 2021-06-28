@@ -41,43 +41,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Key.h>
 
-bool Key::blockingCheckWifiKeyLongPress()
-{
-    // Stop time from now on
-    unsigned long startTime = millis();
-
-    // Store the current time when next reading is done
-    unsigned long currentTime;
-
-    do
-    {
-        // Registered a released key. Abort
-        if (HIGH == m_io.readGPIODebounced(WIFI_AND_RESET_KEY_PIN))
-        {
-            return false;
-        }
-        currentTime = millis();
-    } while ((currentTime - startTime) < LONG_PRESS_TIME);
-
-    return true;
-}
-
 void Key::registerSystemReset()
 {
     attachInterrupt(WIFI_AND_RESET_KEY_PIN, Key::systemResetISR, FALLING);
     LOG_DEBUG("System-Reset ISR registered");
 }
 
-void Key::systemResetISR()
+bool Key::checkKeyLongPress(uint8_t gpio)
 {
-    // Create a new FreeRTOS task
-    xTaskCreate(
-        resetTask,
-        "SystemReset",
-        16384,
-        NULL,
-        1,
-        NULL);
+    // Stop time from now on
+    unsigned long startTime = millis();
+
+    // Stores the current time when next reading is done
+    unsigned long currentTime;
+
+    bool retCode = true;
+    do
+    {
+        // Registered a released key. Abort
+        if (HIGH == m_io.readGPIODebounced(gpio))
+        {
+            retCode = false;
+            break;
+        }
+        currentTime = millis();
+    } while ((currentTime - startTime) < LONG_PRESS_TIME_MS);
+
+    return retCode;
 }
 
 void Key::resetTask(void *parameter)
@@ -89,4 +79,19 @@ void Key::resetTask(void *parameter)
 
     // Destroy this task
     vTaskDelete(NULL);
+}
+
+void Key::systemResetISR()
+{
+    const uint16_t HEAP_SIZE = 16384;
+    const uint8_t PRIORITY = 1;
+
+    // Create a new FreeRTOS task
+    xTaskCreate(
+        resetTask,
+        "SystemReset",
+        HEAP_SIZE,
+        NULL,
+        PRIORITY,
+        NULL);
 }

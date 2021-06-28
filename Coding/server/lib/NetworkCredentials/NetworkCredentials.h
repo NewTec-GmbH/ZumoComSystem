@@ -50,13 +50,19 @@ class NetworkCredentials
 {
 public:
     /** Custom constructor with arguments */
-    NetworkCredentials(String ssid, String psk);
+    NetworkCredentials(String ssid, String psk) : m_ssid(ssid), m_psk(psk)
+    {
+    }
 
     /** Default constructor */
-    NetworkCredentials();
+    NetworkCredentials()
+    {
+    }
 
     /** Destructor */
-    ~NetworkCredentials();
+    ~NetworkCredentials()
+    {
+    }
 
     /** Returns Service Set Identifier 
      * 

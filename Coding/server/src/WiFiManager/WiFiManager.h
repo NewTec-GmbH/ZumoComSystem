@@ -43,7 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __WIFIMANAGER_H__
 
 #include <Store.h>
-#include <Logger.h>
+#include <Log.h>
 #include <WiFi.h>
 #include <ESPmDNS.h>
 #include <DNSServer.h>

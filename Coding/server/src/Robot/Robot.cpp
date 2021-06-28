@@ -45,7 +45,7 @@ void Robot::resetRobotNow()
 {
     // Pull down RESET line for ROBOT_RESET_TIME
     m_io.writeGPIO(ROBOT_RESET_PIN, LOW);
-    delay(ROBOT_RESET_TIME);
+    delay(ROBOT_RESET_TIME_MS);
     m_io.writeGPIO(ROBOT_RESET_PIN, HIGH);
 
     LOG_DEBUG("Robot will be restarted");

@@ -43,7 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __SYSTEM_H__
 
 #include <WiFiManager.h>
-#include <Logger.h>
+#include <Log.h>
 #include <Store.h>
 #include <KeyCert.h>
 #include <Key.h>
@@ -82,7 +82,9 @@ public:
    void reset();
 
 private:
-
+   /**
+    * Instance of WiFiManager
+    */
    WiFiManager m_wifimgr;
 
    /**
