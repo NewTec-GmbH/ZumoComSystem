@@ -118,6 +118,21 @@ private:
      */
     bool checkConflictingSSIDs(String ssid);
 
+    /** Reference to store */
+    Store &m_store = Store::getInstance();
+
+    /** Instance of DNS server for AP mode */
+    DNSServer *m_dnsServer;
+
+    /** Used port for DNS service */
+    const uint8_t DNS_PORT = 53;
+
+    /** Saves if DNS could be started successfully */
+    bool m_dnsRetCode = false;
+
+    /** ComPlatform's hostname */
+    const String HOSTNAME = "complatform.local";
+
     /** The WiFi channel to be used */
     const uint8_t WIFI_CHANNEL_NO = 1;
 
@@ -135,20 +150,5 @@ private:
 
     /** Saves if STA mode is active */
     bool m_staActive = false;
-
-    /** Reference to store */
-    Store &m_store = Store::getInstance();
-
-    /** Instance of DNS server for AP mode */
-    DNSServer *m_dnsServer;
-
-    /** ComPlatform's hostname */
-    const String HOSTNAME = "complatform.local";
-
-    /** Used port for DNS service */
-    const uint8_t DNS_PORT = 53;
-
-    /** Saves if DNS could be started successfully */
-    bool m_dnsRetCode = false;
 };
 #endif /** __WIFIMANAGER_H__ */

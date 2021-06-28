@@ -36,14 +36,23 @@ package SystemServices {
 
     class APCredentials
     {
-        {static} + AP_SSID: String {readonly} = "ComPlatform"
-        {static} + AP_PSK: String {readonly} = "XXXXXXXX"
+        + AP_SSID: String = "ComPlatform"
+        + AP_PSK: String {readonly} = "XXXXXXXX"
     }
 
     class WiFiManager
     {
         - m_store: Store&
-        {static} - HOSTNAME: String {readonly} = "complatform.local"
+        - m_dnsServer: DNSServer*
+        - DNS_PORT: uint8_t {readonly} = 53
+        - m_dnsRetCode: bool = false
+        - HOSTNAME: String {readonly} = "complatform.local"
+        - WIFI_CHANNEL_NO: uint8_t {readonly} = 1
+        - MAX_CLIENT_NO: uint8_t {readonly} = 4
+        - ERROR_REBOOT_DELAY_TIME_MS: uint16_t {readonly} = 2000
+        - WIFI_CONNECT_RETRY_DELAY_MS: uint16_t {readonly} = 500
+        - m_apActive: bool = false
+        - m_staActive: bool = false
         + WiFiManager()
         + ~WiFiManager()
         + startAP(): bool
@@ -56,12 +65,11 @@ package SystemServices {
     class System
     {
         - m_wifiManager: WiFiManager&
-        - m_store: Store&
-        - m_webServer: WebServer&
         - System()
         - ~System()
         + {static} getInstance(): System&
         + init(): bool
+        + handleServices(): void
         + reset(): void
     }
     System ..> WiFiManager : uses
