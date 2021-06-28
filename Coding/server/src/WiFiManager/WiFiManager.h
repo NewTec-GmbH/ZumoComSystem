@@ -110,6 +110,26 @@ public:
     bool stopSTA();
 
 private:
+    /**
+     * Checks if there are any WiFi networks
+     * around which use the passed SSID
+     * 
+     * @return Returns true if SSID is existing, else false
+     */
+    bool checkConflictingSSIDs(String ssid);
+
+    /** The WiFi channel to be used */
+    const uint8_t WIFI_CHANNEL_NO = 1;
+
+    /** The max number of clients which can access AP at once */
+    const uint8_t MAX_CLIENT_NO = 4;
+
+    /** Delay time until the ComPlatform reboots after WiFi failure */
+    const uint16_t ERROR_REBOOT_DELAY_TIME_MS = 2000;
+
+    /** Delay time until ComPlatform tries to re-connect to WiFi */
+    const uint16_t WIFI_CONNECT_RETRY_DELAY_MS = 500;
+
     /** Saves if AP mode is active */
     bool m_apActive = false;
 
@@ -119,15 +139,16 @@ private:
     /** Reference to store */
     Store &m_store = Store::getInstance();
 
-    /** ComPlatform's hostname */
-    const char *HOSTNAME = "complatform.local";
-
     /** Instance of DNS server for AP mode */
     DNSServer *m_dnsServer;
 
-    /** Used port for DNS service */
-    const char DNS_PORT = 53;
+    /** ComPlatform's hostname */
+    const String HOSTNAME = "complatform.local";
 
+    /** Used port for DNS service */
+    const uint8_t DNS_PORT = 53;
+
+    /** Saves if DNS could be started successfully */
     bool m_dnsRetCode = false;
 };
 #endif /** __WIFIMANAGER_H__ */

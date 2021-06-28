@@ -42,8 +42,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 void System::init()
 {
-   const uint16_t REBOOT_DELAY_TIME_MS = 2000;
-
    // Register an ISR for ComPlatform reset on Reset key push
    Key::getInstance().registerSystemReset();
    LOG_DEBUG("Reset-ISR registered");
@@ -74,7 +72,8 @@ void System::init()
       else
       {
          LOG_ERROR("Could not generate a new SSL certificate. Rebooting in 2 seconds...");
-         delay(REBOOT_DELAY_TIME_MS);
+         const uint16_t ERROR_REBOOT_DELAY_TIME_MS = 2000;
+         delay(ERROR_REBOOT_DELAY_TIME_MS);
          System::getInstance().reset();
       }
    }
@@ -98,7 +97,7 @@ void System::init()
       }
    }
 
-   Serial.println("ComPlatform successfully booted up");
+   LOG_DEBUG("ComPlatform successfully booted up!");
 
    // Load Users
    // Load Permissions

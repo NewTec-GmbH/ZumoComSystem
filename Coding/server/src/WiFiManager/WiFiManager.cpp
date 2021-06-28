@@ -48,38 +48,55 @@ bool WiFiManager::startAP()
 {
     if ((false == m_staActive) && (false == m_apActive))
     {
-        // Start AP and DNS services
-        const uint8_t CHANNEL_NR = 1;
-        const uint8_t MAX_CLIENT_NR = 4;
-        const uint16_t REBOOT_DELAY_TIME_MS = 2000;
+        // Generate new SSID in case of conflict
+        String originalSSID = AP_SSID;
 
-        m_apActive = WiFi.softAP(AP_SSID, AP_PSK, CHANNEL_NR, false, MAX_CLIENT_NR);
+        while (true == checkConflictingSSIDs(AP_SSID))
+        {
+            LOG_WARN("Conflicting SSID found. Generating new random SSID...");
+
+            const uint8_t LOWER_LIMIT = 0;
+            const uint8_t UPPER_LIMIT = 10;
+
+            // Overwrite previously generated SSID and replace with initial SSID
+            AP_SSID = originalSSID;
+            for (uint8_t randNo = 0; randNo < 8; randNo++)
+            {
+                AP_SSID += random(LOWER_LIMIT, UPPER_LIMIT);
+            }
+            LOG_DEBUG("Trying SSID: " + AP_SSID + "...");
+        }
+
+        LOG_DEBUG("New SSID to be used: " + AP_SSID);
+
+        // Start AP and DNS services
+        m_apActive = WiFi.softAP(AP_SSID.c_str(), AP_PSK.c_str(), WIFI_CHANNEL_NO, false, MAX_CLIENT_NO);
         IPAddress ipaddr = WiFi.softAPIP();
 
         if (true == m_apActive)
         {
             LOG_DEBUG("AP successfully started");
-            LOG_DEBUG("SSID: " + String(AP_SSID) + ", PSK: " + AP_PSK);
+            LOG_DEBUG("SSID: " + AP_SSID + ", PSK: " + AP_PSK);
             LOG_DEBUG("IP-Address: " + ipaddr.toString());
 
             // Register A-Record which translates to current IP address (DNS)
-            m_dnsRetCode = m_dnsServer->start(DNS_PORT, HOSTNAME, ipaddr);
+            m_dnsRetCode = m_dnsServer->start(DNS_PORT, HOSTNAME.c_str(), ipaddr);
             if (true == m_dnsRetCode)
             {
-                LOG_DEBUG("mDNS server successfully started");
-                LOG_DEBUG(String(HOSTNAME));
+                LOG_DEBUG("DNS server successfully started");
+                LOG_DEBUG("Hostname: " + HOSTNAME);
             }
             else
             {
                 LOG_ERROR("Could not start DNS service. Rebooting in 2 seconds...");
-                delay(REBOOT_DELAY_TIME_MS);
+                delay(ERROR_REBOOT_DELAY_TIME_MS);
                 System::getInstance().reset();
             }
         }
         else
         {
             LOG_ERROR("Could not start AP mode. Rebooting in 2 seconds...");
-            delay(REBOOT_DELAY_TIME_MS);
+            delay(ERROR_REBOOT_DELAY_TIME_MS);
             System::getInstance().reset();
         }
     }
@@ -128,14 +145,13 @@ bool WiFiManager::startSTA()
 {
     if ((false == m_apActive) && (false == m_staActive))
     {
-        const uint16_t RECONECCT_RETRY_DELAY_MS = 500;
-        const uint16_t REBOOT_DELAY_TIME_MS = 2000;
-
         NetworkCredentials credentials = m_store.getNetworkCredentials();
         WiFi.begin(credentials.getSSID().c_str(), credentials.getPSK().c_str());
+
+        // Try to connect until there is a connection
         while (WL_CONNECTED != WiFi.status())
         {
-            delay(RECONECCT_RETRY_DELAY_MS);
+            delay(WIFI_CONNECT_RETRY_DELAY_MS);
             LOG_DEBUG("Connecting to external network...");
         }
 
@@ -147,14 +163,14 @@ bool WiFiManager::startSTA()
             LOG_DEBUG("IP-Address: " + WiFi.localIP().toString());
 
             // Register A-Record which translates to current IP address (mDNS)
-            MDNS.begin(HOSTNAME);
-            LOG_DEBUG("DNS server successfully started");
+            MDNS.begin(HOSTNAME.c_str());
+            LOG_DEBUG("mDNS server successfully started");
         }
         else
         {
             m_staActive = false;
             LOG_ERROR("Could not start STA mode. Rebooting in 2 seconds...");
-            delay(REBOOT_DELAY_TIME_MS);
+            delay(ERROR_REBOOT_DELAY_TIME_MS);
             System::getInstance().reset();
         }
     }
@@ -189,6 +205,21 @@ bool WiFiManager::stopSTA()
     {
         retCode = false;
         LOG_ERROR("Could not shut down STA mode because STA mode is not active");
+    }
+    return retCode;
+}
+
+bool WiFiManager::checkConflictingSSIDs(String ssid)
+{
+    uint16_t numberOfNearbyAPs = WiFi.scanNetworks();
+    bool retCode = false;
+    for (uint16_t currentSSIDNo = 0; currentSSIDNo < numberOfNearbyAPs; currentSSIDNo++)
+    {
+        if (WiFi.SSID(currentSSIDNo) == ssid)
+        {
+            retCode = true;
+            break;
+        }
     }
     return retCode;
 }
