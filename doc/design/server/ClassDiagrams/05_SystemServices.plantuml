@@ -57,6 +57,7 @@ package SystemServices {
         + ~WiFiManager()
         + startAP(): bool
         + stopAP(): bool
+        + handleAP_DNS(): void
         + startSTA(): bool
         + stopSTA(): bool
     }
@@ -64,7 +65,7 @@ package SystemServices {
 
     class System
     {
-        - m_wifiManager: WiFiManager&
+        - m_wifiManager: WiFiManager
         - System()
         - ~System()
         + {static} getInstance(): System&

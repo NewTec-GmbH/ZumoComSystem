@@ -8,8 +8,8 @@ package HAL
 
     class IO
     {
-        - ioMutex: SemaphoreHandle_t
-        {static} - DEBOUNCE_DELAY_TIME: uint8_t {readonly} = 50
+        - m_ioMutex: SemaphoreHandle_t
+        {static} - DEBOUNCE_DELAY_TIME_MS: uint8_t {readonly} = 50
         - IO()
         - ~IO()
         + {static} getInstance(): IO&
@@ -23,14 +23,15 @@ package HAL
     class Key
     {
         - m_io : IO&
-        {static} - WIFI_AND_RESET_KEY_PIN: uint8_t {readonly} = 0
-        {static} - LONG_PRESS_TIME: uint32_t {readonly}  = 1000
+        {static} - LONG_PRESS_TIME_MS: uint32_t {readonly}  = 1000
+        {static} + WIFI_AND_RESET_KEY_PIN: uint8_t {readonly} = 0
         - Key()
         - ~Key()
-        {static} + getInstance(): Key&
-        + checkKeyLongPress(uint8_t gpio): bool
-        + registerSystemReset(): void
+        - {static} resetTask(parameter: void*): void
         - {static} systemResetISR(): void
+        {static} + getInstance(): Key&
+        + registerSystemReset(): void
+        + readKey(): bool
     }
     Key ..> IO : uses
 
@@ -38,7 +39,7 @@ package HAL
     {
         - m_io : IO&
         {static} - ROBOT_RESET_PIN: uint8_t {readonly} = 2
-        {static} - ROBOT_RESET_TIME: uint32_t {readonly} = 500
+        {static} - ROBOT_RESET_TIME_MS: uint32_t {readonly} = 500
         - Robot()
         - ~Robot()
         {static} + getInstance(): Robot&
