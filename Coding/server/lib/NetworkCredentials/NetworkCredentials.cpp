@@ -64,19 +64,14 @@ void NetworkCredentials::setPSK(String psk)
 
 String NetworkCredentials::serialize()
 {
-    /*
-    Reserve memory on stack for JSON structure
-    which consists of two key-value pairs 
-    */
+    /* Reserve memory on stack for JSON structure which consists of two key-value pairs */
     const uint8_t DOC_SIZE = 2;
     const uint8_t size = JSON_OBJECT_SIZE(DOC_SIZE);
     StaticJsonDocument<size> jsonDocument;
 
     /*
-    Pass the const/non-volatile char*
-    pointers to ArduinoJson so that
-    ArduinoJson will not copy/duplicate
-    the string values
+    Pass the const/non-volatile char* pointers to ArduinoJson so that ArduinoJson
+    will not copy/duplicate the string values
     */
     jsonDocument["ssid"] = m_ssid.c_str();
     jsonDocument["psk"] = m_psk.c_str();
@@ -89,16 +84,12 @@ String NetworkCredentials::serialize()
 
 bool NetworkCredentials::deserialize(String serial)
 {
-    /* 
-    Reserve memory on stack for JSON structure
-    which consists of two key-value pairs
-    */
+    /* Reserve memory on stack for JSON structure which consists of two key-value pairs */
     const uint8_t DOC_SIZE = 32;
     StaticJsonDocument<DOC_SIZE> jsonDocument;
 
     /*
-    Get a dynamic r/w buffer for deserialization
-    so that ArduinoJson can replace JSON syntax
+    Get a dynamic r/w buffer for deserialization so that ArduinoJson can replace JSON syntax
     with \0 terminators for each string value
     */
     uint32_t bufferSize = strlen(serial.c_str()) + 1;

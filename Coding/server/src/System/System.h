@@ -51,54 +51,50 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class System
 {
 public:
-   /** 
+    /** 
      * Get System instance
      * 
      * @return Returns System singleton instance
      */
-   static System &getInstance()
-   {
-      static System instance;
-      return instance;
-   }
+    static System &getInstance()
+    {
+        static System instance;
+        return instance;
+    }
 
-   /**
-    * Initializes the ComPlatform
-    * and starts all services
+    /**
+    * Initializes the ComPlatform and starts all services
     */
-   void init();
+    void init();
 
-   /**
-    * This method needs to be called
-    * in loop() so that all required
-    * services can receive CPU time
+    /**
+    * This method needs to be called in loop() so that all required services can receive CPU time
     */
-   void handleServices();
+    void handleServices();
 
-   /**
-    * Shuts down all services
-    * and reboots the ComPlatform
+    /**
+    * Shuts down all services and reboots the ComPlatform
     */
-   void reset();
+    void reset();
 
 private:
-   /**
+    /**
     * Instance of WiFiManager
     */
-   WiFiManager m_wifimgr;
+    WiFiManager m_wifimgr;
 
-   /**
+    /**
     * Default Constructor
     */
-   System()
-   {
-   }
+    System()
+    {
+    }
 
-   /**
+    /**
     * Destructor
     */
-   ~System()
-   {
-   }
+    ~System()
+    {
+    }
 };
 #endif /** __SYSTEM_H__ */

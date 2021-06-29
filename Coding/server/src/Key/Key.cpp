@@ -47,37 +47,19 @@ void Key::registerSystemReset()
     LOG_DEBUG("System-Reset ISR registered");
 }
 
-bool Key::checkKeyLongPress(uint8_t gpio)
+bool Key::readKey()
 {
-    // Stop time from now on
-    unsigned long startTime = millis();
-
-    // Stores the current time when next reading is done
-    unsigned long currentTime;
-
-    bool retCode = true;
-    do
-    {
-        // Registered a released key. Abort
-        if (HIGH == m_io.readGPIODebounced(gpio))
-        {
-            retCode = false;
-            break;
-        }
-        currentTime = millis();
-    } while ((currentTime - startTime) < LONG_PRESS_TIME_MS);
-
-    return retCode;
+    return (LOW == m_io.readGPIODebounced(WIFI_AND_RESET_KEY_PIN));
 }
 
 void Key::resetTask(void *parameter)
 {
-    if (LOW == IO::getInstance().readGPIODebounced(WIFI_AND_RESET_KEY_PIN))
+    if (true == Key::getInstance().readKey())
     {
         System::getInstance().reset();
     }
 
-    // Destroy this task
+    /* Destroy this task */
     vTaskDelete(NULL);
 }
 
@@ -86,7 +68,7 @@ void Key::systemResetISR()
     const uint16_t HEAP_SIZE = 16384;
     const uint8_t PRIORITY = 1;
 
-    // Create a new FreeRTOS task
+    /* Create a new FreeRTOS task */
     xTaskCreate(
         resetTask,
         "SystemReset",

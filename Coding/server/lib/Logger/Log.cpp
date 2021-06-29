@@ -43,22 +43,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Log::LogLevel Log::getLogLevel()
 {
-   return m_logLevel;
+    return m_logLevel;
 }
 
 void Log::setLogLevel(LogLevel level)
 {
-   if ((LEVEL_DEBUG == level) || (LEVEL_ERROR == level) || (LEVEL_INFO == level) || (LEVEL_WARN == level))
-   {
-      m_logLevel = level;
-      LOG_DEBUG("Loglevel has been changed to" + m_logLevel);
-   }
+    if ((0 <= level) && (level < LEVEL_INVALID))
+    {
+        m_logLevel = level;
+        LOG_DEBUG("Loglevel has been changed to" + m_logLevel);
+    }
 }
 
 void Log::writeLog(LogLevel level, String msg)
 {
-   if ((level <= m_logLevel) && (0 < msg.length()))
-   {
-      Serial.println(msg);
-   }
+    if ((level <= m_logLevel) && (0 < msg.length()))
+    {
+        Serial.println(msg);
+    }
 }

@@ -47,8 +47,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 void setup()
 {
-   Serial.begin(115200);
-   System::getInstance().init();
+    Serial.begin(115200);
+    System::getInstance().init();
 }
 
 /**
@@ -56,5 +56,5 @@ void setup()
  */
 void loop()
 {
-   System::getInstance().handleServices();
+    System::getInstance().handleServices();
 }

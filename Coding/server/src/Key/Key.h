@@ -62,23 +62,16 @@ public:
     }
 
     /**
-     * Registers an ISR which resets the
-     * ComPlatform system and which is 
-     * invoked when key is pressed
+     * Registers an ISR which resets the ComPlatform system and which is invoked when key is pressed
      */
     void registerSystemReset();
 
     /**
-     * Checks if the button is being pressed,
-     * while this method is called, blocks
-     * while the button is pressed
-     * for max. LONG_PRESS_TIME.
-     * Checks if the key has been held for
-     * that long.
+     * Checks if the key connected to WIFI_AND_RESET_KEY_PI is being pressed. Automatically debounces the key
      * 
      * @return Returns true, if button has been pressed, otherwise false
      */
-    bool checkKeyLongPress(uint8_t gpio);
+    bool readKey();
 
 private:
     /**
@@ -86,6 +79,7 @@ private:
      */
     Key()
     {
+        IO::getInstance().setPinMode(WIFI_AND_RESET_KEY_PIN, INPUT_PULLUP);
     }
 
     /**
@@ -96,15 +90,12 @@ private:
     }
 
     /**
-     * Task which checks the push key
-     * level and resets the ComPlatform
+     * Task which checks the push key level and resets the ComPlatform
      */
     static void resetTask(void *parameter);
 
     /**
-     * ISR which resets the ComPlatform
-     * which will be inovked
-     * when push key is being pressed
+     * ISR which resets the ComPlatform which will be inovked when push key is being pressed
      */
     static void systemResetISR();
 

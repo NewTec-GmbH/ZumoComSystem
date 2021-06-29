@@ -48,7 +48,7 @@ bool WiFiManager::startAP()
 {
     if ((false == m_staActive) && (false == m_apActive))
     {
-        // Generate new SSID in case of conflict
+        /* Generate new SSID in case of conflict */
         String originalSSID = AP_SSID;
 
         while (true == checkConflictingSSIDs(AP_SSID))
@@ -58,7 +58,7 @@ bool WiFiManager::startAP()
             const uint8_t LOWER_LIMIT = 0;
             const uint8_t UPPER_LIMIT = 10;
 
-            // Overwrite previously generated SSID and replace with initial SSID
+            /* Overwrite previously generated SSID and replace with initial SSID */
             AP_SSID = originalSSID;
             for (uint8_t randNo = 0; randNo < 8; randNo++)
             {
@@ -69,7 +69,7 @@ bool WiFiManager::startAP()
 
         LOG_DEBUG("New SSID to be used: " + AP_SSID);
 
-        // Start AP and DNS services
+        /* Start AP and DNS services */
         m_apActive = WiFi.softAP(AP_SSID.c_str(), AP_PSK.c_str(), WIFI_CHANNEL_NO, false, MAX_CLIENT_NO);
         IPAddress ipaddr = WiFi.softAPIP();
 
@@ -79,7 +79,7 @@ bool WiFiManager::startAP()
             LOG_DEBUG("SSID: " + AP_SSID + ", PSK: " + AP_PSK);
             LOG_DEBUG("IP-Address: " + ipaddr.toString());
 
-            // Register A-Record which translates to current IP address (DNS)
+            /* Register A-Record which translates to current IP address (DNS) */
             m_dnsRetCode = m_dnsServer->start(DNS_PORT, HOSTNAME.c_str(), ipaddr);
             if (true == m_dnsRetCode)
             {
@@ -118,7 +118,7 @@ void WiFiManager::handleAP_DNS()
 
 bool WiFiManager::stopAP()
 {
-    // Disconnect all clients and shut down WiFi module
+    /* Disconnect all clients and shut down WiFi module */
     bool retCode = false;
     if (true == m_apActive)
     {
@@ -148,7 +148,7 @@ bool WiFiManager::startSTA()
         NetworkCredentials credentials = m_store.getNetworkCredentials();
         WiFi.begin(credentials.getSSID().c_str(), credentials.getPSK().c_str());
 
-        // Try to connect until there is a connection
+        /* Try to connect until there is a connection */
         while (WL_CONNECTED != WiFi.status())
         {
             delay(WIFI_CONNECT_RETRY_DELAY_MS);
@@ -162,7 +162,7 @@ bool WiFiManager::startSTA()
             LOG_DEBUG("SSID: " + credentials.getSSID());
             LOG_DEBUG("IP-Address: " + WiFi.localIP().toString());
 
-            // Register A-Record which translates to current IP address (mDNS)
+            /* Register A-Record which translates to current IP address (mDNS) */
             MDNS.begin(HOSTNAME.c_str());
             LOG_DEBUG("mDNS server successfully started");
         }
@@ -183,14 +183,14 @@ bool WiFiManager::startSTA()
 
 bool WiFiManager::stopSTA()
 {
-    // Disconnect from AP and shut down WiFi module
+    /* Disconnect from AP and shut down WiFi module */
     bool retCode = false;
     if (m_staActive)
     {
-        // Stop the DNS service
+        /* Stop the DNS service */
         MDNS.end();
 
-        // Shut down STA mode
+        /* Shut down STA mode */
         retCode = WiFi.disconnect(false);
         if (true == retCode)
         {

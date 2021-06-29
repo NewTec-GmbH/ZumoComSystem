@@ -68,40 +68,6 @@ void test_Logging()
     logger.setLogLevel(static_cast<Log::LogLevel>(4));
     current = logger.getLogLevel();
     TEST_ASSERT_EQUAL(Log::LEVEL_INFO, current);
-
-    // /* Test if logs are written correctly */
-    // const char *testString = "Test";
-    // logger.setLogLevel(Log::LEVEL_DEBUG);
-    // When(OverloadedMethod(ArduinoFake(Serial), println, size_t(const char *))).AlwaysReturn();
-    // LOG_DEBUG(testString);
-    // LOG_INFO(testString);
-    // LOG_WARN(testString);
-    // LOG_ERROR(testString);
-    // Verify(OverloadedMethod(ArduinoFake(Serial), println, size_t(const char *)).Using(testString)).Exactly(4);
-
-    // logger.setLogLevel(Log::LEVEL_ERROR);
-    // ArduinoFakeReset();
-    // When(OverloadedMethod(ArduinoFake(Serial), println, size_t(const char *))).AlwaysReturn();
-    // LOG_DEBUG(testString);
-    // LOG_INFO(testString);
-    // LOG_WARN(testString);
-    // LOG_ERROR(testString);
-    // Verify(OverloadedMethod(ArduinoFake(Serial), println, size_t(const char *)).Using(testString)).Once();
-}
-
-void test_networkCredentials()
-{
-    /** Test if the network credentials are set correctly **/
-    // String ssid = "MyWifi";
-    //  String psk = "MySecurePassword21091986";
-    // NetworkCredentials net;
-
-    // net.setSSID(ssid);
-    // net.setPSK(psk);
-
-    /** Test if network credentials are properly serialized **/
-
-    /** Test if network credentials are properly deserialized **/
 }
 
 void setUp()
@@ -113,7 +79,6 @@ int main()
 {
     UNITY_BEGIN();
     RUN_TEST(test_Logging);
-    RUN_TEST(test_networkCredentials);
     UNITY_END();
 
     return 0;

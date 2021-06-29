@@ -62,79 +62,80 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define LOG_ERROR(msg) ((Log::getInstance().writeLog(Log::LEVEL_ERROR, msg)))
 #else
 #define LOG_DEBUG(msg) \
-   do                  \
-   {                   \
-   } while (0)
+    do                 \
+    {                  \
+    } while (0)
 #define LOG_INFO(msg) \
-   do                 \
-   {                  \
-   } while (0)
+    do                \
+    {                 \
+    } while (0)
 #define LOG_WARN(msg) \
-   do                 \
-   {                  \
-   } while (0)
+    do                \
+    {                 \
+    } while (0)
 #define LOG_ERROR(msg) \
-   do                  \
-   {                   \
-   } while (0)
+    do                 \
+    {                  \
+    } while (0)
 #endif /* ACTIVATE_LOGGING */
 
 /** Singleton logging class used for logging events */
 class Log
 {
 public:
-   /**
+    /**
     * Enumeration to specify granularity of events
     */
-   enum LogLevel
-   {
-      LEVEL_DEBUG = 3,
-      LEVEL_INFO = 2,
-      LEVEL_WARN = 1,
-      LEVEL_ERROR = 0
-   };
+    enum LogLevel
+    {
+        LEVEL_INVALID = 4,
+        LEVEL_DEBUG = 3,
+        LEVEL_INFO = 2,
+        LEVEL_WARN = 1,
+        LEVEL_ERROR = 0
+    };
 
-   /** Get the singleton instance of Log class
+    /** Get the singleton instance of Log class
     * 
     * @return Returns the Log class instance
     */
-   static Log &getInstance()
-   {
-      static Log instance;
-      return instance;
-   }
+    static Log &getInstance()
+    {
+        static Log instance;
+        return instance;
+    }
 
-   /** Get the currently used log level
+    /** Get the currently used log level
     * 
     * @return Returns the log level
     */
-   LogLevel getLogLevel();
+    LogLevel getLogLevel();
 
-   /** Set the log level to be used 
+    /** Set the log level to be used 
     * 
     * @param[in] level The log level to be used 
-   */
-   void setLogLevel(LogLevel level);
+    */
+    void setLogLevel(LogLevel level);
 
-   /** Write the passed string message into log
+    /** Write the passed string message into log
     * 
     * @param[in] level The log level to be used 
     * @param[in] msg The log message to be written
-   */
-   void writeLog(LogLevel level, String msg);
+    */
+    void writeLog(LogLevel level, String msg);
 
 private:
-   /** Constructor */
-   Log() : m_logLevel(LEVEL_DEBUG)
-   {
-   }
+    /** Constructor */
+    Log() : m_logLevel(LEVEL_DEBUG)
+    {
+    }
 
-   /** Destructor */
-   ~Log()
-   {
-   }
+    /** Destructor */
+    ~Log()
+    {
+    }
 
-   /** The log level which is used to determine what to print */
-   LogLevel m_logLevel;
+    /** The log level which is used to determine what to print */
+    LogLevel m_logLevel;
 };
 #endif /* __LOG_H__ */

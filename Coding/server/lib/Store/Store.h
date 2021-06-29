@@ -109,7 +109,7 @@ public:
      * 
      * @return Returns the KeyCert instance
      */
-    KeyCert& getKeyCert();
+    KeyCert &getKeyCert();
 
     /**
      * Set the private RSA key and the public certificate
@@ -135,7 +135,8 @@ private:
     /** Instance of NetworkCredentials to manage SSID and PSK */
     NetworkCredentials m_netCredentials;
 
-    /** Instance of KeyCert to store private RSA key as well as
+    /**
+     * Instance of KeyCert to store private RSA key as well as
      * public certificate for HTTPs and WSS servers
      */
     KeyCert m_keyCert;

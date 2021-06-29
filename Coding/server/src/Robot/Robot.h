@@ -61,9 +61,7 @@ public:
     }
 
     /**
-     * Reset the connected robot
-     * with the help of the RESET line
-     * which is connected to the GPIOs
+     * Reset the connected robot with the help of the RESET line which is connected to the GPIOs
      */
     void resetRobotNow();
 
@@ -86,10 +84,10 @@ private:
     /** Reference to IO class */
     IO &m_io = IO::getInstance();
 
-    /** The GPIO output pin used to write the RESET line of robot*/
+    /** The GPIO output pin used to write the RESET line of robot */
     static const uint8_t ROBOT_RESET_PIN = 2;
 
-    /** The time in ms while RESET line is pulled down*/
+    /** The time in ms while RESET line is pulled down */
     static const uint32_t ROBOT_RESET_TIME_MS = 500;
 };
 #endif /** __ROBOT_H__ */

@@ -94,12 +94,10 @@ public:
      */
     String serialize();
 
-    /** Re-creates object from
-     * serialized JSON string
+    /** Re-creates object from mserialized JSON string
      * 
      * @param serial The serialized JSON string
-     * @return Returns false in case of failure,
-     * true in case of success
+     * @return Returns false in case of failure, true in case of success
      */
     bool deserialize(String serial);
 

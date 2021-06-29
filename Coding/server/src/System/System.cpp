@@ -42,81 +42,81 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 void System::init()
 {
-   // Register an ISR for ComPlatform reset on Reset key push
-   Key::getInstance().registerSystemReset();
-   LOG_DEBUG("Reset-ISR registered");
+    /* Register an ISR for ComPlatform reset on Reset key push */
+    Key::getInstance().registerSystemReset();
+    LOG_DEBUG("Reset-ISR registered");
 
-   // Read WiFi key if AP should be spawned
-   bool isAccessPointRequested = Key::getInstance().checkKeyLongPress(Key::WIFI_AND_RESET_KEY_PIN);
+    /* Read WiFi key if AP should be spawned */
+    bool isAccessPointRequested = Key::getInstance().readKey();
 
-   Store &store = Store::getInstance();
+    Store &store = Store::getInstance();
 
-   // Generate and save a new KeyCert
-   bool retCode = store.loadKeyCert();
-   if (false == retCode)
-   {
-      LOG_DEBUG("Missing KeyCert. Generating new SSLCert...");
-      KeyCert keycert = store.getKeyCert();
-      if (true == keycert.generateNewCert())
-      {
-         LOG_DEBUG("New KeyCert created");
-         if (true == store.saveKeyCert())
-         {
-            LOG_DEBUG("New KeyCert saved");
-         }
-         else
-         {
-            LOG_ERROR("Could not save the created SSL certificate to disk");
-         }
-      }
-      else
-      {
-         LOG_ERROR("Could not generate a new SSL certificate. Rebooting in 2 seconds...");
-         const uint16_t ERROR_REBOOT_DELAY_TIME_MS = 2000;
-         delay(ERROR_REBOOT_DELAY_TIME_MS);
-         System::getInstance().reset();
-      }
-   }
+    /* Generate and save a new KeyCert */
+    bool retCode = store.loadKeyCert();
+    if (false == retCode)
+    {
+        LOG_DEBUG("Missing KeyCert. Generating new SSLCert...");
+        KeyCert keycert = store.getKeyCert();
+        if (true == keycert.generateNewCert())
+        {
+            LOG_DEBUG("New KeyCert created");
+            if (true == store.saveKeyCert())
+            {
+                LOG_DEBUG("New KeyCert saved");
+            }
+            else
+            {
+                LOG_ERROR("Could not save the created SSL certificate to disk");
+            }
+        }
+        else
+        {
+            LOG_ERROR("Could not generate a new SSL certificate. Rebooting in 2 seconds...");
+            const uint16_t ERROR_REBOOT_DELAY_TIME_MS = 2000;
+            delay(ERROR_REBOOT_DELAY_TIME_MS);
+            System::getInstance().reset();
+        }
+    }
 
-   if (true == isAccessPointRequested)
-   {
-      m_wifimgr.startAP();
-   }
-   else
-   {
-      // Load NetworkCredentials
-      if (true == store.loadNetworkCredentials())
-      {
-         m_wifimgr.startSTA();
-      }
-      else
-      {
-         LOG_ERROR("No NetworkCredentials available");
-         m_wifimgr.startAP();
-         LOG_DEBUG("AP spwaned because there are no network credentials available");
-      }
-   }
+    if (true == isAccessPointRequested)
+    {
+        m_wifimgr.startAP();
+    }
+    else
+    {
+        /* Load NetworkCredentials */
+        if (true == store.loadNetworkCredentials())
+        {
+            m_wifimgr.startSTA();
+        }
+        else
+        {
+            LOG_ERROR("No NetworkCredentials available");
+            m_wifimgr.startAP();
+            LOG_DEBUG("AP spwaned because there are no network credentials available");
+        }
+    }
 
-   LOG_DEBUG("ComPlatform successfully booted up!");
+    LOG_DEBUG("ComPlatform successfully booted up!");
 
-   // Load Users
-   // Load Permissions
-   // Init HTTPs Server
-   // Init WSS Server
+    /* Load Users */
+    /* Load Permissions */
+    /* Init HTTPs Server */
+    /* Init WSS Server */
 }
 
 void System::handleServices()
 {
-   uint8_t SLEEP_TIME_MS = 1;
+    uint8_t SLEEP_TIME_MS = 1;
 
-   m_wifimgr.handleAP_DNS();
-   delay(SLEEP_TIME_MS);
+    m_wifimgr.handleAP_DNS();
+    delay(SLEEP_TIME_MS);
 }
 
 void System::reset()
 {
-   LOG_DEBUG("ComPlatform will be restarted");
-   m_wifimgr.stopAP();
-   m_wifimgr.stopSTA();
-   ESP.restart();
+    LOG_DEBUG("ComPlatform will be restarted");
+    m_wifimgr.stopAP();
+    m_wifimgr.stopSTA();
+    ESP.restart();
 }

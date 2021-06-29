@@ -69,41 +69,33 @@ public:
     }
 
     /**
-     * Starts the access point
-     * of the ComPlatform if the
-     * STA mode is not active
+     * Starts the access point of the ComPlatform if the STA mode is not active
      * 
      * @return Returns true if successful, else false
      */
     bool startAP();
 
     /**
-     * Stops the access point if
-     * it has been started before
+     * Stops the access point if it has been started before
      * 
      * @return Returns true if successful, else false
      */
     bool stopAP();
 
     /**
-     * This method needs to be called
-     * in a loop so that the DNS server
-     * can receive CPU time
+     * This method needs to be called in a loop so that the DNS server can receive CPU time
      */
     void handleAP_DNS();
 
     /**
-     * Starts the station mode
-     * of the ComPlatform if the
-     * AP mode is not active
+     * Starts the station mode of the ComPlatform if the AP mode is not active
      * 
      * @return Returns true if active, else false
      */
     bool startSTA();
 
     /**
-     * Stops the station mode if
-     * it has been started before
+     * Stops the station mode if it has been started before
      * 
      * @return Returns true if active, else false
      */
@@ -111,8 +103,7 @@ public:
 
 private:
     /**
-     * Checks if there are any WiFi networks
-     * around which use the passed SSID
+     * Checks if there are any WiFi networks around which use the passed SSID
      * 
      * @return Returns true if SSID is existing, else false
      */

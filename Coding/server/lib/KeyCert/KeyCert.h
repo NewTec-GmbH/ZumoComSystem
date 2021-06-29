@@ -51,76 +51,76 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class KeyCert
 {
 public:
-   /**
+    /**
     * Default Constructor
     */
-   KeyCert()
-   {
-      m_cert = new httpsserver::SSLCert();
-   }
+    KeyCert()
+    {
+        m_cert = new httpsserver::SSLCert();
+    }
 
-   /**
+    /**
     * Constructor
     * 
     * @param[in] certificate The certificate to be saved
     */
-   KeyCert(httpsserver::SSLCert *certificate)
-   {
-      m_cert = certificate;
-   }
+    KeyCert(httpsserver::SSLCert *certificate)
+    {
+        m_cert = certificate;
+    }
 
-   /**
+    /**
     * Destructor
     */
-   ~KeyCert()
-   {
-      delete m_cert;
-   }
+    ~KeyCert()
+    {
+        delete m_cert;
+    }
 
-   /**
+    /**
     * Generates a new SSLCert
     * for this class instance
     * 
     * @return Returns true if successful, else false
     */
-   bool generateNewCert();
+    bool generateNewCert();
 
-   /**
+    /**
     * Sets a new certificate and private key
     * 
     * @param[in] certificate The certificate
     * to be saved
     */
-   void setCert(httpsserver::SSLCert *certificate);
+    void setCert(httpsserver::SSLCert *certificate);
 
-   /**
+    /**
     * Returns the certificate and private key
     * 
     * @return Returns the SSLCert
     */
-   httpsserver::SSLCert *getCert();
+    httpsserver::SSLCert *getCert();
 
-   /** Returns JSON string
+    /** Returns JSON string
      * 
      * @return Returns the serialized object as JSON string
      */
-   String serialize();
+    String serialize();
 
-   /** Re-creates object from serialized JSON string
+    /** Re-creates object from serialized JSON string
      * 
      * @param serial The serialized JSON string
      * @return Returns true if successful, else false
      */
-   bool deserialize(String serial);
+    bool deserialize(String serial);
 
 private:
-   /** 
+    /** 
     * The DER-X509 certificate
     * which stores the private RSA key
     * as well as the public certificate.
     * This data structure is used by
     * the HTTPs/WSS servers
     */
-   httpsserver::SSLCert *m_cert;
+    httpsserver::SSLCert *m_cert;
 };
 #endif

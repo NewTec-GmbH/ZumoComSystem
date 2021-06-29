@@ -43,7 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 void Robot::resetRobotNow()
 {
-    // Pull down RESET line for ROBOT_RESET_TIME
+    /* Pull down RESET line for ROBOT_RESET_TIME */
     m_io.writeGPIO(ROBOT_RESET_PIN, LOW);
     delay(ROBOT_RESET_TIME_MS);
     m_io.writeGPIO(ROBOT_RESET_PIN, HIGH);

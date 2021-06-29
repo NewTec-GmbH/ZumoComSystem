@@ -76,8 +76,7 @@ public:
     bool deleteEntry(String key);
 
     /**
-     * Updates an existing value in persistent storage.
-     * If the key does not exist, it will be created
+     * Updates an existing value in persistent storage. If the key does not exist, it will be created
      * 
      * @param[in] key The key-value pair to be updated
      * @param[in] value The new string value for the specified key
