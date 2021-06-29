@@ -53,7 +53,7 @@ bool Store::saveNetworkCredentials()
 
 bool Store::saveKeyCert()
 {
-    bool retCode = m_nvsmgr.updateEntry("keyCert", m_KeyCert.serialize());
+    bool retCode = m_nvsmgr.updateEntry("keyCert", m_keyCert.serialize());
     if (false == retCode)
     {
         LOG_ERROR("Could not save KeyCert to disk");
@@ -64,7 +64,7 @@ bool Store::saveKeyCert()
 bool Store::loadNetworkCredentials()
 {
     String json = m_nvsmgr.readEntry("netCredentials");
-    bool retCode = (String("null") != json && true == m_netCredentials.deserialize(json));
+    bool retCode = ((String("null") != json) && (true == m_netCredentials.deserialize(json)));
     if (false == retCode)
     {
         LOG_ERROR("Could not load NetworkCredentials from disk");
@@ -75,7 +75,7 @@ bool Store::loadNetworkCredentials()
 bool Store::loadKeyCert()
 {
     String json = m_nvsmgr.readEntry("keyCert");
-    bool retCode = (String("null") != json && true == m_KeyCert.deserialize(json));
+    bool retCode = ((String("null") != json) && (true == m_keyCert.deserialize(json)));
     if (false == retCode)
     {
         LOG_ERROR("Could not load KeyCert from disk");
@@ -93,12 +93,12 @@ void Store::setNetworkCredentials(NetworkCredentials credentials)
     m_netCredentials = credentials;
 }
 
-KeyCert Store::getKeyCert()
+KeyCert &Store::getKeyCert()
 {
-    return m_KeyCert;
+    return m_keyCert;
 }
 
 void Store::setKeyCert(KeyCert keycert)
 {
-    m_KeyCert = keycert;
+    m_keyCert = keycert;
 }

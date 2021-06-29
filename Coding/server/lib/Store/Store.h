@@ -43,7 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __STORE_H__
 
 #include <NVSManager.h>
-#include <Logger.h>
+#include <Log.h>
 #include <NetworkCredentials.h>
 #include <KeyCert.h>
 
@@ -109,7 +109,7 @@ public:
      * 
      * @return Returns the KeyCert instance
      */
-    KeyCert getKeyCert();
+    KeyCert &getKeyCert();
 
     /**
      * Set the private RSA key and the public certificate
@@ -135,9 +135,10 @@ private:
     /** Instance of NetworkCredentials to manage SSID and PSK */
     NetworkCredentials m_netCredentials;
 
-    /** Instance of KeyCert to store private RSA key as well as
+    /**
+     * Instance of KeyCert to store private RSA key as well as
      * public certificate for HTTPs and WSS servers
      */
-    KeyCert m_KeyCert;
+    KeyCert m_keyCert;
 };
 #endif /** __STORE_H__ */

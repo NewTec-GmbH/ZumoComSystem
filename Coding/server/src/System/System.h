@@ -31,96 +31,70 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file KeyCert.h
+ * @file System.h
  * @author Luis Moser
- * @brief KeyCert header
+ * @brief System header
  * @date 06/22/2021
  * 
  * @{
  */
 
-#ifndef __KEYCERT_H__
-#define __KEYCERT_H__
+#ifndef __SYSTEM_H__
+#define __SYSTEM_H__
 
-#include <SSLCert.hpp>
-#include <Arduino.h>
-#include <ArduinoJson.h>
+#include <WiFiManager.h>
 #include <Log.h>
+#include <Store.h>
+#include <KeyCert.h>
+#include <Key.h>
 
-/** Data structure for HTTPS/WSS server which supports JSON serialization */
-class KeyCert
+class System
 {
 public:
-    /**
-    * Default Constructor
-    */
-    KeyCert()
+    /** 
+     * Get System instance
+     * 
+     * @return Returns System singleton instance
+     */
+    static System &getInstance()
     {
-        m_cert = new httpsserver::SSLCert();
+        static System instance;
+        return instance;
     }
 
     /**
-    * Constructor
-    * 
-    * @param[in] certificate The certificate to be saved
+    * Initializes the ComPlatform and starts all services
     */
-    KeyCert(httpsserver::SSLCert *certificate)
+    void init();
+
+    /**
+    * This method needs to be called in loop() so that all required services can receive CPU time
+    */
+    void handleServices();
+
+    /**
+    * Shuts down all services and reboots the ComPlatform
+    */
+    void reset();
+
+private:
+    /**
+    * Instance of WiFiManager
+    */
+    WiFiManager m_wifimgr;
+
+    /**
+    * Default Constructor
+    */
+    System()
     {
-        m_cert = certificate;
     }
 
     /**
     * Destructor
     */
-    ~KeyCert()
+    ~System()
     {
-        delete m_cert;
     }
-
-    /**
-    * Generates a new SSLCert
-    * for this class instance
-    * 
-    * @return Returns true if successful, else false
-    */
-    bool generateNewCert();
-
-    /**
-    * Sets a new certificate and private key
-    * 
-    * @param[in] certificate The certificate
-    * to be saved
-    */
-    void setCert(httpsserver::SSLCert *certificate);
-
-    /**
-    * Returns the certificate and private key
-    * 
-    * @return Returns the SSLCert
-    */
-    httpsserver::SSLCert *getCert();
-
-    /** Returns JSON string
-     * 
-     * @return Returns the serialized object as JSON string
-     */
-    String serialize();
-
-    /** Re-creates object from serialized JSON string
-     * 
-     * @param serial The serialized JSON string
-     * @return Returns true if successful, else false
-     */
-    bool deserialize(String serial);
-
-private:
-    /** 
-    * The DER-X509 certificate
-    * which stores the private RSA key
-    * as well as the public certificate.
-    * This data structure is used by
-    * the HTTPs/WSS servers
-    */
-    httpsserver::SSLCert *m_cert;
 };
-#endif
+#endif /** __SYSTEM_H__ */

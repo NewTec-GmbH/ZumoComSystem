@@ -12,19 +12,15 @@ package "API" as api {
 }
 
 package Server {
-    package "HTTPs Library" {
-        component "HTTPs Server" as https
-        component "Secure WebSocket Endpoint" as wss
+    component "WebServer" as webserver
 
-        note right of https : Serves the static HTML/JS/CSS\nfiles for web interface
-        note left of wss : Provides access to\nall endpoint services
+    note left of webserver : Serves the static HTML/JS/CSS\nfiles for web interface\nand provides access to\nall endpoint services
 
-        wss -up- WSS
-        https -up- HTTPS
+    webserver -up- WSS
+    webserver -up- HTTPS
 
-        https -down-(File
-        https -down-(Store
-    }
+    webserver -down-(File
+    webserver -down-(Store
 
     component "SessionManager" as sessionsmgmt
     component "AccessManager" as accessmgmt
@@ -44,8 +40,7 @@ package Server {
     sessionsmgmt *--> accessmgmt : Check/aquire/renew\nAPI key
     accessmgmt *--> usermgmt : Check existence\nof user and\nits rights
 
-    wss -down-(Request
-    wss -down-(Store
+    webserver -down-(Request
     sessionsmgmt -down-(Store
     accessmgmt -down-(Store
     accessmgmt -down-(Crypt : consume TRNG

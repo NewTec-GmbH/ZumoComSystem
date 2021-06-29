@@ -31,30 +31,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file main.cpp
+ * @file Robot.cpp
  * @author Luis Moser
- * @brief main function
- * @date 06/17/2021
+ * @brief Robot class
+ * @date 06/25/2021
  * 
  * @{
  */
 
-#include <Arduino.h>
-#include <System.h>
+#include <Robot.h>
 
-/**
- * Setup function which initializes the ComPlatform
- */
-void setup()
+void Robot::resetRobotNow()
 {
-    Serial.begin(115200);
-    System::getInstance().init();
-}
+    /* Pull down RESET line for ROBOT_RESET_TIME */
+    m_io.writeGPIO(ROBOT_RESET_PIN, LOW);
+    delay(ROBOT_RESET_TIME_MS);
+    m_io.writeGPIO(ROBOT_RESET_PIN, HIGH);
 
-/**
- * Loop function which represents the super-loop
- */
-void loop()
-{
-    System::getInstance().handleServices();
+    LOG_DEBUG("Robot will be restarted");
 }

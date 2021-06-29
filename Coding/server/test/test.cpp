@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  * @file test.cpp
  * @author Luis Moser
- * @brief Test suite
+ * @brief Test class
  * @date 06/17/2021
  * 
  * @{
@@ -42,7 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unity.h>
 #include <ArduinoFake.h>
 
-#include <Logger.h>
+#include <Log.h>
 
 /**
  * Test the logging functionality
@@ -55,53 +55,19 @@ void test_Logging()
     Log &logger = Log::getInstance();
 
     /* Test if default log level is set to DEBUG */
-    Log::LogLevel actual = logger.getLogLevel();
-    TEST_ASSERT_EQUAL(Log::LEVEL_DEBUG, actual);
+    Log::LogLevel current = logger.getLogLevel();
+    TEST_ASSERT_EQUAL(Log::LEVEL_DEBUG, current);
 
     /* Test if the log level is set correctly */
     logger.setLogLevel(Log::LEVEL_ERROR);
-    actual = logger.getLogLevel();
-    TEST_ASSERT_EQUAL(Log::LEVEL_ERROR, actual);
+    current = logger.getLogLevel();
+    TEST_ASSERT_EQUAL(Log::LEVEL_ERROR, current);
 
     /* Test if only valid log levels can be set */
     logger.setLogLevel(Log::LEVEL_INFO);
     logger.setLogLevel(static_cast<Log::LogLevel>(4));
-    actual = logger.getLogLevel();
-    TEST_ASSERT_EQUAL(Log::LEVEL_INFO, actual);
-
-    // /* Test if logs are written correctly */
-    // const char *testString = "Test";
-    // logger.setLogLevel(Log::LEVEL_DEBUG);
-    // When(OverloadedMethod(ArduinoFake(Serial), println, size_t(const char *))).AlwaysReturn();
-    // LOG_DEBUG(testString);
-    // LOG_INFO(testString);
-    // LOG_WARN(testString);
-    // LOG_ERROR(testString);
-    // Verify(OverloadedMethod(ArduinoFake(Serial), println, size_t(const char *)).Using(testString)).Exactly(4);
-
-    // logger.setLogLevel(Log::LEVEL_ERROR);
-    // ArduinoFakeReset();
-    // When(OverloadedMethod(ArduinoFake(Serial), println, size_t(const char *))).AlwaysReturn();
-    // LOG_DEBUG(testString);
-    // LOG_INFO(testString);
-    // LOG_WARN(testString);
-    // LOG_ERROR(testString);
-    // Verify(OverloadedMethod(ArduinoFake(Serial), println, size_t(const char *)).Using(testString)).Once();
-}
-
-void test_networkCredentials()
-{
-    /** Test if the network credentials are set correctly **/
-    // String ssid = "MyWifi";
-    //  String psk = "MySecurePassword21091986";
-    // NetworkCredentials net;
-
-    // net.setSSID(ssid);
-    // net.setPSK(psk);
-
-    /** Test if network credentials are properly serialized **/
-
-    /** Test if network credentials are properly deserialized **/
+    current = logger.getLogLevel();
+    TEST_ASSERT_EQUAL(Log::LEVEL_INFO, current);
 }
 
 void setUp()
@@ -113,7 +79,6 @@ int main()
 {
     UNITY_BEGIN();
     RUN_TEST(test_Logging);
-    RUN_TEST(test_networkCredentials);
     UNITY_END();
 
     return 0;

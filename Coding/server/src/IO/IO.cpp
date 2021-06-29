@@ -31,56 +31,60 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file System.h
+ * @file IO.cpp
  * @author Luis Moser
- * @brief System header
- * @date 06/22/2021
+ * @brief IO class
+ * @date 06/21/2021
  * 
  * @{
  */
 
-#ifndef __SYSTEM_H__
-#define __SYSTEM_H__
+#include <IO.h>
 
-class System
+void IO::setPinMode(uint8_t gpio, uint8_t mode)
 {
-public:
-   /** 
-     * Get System instance
-     * 
-     * @return Returns System singleton instance
-     */
-   static System &getInstance()
-   {
-      static System instance;
-      return instance;
-   }
+    pinMode(gpio, mode);
+}
 
-   /**
-    * Initializes the ComPlatform
-    * and starts all services
-    */
-   void init();
+uint8_t IO::readGPIODebounced(uint8_t gpio)
+{
+    /* Code taken and modified from: https://www.arduino.cc/en/Tutorial/BuiltInExamples/Debounce */
 
-   /**
-    * Shuts down all services
-    * and reboots the ComPlatform
-    */
-   void reset();
+    /* The last time a bounce took place */
+    unsigned long lastBounceTime = 0;
 
-private:
-   /**
-    * Default Constructor
-    */
-   System()
-   {
-   }
+    /* The previous GPIO reading. Assume active-low input */
+    uint8_t lastKeyState = HIGH;
 
-   /**
-    * Destructor
-    */
-   ~System()
-   {
-   }
-};
-#endif /** __SYSTEM_H__ */
+    do
+    {
+        uint8_t reading = digitalRead(gpio);
+
+        /* Voltage level transition occured */
+        if (reading != lastKeyState)
+        {
+            /* Stop time from now on to decide if next reading should be ignored */
+            lastBounceTime = millis();
+        }
+
+        /* Check if bouncing timespan elapsed. Evaluate current level */
+        if ((millis() - lastBounceTime) > DEBOUNCE_DELAY_TIME_MS)
+        {
+            return reading;
+        }
+
+        lastKeyState = reading;
+    } while (true);
+}
+
+uint8_t IO::readGPIO(uint8_t gpio)
+{
+    return digitalRead(gpio);
+}
+
+void IO::writeGPIO(uint8_t gpio, uint8_t value)
+{
+    xSemaphoreTake(m_ioMutex, portMAX_DELAY);
+    digitalWrite(gpio, value);
+    xSemaphoreGive(m_ioMutex);
+}

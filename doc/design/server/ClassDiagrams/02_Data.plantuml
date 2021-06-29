@@ -25,7 +25,7 @@ package Data
 
     class KeyCert
     {
-        - m_Cert: SSLCert
+        - m_Cert: SSLCert*
 
         + KeyCert()
         + KeyCert(certificate: SSLCert*)
@@ -52,7 +52,7 @@ package Data
         + loadKeyCert(): bool
         + getNetworkCredentials(): NetworkCredentials
         + setNetworkCredentials(credentials: NetworkCredentials): void
-        + getKeyCert(): KeyCert
+        + getKeyCert(): KeyCert&
         + setKeyCert(keycert: KeyCert): void
     }
     Store "0..*" *--> "1" NVSManager

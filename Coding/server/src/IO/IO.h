@@ -31,78 +31,90 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file NVSManager.h
+ * @file IO.h
  * @author Luis Moser
- * @brief NVSManager header
- * @date 06/17/2021
+ * @brief IO header
+ * @date 06/21/2021
  * 
  * @{
  */
 
-#ifndef __NVSMANAGER_H__
-
 #include <Arduino.h>
-#include <Preferences.h>
+#include <Log.h>
 
-/** Hardware abstraction to easily store and retrieve key-value string pairs */
-class NVSManager
+/** Provides abstraction for IO functionality for ComPlatform */
+class IO
 {
 public:
     /**
+     * Get IO instance
+     * 
+     * @return Returns the IO singleton instance
+     */
+    static IO &getInstance()
+    {
+        static IO instance;
+        return instance;
+    }
+
+    /**
+     * Specifies the GPIO pin direction
+     * 
+     * @param[in] gpio The GPIO pin to be set
+     * @param[in] mode The direction of the GPIO pin
+     */
+    void setPinMode(uint8_t gpio, uint8_t mode);
+
+    /**
+     * Reads the specified GPIO input but also works with bouncing input signals (e.g. from push keys)
+     * 
+     * @param[in] gpio The GPIO pin to be read
+     * @return Returns the read GPIO value
+     */
+    uint8_t readGPIODebounced(uint8_t gpio);
+
+    /**
+     * Reads the specified GPIO input
+     * 
+     * @param[in] gpio The GPIO pin to be read
+     * @return Returns the read GPIO value
+     */
+    uint8_t readGPIO(uint8_t gpio);
+
+    /**
+     * Writes to the specified GPIO output
+     * 
+     * @param[in] gpio The GPIO pin to be written to
+     * @param[in] value The value to be written
+     */
+    void writeGPIO(uint8_t gpio, uint8_t value);
+
+private:
+    /**
      * Default constructor
      */
-    NVSManager();
+    IO()
+    {
+        m_ioMutex = xSemaphoreCreateMutex();
+        if (NULL == m_ioMutex)
+        {
+            LOG_ERROR("IO mutex could not be created!");
+        }
+    }
 
     /**
      * Destructor
      */
-    ~NVSManager();
+    ~IO()
+    {
+    }
 
     /**
-     * Creates a new key-value pair in persistent storage
-     * 
-     * @param[in] key The key name of passed value
-     * @param[in] value The string value to be saved
-     * @return Returns true if successful, false if error occured
+     * Mutex which is used to avoid that two or more concurrent tasks,
+     * which use the IO class, can have write access to the GPIOs at once
      */
-    bool createEntry(String key, String value);
+    SemaphoreHandle_t m_ioMutex;
 
-    /**
-     * Deletes a key-value pair from persistent storage
-     * 
-     * @param[in] key The key-value pair to be removed
-     * @return Returns true if successful, false if error occured
-     */
-    bool deleteEntry(String key);
-
-    /**
-     * Updates an existing value in persistent storage. If the key does not exist, it will be created
-     * 
-     * @param[in] key The key-value pair to be updated
-     * @param[in] value The new string value for the specified key
-     * @return Returns true if successful, false if error occured
-     */
-    bool updateEntry(String key, String value);
-
-    /**
-     * Returns the string value of the key-value pair from persistent storage
-     * 
-     * @param[in] key The key-value pair to be read
-     * @return Returns value in case of success and "null" in case of failure
-     */
-    String readEntry(String key);
-
-    /**
-     * Completely removes all key-value pairs from persistent storage
-     *
-     * @returns Returns true if successful, false if error occured
-     */
-    bool wipeNVS();
-
-private:
-    /* Instance of ESP32 preferences */
-    Preferences m_preferences;
+    /** The timespan between two two level transitions in which level changes are ignored */
+    static const uint8_t DEBOUNCE_DELAY_TIME_MS = 50;
 };
-
-#define __NVSMANAGER_H__
-#endif /** __NVSMANAGER_H__ */

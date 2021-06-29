@@ -40,21 +40,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <NVSManager.h>
-#include <Logger.h>
+#include <Log.h>
 
 NVSManager::NVSManager()
 {
-    /*
-    Open/Create the namespace for
-    key-value pairs with r/w access
-    */
+    /* Open/Create the namespace for key-value pairs with r/w access */
     m_preferences.begin("complatform", false);
     LOG_DEBUG("Opened complatform namespace for NVS");
 }
 
 NVSManager::~NVSManager()
 {
-    // Close the currently opened namespace
+    /* Close the currently opened namespace */
     m_preferences.end();
     LOG_DEBUG("Closed complatform namespacfe for NVS");
 }
@@ -69,11 +66,6 @@ bool NVSManager::createEntry(String key, String value)
     return retCode;
 }
 
-bool NVSManager::updateEntry(String key, String value)
-{
-    return createEntry(key, value);
-}
-
 bool NVSManager::deleteEntry(String key)
 {
     bool retCode = m_preferences.remove(key.c_str());
@@ -82,6 +74,11 @@ bool NVSManager::deleteEntry(String key)
         LOG_ERROR("NVS entry could not be deleted");
     }
     return retCode;
+}
+
+bool NVSManager::updateEntry(String key, String value)
+{
+    return createEntry(key, value);
 }
 
 String NVSManager::readEntry(String key)

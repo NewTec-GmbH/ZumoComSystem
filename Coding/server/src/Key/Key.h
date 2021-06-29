@@ -31,96 +31,82 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file KeyCert.h
+ * @file Key.h
  * @author Luis Moser
- * @brief KeyCert header
- * @date 06/22/2021
+ * @brief Key header
+ * @date 06/25/2021
  * 
  * @{
  */
 
-#ifndef __KEYCERT_H__
-#define __KEYCERT_H__
+#ifndef __KEY_H__
+#define __KEY_H__
 
-#include <SSLCert.hpp>
 #include <Arduino.h>
-#include <ArduinoJson.h>
-#include <Log.h>
+#include <IO.h>
+#include <System.h>
 
-/** Data structure for HTTPS/WSS server which supports JSON serialization */
-class KeyCert
+/** Class for accessing active-low push keys */
+class Key
 {
 public:
     /**
-    * Default Constructor
-    */
-    KeyCert()
-    {
-        m_cert = new httpsserver::SSLCert();
-    }
-
-    /**
-    * Constructor
-    * 
-    * @param[in] certificate The certificate to be saved
-    */
-    KeyCert(httpsserver::SSLCert *certificate)
-    {
-        m_cert = certificate;
-    }
-
-    /**
-    * Destructor
-    */
-    ~KeyCert()
-    {
-        delete m_cert;
-    }
-
-    /**
-    * Generates a new SSLCert
-    * for this class instance
-    * 
-    * @return Returns true if successful, else false
-    */
-    bool generateNewCert();
-
-    /**
-    * Sets a new certificate and private key
-    * 
-    * @param[in] certificate The certificate
-    * to be saved
-    */
-    void setCert(httpsserver::SSLCert *certificate);
-
-    /**
-    * Returns the certificate and private key
-    * 
-    * @return Returns the SSLCert
-    */
-    httpsserver::SSLCert *getCert();
-
-    /** Returns JSON string
+     * Get Key instance
      * 
-     * @return Returns the serialized object as JSON string
+     * @return Returns singleton instance
      */
-    String serialize();
+    static Key &getInstance()
+    {
+        static Key instance;
+        return instance;
+    }
 
-    /** Re-creates object from serialized JSON string
-     * 
-     * @param serial The serialized JSON string
-     * @return Returns true if successful, else false
+    /**
+     * Registers an ISR which resets the ComPlatform system and which is invoked when key is pressed
      */
-    bool deserialize(String serial);
+    void registerSystemReset();
+
+    /**
+     * Checks if the key connected to WIFI_AND_RESET_KEY_PI is being pressed. Automatically debounces the key
+     * 
+     * @return Returns true, if button has been pressed, otherwise false
+     */
+    bool readKey();
 
 private:
-    /** 
-    * The DER-X509 certificate
-    * which stores the private RSA key
-    * as well as the public certificate.
-    * This data structure is used by
-    * the HTTPs/WSS servers
-    */
-    httpsserver::SSLCert *m_cert;
+    /**
+     * Default Constructor
+     */
+    Key()
+    {
+        IO::getInstance().setPinMode(WIFI_AND_RESET_KEY_PIN, INPUT_PULLUP);
+    }
+
+    /**
+     * Destructor
+     */
+    ~Key()
+    {
+    }
+
+    /**
+     * Task which checks the push key level and resets the ComPlatform
+     */
+    static void resetTask(void *parameter);
+
+    /**
+     * ISR which resets the ComPlatform which will be inovked when push key is being pressed
+     */
+    static void systemResetISR();
+
+    /** Reference to IO class */
+    IO &m_io = IO::getInstance();
+
+    /** Specifies push duration for a long-press event */
+    static const uint32_t LONG_PRESS_TIME_MS = 1000;
+
+public:
+    /** The GPIO input pin used for the button which resets the ComPlatform or spawns WiFi*/
+    static const uint8_t WIFI_AND_RESET_KEY_PIN = 0;
 };
-#endif
+#endif /** __KEY_H__ */

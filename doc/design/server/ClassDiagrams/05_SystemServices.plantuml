@@ -19,7 +19,7 @@ package SystemServices {
         + setLogLevel(level: LogLevel): void
         + writeLog(level: LogLevel, msg: const char*): void
     }
-    Log *--> LogLevel
+    Log "0..*" *--> "1" LogLevel
 
     class NVSManager
     {
@@ -34,13 +34,44 @@ package SystemServices {
         + wipeNVS(): bool
     }
 
+    class APCredentials
+    {
+        + AP_SSID: String = "ComPlatform"
+        + AP_PSK: String {readonly} = "XXXXXXXX"
+    }
+
+    class WiFiManager
+    {
+        - m_store: Store&
+        - m_dnsServer: DNSServer*
+        - DNS_PORT: uint8_t {readonly} = 53
+        - m_dnsRetCode: bool = false
+        - HOSTNAME: String {readonly} = "complatform.local"
+        - WIFI_CHANNEL_NO: uint8_t {readonly} = 1
+        - MAX_CLIENT_NO: uint8_t {readonly} = 4
+        - ERROR_REBOOT_DELAY_TIME_MS: uint16_t {readonly} = 2000
+        - WIFI_CONNECT_RETRY_DELAY_MS: uint16_t {readonly} = 500
+        - m_apActive: bool = false
+        - m_staActive: bool = false
+        + WiFiManager()
+        + ~WiFiManager()
+        + startAP(): bool
+        + stopAP(): bool
+        + startSTA(): bool
+        + stopSTA(): bool
+    }
+    WiFiManager ..> APCredentials : uses
+
     class System
     {
+        - m_wifiManager: WiFiManager&
         - System()
         - ~System()
         + {static} getInstance(): System&
         + init(): bool
+        + handleServices(): void
         + reset(): void
     }
+    System ..> WiFiManager : uses
 }
 @enduml

@@ -31,30 +31,49 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file main.cpp
+ * @file Key.cpp
  * @author Luis Moser
- * @brief main function
- * @date 06/17/2021
+ * @brief Key class
+ * @date 06/25/2021
  * 
  * @{
  */
 
-#include <Arduino.h>
-#include <System.h>
+#include <Key.h>
 
-/**
- * Setup function which initializes the ComPlatform
- */
-void setup()
+void Key::registerSystemReset()
 {
-    Serial.begin(115200);
-    System::getInstance().init();
+    attachInterrupt(WIFI_AND_RESET_KEY_PIN, Key::systemResetISR, FALLING);
+    LOG_DEBUG("System-Reset ISR registered");
 }
 
-/**
- * Loop function which represents the super-loop
- */
-void loop()
+bool Key::readKey()
 {
-    System::getInstance().handleServices();
+    return (LOW == m_io.readGPIODebounced(WIFI_AND_RESET_KEY_PIN));
+}
+
+void Key::resetTask(void *parameter)
+{
+    if (true == Key::getInstance().readKey())
+    {
+        System::getInstance().reset();
+    }
+
+    /* Destroy this task */
+    vTaskDelete(NULL);
+}
+
+void Key::systemResetISR()
+{
+    const uint16_t HEAP_SIZE = 16384;
+    const uint8_t PRIORITY = 1;
+
+    /* Create a new FreeRTOS task */
+    xTaskCreate(
+        resetTask,
+        "SystemReset",
+        HEAP_SIZE,
+        NULL,
+        PRIORITY,
+        NULL);
 }

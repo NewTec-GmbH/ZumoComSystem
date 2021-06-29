@@ -31,74 +31,63 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file System.cpp
+ * @file Robot.h
  * @author Luis Moser
- * @brief System class
- * @date 06/22/2021
+ * @brief Robot header
+ * @date 06/25/2021
  * 
  * @{
  */
 
+#ifndef __ROBOT_H__
+#define __ROBOT_H__
+
+#include <Arduino.h>
 #include <IO.h>
-#include <Logger.h>
-#include <Store.h>
-#include <KeyCert.h>
-#include <System.h>
 
-void System::init()
+/** Class for accessing the robot, connected by GPIOs */
+class Robot
 {
-   // Register an ISR for ComPlatform reset on Reset key push
-   IO::getInstance().registerSystemReset();
-   LOG_DEBUG("Reset-ISR registered");
+public:
+    /**
+     * Get Robot instance
+     * 
+     * @return Returns singleton instance
+     */
+    static Robot &getInstance()
+    {
+        static Robot instance;
+        return instance;
+    }
 
-   // Read WiFi key if AP should be spawned
-   bool useAP = IO::getInstance().blockingCheckWifiKeyLongPress();
+    /**
+     * Reset the connected robot with the help of the RESET line which is connected to the GPIOs
+     */
+    void resetRobotNow();
 
-   Store &store = Store::getInstance();
+private:
+    /**
+     * Default Constructor
+     */
+    Robot()
+    {
+        m_io.setPinMode(ROBOT_RESET_PIN, OUTPUT);
+    }
 
-   // Generate and save a new KeyCert
-   bool retCode = store.loadKeyCert();
-   if (false == retCode)
-   {
-      LOG_DEBUG("Missing KeyCert. Generating new SSLCert...");
-      KeyCert keycert = store.getKeyCert();
-      keycert.generateNewCert();
-      store.setKeyCert(keycert);
-      LOG_DEBUG("New KeyCert created");
+    /**
+     * Destructor
+     */
+    ~Robot()
+    {
+    }
 
-      store.saveKeyCert();
-      LOG_DEBUG("New KeyCert saved");
-   }
+    /** Reference to IO class */
+    IO &m_io = IO::getInstance();
 
-   if (true == useAP)
-   {
-      // Init AP
-      LOG_DEBUG("AP spawned");
-   }
-   else
-   {
-      // Load NetworkCredentials
-      if (true == store.loadNetworkCredentials())
-      {
-         // Init STA
-         LOG_DEBUG("STA mode initialized");
-      }
-      else
-      {
-         LOG_ERROR("No NetworkCredentials available");
-         // Init AP
-         LOG_DEBUG("AP spwaned because there are no network credentials available");
-      }
-   }
+    /** The GPIO output pin used to write the RESET line of robot */
+    static const uint8_t ROBOT_RESET_PIN = 2;
 
-   // Load Users
-   // Load Permissions
-   // Init HTTPs Server
-   // Init WSS Server
-}
-
-void System::reset()
-{
-   LOG_DEBUG("ComPlatform will be restarted");
-   ESP.restart();
-}
+    /** The time in ms while RESET line is pulled down */
+    static const uint32_t ROBOT_RESET_TIME_MS = 500;
+};
+#endif /** __ROBOT_H__ */

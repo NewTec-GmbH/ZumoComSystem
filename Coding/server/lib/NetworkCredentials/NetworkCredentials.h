@@ -50,13 +50,19 @@ class NetworkCredentials
 {
 public:
     /** Custom constructor with arguments */
-    NetworkCredentials(String ssid, String psk);
+    NetworkCredentials(String ssid, String psk) : m_ssid(ssid), m_psk(psk)
+    {
+    }
 
     /** Default constructor */
-    NetworkCredentials();
+    NetworkCredentials()
+    {
+    }
 
     /** Destructor */
-    ~NetworkCredentials();
+    ~NetworkCredentials()
+    {
+    }
 
     /** Returns Service Set Identifier 
      * 
@@ -88,12 +94,10 @@ public:
      */
     String serialize();
 
-    /** Re-creates object from
-     * serialized JSON string
+    /** Re-creates object from mserialized JSON string
      * 
      * @param serial The serialized JSON string
-     * @return Returns false in case of failure,
-     * true in case of success
+     * @return Returns false in case of failure, true in case of success
      */
     bool deserialize(String serial);
 
