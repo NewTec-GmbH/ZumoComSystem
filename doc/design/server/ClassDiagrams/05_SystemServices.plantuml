@@ -27,10 +27,11 @@ package SystemServices {
 
         + NVSManager()
         + ~NVSManager()
-        + createEntry(key: String, value: String): bool
+        + putEntry(key: String, value: String): bool
+        + putEntry(key: String, value: uint8_t*, length: size_t): bool
         + deleteEntry(key: String): bool
-        + updateEntry(key: String, value: String): bool
         + readEntry(key: String): String
+        + readEntry(key: String, length: size_t, uint8_t* buffer): bool
         + wipeNVS(): bool
     }
 

@@ -25,34 +25,35 @@ package Data
 
     class KeyCert
     {
-        - m_Cert: SSLCert*
-
+        - m_sslCert: SSLCert*
+        - {static} RSA_KEY_SIZE_BYTE : uin16_t {readonly} = 1190
+        - {static} CERT_SIZE_BYTE: uint16_t {readonly} = 766
         + KeyCert()
-        + KeyCert(certificate: SSLCert*)
         + ~KeyCert()
         + generateNewCert(): bool
-        + setCert(certificate: SSLCert*): void
-        + getCert(): SSLCert*
-        + serialize(): String
-        + deserialize(serial: String): bool
+        + getKeySize(): size_t
+        + getCertSize(): size_t
+        + getKeyData(): const uint8_t*
+        + getCertData(): const uint8_t*
+        + deserialize(uint8_t* keyData, uint8_t* certData): bool
     }
 
     class Store
     {
         - m_nvsmgr: NVSManager
         - m_netCredentials: NetworkCredentials
-        - m_KeyCert: KeyCert
+        - m_sslCert: KeyCert
 
         - Store()
         - ~Store()
         {static} + getInstance(): Store&
         + saveNetworkCredentials(): bool
-        + saveKeyCert(): bool
         + loadNetworkCredentials(): bool
-        + loadKeyCert(): bool
         + getNetworkCredentials(): NetworkCredentials
         + setNetworkCredentials(credentials: NetworkCredentials): void
-        + getKeyCert(): KeyCert&
+        + saveKeyCert(): bool
+        + loadKeyCert(): bool
+        + getKeyCert(): SSLCert&
         + setKeyCert(keycert: KeyCert): void
     }
     Store "0..*" *--> "1" NVSManager

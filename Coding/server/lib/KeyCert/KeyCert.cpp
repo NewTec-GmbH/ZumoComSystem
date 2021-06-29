@@ -47,7 +47,7 @@ bool KeyCert::generateNewCert()
     int retCode = createSelfSignedCert(
         *m_cert,
         httpsserver::KEYSIZE_2048,
-        "CN=complatform.local,O=ComPlatform,C=DE",
+        "CN=complatform.local,O=NT,C=DE",
         "20210101000000",
         "20310101000000");
 

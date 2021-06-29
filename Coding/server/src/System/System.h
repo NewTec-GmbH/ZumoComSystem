@@ -84,6 +84,11 @@ private:
     WiFiManager m_wifimgr;
 
     /**
+     * Specifies how long the service handling task should be put to sleep
+     */
+    const uint8_t SERVICE_HANDLING_SLEEP_TIME_MS = 1;
+
+    /**
     * Default Constructor
     */
     System()

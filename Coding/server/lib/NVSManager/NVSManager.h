@@ -59,30 +59,31 @@ public:
     ~NVSManager();
 
     /**
-     * Creates a new key-value pair in persistent storage
+     * Creates or updates a new string key-value pair in persistent storage
      * 
      * @param[in] key The key name of passed value
      * @param[in] value The string value to be saved
-     * @return Returns true if successful, false if error occured
+     * @return Returns true if successful, else false
      */
-    bool createEntry(String key, String value);
+    bool putEntry(String key, String value);
+
+    /**
+     * Creates or updates a new binary key-value pair in persistent storage
+     * 
+     * @param[in] key The key name of passed value
+     * @param[in] value The binary value to be saved
+     * @param[in] length The length in bytes of the data to be written
+     * @return Returns true if successful, else false
+     */
+    bool putEntry(String key, uint8_t *value, size_t length);
 
     /**
      * Deletes a key-value pair from persistent storage
      * 
      * @param[in] key The key-value pair to be removed
-     * @return Returns true if successful, false if error occured
+     * @return Returns true if successful, else false
      */
     bool deleteEntry(String key);
-
-    /**
-     * Updates an existing value in persistent storage. If the key does not exist, it will be created
-     * 
-     * @param[in] key The key-value pair to be updated
-     * @param[in] value The new string value for the specified key
-     * @return Returns true if successful, false if error occured
-     */
-    bool updateEntry(String key, String value);
 
     /**
      * Returns the string value of the key-value pair from persistent storage
@@ -93,9 +94,19 @@ public:
     String readEntry(String key);
 
     /**
+     * Returns the binary value of the key-value pair from persistent storage
+     * 
+     * @param[in] key The key-value pair to be read
+     * @param[in] length The lenght in bytes of the passed buffer
+     * @param[out] buffer The buffer to be filled with the read data
+     * @return Returns true if successful, else false
+     */
+    bool readEntry(String key, size_t length, uint8_t* buffer);
+
+    /**
      * Completely removes all key-value pairs from persistent storage
      *
-     * @returns Returns true if successful, false if error occured
+     * @returns Returns true if successful, else false
      */
     bool wipeNVS();
 

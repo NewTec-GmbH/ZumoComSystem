@@ -43,7 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 bool Store::saveNetworkCredentials()
 {
-    bool retCode = m_nvsmgr.updateEntry("netCredentials", m_netCredentials.serialize());
+    bool retCode = m_nvsmgr.putEntry("netCredentials", m_netCredentials.serialize());
     if (false == retCode)
     {
         LOG_ERROR("Could not save NetworkCredentials to disk");
@@ -53,7 +53,7 @@ bool Store::saveNetworkCredentials()
 
 bool Store::saveKeyCert()
 {
-    bool retCode = m_nvsmgr.updateEntry("keyCert", m_keyCert.serialize());
+    bool retCode = m_nvsmgr.putEntry("keyCert", m_keyCert.serialize());
     if (false == retCode)
     {
         LOG_ERROR("Could not save KeyCert to disk");

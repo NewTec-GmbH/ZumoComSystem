@@ -56,14 +56,29 @@ NVSManager::~NVSManager()
     LOG_DEBUG("Closed complatform namespacfe for NVS");
 }
 
-bool NVSManager::createEntry(String key, String value)
+bool NVSManager::putEntry(String key, String value)
 {
     bool retCode = (m_preferences.putString(key.c_str(), value) > 0);
-    if (retCode == false)
+    if (false == retCode)
     {
-        LOG_ERROR("Could not create/update NVS entry");
+        LOG_ERROR("Could not create/update string NVS entry");
     }
     return retCode;
+}
+
+bool NVSManager::putEntry(String key, uint8_t *value, size_t length)
+{
+    bool retCode = (m_preferences.putBytes(key.c_str(), value, length) == length);
+    if (false == retCode)
+    {
+        LOG_ERROR("Could not create/update binary NVS entry");
+    }
+    return retCode;
+}
+
+bool NVSManager::readEntry(String key, size_t length, uint8_t *buffer)
+{
+    return (m_preferences.getBytes(key.c_str(), buffer, length) == length);
 }
 
 bool NVSManager::deleteEntry(String key)
@@ -74,11 +89,6 @@ bool NVSManager::deleteEntry(String key)
         LOG_ERROR("NVS entry could not be deleted");
     }
     return retCode;
-}
-
-bool NVSManager::updateEntry(String key, String value)
-{
-    return createEntry(key, value);
 }
 
 String NVSManager::readEntry(String key)
