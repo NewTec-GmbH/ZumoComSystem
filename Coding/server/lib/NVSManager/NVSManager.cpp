@@ -76,7 +76,7 @@ bool NVSManager::putEntry(String key, uint8_t *value, size_t length)
     return retCode;
 }
 
-bool NVSManager::readEntry(String key, size_t length, uint8_t *buffer)
+bool NVSManager::readEntry(String key, uint8_t *buffer, size_t length)
 {
     return (m_preferences.getBytes(key.c_str(), buffer, length) == length);
 }

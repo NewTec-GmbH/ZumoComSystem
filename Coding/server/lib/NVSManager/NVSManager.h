@@ -97,11 +97,11 @@ public:
      * Returns the binary value of the key-value pair from persistent storage
      * 
      * @param[in] key The key-value pair to be read
-     * @param[in] length The lenght in bytes of the passed buffer
      * @param[out] buffer The buffer to be filled with the read data
+     * @param[in] length The lenght in bytes of the passed buffer
      * @return Returns true if successful, else false
      */
-    bool readEntry(String key, size_t length, uint8_t* buffer);
+    bool readEntry(String key, uint8_t *buffer, size_t length);
 
     /**
      * Completely removes all key-value pairs from persistent storage

@@ -5,6 +5,15 @@ package SystemService
     {
     }
 }
+
+package httpsserver
+{
+    class SSLCert
+    {
+
+    }
+}
+
 package Data
 {
     class NetworkCredentials
@@ -25,24 +34,27 @@ package Data
 
     class KeyCert
     {
-        - m_sslCert: SSLCert*
-        - {static} RSA_KEY_SIZE_BYTE : uin16_t {readonly} = 1190
-        - {static} CERT_SIZE_BYTE: uint16_t {readonly} = 766
+
+        + {static} RSA_KEY_SIZE_BYTE : size_t {readonly} = 1190
+        + {static} CERT_SIZE_BYTE: size_t {readonly} = 766
+        - m_sslCert: httpsserver::SSLCert
+        - {static} m_binaryKey: uint8_t[]
+        - {static} m_binaryCert: uint8_t[]
+        - m_certGenerated: bool = false
         + KeyCert()
         + ~KeyCert()
         + generateNewCert(): bool
-        + getKeySize(): size_t
-        + getCertSize(): size_t
-        + getKeyData(): const uint8_t*
-        + getCertData(): const uint8_t*
-        + deserialize(uint8_t* keyData, uint8_t* certData): bool
+        + serialize(keyBuffer: uint8_t*, certBuffer: uint8_t*): void
+        + deserialize(keyBuffer: uint8_t*, certBuffer: uint8_t*): void
+        - freeSSLMemory(): void
     }
+    KeyCert "0..*" *--> "1" SSLCert
 
     class Store
     {
         - m_nvsmgr: NVSManager
         - m_netCredentials: NetworkCredentials
-        - m_sslCert: KeyCert
+        - m_keyCert: KeyCert
 
         - Store()
         - ~Store()

@@ -40,12 +40,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <KeyCert.h>
-#include <base64.hpp>
+
+uint8_t KeyCert::m_binaryKey[RSA_KEY_SIZE_BYTE] = {0};
+uint8_t KeyCert::m_binaryCert[CERT_SIZE_BYTE] = {0};
+
+KeyCert::KeyCert()
+{
+}
+
+KeyCert::~KeyCert()
+{
+    freeSSLMemory();
+}
 
 bool KeyCert::generateNewCert()
 {
+    freeSSLMemory();
+
     int retCode = createSelfSignedCert(
-        *m_cert,
+        m_sslCert,
         httpsserver::KEYSIZE_2048,
         "CN=complatform.local,O=NT,C=DE",
         "20210101000000",
@@ -53,122 +66,47 @@ bool KeyCert::generateNewCert()
 
     if (0 != retCode)
     {
-        LOG_ERROR("Could not generate a new certificate");
+        m_certGenerated = false;
+        LOG_ERROR("Could not generate a new certificate!");
+    }
+    else
+    {
+        m_certGenerated = true;
     }
     return (0 == retCode);
 }
 
-void KeyCert::setCert(httpsserver::SSLCert *certificate)
+void KeyCert::serialize(uint8_t *keyBuffer, uint8_t *certBuffer)
 {
-    m_cert = certificate;
-}
-
-httpsserver::SSLCert *KeyCert::getCert()
-{
-    return m_cert;
-}
-
-String KeyCert::serialize()
-{
-    /*
-    Convert the binary-encoded private key and certificate to Base64 to store the
-    private key and certificate as ASCII strings
-    */
-    unsigned char *binaryKey = m_cert->getPKData();
-    uint16_t keyLength = m_cert->getPKLength();
-
-    unsigned char *binaryCert = m_cert->getCertData();
-    uint16_t certLength = m_cert->getCertLength();
-
-    uint16_t keyBase64StringLength = encode_base64_length(keyLength) + 1;
-    uint16_t certBase64StringLength = encode_base64_length(certLength) + 1;
-
-    unsigned char *keyBase64String = new unsigned char[keyBase64StringLength];
-    unsigned char *certBase64String = new unsigned char[certBase64StringLength];
-
-    uint32_t writtenKeyBase64StringBytes = encode_base64(binaryKey, keyLength, keyBase64String) + 1;
-    uint32_t writtenCertBase64StringBytes = encode_base64(binaryCert, certLength, certBase64String) + 1;
-
-    String serialized;
-
-    if ((writtenKeyBase64StringBytes == keyBase64StringLength) && (writtenCertBase64StringBytes == certBase64StringLength))
+    if (true == m_certGenerated)
     {
-        const uint8_t DOC_SIZE = 4;
-        const uint8_t size = JSON_OBJECT_SIZE(DOC_SIZE);
-        StaticJsonDocument<size> jsonDocument;
-
-        /*
-        Pass the const/non-volatile char* pointers to ArduinoJson so that 
-        ArduinoJson will not copy/duplicate the string values
-        */
-        jsonDocument["keyLength"] = (const uint16_t)keyLength;
-        jsonDocument["certLength"] = (const uint16_t)certLength;
-        jsonDocument["keyData"] = (const char *)keyBase64String;
-        jsonDocument["certData"] = (const char *)certBase64String;
-
-        serializeJson(jsonDocument, serialized);
-
-        delete[] keyBase64String;
-        delete[] certBase64String;
+        memcpy(keyBuffer, m_sslCert.getPKData(), RSA_KEY_SIZE_BYTE);
+        memcpy(certBuffer, m_sslCert.getCertData(), CERT_SIZE_BYTE);
     }
     else
     {
-        delete[] keyBase64String;
-        delete[] certBase64String;
-
-        LOG_ERROR("Could not serialize key and certificate");
-        serialized = "null";
+        memcpy(keyBuffer, m_binaryKey, RSA_KEY_SIZE_BYTE);
+        memcpy(certBuffer, m_binaryCert, CERT_SIZE_BYTE);
     }
-    return serialized;
 }
 
-bool KeyCert::deserialize(String serial)
+void KeyCert::deserialize(uint8_t *keyBuffer, uint8_t *certBuffer)
 {
-    /* Reserve memory on stack for JSON structure which consists of two key-value pairs */
-    const uint8_t DOC_SIZE = 64;
-    StaticJsonDocument<DOC_SIZE> jsonDocument;
+    freeSSLMemory();
 
-    uint32_t bufferSize = strlen(serial.c_str()) + 1;
-    char *buffer = new char[bufferSize];
-    serial.toCharArray(buffer, bufferSize);
+    memcpy(m_binaryKey, keyBuffer, RSA_KEY_SIZE_BYTE);
+    memcpy(m_binaryCert, certBuffer, CERT_SIZE_BYTE);
 
-    DeserializationError jsonRet = deserializeJson(jsonDocument, buffer);
+    m_sslCert.setPK(m_binaryKey, RSA_KEY_SIZE_BYTE);
+    m_sslCert.setCert(m_binaryCert, CERT_SIZE_BYTE);
+}
 
-    bool retCode = false;
-    if (DeserializationError::Ok == jsonRet)
+void KeyCert::freeSSLMemory()
+{
+    /* Free up memory which might have been allocated previously after generating a certificate */
+    if ((true == m_certGenerated) && (nullptr != m_sslCert.getPKData()) && (nullptr != m_sslCert.getCertData()))
     {
-        uint16_t keyLength = jsonDocument["keyLength"];
-        uint16_t certLength = jsonDocument["certLength"];
-        const char *keyBase64String = jsonDocument["keyData"];
-        const char *certBase64String = jsonDocument["certData"];
-
-        /* Do not free these variables as pointers will be passed to SSLCert*/
-        unsigned char *binaryKey = new unsigned char[keyLength];
-        unsigned char *binaryCert = new unsigned char[certLength];
-
-        uint32_t writtenKeyBytes = decode_base64((unsigned char *)keyBase64String, binaryKey);
-        uint32_t writtenCertBytes = decode_base64((unsigned char *)certBase64String, binaryCert);
-
-        delete[] buffer;
-
-        if (writtenKeyBytes == keyLength && writtenCertBytes == certLength)
-        {
-            m_cert->setPK(binaryKey, keyLength);
-            m_cert->setCert(binaryCert, certLength);
-            retCode = true;
-        }
-        else
-        {
-            LOG_ERROR("Error on decoding the KeyCert Base64 string");
-            retCode = false;
-        }
+        m_sslCert.clear();
+        m_certGenerated = false;
     }
-    else
-    {
-        delete[] buffer;
-        LOG_ERROR("Error on deserializing the KeyCert JSON object");
-        LOG_ERROR(jsonRet.c_str());
-        retCode = false;
-    }
-    return retCode;
 }

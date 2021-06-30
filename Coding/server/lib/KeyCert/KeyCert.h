@@ -44,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <SSLCert.hpp>
 #include <Arduino.h>
-#include <ArduinoJson.h>
 #include <Log.h>
 
 /** Data structure for HTTPS/WSS server which supports JSON serialization */
@@ -54,73 +53,63 @@ public:
     /**
     * Default Constructor
     */
-    KeyCert()
-    {
-        m_cert = new httpsserver::SSLCert();
-    }
-
-    /**
-    * Constructor
-    * 
-    * @param[in] certificate The certificate to be saved
-    */
-    KeyCert(httpsserver::SSLCert *certificate)
-    {
-        m_cert = certificate;
-    }
+    KeyCert();
 
     /**
     * Destructor
     */
-    ~KeyCert()
-    {
-        delete m_cert;
-    }
+    ~KeyCert();
 
     /**
-    * Generates a new SSLCert
-    * for this class instance
+    * Generates a new SSLCert for this class instance
     * 
     * @return Returns true if successful, else false
     */
     bool generateNewCert();
 
     /**
-    * Sets a new certificate and private key
-    * 
-    * @param[in] certificate The certificate
-    * to be saved
-    */
-    void setCert(httpsserver::SSLCert *certificate);
+     * Serializes this KeyCert object.
+     * 
+     * @param[out] keyBuffer The output buffer to be filled with the serialized binary RSA key. Allocate memory previously
+     * @param[out] certBuffer The output buffer to be filled with the serialized binary SSL cert. Allocate memory previously
+     */
+    void serialize(uint8_t *keyBuffer, uint8_t *certBuffer);
 
     /**
-    * Returns the certificate and private key
-    * 
-    * @return Returns the SSLCert
-    */
-    httpsserver::SSLCert *getCert();
-
-    /** Returns JSON string
+     * Deserializes this KeyCert object. All passed data is copied. Free passed buffers after this call
      * 
-     * @return Returns the serialized object as JSON string
+     * @param[in] keyBuffer The input buffer which containts the serialized binary RSA key.
+     * @param[in] certBuffer The input buffer which containts the serialized binary SSL cert.
      */
-    String serialize();
+    void deserialize(uint8_t *keyBuffer, uint8_t *certBuffer);
 
-    /** Re-creates object from serialized JSON string
-     * 
-     * @param serial The serialized JSON string
-     * @return Returns true if successful, else false
+private:
+    /**
+     * Helper method which cleans up the SSLCert internal's memory which has been dynamically allocated
      */
-    bool deserialize(String serial);
+    void freeSSLMemory();
+
+public:
+    /** Size of the binary RSA key in bytes */
+    static const size_t RSA_KEY_SIZE_BYTE = 1190;
+
+    /** Size of the binary cert in bytes */
+    static const size_t CERT_SIZE_BYTE = 766;
 
 private:
     /** 
-    * The DER-X509 certificate
-    * which stores the private RSA key
-    * as well as the public certificate.
-    * This data structure is used by
-    * the HTTPs/WSS servers
+    * The DER-X509 certificate which stores the private RSA key as well as the public certificate.
+    * This data structure is used by the HTTPs/WSS servers
     */
-    httpsserver::SSLCert *m_cert;
+    httpsserver::SSLCert m_sslCert;
+
+    /** Stores the binary RSA key */
+    static uint8_t m_binaryKey[RSA_KEY_SIZE_BYTE];
+
+    /** Stores the binary SSL certificate */
+    static uint8_t m_binaryCert[CERT_SIZE_BYTE];
+
+    /** Saves if a SSL certificate has been generated for this instance */
+    bool m_certGenerated = false;
 };
 #endif

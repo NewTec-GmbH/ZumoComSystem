@@ -51,16 +51,6 @@ bool Store::saveNetworkCredentials()
     return retCode;
 }
 
-bool Store::saveKeyCert()
-{
-    bool retCode = m_nvsmgr.putEntry("keyCert", m_keyCert.serialize());
-    if (false == retCode)
-    {
-        LOG_ERROR("Could not save KeyCert to disk");
-    }
-    return retCode;
-}
-
 bool Store::loadNetworkCredentials()
 {
     String json = m_nvsmgr.readEntry("netCredentials");
@@ -72,15 +62,50 @@ bool Store::loadNetworkCredentials()
     return retCode;
 }
 
+bool Store::saveKeyCert()
+{
+    uint8_t *keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
+    uint8_t *certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
+
+    m_keyCert.serialize(keyBuffer, certBuffer);
+
+    bool putRSAResult = m_nvsmgr.putEntry("rsakey", keyBuffer, KeyCert::RSA_KEY_SIZE_BYTE);
+    bool putCertResult = m_nvsmgr.putEntry("sslcert", certBuffer, KeyCert::CERT_SIZE_BYTE);
+
+    delete[] keyBuffer;
+    delete[] certBuffer;
+
+    bool success = (true == putRSAResult) && (true == putCertResult);
+    if (false == success)
+    {
+        LOG_ERROR("Could not save KeyCert to disk");
+    }
+    return success;
+}
+
 bool Store::loadKeyCert()
 {
-    String json = m_nvsmgr.readEntry("keyCert");
-    bool retCode = ((String("null") != json) && (true == m_keyCert.deserialize(json)));
-    if (false == retCode)
+    uint8_t *keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
+    uint8_t *certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
+
+    bool getRSAResult = m_nvsmgr.readEntry("rsakey", keyBuffer, KeyCert::RSA_KEY_SIZE_BYTE);
+    bool getCertResult = m_nvsmgr.readEntry("sslcert", certBuffer, KeyCert::CERT_SIZE_BYTE);
+
+    bool success = (true == getRSAResult) && (true == getCertResult);
+
+    if (true == success)
+    {
+        m_keyCert.deserialize(keyBuffer, certBuffer);
+    }
+    else
     {
         LOG_ERROR("Could not load KeyCert from disk");
     }
-    return retCode;
+
+    delete[] keyBuffer;
+    delete[] certBuffer;
+
+    return success;
 }
 
 NetworkCredentials Store::getNetworkCredentials()
