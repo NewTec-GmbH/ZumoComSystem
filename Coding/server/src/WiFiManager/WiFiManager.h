@@ -57,7 +57,6 @@ public:
      */
     WiFiManager()
     {
-        m_dnsServer = new DNSServer();
     }
 
     /**
@@ -65,7 +64,6 @@ public:
      */
     ~WiFiManager()
     {
-        delete m_dnsServer;
     }
 
     /**
@@ -119,7 +117,7 @@ private:
     String AP_PASSPHRASE = "21091986";
 
     /** Instance of DNS server for AP mode */
-    DNSServer *m_dnsServer;
+    DNSServer m_dnsServer;
 
     /** Used port for DNS service */
     const uint8_t DNS_PORT = 53;

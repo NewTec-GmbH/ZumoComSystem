@@ -86,7 +86,7 @@ bool WiFiManager::startAP()
             LOG_DEBUG("IP-Address: " + ipaddr.toString());
 
             /* Register A-Record which translates to current IP address (DNS) */
-            m_dnsRetCode = m_dnsServer->start(DNS_PORT, HOSTNAME.c_str(), ipaddr);
+            m_dnsRetCode = m_dnsServer.start(DNS_PORT, HOSTNAME.c_str(), ipaddr);
             if (true == m_dnsRetCode)
             {
                 LOG_DEBUG("DNS server successfully started");
@@ -118,7 +118,7 @@ void WiFiManager::handleAP_DNS()
 {
     if ((true == m_apActive) && (true == m_dnsRetCode))
     {
-        m_dnsServer->processNextRequest();
+        m_dnsServer.processNextRequest();
     }
 }
 
@@ -128,7 +128,7 @@ bool WiFiManager::stopAP()
     bool retCode = false;
     if (true == m_apActive)
     {
-        m_dnsServer->stop();
+        m_dnsServer.stop();
         retCode = WiFi.softAPdisconnect(false);
         if (true == retCode)
         {
