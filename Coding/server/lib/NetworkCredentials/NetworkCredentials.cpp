@@ -80,7 +80,7 @@ String NetworkCredentials::serialize()
     Reserve memory on stack for JSON structure which consists of two key-value pairs.
     The ssid and the passphrase are not copied into the StaticJsonDocument by default. 
     */
-    const uint8_t KEY_VALUE_PAIRS = 2;
+    const size_t KEY_VALUE_PAIRS = 2;
     StaticJsonDocument<JSON_OBJECT_SIZE(KEY_VALUE_PAIRS)> jsonDocument;
 
     /*
@@ -104,7 +104,7 @@ bool NetworkCredentials::deserialize(String serial)
     The value specified in DOC_SIZE has been computed with the help of the ArduinoJson Assistant v6
     which is accessible at: https://arduinojson.org/v6/assistant/
     */
-    const uint8_t DOC_SIZE = 192;
+    const size_t DOC_SIZE = 192;
     StaticJsonDocument<DOC_SIZE> jsonDocument;
     DeserializationError jsonRet = deserializeJson(jsonDocument, serial);
 
