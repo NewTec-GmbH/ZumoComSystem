@@ -40,7 +40,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <WiFiManager.h>
-#include <APCredentials.h>
 #include <WiFi.h>
 #include <System.h>
 
@@ -70,13 +69,13 @@ bool WiFiManager::startAP()
         LOG_DEBUG("New SSID to be used: " + AP_SSID);
 
         /* Start AP and DNS services */
-        m_apActive = WiFi.softAP(AP_SSID.c_str(), AP_PSK.c_str(), WIFI_CHANNEL_NO, false, MAX_CLIENT_NO);
+        m_apActive = WiFi.softAP(AP_SSID.c_str(), AP_PASSPHRASE.c_str(), WIFI_CHANNEL_NO, false, MAX_CLIENT_NO);
         IPAddress ipaddr = WiFi.softAPIP();
 
         if (true == m_apActive)
         {
             LOG_DEBUG("AP successfully started");
-            LOG_DEBUG("SSID: " + AP_SSID + ", PSK: " + AP_PSK);
+            LOG_DEBUG("SSID: " + AP_SSID + ", PSK: " + AP_PASSPHRASE);
             LOG_DEBUG("IP-Address: " + ipaddr.toString());
 
             /* Register A-Record which translates to current IP address (DNS) */

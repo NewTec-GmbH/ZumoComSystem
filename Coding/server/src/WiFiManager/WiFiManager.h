@@ -112,6 +112,12 @@ private:
     /** Reference to store */
     Store &m_store = Store::getInstance();
 
+    /** The SSID to be used for AP mode **/
+    String AP_SSID = "ComPlatform";
+
+    /** The passphrase to be used for AP mode **/
+    String AP_PASSPHRASE = "21091986";
+
     /** Instance of DNS server for AP mode */
     DNSServer *m_dnsServer;
 

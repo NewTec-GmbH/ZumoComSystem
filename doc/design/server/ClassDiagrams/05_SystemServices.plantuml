@@ -35,15 +35,11 @@ package SystemServices {
         + wipeNVS(): bool
     }
 
-    class APCredentials
-    {
-        + AP_SSID: String = "ComPlatform"
-        + AP_PSK: String {readonly} = "XXXXXXXX"
-    }
-
     class WiFiManager
     {
         - m_store: Store&
+        - AP_SSID: String = "ComPlatform"
+        - AP_PASSPHRASE: String = "21091986"
         - m_dnsServer: DNSServer*
         - DNS_PORT: uint8_t {readonly} = 53
         - m_dnsRetCode: bool = false
@@ -62,7 +58,6 @@ package SystemServices {
         + startSTA(): bool
         + stopSTA(): bool
     }
-    WiFiManager ..> APCredentials : uses
 
     class System
     {
