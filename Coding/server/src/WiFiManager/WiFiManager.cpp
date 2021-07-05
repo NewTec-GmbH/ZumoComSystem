@@ -48,33 +48,8 @@ bool WiFiManager::startAP()
     /* The IP address to be used for AP mode */
     IPAddress ipaddr;
 
-    /* The default SSID to be used for AP mode */
-    String originalSSID;
-
-    /* Numeric limits for random generator for generating SSID */
-    const uint8_t LOWER_LIMIT = 0;
-    const uint8_t UPPER_LIMIT = 10;
-
     if ((false == m_staActive) && (false == m_apActive))
     {
-        /* Generate new SSID in case of conflict */
-        originalSSID = AP_SSID;
-
-        while (true == checkConflictingSSIDs(AP_SSID))
-        {
-            LOG_WARN("Conflicting SSID found. Generating new random SSID...");
-
-            /* Overwrite previously generated SSID and replace with initial SSID */
-            AP_SSID = originalSSID;
-            for (uint8_t randNo = 0; randNo < 8; randNo++)
-            {
-                AP_SSID += random(LOWER_LIMIT, UPPER_LIMIT);
-            }
-            LOG_DEBUG("Trying SSID: " + AP_SSID + "...");
-        }
-
-        LOG_DEBUG("New SSID to be used: " + AP_SSID);
-
         /* Start AP and DNS services */
         m_apActive = WiFi.softAP(AP_SSID.c_str(), AP_PASSPHRASE.c_str(), WIFI_CHANNEL_NO, false, MAX_CLIENT_NO);
         ipaddr = WiFi.softAPIP();
@@ -211,21 +186,6 @@ bool WiFiManager::stopSTA()
     else
     {
         LOG_ERROR("Could not shut down STA mode because STA mode is not active");
-    }
-    return retCode;
-}
-
-bool WiFiManager::checkConflictingSSIDs(String ssid)
-{
-    uint16_t numberOfNearbyAPs = WiFi.scanNetworks();
-    bool retCode = false;
-    for (uint16_t currentSSIDNo = 0; currentSSIDNo < numberOfNearbyAPs; currentSSIDNo++)
-    {
-        if (WiFi.SSID(currentSSIDNo) == ssid)
-        {
-            retCode = true;
-            break;
-        }
     }
     return retCode;
 }

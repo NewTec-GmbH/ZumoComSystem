@@ -100,13 +100,6 @@ public:
     bool stopSTA();
 
 private:
-    /**
-     * Checks if there are any WiFi networks around which use the passed SSID
-     * 
-     * @return Returns true if SSID is existing, else false
-     */
-    bool checkConflictingSSIDs(String ssid);
-
     /** Reference to store */
     Store &m_store = Store::getInstance();
 
