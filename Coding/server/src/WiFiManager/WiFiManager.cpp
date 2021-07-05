@@ -135,7 +135,6 @@ bool WiFiManager::stopAP()
     }
     else
     {
-        retCode = false;
         LOG_ERROR("Could not shut down AP mode because AP is not active");
     }
     return retCode;
@@ -203,7 +202,6 @@ bool WiFiManager::stopSTA()
     }
     else
     {
-        retCode = false;
         LOG_ERROR("Could not shut down STA mode because STA mode is not active");
     }
     return retCode;
