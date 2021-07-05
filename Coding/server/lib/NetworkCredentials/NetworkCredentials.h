@@ -49,11 +49,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class NetworkCredentials
 {
 public:
-    /** Custom constructor with arguments */
-    NetworkCredentials(String ssid, String passphrase) : m_ssid(ssid), m_passphrase(passphrase)
-    {
-    }
-
     /** Default constructor */
     NetworkCredentials()
     {
@@ -75,9 +70,10 @@ public:
      * Sets Service Set Identifier. Please note that the lenght of the SSID should not exceed 32 printable chars
      * 
      * @param[in] ssid The SSID to be set
+     * @param[in] staMode Specifies if credentials are to be used in STA mode.
      * @return Returns true if the SSID is well-formed, else false
      */
-    bool setSSID(String ssid);
+    bool setSSID(String ssid, bool staMode);
 
     /** 
      * Returns the WiFi passphrase
@@ -88,6 +84,8 @@ public:
 
     /** 
      * Sets the passphrase used for the WiFi. Please note that the length of the passphrase should range between 8 and 63 printable chars
+     * if this NetworkCredentials instance is used for STA mode and limited in the range between 8 and 50 printable chars if the AP mode is
+     * used because the unique device ID will be appended for SSID uniqueness.
      * 
      * @param[in] passphrase The passphrase to be set
      * @return Returns true if the passphrase is well-formed, else false

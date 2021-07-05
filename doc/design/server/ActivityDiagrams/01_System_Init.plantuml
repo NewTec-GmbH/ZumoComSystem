@@ -1,7 +1,10 @@
 @startuml
 (*) --> "Turn on ComPlatform"
 --> "Register Reset-ISR"
---> "Blocking read of WiFi/Reset key"
+--> "Generate unique SSID for AP mode"
+--> "Load Users"
+--> "Load Permissions"
+--> "Read WiFi/Reset key"
 
 if "WiFi/Reset key pressed for two seconds" then
 --> [true] "Set UseAP = true"
@@ -25,14 +28,12 @@ else
     --> [false] "Load NetworkCredentials"
     if "Credetentials available" then
         --> [true] "Init STA"
-        --> "Load Users"
+        --> "Init HTTPs Server"
     else 
         --> [false] initap
     endif
 endif
 
---> "Load Users"
---> "Load Permissions"
 --> "Init HTTPs Server"
 --> "Init WSS Server"
 --> (*)

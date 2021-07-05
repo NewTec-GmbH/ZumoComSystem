@@ -48,16 +48,18 @@ bool WiFiManager::startAP()
     /* The IP address to be used for AP mode */
     IPAddress ipaddr;
 
+    NetworkCredentials apCredentials = m_store.getAPCredentials();
+
     if ((false == m_staActive) && (false == m_apActive))
     {
         /* Start AP and DNS services */
-        m_apActive = WiFi.softAP(AP_SSID.c_str(), AP_PASSPHRASE.c_str(), WIFI_CHANNEL_NO, false, MAX_CLIENT_NO);
+        m_apActive = WiFi.softAP(apCredentials.getSSID().c_str(), apCredentials.getPassphrase().c_str(), WIFI_CHANNEL_NO, false, MAX_CLIENT_NO);
         ipaddr = WiFi.softAPIP();
 
         if (true == m_apActive)
         {
             LOG_DEBUG("AP successfully started");
-            LOG_DEBUG("SSID: " + AP_SSID + ", PSK: " + AP_PASSPHRASE);
+            LOG_DEBUG("SSID: " + apCredentials.getSSID() + ", PSK: " + apCredentials.getPassphrase());
             LOG_DEBUG("IP-Address: " + ipaddr.toString());
 
             /* Register A-Record which translates to current IP address (DNS) */
@@ -123,12 +125,11 @@ bool WiFiManager::stopAP()
 
 bool WiFiManager::startSTA()
 {
-    NetworkCredentials credentials;
+    NetworkCredentials staCredentials = m_store.getSTACredentials();
 
     if ((false == m_apActive) && (false == m_staActive))
     {
-        credentials = m_store.getNetworkCredentials();
-        WiFi.begin(credentials.getSSID().c_str(), credentials.getPassphrase().c_str());
+        WiFi.begin(staCredentials.getSSID().c_str(), staCredentials.getPassphrase().c_str());
 
         /* Try to connect until there is a connection */
         while (WL_CONNECTED != WiFi.status())
@@ -141,7 +142,7 @@ bool WiFiManager::startSTA()
         {
             m_staActive = true;
             LOG_DEBUG("STA mode successfully started");
-            LOG_DEBUG("SSID: " + credentials.getSSID());
+            LOG_DEBUG("SSID: " + staCredentials.getSSID());
             LOG_DEBUG("IP-Address: " + WiFi.localIP().toString());
 
             /* Register A-Record which translates to current IP address (mDNS) */

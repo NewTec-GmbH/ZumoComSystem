@@ -63,41 +63,40 @@ public:
     }
 
     /**
-    * Initializes the ComPlatform and starts all services
-    */
+     * Initializes the ComPlatform and starts all services
+     */
     void init();
 
     /**
-    * This method needs to be called in loop() so that all required services can receive CPU time
-    */
+     * This method needs to be called in loop() so that all required services can receive CPU time
+     */
     void handleServices();
 
     /**
-    * Shuts down all services and reboots the ComPlatform
-    */
+     * Shuts down all services and reboots the ComPlatform
+     */
     void reset();
 
 private:
-    /**
-    * Instance of WiFiManager
-    */
+    /** Instance of WiFiManager **/
     WiFiManager m_wifimgr;
 
-    /**
-     * Specifies how long the service handling task should be put to sleep
-     */
+    /** Reference to store */
+    Store &m_store = Store::getInstance();
+
+    /** Specifies how long the service handling task should be put to sleep **/
     const uint8_t SERVICE_HANDLING_SLEEP_TIME_MS = 1;
 
     /**
-    * Default Constructor
-    */
+     * Default Constructor
+     */
     System()
     {
     }
 
     /**
-    * Destructor
-    */
+     * Destructor
+     */
     ~System()
     {
     }

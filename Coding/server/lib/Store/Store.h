@@ -63,11 +63,18 @@ public:
     }
 
     /** 
-     * Save NetworkCredentials to disk
+     * Save NetworkCredentials for STA mode to disk
      * 
      * @return Returns true if successful, false if error occured
      */
-    bool saveNetworkCredentials();
+    bool saveSTACredentials();
+
+    /**
+     * Load NetworkCredentials for STA mode from disk to store
+     * 
+     * @return Returns true if succesful, false if error occured
+     */
+    bool loadSTACredentials();
 
     /** 
      * Save KeyCert to disk
@@ -77,13 +84,6 @@ public:
     bool saveKeyCert();
 
     /**
-     * Load NetworkCredentials from disk to store
-     * 
-     * @return Returns true if succesful, false if error occured
-     */
-    bool loadNetworkCredentials();
-
-    /**
      * Load KeyCert from disk to store
      * 
      * @return Returns true if succesful, false if error occured
@@ -91,18 +91,32 @@ public:
     bool loadKeyCert();
 
     /** 
-     * Get the network credentials 
+     * Get the network credentials for STA mode
      * 
      * @return Returns the NetworkCredentials instance
      */
-    NetworkCredentials getNetworkCredentials();
+    NetworkCredentials getSTACredentials();
 
     /**
-     * Set the network credentials
+     * Set the network credentials for STA mode
      * 
-     * @param[in] credentials The new NetworkCredentials instance to be saved
+     * @param[in] credentials The new NetworkCredentials instance to be set
      */
-    void setNetworkCredentials(NetworkCredentials credentials);
+    void setSTACredentials(NetworkCredentials credentials);
+
+    /** 
+     * Get the network credentials for AP mode
+     * 
+     * @return Returns the NetworkCredentials instance
+     */
+    NetworkCredentials getAPCredentials();
+
+    /**
+     * Set the network credentials for AP mode
+     * 
+     * @param[in] credentials The new NetworkCredentials instance to be set
+     */
+    void setAPCredentials(NetworkCredentials credentials);
 
     /** 
      * Get the private RSA key and the public certificate
@@ -132,8 +146,11 @@ private:
     /** Instance of NVSManager for making data persistent */
     NVSManager m_nvsmgr;
 
-    /** Instance of NetworkCredentials to manage SSID and PSK */
-    NetworkCredentials m_netCredentials;
+    /** Instance of NetworkCredentials which contains SSID and passphrase for STA mode */
+    NetworkCredentials m_staCredentials;
+
+    /** Instance of NetworkCredentials which contains SSID and passphrase for AP mode */
+    NetworkCredentials m_apCredentials;
 
     /**
      * Instance of KeyCert to store private RSA key as well as

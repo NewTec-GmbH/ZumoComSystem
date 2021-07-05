@@ -45,29 +45,34 @@ void System::init()
     /* Specifies time how long ComPlatform should wait when error occured before reboot happens */
     const uint16_t ERROR_REBOOT_DELAY_TIME_MS = 2000;
 
-    bool isAccessPointRequested = false;
     bool retCode = false;
 
-    Store &store = Store::getInstance();
+    /* Instance which contains private RSA key and SSL cert for WSS and HTTPs servers */
     KeyCert keycert;
+
+    /* Generate the unique SSID for this specific ComPlatform system */
+    NetworkCredentials apCredentials;
+    apCredentials.setSSID("ComPlatform", false);
+    apCredentials.setPassphrase("21091986");
+    m_store.setAPCredentials(apCredentials);
 
     /* Register an ISR for ComPlatform reset on Reset key push */
     Key::getInstance().registerSystemReset();
     LOG_DEBUG("Reset-ISR registered");
 
     /* Read WiFi key if AP should be spawned */
-    isAccessPointRequested = Key::getInstance().readKey();
+    bool isAccessPointRequested = Key::getInstance().readKey();
 
     /* Generate and save a new KeyCert */
-    retCode = store.loadKeyCert();
+    retCode = m_store.loadKeyCert();
     if (false == retCode)
     {
         LOG_DEBUG("Missing KeyCert. Generating new SSLCert...");
-        keycert = store.getKeyCert();
+        keycert = m_store.getKeyCert();
         if (true == keycert.generateNewCert())
         {
             LOG_DEBUG("New KeyCert created");
-            if (true == store.saveKeyCert())
+            if (true == m_store.saveKeyCert())
             {
                 LOG_DEBUG("New KeyCert saved");
             }
@@ -91,7 +96,7 @@ void System::init()
     else
     {
         /* Load NetworkCredentials */
-        if (true == store.loadNetworkCredentials())
+        if (true == m_store.loadSTACredentials())
         {
             m_wifimgr.startSTA();
         }

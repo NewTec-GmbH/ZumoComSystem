@@ -41,9 +41,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Store.h>
 
-bool Store::saveNetworkCredentials()
+bool Store::saveSTACredentials()
 {
-    bool retCode = m_nvsmgr.putEntry("netCredentials", m_netCredentials.serialize());
+    bool retCode = m_nvsmgr.putEntry("netCredentials", m_staCredentials.serialize());
     if (false == retCode)
     {
         LOG_ERROR("Could not save NetworkCredentials to disk");
@@ -51,15 +51,45 @@ bool Store::saveNetworkCredentials()
     return retCode;
 }
 
-bool Store::loadNetworkCredentials()
+bool Store::loadSTACredentials()
 {
     String json = m_nvsmgr.readEntry("netCredentials");
-    bool retCode = ((String("null") != json) && (true == m_netCredentials.deserialize(json)));
+    bool retCode = ((String("null") != json) && (true == m_staCredentials.deserialize(json)));
     if (false == retCode)
     {
         LOG_ERROR("Could not load NetworkCredentials from disk");
     }
     return retCode;
+}
+
+NetworkCredentials Store::getSTACredentials()
+{
+    return m_staCredentials;
+}
+
+void Store::setSTACredentials(NetworkCredentials credentials)
+{
+    m_staCredentials = credentials;
+}
+
+NetworkCredentials Store::getAPCredentials()
+{
+    return m_apCredentials;
+}
+
+void Store::setAPCredentials(NetworkCredentials credentials)
+{
+    m_apCredentials = credentials;
+}
+
+KeyCert &Store::getKeyCert()
+{
+    return m_keyCert;
+}
+
+void Store::setKeyCert(KeyCert keycert)
+{
+    m_keyCert = keycert;
 }
 
 bool Store::saveKeyCert()
@@ -112,24 +142,4 @@ bool Store::loadKeyCert()
     delete[] certBuffer;
 
     return retCode;
-}
-
-NetworkCredentials Store::getNetworkCredentials()
-{
-    return m_netCredentials;
-}
-
-void Store::setNetworkCredentials(NetworkCredentials credentials)
-{
-    m_netCredentials = credentials;
-}
-
-KeyCert &Store::getKeyCert()
-{
-    return m_keyCert;
-}
-
-void Store::setKeyCert(KeyCert keycert)
-{
-    m_keyCert = keycert;
 }

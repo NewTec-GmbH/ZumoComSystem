@@ -47,14 +47,23 @@ String NetworkCredentials::getSSID()
     return m_ssid;
 }
 
-bool NetworkCredentials::setSSID(String ssid)
+bool NetworkCredentials::setSSID(String ssid, bool staMode)
 {
-    bool retCode = false;
-    if (ssid.length() <= MAX_SSID_LENGTH_CHARS)
+    /* Number of appended SSID chars which are reserved when using AP mode to avoid SSID conflicts */
+    uint8_t RESERVED_DEVICE_ID_CHARS = 13;
+
+    bool retCode = true;
+    if ((true == staMode) && (ssid.length() <= MAX_SSID_LENGTH_CHARS))
     {
         m_ssid = ssid;
-        retCode = true;
     }
+    else if ((false == staMode) && (ssid.length() <= (MAX_SSID_LENGTH_CHARS - RESERVED_DEVICE_ID_CHARS)))
+    {
+        /* Append a unique 6 byte device MAC address in hex format (12 chars) */
+        m_ssid = ssid + "_" + String(static_cast<unsigned long>(ESP.getEfuseMac()), HEX);
+    }
+    else
+        retCode = false;
     return retCode;
 }
 
@@ -109,7 +118,7 @@ bool NetworkCredentials::deserialize(String serial)
     const size_t DOC_SIZE = 192;
     StaticJsonDocument<DOC_SIZE> jsonDocument;
     DeserializationError jsonRet = deserializeJson(jsonDocument, serial);
-    
+
     bool retCode = false;
 
     if (DeserializationError::Ok == jsonRet)
