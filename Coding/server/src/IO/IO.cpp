@@ -48,17 +48,19 @@ void IO::setPinMode(uint8_t gpio, uint8_t mode)
 
 uint8_t IO::readGPIODebounced(uint8_t gpio)
 {
-    /* Code taken and modified from: https://www.arduino.cc/en/Tutorial/BuiltInExamples/Debounce */
-
     /* The last time a bounce took place */
     unsigned long lastBounceTime = 0;
 
     /* The previous GPIO reading. Assume active-low input */
     uint8_t lastKeyState = HIGH;
 
+    /* Stores the current GPIO reading */
+    uint8_t reading = -1;
+
+    /* Code taken and modified from: https://www.arduino.cc/en/Tutorial/BuiltInExamples/Debounce */
     do
     {
-        uint8_t reading = digitalRead(gpio);
+        reading = digitalRead(gpio);
 
         /* Voltage level transition occured */
         if (reading != lastKeyState)

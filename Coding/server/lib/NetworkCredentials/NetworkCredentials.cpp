@@ -83,6 +83,9 @@ String NetworkCredentials::serialize()
     const size_t KEY_VALUE_PAIRS = 2;
     StaticJsonDocument<JSON_OBJECT_SIZE(KEY_VALUE_PAIRS)> jsonDocument;
 
+    /* The string to be used which will containt the JSON string */
+    String serialized;
+
     /*
     Pass the const/non-volatile char* pointers to ArduinoJson so that ArduinoJson 
     will not copy/duplicate the string values
@@ -90,7 +93,6 @@ String NetworkCredentials::serialize()
     jsonDocument["ssid"] = m_ssid.c_str();
     jsonDocument["passphrase"] = m_passphrase.c_str();
 
-    String serialized;
     serializeJson(jsonDocument, serialized);
     LOG_DEBUG("Network credentials successfully serialized to JSON");
     return serialized;
@@ -107,8 +109,9 @@ bool NetworkCredentials::deserialize(String serial)
     const size_t DOC_SIZE = 192;
     StaticJsonDocument<DOC_SIZE> jsonDocument;
     DeserializationError jsonRet = deserializeJson(jsonDocument, serial);
-
+    
     bool retCode = false;
+
     if (DeserializationError::Ok == jsonRet)
     {
         m_ssid = jsonDocument["ssid"].as<String>();

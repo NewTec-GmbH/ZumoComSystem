@@ -67,20 +67,25 @@ bool Store::saveKeyCert()
     uint8_t *keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
     uint8_t *certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
 
-    m_keyCert.serialize(keyBuffer, certBuffer);
+    /* Stores if writing to NVS was successful */
+    bool putRSAResult = false;
+    bool putCertResult = false;
 
-    bool putRSAResult = m_nvsmgr.putEntry("rsakey", keyBuffer, KeyCert::RSA_KEY_SIZE_BYTE);
-    bool putCertResult = m_nvsmgr.putEntry("sslcert", certBuffer, KeyCert::CERT_SIZE_BYTE);
+    bool retCode = false;
+
+    m_keyCert.serialize(keyBuffer, certBuffer);
+    putRSAResult = m_nvsmgr.putEntry("rsakey", keyBuffer, KeyCert::RSA_KEY_SIZE_BYTE);
+    putCertResult = m_nvsmgr.putEntry("sslcert", certBuffer, KeyCert::CERT_SIZE_BYTE);
 
     delete[] keyBuffer;
     delete[] certBuffer;
 
-    bool success = (true == putRSAResult) && (true == putCertResult);
-    if (false == success)
+    retCode = (true == putRSAResult) && (true == putCertResult);
+    if (false == retCode)
     {
         LOG_ERROR("Could not save KeyCert to disk");
     }
-    return success;
+    return retCode;
 }
 
 bool Store::loadKeyCert()
@@ -88,12 +93,13 @@ bool Store::loadKeyCert()
     uint8_t *keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
     uint8_t *certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
 
+    /* Stores if reading from NVS was successful */
     bool getRSAResult = m_nvsmgr.readEntry("rsakey", keyBuffer, KeyCert::RSA_KEY_SIZE_BYTE);
     bool getCertResult = m_nvsmgr.readEntry("sslcert", certBuffer, KeyCert::CERT_SIZE_BYTE);
 
-    bool success = (true == getRSAResult) && (true == getCertResult);
+    bool retCode = (true == getRSAResult) && (true == getCertResult);
 
-    if (true == success)
+    if (true == retCode)
     {
         m_keyCert.deserialize(keyBuffer, certBuffer);
     }
@@ -105,7 +111,7 @@ bool Store::loadKeyCert()
     delete[] keyBuffer;
     delete[] certBuffer;
 
-    return success;
+    return retCode;
 }
 
 NetworkCredentials Store::getNetworkCredentials()

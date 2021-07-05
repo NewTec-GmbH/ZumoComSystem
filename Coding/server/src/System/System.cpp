@@ -42,21 +42,28 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 void System::init()
 {
+    /* Specifies time how long ComPlatform should wait when error occured before reboot happens */
+    const uint16_t ERROR_REBOOT_DELAY_TIME_MS = 2000;
+
+    bool isAccessPointRequested = false;
+    bool retCode = false;
+
+    Store &store = Store::getInstance();
+    KeyCert keycert;
+
     /* Register an ISR for ComPlatform reset on Reset key push */
     Key::getInstance().registerSystemReset();
     LOG_DEBUG("Reset-ISR registered");
 
     /* Read WiFi key if AP should be spawned */
-    bool isAccessPointRequested = Key::getInstance().readKey();
-
-    Store &store = Store::getInstance();
+    isAccessPointRequested = Key::getInstance().readKey();
 
     /* Generate and save a new KeyCert */
-    bool retCode = store.loadKeyCert();
+    retCode = store.loadKeyCert();
     if (false == retCode)
     {
         LOG_DEBUG("Missing KeyCert. Generating new SSLCert...");
-        KeyCert keycert = store.getKeyCert();
+        keycert = store.getKeyCert();
         if (true == keycert.generateNewCert())
         {
             LOG_DEBUG("New KeyCert created");
@@ -72,7 +79,6 @@ void System::init()
         else
         {
             LOG_ERROR("Could not generate a new SSL certificate. Rebooting in 2 seconds...");
-            const uint16_t ERROR_REBOOT_DELAY_TIME_MS = 2000;
             delay(ERROR_REBOOT_DELAY_TIME_MS);
             System::getInstance().reset();
         }
@@ -107,7 +113,7 @@ void System::init()
 
 void System::handleServices()
 {
-    uint8_t SLEEP_TIME_MS = 1;
+    const uint8_t SLEEP_TIME_MS = 1;
 
     m_wifimgr.handleAP_DNS();
     delay(SLEEP_TIME_MS);

@@ -45,17 +45,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 bool WiFiManager::startAP()
 {
+    /* The IP address to be used for AP mode */
+    IPAddress ipaddr;
+
+    /* The default SSID to be used for AP mode */
+    String originalSSID;
+
+    /* Numeric limits for random generator for generating SSID */
+    const uint8_t LOWER_LIMIT = 0;
+    const uint8_t UPPER_LIMIT = 10;
+
     if ((false == m_staActive) && (false == m_apActive))
     {
         /* Generate new SSID in case of conflict */
-        String originalSSID = AP_SSID;
+        originalSSID = AP_SSID;
 
         while (true == checkConflictingSSIDs(AP_SSID))
         {
             LOG_WARN("Conflicting SSID found. Generating new random SSID...");
-
-            const uint8_t LOWER_LIMIT = 0;
-            const uint8_t UPPER_LIMIT = 10;
 
             /* Overwrite previously generated SSID and replace with initial SSID */
             AP_SSID = originalSSID;
@@ -70,7 +77,7 @@ bool WiFiManager::startAP()
 
         /* Start AP and DNS services */
         m_apActive = WiFi.softAP(AP_SSID.c_str(), AP_PASSPHRASE.c_str(), WIFI_CHANNEL_NO, false, MAX_CLIENT_NO);
-        IPAddress ipaddr = WiFi.softAPIP();
+        ipaddr = WiFi.softAPIP();
 
         if (true == m_apActive)
         {
@@ -141,9 +148,11 @@ bool WiFiManager::stopAP()
 
 bool WiFiManager::startSTA()
 {
+    NetworkCredentials credentials;
+
     if ((false == m_apActive) && (false == m_staActive))
     {
-        NetworkCredentials credentials = m_store.getNetworkCredentials();
+        credentials = m_store.getNetworkCredentials();
         WiFi.begin(credentials.getSSID().c_str(), credentials.getPassphrase().c_str());
 
         /* Try to connect until there is a connection */
