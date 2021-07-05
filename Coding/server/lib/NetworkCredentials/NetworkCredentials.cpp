@@ -47,34 +47,48 @@ String NetworkCredentials::getSSID()
     return m_ssid;
 }
 
-void NetworkCredentials::setSSID(String ssid)
+bool NetworkCredentials::setSSID(String ssid)
 {
-    m_ssid = ssid;
+    bool retCode = false;
+    if (ssid.length() <= MAX_SSID_LENGTH_CHARS)
+    {
+        m_ssid = ssid;
+        retCode = true;
+    }
+    return retCode;
 }
 
-String NetworkCredentials::getPSK()
+String NetworkCredentials::getPassphrase()
 {
-    return m_psk;
+    return m_passphrase;
 }
 
-void NetworkCredentials::setPSK(String psk)
+bool NetworkCredentials::setPassphrase(String passphrase)
 {
-    m_psk = psk;
+    bool retCode = false;
+    if ((passphrase.length() >= MIN_PASSPHRASE_LENGTH_CHARS) && (passphrase.length() <= MAX_PASSPHRASE_LENGTH_CHARS))
+    {
+        m_passphrase = passphrase;
+        retCode = true;
+    }
+    return retCode;
 }
 
 String NetworkCredentials::serialize()
 {
-    /* Reserve memory on stack for JSON structure which consists of two key-value pairs */
-    const uint8_t DOC_SIZE = 2;
-    const uint8_t size = JSON_OBJECT_SIZE(DOC_SIZE);
-    StaticJsonDocument<size> jsonDocument;
+    /* 
+    Reserve memory on stack for JSON structure which consists of two key-value pairs.
+    The ssid and the passphrase are not copied into the StaticJsonDocument by default. 
+    */
+    const uint8_t KEY_VALUE_PAIRS = 2;
+    StaticJsonDocument<JSON_OBJECT_SIZE(KEY_VALUE_PAIRS)> jsonDocument;
 
     /*
-    Pass the const/non-volatile char* pointers to ArduinoJson so that ArduinoJson
+    Pass the const/non-volatile char* pointers to ArduinoJson so that ArduinoJson 
     will not copy/duplicate the string values
     */
     jsonDocument["ssid"] = m_ssid.c_str();
-    jsonDocument["psk"] = m_psk.c_str();
+    jsonDocument["passphrase"] = m_passphrase.c_str();
 
     String serialized;
     serializeJson(jsonDocument, serialized);
@@ -84,34 +98,27 @@ String NetworkCredentials::serialize()
 
 bool NetworkCredentials::deserialize(String serial)
 {
-    /* Reserve memory on stack for JSON structure which consists of two key-value pairs */
-    const uint8_t DOC_SIZE = 32;
-    StaticJsonDocument<DOC_SIZE> jsonDocument;
-
-    /*
-    Get a dynamic r/w buffer for deserialization so that ArduinoJson can replace JSON syntax
-    with \0 terminators for each string value
+    /* 
+    Reserve memory on stack for JSON structure which consists of two key-value pairs.
+    The ssid and the passphrase are copied into the StaticJsonDocument by default.
+    The value specified in DOC_SIZE has been computed with the help of the ArduinoJson Assistant v6
+    which is accessible at: https://arduinojson.org/v6/assistant/
     */
-    uint32_t bufferSize = strlen(serial.c_str()) + 1;
-    char *buffer = new char[bufferSize];
-    serial.toCharArray(buffer, bufferSize);
-
-    DeserializationError jsonRet = deserializeJson(jsonDocument, buffer);
+    const uint8_t DOC_SIZE = 192;
+    StaticJsonDocument<DOC_SIZE> jsonDocument;
+    DeserializationError jsonRet = deserializeJson(jsonDocument, serial);
 
     bool retCode = false;
     if (DeserializationError::Ok == jsonRet)
     {
         m_ssid = jsonDocument["ssid"].as<String>();
-        m_psk = jsonDocument["psk"].as<String>();
-        delete[] buffer;
+        m_passphrase = jsonDocument["passphrase"].as<String>();
         retCode = true;
     }
     else
     {
-        delete[] buffer;
         LOG_ERROR("Error on deserializing the NetworkCredentials JSON object");
         LOG_ERROR(jsonRet.c_str());
-        retCode = false;
     }
     return retCode;
 }

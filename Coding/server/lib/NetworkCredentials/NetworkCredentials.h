@@ -50,7 +50,7 @@ class NetworkCredentials
 {
 public:
     /** Custom constructor with arguments */
-    NetworkCredentials(String ssid, String psk) : m_ssid(ssid), m_psk(psk)
+    NetworkCredentials(String ssid, String passphrase) : m_ssid(ssid), m_passphrase(passphrase)
     {
     }
 
@@ -64,37 +64,45 @@ public:
     {
     }
 
-    /** Returns Service Set Identifier 
+    /** 
+     * Returns the Service Set Identifier (SSID)
      * 
      * @return Returns the SSID string
     */
     String getSSID();
 
-    /** Sets Service Set Identifier
+    /** 
+     * Sets Service Set Identifier. Please note that the lenght of the SSID should not exceed 32 printable chars
      * 
      * @param[in] ssid The SSID to be set
+     * @return Returns true if the SSID is well-formed, else false
      */
-    void setSSID(String ssid);
+    bool setSSID(String ssid);
 
-    /** Returns Pre Shared Key
+    /** 
+     * Returns the WiFi passphrase
      * 
-     * @return Returns the PSK string
+     * @return Returns the passphrase string
      */
-    String getPSK();
+    String getPassphrase();
 
-    /** Sets Pre Shared Key
+    /** 
+     * Sets the passphrase used for the WiFi. Please note that the length of the passphrase should range between 8 and 63 printable chars
      * 
-     * @param[in] psk The PSK to be set
+     * @param[in] passphrase The passphrase to be set
+     * @return Returns true if the passphrase is well-formed, else false
      */
-    void setPSK(String psk);
+    bool setPassphrase(String passphrase);
 
-    /** Returns JSON string
+    /** 
+     * Returns JSON string
      * 
      * @return Returns the serialized object in JSON string
      */
     String serialize();
 
-    /** Re-creates object from mserialized JSON string
+    /** 
+     * Re-creates object from serialized JSON string
      * 
      * @param serial The serialized JSON string
      * @return Returns false in case of failure, true in case of success
@@ -102,10 +110,19 @@ public:
     bool deserialize(String serial);
 
 private:
+    /** Maximum number of printable chars (excluding null terminator) for SSIDs according to IEEE 802.11 */
+    static const uint8_t MAX_SSID_LENGTH_CHARS = 31;
+
+    /** Minimum number of printable chars (excluding null terminator) for passphrases according to IEEE 802.11*/
+    static const uint8_t MIN_PASSPHRASE_LENGTH_CHARS = 8;
+
+    /** Maximum number of printable chars (excluding null terminator) for passphrases according to IEEE 802.11*/
+    static const uint8_t MAX_PASSPHRASE_LENGTH_CHARS = 63;
+
     /** The SSID to be stored */
     String m_ssid;
 
-    /** The PSK to be stored */
-    String m_psk;
+    /** The WiFi passphrase to be stored */
+    String m_passphrase;
 };
 #endif /** __NETWORKCREDENTIALS_H__ */

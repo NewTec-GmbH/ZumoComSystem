@@ -146,7 +146,7 @@ bool WiFiManager::startSTA()
     if ((false == m_apActive) && (false == m_staActive))
     {
         NetworkCredentials credentials = m_store.getNetworkCredentials();
-        WiFi.begin(credentials.getSSID().c_str(), credentials.getPSK().c_str());
+        WiFi.begin(credentials.getSSID().c_str(), credentials.getPassphrase().c_str());
 
         /* Try to connect until there is a connection */
         while (WL_CONNECTED != WiFi.status())

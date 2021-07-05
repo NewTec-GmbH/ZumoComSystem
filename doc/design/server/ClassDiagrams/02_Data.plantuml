@@ -18,16 +18,19 @@ package Data
 {
     class NetworkCredentials
     {
+        - {static} MAX_SSID_LENGTH_CHARS {readonly} = 31
+        - {static} MIN_PASSPHRASE_LENGTH_CHARS {readonly} = 8
+        - {static} MAX_PASSPHRASE_LENGTH_CHARS {readonly} = 63
         - m_ssid: String
         - m_psk: String
 
-        + NetworkCredentials(ssid: String, psk: String)
+        + NetworkCredentials(ssid: String, passphrase: String)
         + NetworkCredentials()
         + ~NetworkCredentials()
         + getSSID(): String
-        + setSSID(ssid: String): void
-        + getPSK(): String
-        + setPSK(psk: String): void
+        + setSSID(ssid: String): bool
+        + getPassphrase(): String
+        + setPassphrase(passphrase: String): bool
         + serialize(): String
         + deserialize(serial: String): bool
     }
