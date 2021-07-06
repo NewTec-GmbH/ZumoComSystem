@@ -47,6 +47,30 @@ package SystemServices {
     }
     NVSManager "0..*" *--> "1" Preferences
 
+    enum FileMode
+    {
+        READ,
+        WRITE,
+        READWRITE
+    }
+
+    class FileManager
+    {
+        + FileManager()
+        + ~FileManager()
+        + openFile(filepath: String, mode: FileMode, isBinary: bool): bool
+        + isOpened(): bool
+        + closeFile(): bool
+        + readLine(lineNo: uint32_t): String
+        + readByte(byteOffset: uint32_t): uint8_t*
+        + writeByte(byteOffset: uint32_t, buffer: uint8_t*): bool
+        + {static} getFileSize(filepath: String): uint32_t
+        + {static} getAllFileNames(): std::vector<String>
+        + {static} getNoOfLines(): uint32_t
+        + {static} fileExists(filepath: String): bool
+    }
+    FileManager ..> FileMode : uses
+
     class WiFiManager
     {
         - m_store: Store&
