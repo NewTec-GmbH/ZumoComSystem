@@ -176,7 +176,7 @@ void System::genKeyCertTask(void *parameter)
 void System::registerKeyCertGenTask()
 {
     /* Big stack required, otherwise RSA2048 key generation would override stack canary */
-    const uint16_t HEAP_SIZE = 16384;
+    const uint16_t STACK_SIZE = 16384;
 
     /* Use lowest possible priority because this task does not have a blocking system call */
     const uint8_t PRIORITY = 0;
@@ -187,7 +187,7 @@ void System::registerKeyCertGenTask()
     xTaskCreatePinnedToCore(
         genKeyCertTask,
         "KeyCertGen",
-        HEAP_SIZE,
+        STACK_SIZE,
         NULL,
         PRIORITY,
         NULL,
