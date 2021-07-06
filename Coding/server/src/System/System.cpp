@@ -40,62 +40,37 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <System.h>
 
+SemaphoreHandle_t System::m_genKeyCertSemaphore = {0};
+
 void System::init()
 {
-    /* Specifies time how long ComPlatform should wait when error occured before reboot happens */
-    const uint16_t ERROR_REBOOT_DELAY_TIME_MS = 2000;
-
-    bool retCode = false;
-
-    /* Instance which contains private RSA key and SSL cert for WSS and HTTPs servers */
-    KeyCert keycert;
-
-    /* Generate the unique SSID for this specific ComPlatform system */
     NetworkCredentials apCredentials;
-    apCredentials.setSSID("ComPlatform", false);
-    apCredentials.setPassphrase("21091986");
-    m_store.setAPCredentials(apCredentials);
 
     /* Register an ISR for ComPlatform reset on Reset key push */
     Key::getInstance().registerSystemReset();
     LOG_DEBUG("Reset-ISR registered");
 
+    LOG_DEBUG("Init/setup task running on core #" + String(xPortGetCoreID()));
+
+    /* Initialize and aquire binary semaphore */
+    m_genKeyCertSemaphore = xSemaphoreCreateBinary();
+
+    /* Check if a KeyCert exists, if not, generate new one asynchronously */
+    registerKeyCertGenTask();
+
+    /* Generate the unique SSID for this specific ComPlatform system */
+    apCredentials.setSSID("ComPlatform", false);
+    apCredentials.setPassphrase("21091986");
+    m_store.setAPCredentials(apCredentials);
+
     /* Read WiFi key if AP should be spawned */
-    bool isAccessPointRequested = Key::getInstance().readKey();
-
-    /* Generate and save a new KeyCert */
-    retCode = m_store.loadKeyCert();
-    if (false == retCode)
-    {
-        LOG_DEBUG("Missing KeyCert. Generating new SSLCert...");
-        keycert = m_store.getKeyCert();
-        if (true == keycert.generateNewCert())
-        {
-            LOG_DEBUG("New KeyCert created");
-            if (true == m_store.saveKeyCert())
-            {
-                LOG_DEBUG("New KeyCert saved");
-            }
-            else
-            {
-                LOG_ERROR("Could not save the created SSL certificate to disk");
-            }
-        }
-        else
-        {
-            LOG_ERROR("Could not generate a new SSL certificate. Rebooting in 2 seconds...");
-            delay(ERROR_REBOOT_DELAY_TIME_MS);
-            System::getInstance().reset();
-        }
-    }
-
-    if (true == isAccessPointRequested)
+    if (true == Key::getInstance().readKey())
     {
         m_wifimgr.startAP();
     }
     else
     {
-        /* Load NetworkCredentials */
+        /* Load NetworkCredentials from disk */
         if (true == m_store.loadSTACredentials())
         {
             m_wifimgr.startSTA();
@@ -108,26 +83,101 @@ void System::init()
         }
     }
 
-    LOG_DEBUG("ComPlatform successfully booted up!");
-
     /* Load Users */
     /* Load Permissions */
+
+    /* Await KeyCert generation task execution */
+    xSemaphoreTake(m_genKeyCertSemaphore, portMAX_DELAY);
+    xSemaphoreGive(m_genKeyCertSemaphore);
+
     /* Init HTTPs Server */
     /* Init WSS Server */
-}
 
-void System::handleServices()
-{
-    const uint8_t SLEEP_TIME_MS = 1;
-
-    m_wifimgr.handleAP_DNS();
-    delay(SLEEP_TIME_MS);
+    LOG_DEBUG("ComPlatform successfully booted up!");
 }
 
 void System::reset()
 {
-    LOG_DEBUG("ComPlatform will be restarted");
+    LOG_DEBUG("ComPlatform will be restarted now...");
     m_wifimgr.stopAP();
     m_wifimgr.stopSTA();
     ESP.restart();
+}
+
+void System::handleServices()
+{
+    static const uint8_t SLEEP_TIME_MS = 1;
+    m_wifimgr.handleAP_DNS();
+    delay(SLEEP_TIME_MS);
+}
+
+void System::genKeyCertTask(void *parameter)
+{
+    Store &store = Store::getInstance();
+    KeyCert keyCert;
+
+    LOG_DEBUG("KeyCert generation task running on core #" + String(xPortGetCoreID()));
+
+    /* Generate and save a new KeyCert */
+    if (false == store.loadKeyCert())
+    {
+        LOG_DEBUG("Missing KeyCert. Generating new SSLCert...");
+
+        keyCert = store.getKeyCert();
+
+        if (true == keyCert.generateNewCert())
+        {
+            LOG_DEBUG("New KeyCert created");
+
+            if (true == store.saveKeyCert())
+            {
+                LOG_DEBUG("New KeyCert saved");
+            }
+            else
+            {
+                LOG_ERROR("Could not save the created SSL certificate to disk");
+            }
+        }
+        else
+        {
+            LOG_ERROR("Could not generate a new SSL certificate. Rebooting in 2 seconds...");
+
+            const uint16_t ERROR_REBOOT_DELAY_TIME_MS = 2000;
+            delay(ERROR_REBOOT_DELAY_TIME_MS);
+            System::getInstance().reset();
+        }
+
+        LOG_DEBUG("New KeyCert successfully created");
+    }
+    else
+    {
+        LOG_DEBUG("KeyCert successfully loaded from disk!");
+    }
+
+    /* Notify init task about finished task */
+    xSemaphoreGive(m_genKeyCertSemaphore);
+
+    /* Destroy this task */
+    vTaskDelete(NULL);
+}
+
+void System::registerKeyCertGenTask()
+{
+    /* Big stack required, otherwise RSA2048 key generation would override stack canary */
+    const uint16_t HEAP_SIZE = 16384;
+
+    /* Use lowest possible priority because this task does not have a blocking system call */
+    const uint8_t PRIORITY = 0;
+
+    /* Pin task to core 1 to avoid CPU time starvation of idle task */
+    const uint8_t CPU_CORE = 1;
+
+    xTaskCreatePinnedToCore(
+        genKeyCertTask,
+        "KeyCertGen",
+        HEAP_SIZE,
+        NULL,
+        PRIORITY,
+        NULL,
+        CPU_CORE);
 }
