@@ -1,39 +1,35 @@
 @startuml
 (*) --> "Turn on ComPlatform"
 --> "Register Reset-ISR"
---> "Generate unique SSID for AP mode"
---> "Load Users"
---> "Load Permissions"
+--> === S1 ===
+--> "Start KeyCert generation task"
+--> "Load/set KeyCert from disk"
+
+if "KeyCert available" then
+    --> [true] === S2 ===
+else 
+    --> [false] "Generate/set new KeyCert"
+    --> "Save new KeyCert to disk"
+    --> === S2 ===
+endif
+
+=== S1 === --> "Generate unique SSID for AP mode"
 --> "Read WiFi/Reset key"
 
 if "WiFi/Reset key pressed for two seconds" then
---> [true] "Set UseAP = true"
---> "Load KeyCert" as loadkeycert
-else
---> [false] "Set UseAP = false"
---> loadkeycert
-endif
-
-if "KeyCert available" then
-    --> [true] "Check UseAP"
-else 
-    --> [false] "Generate new KeyCert"
-    --> "Save new KeyCert"
-    --> "Check UseAP"
-endif
-
-if "UseAP is" then
     --> [true] "Init AP" as initap
-else 
-    --> [false] "Load NetworkCredentials"
+else
+    --> [false] "Load NetworkCredentials from disk"
     if "Credetentials available" then
         --> [true] "Init STA"
-        --> "Init HTTPs Server"
-    else 
+        --> "Load Users from disk"
+else 
         --> [false] initap
-    endif
 endif
 
+--> "Load Users from disk"
+--> "Load Permissions from disk"
+--> === S2 ===
 --> "Init HTTPs Server"
 --> "Init WSS Server"
 --> (*)

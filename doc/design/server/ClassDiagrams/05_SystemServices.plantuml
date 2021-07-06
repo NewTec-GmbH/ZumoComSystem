@@ -67,8 +67,12 @@ package SystemServices {
     {
         - m_wifiManager: WiFiManager
         - m_store: Store&
+        - {static} m_genKeyCertSemaphore: SemaphoreHandle_t
+        - SERVICE_HANDLING_SLEEP_TIME_MS {readonly} = 1
         - System()
         - ~System()
+        - {static} genKeyCert(parameter: void*): void
+        - registerKeyCertGenTask(): void
         + {static} getInstance(): System&
         + init(): bool
         + handleServices(): void
