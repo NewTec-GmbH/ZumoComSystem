@@ -51,9 +51,7 @@ NVSManager::NVSManager()
 
 NVSManager::~NVSManager()
 {
-    /* Close the currently opened namespace */
-    m_preferences.end();
-    LOG_DEBUG("Closed complatform namespacfe for NVS");
+    closeNVS();
 }
 
 bool NVSManager::putEntry(String key, String value)
@@ -104,4 +102,11 @@ bool NVSManager::wipeNVS()
         LOG_ERROR("NVS could not be wiped");
     }
     return retCode;
+}
+
+void NVSManager::closeNVS()
+{
+    /* Close the currently opened namespace */
+    m_preferences.end();
+    LOG_DEBUG("Closed complatform namespace for NVS");
 }

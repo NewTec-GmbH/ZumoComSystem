@@ -4,6 +4,11 @@ package Data
     class Store
 }
 
+package "Arduino Core"
+{
+    class Preferences
+}
+
 package SystemServices {
     enum LogLevel
     {
@@ -38,7 +43,9 @@ package SystemServices {
         + readEntry(key: String): String
         + readEntry(key: String, length: size_t, uint8_t* buffer): bool
         + wipeNVS(): bool
+        + closeNVS(): void
     }
+    NVSManager "0..*" *--> "1" Preferences
 
     class WiFiManager
     {

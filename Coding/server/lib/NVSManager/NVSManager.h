@@ -110,6 +110,11 @@ public:
      */
     bool wipeNVS();
 
+    /**
+     * Closes the NVS namespace. Should be called when access to NVS is done.
+     */
+    void closeNVS();
+
 private:
     /* Instance of ESP32 preferences */
     Preferences m_preferences;

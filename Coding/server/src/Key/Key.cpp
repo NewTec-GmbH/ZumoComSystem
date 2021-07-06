@@ -65,8 +65,11 @@ void Key::resetTask(void *parameter)
 
 void Key::systemResetISR()
 {
-    const uint16_t HEAP_SIZE = 16384;
-    const uint8_t PRIORITY = 1;
+    /* Use large stack so be able to use Serial.println() without issues */
+    const uint16_t HEAP_SIZE = 8192;
+
+    /* Set task to highest possible priority to always ensure that reset can be invoked */
+    const uint8_t PRIORITY = configMAX_PRIORITIES - 1;
 
     /* Create a new FreeRTOS task */
     xTaskCreate(

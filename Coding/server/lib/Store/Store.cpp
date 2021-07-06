@@ -143,3 +143,8 @@ bool Store::loadKeyCert()
 
     return retCode;
 }
+
+void Store::closeStore()
+{
+    m_nvsmgr.closeNVS();
+}

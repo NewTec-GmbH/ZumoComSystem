@@ -54,6 +54,10 @@ void System::init()
 
     /* Initialize and aquire binary semaphore */
     m_genKeyCertSemaphore = xSemaphoreCreateBinary();
+    if (NULL == m_genKeyCertSemaphore)
+    {
+        LOG_ERROR("KeyCert generation semaphore could not be created!");
+    }
 
     /* Check if a KeyCert exists, if not, generate new one asynchronously */
     registerKeyCertGenTask();
@@ -79,7 +83,7 @@ void System::init()
         {
             LOG_ERROR("No NetworkCredentials available");
             m_wifimgr.startAP();
-            LOG_DEBUG("AP spwaned because there are no network credentials available");
+            LOG_INFO("AP spwaned because there are no network credentials available");
         }
     }
 
@@ -93,14 +97,22 @@ void System::init()
     /* Init HTTPs Server */
     /* Init WSS Server */
 
-    LOG_DEBUG("ComPlatform successfully booted up!");
+    LOG_INFO("ComPlatform successfully booted up!");
 }
 
 void System::reset()
 {
-    LOG_DEBUG("ComPlatform will be restarted now...");
+    LOG_INFO("ComPlatform will be restarted now...");
+
+    /* Shut down DNS servers and WiFi module */
     m_wifimgr.stopAP();
     m_wifimgr.stopSTA();
+
+    /* Close NVS and store */
+    m_store.closeStore();
+
+    /* Shut down HTTPS/WSS servers */
+
     ESP.restart();
 }
 
