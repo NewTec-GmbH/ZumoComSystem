@@ -50,7 +50,7 @@ String NetworkCredentials::getSSID()
 bool NetworkCredentials::setSSID(String ssid, bool staMode)
 {
     /* Number of appended SSID chars which are reserved when using AP mode to avoid SSID conflicts */
-    uint8_t RESERVED_DEVICE_ID_CHARS = 13;
+    const uint8_t RESERVED_DEVICE_ID_CHARS = 13;
 
     bool retCode = true;
     if ((true == staMode) && (ssid.length() <= MAX_SSID_LENGTH_CHARS))
