@@ -1,0 +1,10 @@
+class WebServer
+{
+    - m_store: Store
+    + WebServer()
+    + ~WebServer()
+    + startHTTPS(): bool 
+    + stopHTTPS(): bool
+    + startWSS(): bool
+    + stopWSS(): bool
+}

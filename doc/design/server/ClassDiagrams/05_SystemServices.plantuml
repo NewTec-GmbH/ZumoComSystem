@@ -1,0 +1,84 @@
+@startuml
+package Data
+{
+    class Store
+}
+
+package SystemServices {
+    enum LogLevel
+    {
+        LEVEL_DEBUG
+        LEVEL_INFO
+        LEVEL_WARN
+        LEVEL_ERROR
+    }
+
+    class Log
+    {
+        - m_LogLevel : LogLevel = DEBUG
+
+        - Log()
+        - ~Log()
+        {static} + getInstance(): Log&
+        + getLogLevel(): LogLevel
+        + setLogLevel(level: LogLevel): void
+        + writeLog(level: LogLevel, msg: const char*): void
+    }
+    Log "0..*" *--> "1" LogLevel
+
+    class NVSManager
+    {
+        - m_preferences: Preferences
+
+        + NVSManager()
+        + ~NVSManager()
+        + putEntry(key: String, value: String): bool
+        + putEntry(key: String, value: uint8_t*, length: size_t): bool
+        + deleteEntry(key: String): bool
+        + readEntry(key: String): String
+        + readEntry(key: String, length: size_t, uint8_t* buffer): bool
+        + wipeNVS(): bool
+    }
+
+    class WiFiManager
+    {
+        - m_store: Store&
+        - m_dnsServer: DNSServer
+        - DNS_PORT: uint8_t {readonly} = 53
+        - m_dnsRetCode: bool = false
+        - HOSTNAME: String {readonly} = "complatform.local"
+        - WIFI_CHANNEL_NO: uint8_t {readonly} = 1
+        - MAX_CLIENT_NO: uint8_t {readonly} = 4
+        - ERROR_REBOOT_DELAY_TIME_MS: uint16_t {readonly} = 2000
+        - WIFI_CONNECT_RETRY_DELAY_MS: uint16_t {readonly} = 500
+        - m_apActive: bool = false
+        - m_staActive: bool = false
+        + WiFiManager()
+        + ~WiFiManager()
+        + startAP(): bool
+        + stopAP(): bool
+        + handleAP_DNS(): void
+        + startSTA(): bool
+        + stopSTA(): bool
+    }
+    WiFiManager "0..*" *--> "1" Store
+
+    class System
+    {
+        - m_wifiManager: WiFiManager
+        - m_store: Store&
+        - {static} m_genKeyCertSemaphore: SemaphoreHandle_t
+        - SERVICE_HANDLING_SLEEP_TIME_MS {readonly} = 1
+        - System()
+        - ~System()
+        - {static} genKeyCert(parameter: void*): void
+        - registerKeyCertGenTask(): void
+        + {static} getInstance(): System&
+        + init(): bool
+        + handleServices(): void
+        + reset(): void
+    }
+    System "0..*" *--> "1" WiFiManager
+    System "0..*" *--> "1" Store
+}
+@enduml

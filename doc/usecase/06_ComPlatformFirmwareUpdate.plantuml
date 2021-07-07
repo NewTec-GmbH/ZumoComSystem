@@ -1,0 +1,23 @@
+@startuml
+left to right direction
+
+' Define the actors
+actor Administrator
+
+' Define the inheritance between base and specialized users
+User <|-- Administrator
+
+' Define the system border
+rectangle "Zumo Robot System (Firmware Flash)"{
+   usecase "Flash ComPlatform firmware" as flashCom
+   usecase "Upload firmware" as uploadCom
+   usecase "Reboot ComPlatform" as rebootCom
+
+' Define the include relations between the use cases
+ flashCom .> uploadCom : include
+ flashCom .> rebootCom : include
+ Administrator --> rebootCom
+ User --> uploadCom
+ Administrator --> flashCom
+}
+@enduml

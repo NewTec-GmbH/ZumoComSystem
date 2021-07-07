@@ -1,0 +1,80 @@
+@startuml
+package SystemService
+{
+    class NVSManager
+    {
+    }
+}
+
+package httpsserver
+{
+    class SSLCert
+    {
+
+    }
+}
+
+package Data
+{
+    class NetworkCredentials
+    {
+        - {static} MAX_SSID_LENGTH_CHARS {readonly} = 31
+        - {static} MIN_PASSPHRASE_LENGTH_CHARS {readonly} = 8
+        - {static} MAX_PASSPHRASE_LENGTH_CHARS {readonly} = 63
+        - m_ssid: String
+        - m_passphrase: String
+
+        + NetworkCredentials()
+        + ~NetworkCredentials()
+        + getSSID(): String
+        + setSSID(ssid: String, staMode: bool): bool
+        + getPassphrase(): String
+        + setPassphrase(passphrase: String): bool
+        + serialize(): String
+        + deserialize(serial: String): bool
+    }
+
+    class KeyCert
+    {
+
+        + {static} RSA_KEY_SIZE_BYTE : size_t {readonly} = 1190
+        + {static} CERT_SIZE_BYTE: size_t {readonly} = 766
+        - m_sslCert: httpsserver::SSLCert
+        - {static} m_binaryKey: uint8_t[]
+        - {static} m_binaryCert: uint8_t[]
+        - m_certGenerated: bool = false
+        + KeyCert()
+        + ~KeyCert()
+        + generateNewCert(): bool
+        + serialize(keyBuffer: uint8_t*, certBuffer: uint8_t*): void
+        + deserialize(keyBuffer: uint8_t*, certBuffer: uint8_t*): void
+        - freeSSLMemory(): void
+    }
+    KeyCert "0..*" *--> "1" SSLCert
+
+    class Store
+    {
+        - m_nvsmgr: NVSManager
+        - m_staCredentials: NetworkCredentials
+        - m_apCredentials: NetworkCredentials
+        - m_keyCert: KeyCert
+
+        - Store()
+        - ~Store()
+        {static} + getInstance(): Store&
+        + saveSTACredentials(): bool
+        + loadSTACredentials(): bool
+        + getSTACredentials(): NetworkCredentials
+        + setSTACredentials(credentials: NetworkCredentials): void
+        + getAPCredentials(): NetworkCredentials
+        + setAPCredentials(credentials: NetworkCredentials): void
+        + getKeyCert(): SSLCert&
+        + setKeyCert(keycert: KeyCert): void
+        + saveKeyCert(): bool
+        + loadKeyCert(): bool
+    }
+    Store "0..*" *--> "1" NVSManager
+    Store "0..*" *--> "1" NetworkCredentials
+    Store "0..*" *--> "1" KeyCert
+}
+@enduml

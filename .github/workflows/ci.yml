@@ -1,0 +1,45 @@
+name: PlatformIO CI
+
+# Controls when the action will run.
+on: [push, pull_request, workflow_dispatch]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Set up Python
+      uses: actions/setup-python@v1
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install platformio
+        platformio update
+    
+    - name: Compile target debug
+      working-directory: './Coding/server/'
+      run: platformio run --environment debug
+        
+    - name: Perform static checks on native environment
+      working-directory: './Coding/server/'
+      run: platformio check --environment native
+      
+    - name: Run tests on native environment
+      working-directory: './Coding/server/'
+      run: platformio test --environment native
+
+    - name: Set up graphviz
+      uses: ts-graphviz/setup-graphviz@v1
+
+    - name: Set up doxygen and generate documentation
+      uses: mattnotmitt/doxygen-action@v1.1.0
+      with:
+        working-directory: './doc/doxygen'
+        doxyfile-path: './Doxyfile'

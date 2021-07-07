@@ -1,0 +1,105 @@
+@startuml
+package "Hardware Absraction Layer (HAL)" {
+    interface "Debug" as Debug
+    interface "FlashRobot" as FlashRobot
+    interface "RobotReset" as RobotReset
+    interface "COMReset" as ComReset
+    interface "ReadKey" as ReadKey
+    interface "Crypto" as Crypto
+    interface "mbedTLS" as mbedtls
+    interface "WiFi" as WiFi
+    interface "DNS" as DNS
+    interface "OTA" as ota
+    interface "FS" as FS
+    interface "Preferences" as nvshal
+    interface "Timer" as timer
+    interface "IO" as IO
+
+    interface "SPIUSB" as SPIUSB
+    interface "IO" as arduinoIO
+    interface "SPI" as SPI
+
+    package "Arduino Core" {
+        component "Crypto" as cryptohal
+        component "mbedTLS" as mbedtlshal
+        component "ESP" as esp
+        component "WiFi" as wifihal
+        component "LittleFS" as fshal
+        component "Preferences" as preferences
+        component "DNSServer" as dnsserver
+        component "SPI" as spihal
+        component "Digital I/O" as iohal
+        component "ArduinoOTA" as arduinoota
+        component "Timer" as timerhal
+
+        note right of spihal : Serial Peripheral Interface\nabstraction/drivers
+        note left of esp : Basic abstraction/drivers\nfor ESP32 functions, such as reset
+        note right of iohal :  GPIO hardware\nabstraction/drivers
+        note right of arduinoota: Abstraction/drivers to write\nfirmware image of ComPlatform
+        note right of preferences : Abstraction/drivers to write\nkey/value pairs to NVS storage
+        note right of wifihal: Abstraction/drivers to use\nintegrated WiFi module
+        note right of cryptohal: Abstraction/drivers to use\nhardware-accelerated SHA256, BLAKE2b and TRNG
+        note right of mbedtlshal : Abstraction/drivers to use\nhardware-accelerated RSA2048
+        note right of dnsserver : Abstraction/drivers to provide\nlocal Domain Name System driver
+        note right of fshal : Abstraction/drivers to\nread/write files to\nfile system
+        note right of timerhal : Abstraction/drivers for\ntime-based ISRs/callbacks
+
+        cryptohal -up- Crypto
+        mbedtlshal -up- mbedtls
+        wifihal -up- WiFi
+        fshal -up- FS
+        iohal -up- arduinoIO
+        spihal -up- SPI
+        dnsserver -up- DNS
+        preferences -up- nvshal
+        arduinoota -up- ota
+        timerhal -up-timer
+    }
+
+    component "RobotFlasher" as zumoflasher
+    component "RobotDebugger" as zumodebugger
+    component "SPI_USB" as spiusbdriver
+    component "IO" as io
+    component "Robot" as robot
+    component "Key" as key
+
+    note right of spiusbdriver : Driver which sends\ndata to USB slave by\nusing the SPI bus
+    note right of zumodebugger : Driver which reads debug\nlogs from robot by using\nSPI-USB adapter
+    note right of zumoflasher : Driver which flashes firmware\nimage onto the currently\nconnected robot\nby using SPI-USB adapter
+    note left of robot : Driver for resetting the robot
+    note left of key: Driver for reading the Reset/WiFi key
+    note left of io : Driver for easy (unbounced) read- and write operations
+
+    zumodebugger -up- Debug
+    zumoflasher -up- FlashRobot
+    spiusbdriver -up- SPIUSB
+    esp -up- ComReset
+    robot -up- RobotReset
+    key -up- ReadKey
+    io -up- IO
+
+    zumoflasher -down-(SPIUSB
+    spiusbdriver -down-(SPI
+    zumodebugger -down-(SPIUSB
+    io -down-(arduinoIO
+    robot -down-(IO
+    key -down-(IO
+}
+
+package Hardware {
+    interface "SPI-Controller" as spicontroller
+    interface "GPIO" as gpio
+
+    spihal --> spicontroller
+    iohal --> gpio
+}
+
+"SPI-USB-Adapter" as usbadapter
+"Zumo Robot" as zumorobot
+"WiFi-Key" as hwwifikey
+
+spicontroller --> usbadapter
+usbadapter --> zumorobot
+gpio --> zumorobot
+gpio --> hwwifikey
+@enduml

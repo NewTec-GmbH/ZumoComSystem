@@ -1,0 +1,50 @@
+@startuml
+package HAL
+{
+    package "Arduino Core"
+    {
+        class "Digital I/O" as ArduinoIO
+    }
+
+    class IO
+    {
+        - m_ioMutex: SemaphoreHandle_t
+        {static} - DEBOUNCE_DELAY_TIME_MS: uint8_t {readonly} = 50
+        - IO()
+        - ~IO()
+        + {static} getInstance(): IO&
+        + setPinMode(gpio: uint8_t, mode: uint8_t): void
+        + readGPIODebounced(gpio: uint8_t): uint8_t
+        + readGPIO(gpio: uint8_t): uint8_t
+        + writeGPIO(gpio: uint8_t, value: uint8_t): void
+    }
+    IO  ..> ArduinoIO : uses
+
+    class Key
+    {
+        - m_io : IO&
+        {static} - LONG_PRESS_TIME_MS: uint32_t {readonly}  = 1000
+        {static} + WIFI_AND_RESET_KEY_PIN: uint8_t {readonly} = 0
+        - Key()
+        - ~Key()
+        - {static} resetTask(parameter: void*): void
+        - {static} systemResetISR(): void
+        {static} + getInstance(): Key&
+        + registerSystemReset(): void
+        + readKey(): bool
+    }
+    Key ..> IO : uses
+
+    class Robot
+    {
+        - m_io : IO&
+        {static} - ROBOT_RESET_PIN: uint8_t {readonly} = 2
+        {static} - ROBOT_RESET_TIME_MS: uint32_t {readonly} = 500
+        - Robot()
+        - ~Robot()
+        {static} + getInstance(): Robot&
+        + resetRobotNow(): void
+    }
+    Robot ..> IO : uses
+}
+@enduml
