@@ -55,7 +55,7 @@ uint8_t IO::readGPIODebounced(uint8_t gpio)
     uint8_t lastKeyState = HIGH;
 
     /* Stores the current GPIO reading */
-    uint8_t reading = -1;
+    uint8_t reading = HIGH;
 
     /* Code taken and modified from: https://www.arduino.cc/en/Tutorial/BuiltInExamples/Debounce */
     do
