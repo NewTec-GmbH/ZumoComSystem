@@ -68,6 +68,13 @@ public:
     bool generateNewCert();
 
     /**
+     * Get the SSL cert required for HTTPSServer
+     * 
+     * @return Returns SSLCert instance
+     */
+    httpsserver::SSLCert* getSSLCert();
+
+    /**
      * Serializes this KeyCert object.
      * 
      * @param[out] keyBuffer The output buffer to be filled with the serialized binary RSA key. Allocate memory previously

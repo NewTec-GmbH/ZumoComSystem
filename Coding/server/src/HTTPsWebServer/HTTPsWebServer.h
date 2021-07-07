@@ -31,94 +31,75 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file System.h
+ * @file WebServer.h
  * @author Luis Moser
- * @brief System header
- * @date 06/22/2021
+ * @brief WebServer header
+ * @date 07/07/2021
  * 
  * @{
  */
 
-#ifndef __SYSTEM_H__
-#define __SYSTEM_H__
+#ifndef __WEBSERVER_H__
+#define __WEBSERVER_H__
 
-#include <WiFiManager.h>
-#include <HTTPsWebServer.h>
-#include <Log.h>
+#include <Arduino.h>
 #include <Store.h>
-#include <KeyCert.h>
-#include <Key.h>
+#include <Log.h>
+#include <FileManager.h>
+#include <HTTPSServer.hpp>
+#include <HTTPRequest.hpp>
+#include <HTTPResponse.hpp>
 
-class System
+class HTTPsWebServer
 {
-public:
-    /** 
-     * Get System instance
-     * 
-     * @return Returns System singleton instance
-     */
-    static System &getInstance()
-    {
-        static System instance;
-        return instance;
-    }
-
-    /**
-     * Initializes the ComPlatform and starts all services
-     */
-    void init();
-
-    /**
-     * This method needs to be called in loop() so that all required services can receive CPU time
-     */
-    void handleServices();
-
-    /**
-     * Shuts down all services and reboots the ComPlatform
-     */
-    void reset();
-
 private:
-    /** Reference to store */
+    /** TCP port which is used for frontend delivery as well as backend API services */
+    static const uint16_t SHARED_TCP_PORT = 443;
+
+    /** Max number of concurrent clients which can access the server */
+    static const uint8_t MAX_CLIENTS = 4;
+
+    /** HTTPSServer instance */
+    httpsserver::HTTPSServer m_httpsServer; 
+
+    /** Stores all HTTP routes */
+    httpsserver::ResourceNode m_homeRoute{"/", "GET", &handleHome};
+
+    /** Store instance */
     Store &m_store = Store::getInstance();
 
-    /** Instance of WiFiManager */
-    WiFiManager m_wifimgr;
+    /** Registers the route for the home page */
+    bool registerHome();
 
-    /** Instance of HTTPsWebServer */
-    HTTPsWebServer m_webServer;
+    /** Registers all API services */
+    bool registerServices();
 
-    /** The binary semaphore for synchronizing init task and KeyCert generation task */
-    static SemaphoreHandle_t m_genKeyCertSemaphore;
+    /** Handles incoming requests for home page */
+    static void handleHome(httpsserver::HTTPRequest *request, httpsserver::HTTPResponse *response);
 
-    /** Specifies how long the service handling task should be put to sleep */
-    const uint8_t SERVICE_HANDLING_SLEEP_TIME_MS = 1;
-
+public:
     /**
      * Default Constructor
      */
-    System()
-    {
-    }
-
+    HTTPsWebServer();
     /**
      * Destructor
      */
-    ~System()
-    {
-    }
+    ~HTTPsWebServer();
 
     /**
-     * Generates a private RSA key and SSL certificate
-     * 
-     * @param[in] parameter Void pointer for passing optional and arbitrary arguments
+     * Starts the HTTPs and WSS servers
      */
-    static void genKeyCertTask(void *parameter);
+    bool startServer();
 
     /**
-     * Registers and starts an asynchronous background task which generates a private RSA key and a SSL certificate
-     * if it does not already exist. The task will automatically be deleted when the task has finished work.
+     * Stops the HTTPs and WSS servers
      */
-    void registerKeyCertGenTask();
+    void stopServer();
+
+    /**
+     * This method needs to be called in a loop so that the HTTPs and WSS servers can receive CPU time
+     */
+    void handleServer();
 };
-#endif /** __SYSTEM_H__ */
+#endif /** __WEBSERVER_H__ */

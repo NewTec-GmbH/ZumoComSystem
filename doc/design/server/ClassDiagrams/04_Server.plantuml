@@ -10,22 +10,24 @@ package Data
 
 class HTTPSServer
 
-class WebServer
+class HTTPsWebServer
 {
     - {static} SHARED_TCP_PORT: uint16_t = {readonly} 443
     - {static} MAX_CLIENTS: uint8_t = {readonly} = 4
-    - registeredRoutes: ResourceNode[]
+    - m_httpsServer: httpsserver::HTTPSServer
+    - m_homeRoute: httpsserver::ResourceNode
     - m_store: Store&
     - m_fileManager: FileManager&
     - m_httpsServer: HTTPSServer
     - registerHome(): bool
     - registerServices(): bool
-    + WebServer()
-    + ~WebServer()
+    - handleHome(request: httpsserver::HTTPRequest*, response: httpsserver::HTTPResponse*)
+    + HTTPsWebServer()
+    + ~HTTPsWebServer()
     + startServer(): bool 
     + stopServer(): bool
     + handleServer(): void
 }
-WebServer "0..*" *--> "1" FileManager
-WebServer "0..*" *--> "1" Store
-WebServer "0..*" *--> "1" HTTPSServer
+HTTPsWebServer "0..*" *--> "1" FileManager
+HTTPsWebServer "0..*" *--> "1" Store
+HTTPsWebServer "0..*" *--> "1" HTTPSServer

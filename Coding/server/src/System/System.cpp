@@ -94,10 +94,17 @@ void System::init()
     xSemaphoreTake(m_genKeyCertSemaphore, portMAX_DELAY);
     xSemaphoreGive(m_genKeyCertSemaphore);
 
-    /* Init HTTPs Server */
-    /* Init WSS Server */
+    /* Init HTTPs and WSS servers */
+    if (true == m_webServer.startServer())
+    {
+        LOG_DEBUG("HTTPs and WSS servers successfully started");
+    }
+    else
+    {
+        LOG_ERROR("Could not start the HTTPs and WSS servers!");
+    }
 
-    LOG_INFO("ComPlatform successfully booted up!");
+    LOG_INFO("ComPlatform fully booted up...");
 }
 
 void System::reset()
@@ -112,21 +119,23 @@ void System::reset()
     m_store.closeStore();
 
     /* Shut down HTTPS/WSS servers */
+    m_webServer.stopServer();
 
     ESP.restart();
 }
 
 void System::handleServices()
 {
-    static const uint8_t SLEEP_TIME_MS = 1;
     m_wifimgr.handleAP_DNS();
+    m_webServer.handleServer();
+
+    static const uint8_t SLEEP_TIME_MS = 1;
     delay(SLEEP_TIME_MS);
 }
 
 void System::genKeyCertTask(void *parameter)
 {
     Store &store = Store::getInstance();
-    KeyCert keyCert;
 
     LOG_DEBUG("KeyCert generation task running on core #" + String(xPortGetCoreID()));
 
@@ -135,9 +144,7 @@ void System::genKeyCertTask(void *parameter)
     {
         LOG_DEBUG("Missing KeyCert. Generating new SSLCert...");
 
-        keyCert = store.getKeyCert();
-
-        if (true == keyCert.generateNewCert())
+        if (true == store.getKeyCert().generateNewCert())
         {
             LOG_DEBUG("New KeyCert created");
 

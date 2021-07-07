@@ -9,6 +9,11 @@ package "Arduino Core"
     class Preferences
 }
 
+package Server 
+{
+    class WebServer
+}
+
 package SystemServices {
     enum LogLevel
     {
@@ -96,8 +101,9 @@ package SystemServices {
 
     class System
     {
-        - m_wifiManager: WiFiManager
         - m_store: Store&
+        - m_wifiManager: WiFiManager
+        - m_webServer: WebServer
         - {static} m_genKeyCertSemaphore: SemaphoreHandle_t
         - SERVICE_HANDLING_SLEEP_TIME_MS {readonly} = 1
         - System()
@@ -111,5 +117,6 @@ package SystemServices {
     }
     System "0..*" *--> "1" WiFiManager
     System "0..*" *--> "1" Store
+    System "0..*" *--> "1" WebServer
 }
 @enduml

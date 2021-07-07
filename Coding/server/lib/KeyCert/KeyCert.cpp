@@ -76,6 +76,11 @@ bool KeyCert::generateNewCert()
     return (0 == retCode);
 }
 
+httpsserver::SSLCert* KeyCert::getSSLCert()
+{
+    return &m_sslCert;
+}
+
 void KeyCert::serialize(uint8_t *keyBuffer, uint8_t *certBuffer)
 {
     if (true == m_certGenerated)

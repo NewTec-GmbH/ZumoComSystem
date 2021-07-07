@@ -46,6 +46,7 @@ package Data
         + KeyCert()
         + ~KeyCert()
         + generateNewCert(): bool
+        + getSSLCert(): httpsserver::SSLCert*
         + serialize(keyBuffer: uint8_t*, certBuffer: uint8_t*): void
         + deserialize(keyBuffer: uint8_t*, certBuffer: uint8_t*): void
         - freeSSLMemory(): void
