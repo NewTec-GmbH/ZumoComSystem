@@ -93,21 +93,12 @@ private:
     /**
      * Default constructor
      */
-    IO()
-    {
-        m_ioMutex = xSemaphoreCreateMutex();
-        if (NULL == m_ioMutex)
-        {
-            LOG_ERROR("IO mutex could not be created!");
-        }
-    }
+    IO();
 
     /**
      * Destructor
      */
-    ~IO()
-    {
-    }
+    ~IO();
 
     /**
      * Mutex which is used to avoid that two or more concurrent tasks,

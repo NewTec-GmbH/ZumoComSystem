@@ -41,7 +41,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <HTTPsWebServer.h>
 
-HTTPsWebServer::HTTPsWebServer() : m_httpsServer(Store::getInstance().getKeyCert().getSSLCert(), SHARED_TCP_PORT, MAX_CLIENTS)
+HTTPsWebServer::HTTPsWebServer() : m_httpsServer(Store::getInstance().getKeyCert().getSSLCert(), SHARED_TCP_PORT, MAX_CLIENTS),
+                                   m_homeRoute("/", "GET", &handleHome),
+                                   m_store(Store::getInstance())
 {
 }
 

@@ -42,6 +42,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SemaphoreHandle_t System::m_genKeyCertSemaphore = {0};
 
+System::System() : m_store(Store::getInstance()),
+                   m_wifimgr(),
+                   m_webServer()
+{
+}
+
+System::~System()
+{
+}
+
 void System::init()
 {
     NetworkCredentials apCredentials;

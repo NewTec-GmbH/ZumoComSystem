@@ -43,6 +43,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <WiFi.h>
 #include <System.h>
 
+const String WiFiManager::HOSTNAME = "complatform.local";
+
+WiFiManager::WiFiManager() : m_store(Store::getInstance()),
+                             m_dnsServer(),
+                             m_dnsRetCode(false),
+                             m_apActive(false),
+                             m_staActive(false)
+
+{
+}
+
+WiFiManager::~WiFiManager()
+{
+}
+
 bool WiFiManager::startAP()
 {
     /* The IP address to be used for AP mode */

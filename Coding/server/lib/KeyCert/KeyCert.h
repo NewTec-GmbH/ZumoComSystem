@@ -117,6 +117,6 @@ private:
     static uint8_t m_binaryCert[CERT_SIZE_BYTE];
 
     /** Saves if a SSL certificate has been generated for this instance */
-    bool m_certGenerated = false;
+    bool m_certGenerated;
 };
 #endif

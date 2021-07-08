@@ -69,20 +69,15 @@ private:
     /**
      * Default Constructor
      */
-    Robot()
-    {
-        m_io.setPinMode(ROBOT_RESET_PIN, OUTPUT);
-    }
+    Robot();
 
     /**
      * Destructor
      */
-    ~Robot()
-    {
-    }
+    ~Robot();
 
     /** Reference to IO class */
-    IO &m_io = IO::getInstance();
+    IO &m_io;
 
     /** The GPIO output pin used to write the RESET line of robot */
     static const uint8_t ROBOT_RESET_PIN = 2;

@@ -42,6 +42,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <NetworkCredentials.h>
 #include <Log.h>
 
+NetworkCredentials::NetworkCredentials() : m_ssid(),
+                                           m_passphrase()
+{
+}
+
+NetworkCredentials::~NetworkCredentials()
+{
+}
+
 String NetworkCredentials::getSSID()
 {
     return m_ssid;

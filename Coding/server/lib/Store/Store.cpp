@@ -41,6 +41,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Store.h>
 
+Store::Store() : m_nvsmgr(),
+                 m_staCredentials(),
+                 m_apCredentials(),
+                 m_keyCert()
+{
+}
+
+Store::~Store()
+{
+    closeStore();
+}
+
 bool Store::saveSTACredentials()
 {
     bool retCode = m_nvsmgr.putEntry("netCredentials", m_staCredentials.serialize());

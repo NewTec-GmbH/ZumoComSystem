@@ -41,6 +41,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Key.h>
 
+Key::Key() : m_io(IO::getInstance())
+{
+    IO::getInstance().setPinMode(WIFI_AND_RESET_KEY_PIN, INPUT_PULLUP);
+}
+
+Key::~Key()
+{
+}
+
 void Key::registerSystemReset()
 {
     attachInterrupt(WIFI_AND_RESET_KEY_PIN, Key::systemResetISR, FALLING);

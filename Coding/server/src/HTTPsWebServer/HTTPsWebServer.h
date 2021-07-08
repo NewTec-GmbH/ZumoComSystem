@@ -60,10 +60,10 @@ private:
     static const uint8_t MAX_CLIENTS = 4;
 
     /** HTTPSServer instance */
-    httpsserver::HTTPSServer m_httpsServer; 
+    httpsserver::HTTPSServer m_httpsServer;
 
     /** Stores all HTTP routes */
-    httpsserver::ResourceNode m_homeRoute{"/", "GET", &handleHome};
+    httpsserver::ResourceNode m_homeRoute;
 
     /** Store instance */
     Store &m_store = Store::getInstance();

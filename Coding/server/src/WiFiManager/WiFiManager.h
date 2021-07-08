@@ -55,16 +55,12 @@ public:
     /**
      * Default Constructor
      */
-    WiFiManager()
-    {
-    }
+    WiFiManager();
 
     /**
      * Destructor
      */
-    ~WiFiManager()
-    {
-    }
+    ~WiFiManager();
 
     /**
      * Starts the access point of the ComPlatform if the STA mode is not active
@@ -101,36 +97,36 @@ public:
 
 private:
     /** Reference to store */
-    Store &m_store = Store::getInstance();
+    Store &m_store;
 
     /** Instance of DNS server for AP mode */
     DNSServer m_dnsServer;
 
     /** Used port for DNS service */
-    const uint8_t DNS_PORT = 53;
+    static const uint8_t DNS_PORT = 53;
 
     /** Saves if DNS could be started successfully */
-    bool m_dnsRetCode = false;
+    bool m_dnsRetCode;
 
     /** ComPlatform's hostname */
-    const String HOSTNAME = "complatform.local";
+    static const String HOSTNAME;
 
     /** The WiFi channel to be used */
-    const uint8_t WIFI_CHANNEL_NO = 1;
+    static const uint8_t WIFI_CHANNEL_NO = 1;
 
     /** The max number of clients which can access AP at once */
-    const uint8_t MAX_CLIENT_NO = 4;
+    static const uint8_t MAX_CLIENT_NO = 4;
 
     /** Delay time until the ComPlatform reboots after WiFi failure */
-    const uint16_t ERROR_REBOOT_DELAY_TIME_MS = 2000;
+    static const uint16_t ERROR_REBOOT_DELAY_TIME_MS = 2000;
 
     /** Delay time until ComPlatform tries to re-connect to WiFi */
-    const uint16_t WIFI_CONNECT_RETRY_DELAY_MS = 500;
+    static const uint16_t WIFI_CONNECT_RETRY_DELAY_MS = 500;
 
     /** Saves if AP mode is active */
-    bool m_apActive = false;
+    bool m_apActive;
 
     /** Saves if STA mode is active */
-    bool m_staActive = false;
+    bool m_staActive;
 };
 #endif /** __WIFIMANAGER_H__ */

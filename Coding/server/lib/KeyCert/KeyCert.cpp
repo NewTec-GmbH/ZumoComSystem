@@ -44,7 +44,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 uint8_t KeyCert::m_binaryKey[RSA_KEY_SIZE_BYTE] = {0};
 uint8_t KeyCert::m_binaryCert[CERT_SIZE_BYTE] = {0};
 
-KeyCert::KeyCert()
+KeyCert::KeyCert() : m_sslCert(),
+                     m_certGenerated(false)
 {
 }
 
@@ -76,7 +77,7 @@ bool KeyCert::generateNewCert()
     return (0 == retCode);
 }
 
-httpsserver::SSLCert* KeyCert::getSSLCert()
+httpsserver::SSLCert *KeyCert::getSSLCert()
 {
     return &m_sslCert;
 }

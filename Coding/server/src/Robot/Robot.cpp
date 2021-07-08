@@ -41,6 +41,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Robot.h>
 
+Robot::Robot() : m_io(IO::getInstance())
+{
+    m_io.setPinMode(ROBOT_RESET_PIN, OUTPUT);
+}
+
+Robot::~Robot()
+{
+}
+
 void Robot::resetRobotNow()
 {
     /* Pull down RESET line for ROBOT_RESET_TIME */

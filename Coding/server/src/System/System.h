@@ -92,21 +92,17 @@ private:
     static SemaphoreHandle_t m_genKeyCertSemaphore;
 
     /** Specifies how long the service handling task should be put to sleep */
-    const uint8_t SERVICE_HANDLING_SLEEP_TIME_MS = 1;
+    static const uint8_t SERVICE_HANDLING_SLEEP_TIME_MS = 1;
 
     /**
      * Default Constructor
      */
-    System()
-    {
-    }
+    System();
 
     /**
      * Destructor
      */
-    ~System()
-    {
-    }
+    ~System();
 
     /**
      * Generates a private RSA key and SSL certificate

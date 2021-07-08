@@ -50,14 +50,10 @@ class NetworkCredentials
 {
 public:
     /** Default constructor */
-    NetworkCredentials()
-    {
-    }
+    NetworkCredentials();
 
     /** Destructor */
-    ~NetworkCredentials()
-    {
-    }
+    ~NetworkCredentials();
 
     /** 
      * Returns the Service Set Identifier (SSID)

@@ -42,7 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <NVSManager.h>
 #include <Log.h>
 
-NVSManager::NVSManager()
+NVSManager::NVSManager(): m_preferences()
 {
     /* Open/Create the namespace for key-value pairs with r/w access */
     m_preferences.begin("complatform", false);
