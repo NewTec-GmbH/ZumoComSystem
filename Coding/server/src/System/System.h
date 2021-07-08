@@ -80,7 +80,7 @@ public:
 
 private:
     /** Reference to store */
-    Store &m_store = Store::getInstance();
+    Store &m_store;
 
     /** Instance of WiFiManager */
     WiFiManager m_wifimgr;
