@@ -45,10 +45,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Arduino.h>
 #include <Store.h>
 #include <Log.h>
-#include <FileManager.h>
 #include <HTTPSServer.hpp>
 #include <HTTPRequest.hpp>
 #include <HTTPResponse.hpp>
+#include <FileManager.h>
 
 class HTTPsWebServer
 {
@@ -66,7 +66,7 @@ private:
     httpsserver::ResourceNode m_homeRoute;
 
     /** Store instance */
-    Store &m_store = Store::getInstance();
+    Store &m_store;
 
     /** Registers the route for the home page */
     bool registerHome();
