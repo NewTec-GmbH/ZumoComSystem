@@ -41,7 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <FileManager.h>
 
-const char* FileManager::m_directories[] = { "/webspace", "/firmware" };
+const String FileManager::m_directories[] = { "/webspace", "/firmware" };
 
 FileManager::FileManager() :
     m_fileHandle()
@@ -216,13 +216,12 @@ bool FileManager::createDirectoryStructure()
 
     LITTLEFS.begin(false);
 
-    size_t noOfDirectories = sizeof(m_directories) / sizeof(char*);
+    size_t noOfDirectories = sizeof(m_directories) / sizeof(m_directories[0]);
     for (uint8_t dirNo = 0; dirNo < noOfDirectories; dirNo++)
     {
         if (false == LITTLEFS.exists(m_directories[dirNo]))
         {
             bool success = LITTLEFS.mkdir(m_directories[dirNo]);
-            Serial.println(m_directories[dirNo]);
             if (false != retCode)
             {
                 retCode = success;

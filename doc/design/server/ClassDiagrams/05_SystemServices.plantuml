@@ -62,7 +62,7 @@ package SystemServices {
     class FileManager
     {
         - m_fileHandle: File
-        - {static} m_directories: char*[] {readonly} = {"/webspace/", "/firmware/"}
+        - {static} m_directories: String[] {readonly} = {"/webspace", "/firmware"}
         + FileManager()
         + ~FileManager()
         + {static} initFS(): bool

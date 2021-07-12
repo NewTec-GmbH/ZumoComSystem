@@ -165,6 +165,6 @@ private:
     File m_fileHandle;
 
     /** Specifies the directories which have to be existent */
-    static const char* m_directories[];
+    static const String m_directories[];
 };
 #endif /** __FILEMANAGER_H__ */
