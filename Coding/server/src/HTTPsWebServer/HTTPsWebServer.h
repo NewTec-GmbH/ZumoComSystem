@@ -59,23 +59,33 @@ private:
     /** Max number of concurrent clients which can access the server */
     static const uint8_t MAX_CLIENTS = 4;
 
+    /** Specifies MIME type and which file types should be deployed by web server and */
+    static const String m_servedFileTypes[4][2];
+
     /** HTTPSServer instance */
     httpsserver::HTTPSServer m_httpsServer;
 
-    /** Stores all HTTP routes */
-    httpsserver::ResourceNode m_homeRoute;
+    /** Specifies the file serving route */
+    httpsserver::ResourceNode m_fileServeRoute;
 
     /** Store instance */
     Store &m_store;
 
-    /** Registers the route for the home page */
-    bool registerHome();
+    /** 
+     * Handles incoming file requests
+     * 
+     * @param[in] request The incoming HTTP request
+     * @param[in] response The outgoing HTTP response
+     */
+    static void registerFileServing(httpsserver::HTTPRequest *request, httpsserver::HTTPResponse *response);
 
-    /** Registers all API services */
-    bool registerServices();
-
-    /** Handles incoming requests for home page */
-    static void handleHome(httpsserver::HTTPRequest *request, httpsserver::HTTPResponse *response);
+    /** 
+     * Checks if the requested file has valid file ending and returns corresponding MIME type
+     * 
+     * @param[in] filePath The filepath to be checked for its ending
+     * @return Returns the MIME type for the detected file ending, Returns 'null' if file ending is invalid
+     */
+    static String getMIMEType(String filePath);
 
 public:
     /**

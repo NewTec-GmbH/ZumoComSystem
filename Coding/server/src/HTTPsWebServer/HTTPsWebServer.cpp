@@ -41,8 +41,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <HTTPsWebServer.h>
 
+const String HTTPsWebServer::m_servedFileTypes[][2] = {
+    {".html", "text/html"},
+    {".css", "text/css"},
+    {".js", "application/javascript"},
+    {".jpg", "application/jpeg"}};
+
 HTTPsWebServer::HTTPsWebServer() : m_httpsServer(Store::getInstance().getKeyCert().getSSLCert(), SHARED_TCP_PORT, MAX_CLIENTS),
-                                   m_homeRoute("/", "GET", &handleHome),
+                                   m_fileServeRoute("", "", &registerFileServing),
                                    m_store(Store::getInstance())
 {
 }
@@ -54,7 +60,8 @@ HTTPsWebServer::~HTTPsWebServer()
 
 bool HTTPsWebServer::startServer()
 {
-    m_httpsServer.registerNode(&m_homeRoute);
+    m_httpsServer.registerNode(&m_fileServeRoute);
+    m_httpsServer.setDefaultNode(&m_fileServeRoute);
 
     return ((1 == m_httpsServer.start()) && (true == m_httpsServer.isRunning()));
 }
@@ -70,9 +77,72 @@ void HTTPsWebServer::handleServer()
     m_httpsServer.loop();
 }
 
-void HTTPsWebServer::handleHome(httpsserver::HTTPRequest *request, httpsserver::HTTPResponse *response)
+void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest *request, httpsserver::HTTPResponse *response)
 {
-    response->setHeader("Content-Type", "text/html");
-    String html = "<html><head></head><body><h1>Congratulations! You are successfully accessing the ComPlatform!</body></html>";
-    response->println(html);
+    FileManager m_fileManager;
+
+    uint16_t writtenBytes = 0;
+    static uint8_t buffer[4096];
+
+    String mimeType;
+
+    if (request->getMethod() == "GET")
+    {
+        String requestedFile = request->getRequestString().c_str();
+
+        /* Rewrite to index.html */
+        if ((requestedFile == "/") || (requestedFile == ""))
+        {
+            requestedFile = "/index.html";
+        }
+
+        /* Get the absolute path */
+        requestedFile = "/webspace" + requestedFile;
+
+        mimeType = getMIMEType(requestedFile);
+
+        if ((true == FileManager::fileExists(requestedFile)) && (mimeType != "null"))
+        {
+            m_fileManager.openFile(requestedFile, FileManager::READ);
+
+            response->setHeader("Content-Length", httpsserver::intToString(m_fileManager.getFileSize()));
+            response->setHeader("Content-Type", mimeType.c_str());
+
+            do
+            {
+                writtenBytes = m_fileManager.read4KBlock(buffer);
+                response->write(buffer, writtenBytes);
+            } while (0 != writtenBytes);
+
+            m_fileManager.closeFile();
+        }
+        else
+        {
+            response->setStatusCode(404);
+            response->println("Could not find such resource!");
+        }
+    }
+    else
+    {
+        request->discardRequestBody();
+        response->setStatusCode(405);
+        response->println("Invalid request!");
+    }
+}
+
+String HTTPsWebServer::getMIMEType(String filePath)
+{
+    String mimeType = "null";
+
+    const uint8_t arrLength = sizeof(m_servedFileTypes) / sizeof(m_servedFileTypes[0]);
+
+    for (uint8_t endingIdx = 0; endingIdx < arrLength; endingIdx++)
+    {
+        if (true == filePath.endsWith(m_servedFileTypes[endingIdx][0]))
+        {
+            mimeType = m_servedFileTypes[endingIdx][1];
+            break;
+        }
+    }
+    return mimeType;
 }
