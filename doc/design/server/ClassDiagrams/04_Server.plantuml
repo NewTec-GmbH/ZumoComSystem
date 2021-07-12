@@ -3,7 +3,7 @@ package SystemServices
     class FileManager
 }
 
-package Data 
+package Data
 {
     class Store
 }
@@ -14,20 +14,18 @@ class HTTPsWebServer
 {
     - {static} SHARED_TCP_PORT: uint16_t = {readonly} 443
     - {static} MAX_CLIENTS: uint8_t = {readonly} = 4
+    - {static} m_servedFileTypes: String[][] {readonly}
     - m_httpsServer: httpsserver::HTTPSServer
-    - m_homeRoute: httpsserver::ResourceNode
+    - m_fileServeRoute: httpsserver::ResourceNode
     - m_store: Store&
-    - m_fileManager: FileManager&
-    - m_httpsServer: HTTPSServer
-    - registerHome(): bool
-    - registerServices(): bool
-    - handleHome(request: httpsserver::HTTPRequest*, response: httpsserver::HTTPResponse*)
+    - {static} registerFileServing(request: httpsserver::HTTPRequest*, response: httpsserver::HTTPResponse*): void
+    - {static} getMIMEType(filePath: String): String
     + HTTPsWebServer()
     + ~HTTPsWebServer()
-    + startServer(): bool 
+    + startServer(): bool
     + stopServer(): bool
     + handleServer(): void
 }
-HTTPsWebServer "0..*" *--> "1" FileManager
+HTTPsWebServer ..> FileManager : uses
 HTTPsWebServer "0..*" *--> "1" Store
 HTTPsWebServer "0..*" *--> "1" HTTPSServer
