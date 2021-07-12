@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FileManager class
  * @date 07/07/2021
- * 
+ *
  * @{
  */
 

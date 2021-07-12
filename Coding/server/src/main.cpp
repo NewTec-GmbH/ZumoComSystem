@@ -35,16 +35,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief main function
  * @date 06/17/2021
- * 
+ *
  * @{
  */
 
 #include <Arduino.h>
 #include <System.h>
 
-/**
- * Setup function which initializes the ComPlatform
- */
+ /**
+  * Setup function which initializes the ComPlatform
+  */
 void setup()
 {
     Serial.begin(115200);

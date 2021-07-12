@@ -35,12 +35,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FileManager header
  * @date 07/07/2021
- * 
+ *
  * @{
  */
 
 #ifndef __FILEMANAGER_H__
 #define __FILEMANAGER_H__
+
 class FileManager
 {
 };

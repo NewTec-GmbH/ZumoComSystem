@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief KeyCert class
  * @date 06/22/2021
- * 
+ *
  * @{
  */
 
@@ -44,8 +44,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 uint8_t KeyCert::m_binaryKey[RSA_KEY_SIZE_BYTE] = {0};
 uint8_t KeyCert::m_binaryCert[CERT_SIZE_BYTE] = {0};
 
-KeyCert::KeyCert() : m_sslCert(),
-                     m_certGenerated(false)
+KeyCert::KeyCert() :
+    m_sslCert(),
+    m_certGenerated(false)
 {
 }
 
@@ -77,12 +78,12 @@ bool KeyCert::generateNewCert()
     return (0 == retCode);
 }
 
-httpsserver::SSLCert *KeyCert::getSSLCert()
+httpsserver::SSLCert* KeyCert::getSSLCert()
 {
     return &m_sslCert;
 }
 
-void KeyCert::serialize(uint8_t *keyBuffer, uint8_t *certBuffer)
+void KeyCert::serialize(uint8_t* keyBuffer, uint8_t* certBuffer)
 {
     if (true == m_certGenerated)
     {
@@ -96,7 +97,7 @@ void KeyCert::serialize(uint8_t *keyBuffer, uint8_t *certBuffer)
     }
 }
 
-void KeyCert::deserialize(uint8_t *keyBuffer, uint8_t *certBuffer)
+void KeyCert::deserialize(uint8_t* keyBuffer, uint8_t* certBuffer)
 {
     freeSSLMemory();
 

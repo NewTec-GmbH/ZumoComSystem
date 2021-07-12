@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief WebServer header
  * @date 07/07/2021
- * 
+ *
  * @{
  */
 
@@ -66,7 +66,7 @@ private:
     httpsserver::ResourceNode m_homeRoute;
 
     /** Store instance */
-    Store &m_store = Store::getInstance();
+    Store& m_store = Store::getInstance();
 
     /** Registers the route for the home page */
     bool registerHome();
@@ -75,7 +75,7 @@ private:
     bool registerServices();
 
     /** Handles incoming requests for home page */
-    static void handleHome(httpsserver::HTTPRequest *request, httpsserver::HTTPResponse *response);
+    static void handleHome(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response);
 
 public:
     /**

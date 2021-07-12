@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief WiFiManager class
  * @date 06/25/2021
- * 
+ *
  * @{
  */
 
@@ -45,11 +45,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 const String WiFiManager::HOSTNAME = "complatform.local";
 
-WiFiManager::WiFiManager() : m_store(Store::getInstance()),
-                             m_dnsServer(),
-                             m_dnsRetCode(false),
-                             m_apActive(false),
-                             m_staActive(false)
+WiFiManager::WiFiManager() :
+    m_store(Store::getInstance()),
+    m_dnsServer(),
+    m_dnsRetCode(false),
+    m_apActive(false),
+    m_staActive(false)
 
 {
 }

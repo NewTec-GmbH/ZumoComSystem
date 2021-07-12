@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief WiFiManager header
  * @date 06/25/2021
- * 
+ *
  * @{
  */
 
@@ -48,7 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ESPmDNS.h>
 #include <DNSServer.h>
 
-/** Class which manages STA and AP mode */
+ /** Class which manages STA and AP mode */
 class WiFiManager
 {
 public:
@@ -64,14 +64,14 @@ public:
 
     /**
      * Starts the access point of the ComPlatform if the STA mode is not active
-     * 
+     *
      * @return Returns true if successful, else false
      */
     bool startAP();
 
     /**
      * Stops the access point if it has been started before
-     * 
+     *
      * @return Returns true if successful, else false
      */
     bool stopAP();
@@ -83,21 +83,21 @@ public:
 
     /**
      * Starts the station mode of the ComPlatform if the AP mode is not active
-     * 
+     *
      * @return Returns true if active, else false
      */
     bool startSTA();
 
     /**
      * Stops the station mode if it has been started before
-     * 
+     *
      * @return Returns true if active, else false
      */
     bool stopSTA();
 
 private:
     /** Reference to store */
-    Store &m_store;
+    Store& m_store;
 
     /** Instance of DNS server for AP mode */
     DNSServer m_dnsServer;

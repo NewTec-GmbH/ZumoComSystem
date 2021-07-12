@@ -35,15 +35,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief NetworkCredentials class
  * @date 06/17/2021
- * 
+ *
  * @{
  */
 
 #include <NetworkCredentials.h>
 #include <Log.h>
 
-NetworkCredentials::NetworkCredentials() : m_ssid(),
-                                           m_passphrase()
+NetworkCredentials::NetworkCredentials() :
+    m_ssid(),
+    m_passphrase()
 {
 }
 
@@ -94,9 +95,9 @@ bool NetworkCredentials::setPassphrase(String passphrase)
 
 String NetworkCredentials::serialize()
 {
-    /* 
+    /*
     Reserve memory on stack for JSON structure which consists of two key-value pairs.
-    The ssid and the passphrase are not copied into the StaticJsonDocument by default. 
+    The ssid and the passphrase are not copied into the StaticJsonDocument by default.
     */
     const size_t KEY_VALUE_PAIRS = 2;
     StaticJsonDocument<JSON_OBJECT_SIZE(KEY_VALUE_PAIRS)> jsonDocument;
@@ -105,7 +106,7 @@ String NetworkCredentials::serialize()
     String serialized;
 
     /*
-    Pass the const/non-volatile char* pointers to ArduinoJson so that ArduinoJson 
+    Pass the const/non-volatile char* pointers to ArduinoJson so that ArduinoJson
     will not copy/duplicate the string values
     */
     jsonDocument["ssid"] = m_ssid.c_str();
@@ -118,7 +119,7 @@ String NetworkCredentials::serialize()
 
 bool NetworkCredentials::deserialize(String serial)
 {
-    /* 
+    /*
     Reserve memory on stack for JSON structure which consists of two key-value pairs.
     The ssid and the passphrase are copied into the StaticJsonDocument by default.
     The value specified in DOC_SIZE has been computed with the help of the ArduinoJson Assistant v6

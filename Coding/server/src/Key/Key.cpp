@@ -35,13 +35,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Key class
  * @date 06/25/2021
- * 
+ *
  * @{
  */
 
 #include <Key.h>
 
-Key::Key() : m_io(IO::getInstance())
+Key::Key() :
+    m_io(IO::getInstance())
 {
     IO::getInstance().setPinMode(WIFI_AND_RESET_KEY_PIN, INPUT_PULLUP);
 }
@@ -61,7 +62,7 @@ bool Key::readKey()
     return (LOW == m_io.readGPIODebounced(WIFI_AND_RESET_KEY_PIN));
 }
 
-void Key::resetTask(void *parameter)
+void Key::resetTask(void* parameter)
 {
     if (true == Key::getInstance().readKey())
     {

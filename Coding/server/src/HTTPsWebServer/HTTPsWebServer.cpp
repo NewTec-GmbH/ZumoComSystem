@@ -35,15 +35,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief WebServer class
  * @date 07/07/2021
- * 
+ *
  * @{
  */
 
 #include <HTTPsWebServer.h>
 
-HTTPsWebServer::HTTPsWebServer() : m_httpsServer(Store::getInstance().getKeyCert().getSSLCert(), SHARED_TCP_PORT, MAX_CLIENTS),
-                                   m_homeRoute("/", "GET", &handleHome),
-                                   m_store(Store::getInstance())
+HTTPsWebServer::HTTPsWebServer() :
+    m_httpsServer(Store::getInstance().getKeyCert().getSSLCert(), SHARED_TCP_PORT, MAX_CLIENTS),
+    m_homeRoute("/", "GET", &handleHome),
+    m_store(Store::getInstance())
 {
 }
 
@@ -70,7 +71,7 @@ void HTTPsWebServer::handleServer()
     m_httpsServer.loop();
 }
 
-void HTTPsWebServer::handleHome(httpsserver::HTTPRequest *request, httpsserver::HTTPResponse *response)
+void HTTPsWebServer::handleHome(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response)
 {
     response->setHeader("Content-Type", "text/html");
     String html = "<html><head></head><body><h1>Congratulations! You are successfully accessing the ComPlatform!</body></html>";
