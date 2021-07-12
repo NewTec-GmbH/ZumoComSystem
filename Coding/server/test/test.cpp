@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Test class
  * @date 06/17/2021
- * 
+ *
  * @{
  */
 
@@ -44,15 +44,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Log.h>
 
-/**
- * Test the logging functionality
- */
+ /**
+  * Test the logging functionality
+  */
 
 using namespace fakeit;
 
 void test_Logging()
 {
-    Log &logger = Log::getInstance();
+    Log& logger = Log::getInstance();
 
     /* Test if default log level is set to DEBUG */
     Log::LogLevel current = logger.getLogLevel();

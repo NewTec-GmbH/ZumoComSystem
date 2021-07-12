@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief NVSManager header
  * @date 06/17/2021
- * 
+ *
  * @{
  */
 
@@ -44,7 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Arduino.h>
 #include <Preferences.h>
 
-/** Hardware abstraction to easily store and retrieve key-value string pairs */
+ /** Hardware abstraction to easily store and retrieve key-value string pairs */
 class NVSManager
 {
 public:
@@ -60,7 +60,7 @@ public:
 
     /**
      * Creates or updates a new string key-value pair in persistent storage
-     * 
+     *
      * @param[in] key The key name of passed value
      * @param[in] value The string value to be saved
      * @return Returns true if successful, else false
@@ -69,17 +69,17 @@ public:
 
     /**
      * Creates or updates a new binary key-value pair in persistent storage
-     * 
+     *
      * @param[in] key The key name of passed value
      * @param[in] value The binary value to be saved
      * @param[in] length The length in bytes of the data to be written
      * @return Returns true if successful, else false
      */
-    bool putEntry(String key, uint8_t *value, size_t length);
+    bool putEntry(String key, uint8_t* value, size_t length);
 
     /**
      * Deletes a key-value pair from persistent storage
-     * 
+     *
      * @param[in] key The key-value pair to be removed
      * @return Returns true if successful, else false
      */
@@ -87,7 +87,7 @@ public:
 
     /**
      * Returns the string value of the key-value pair from persistent storage
-     * 
+     *
      * @param[in] key The key-value pair to be read
      * @return Returns value in case of success and "null" in case of failure
      */
@@ -95,13 +95,13 @@ public:
 
     /**
      * Returns the binary value of the key-value pair from persistent storage
-     * 
+     *
      * @param[in] key The key-value pair to be read
      * @param[out] buffer The buffer to be filled with the read data
      * @param[in] length The lenght in bytes of the passed buffer
      * @return Returns true if successful, else false
      */
-    bool readEntry(String key, uint8_t *buffer, size_t length);
+    bool readEntry(String key, uint8_t* buffer, size_t length);
 
     /**
      * Completely removes all key-value pairs from persistent storage

@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief NetworkCredentials header
  * @date 06/16/2021
- * 
+ *
  * @{
  */
 
@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Arduino.h>
 #include <ArduinoJson.h>
 
-/** Data structure for network credentials which supports JSON serialization */
+ /** Data structure for network credentials which supports JSON serialization */
 class NetworkCredentials
 {
 public:
@@ -55,49 +55,49 @@ public:
     /** Destructor */
     ~NetworkCredentials();
 
-    /** 
+    /**
      * Returns the Service Set Identifier (SSID)
-     * 
+     *
      * @return Returns the SSID string
     */
     String getSSID();
 
-    /** 
+    /**
      * Sets Service Set Identifier. Please note that the lenght of the SSID should not exceed 32 printable chars
-     * 
+     *
      * @param[in] ssid The SSID to be set
      * @param[in] staMode Specifies if credentials are to be used in STA mode.
      * @return Returns true if the SSID is well-formed, else false
      */
     bool setSSID(String ssid, bool staMode);
 
-    /** 
+    /**
      * Returns the WiFi passphrase
-     * 
+     *
      * @return Returns the passphrase string
      */
     String getPassphrase();
 
-    /** 
+    /**
      * Sets the passphrase used for the WiFi. Please note that the length of the passphrase should range between 8 and 63 printable chars
      * if this NetworkCredentials instance is used for STA mode and limited in the range between 8 and 50 printable chars if the AP mode is
      * used because the unique device ID will be appended for SSID uniqueness.
-     * 
+     *
      * @param[in] passphrase The passphrase to be set
      * @return Returns true if the passphrase is well-formed, else false
      */
     bool setPassphrase(String passphrase);
 
-    /** 
+    /**
      * Returns JSON string
-     * 
+     *
      * @return Returns the serialized object in JSON string
      */
     String serialize();
 
-    /** 
+    /**
      * Re-creates object from serialized JSON string
-     * 
+     *
      * @param serial The serialized JSON string
      * @return Returns false in case of failure, true in case of success
      */

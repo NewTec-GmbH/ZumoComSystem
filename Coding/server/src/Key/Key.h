@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Key header
  * @date 06/25/2021
- * 
+ *
  * @{
  */
 
@@ -46,16 +46,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <IO.h>
 #include <System.h>
 
-/** Class for accessing active-low push keys */
+ /** Class for accessing active-low push keys */
 class Key
 {
 public:
     /**
      * Get Key instance
-     * 
+     *
      * @return Returns singleton instance
      */
-    static Key &getInstance()
+    static Key& getInstance()
     {
         static Key instance;
         return instance;
@@ -68,7 +68,7 @@ public:
 
     /**
      * Checks if the key connected to WIFI_AND_RESET_KEY_PI is being pressed. Automatically debounces the key
-     * 
+     *
      * @return Returns true, if button has been pressed, otherwise false
      */
     bool readKey();
@@ -87,7 +87,7 @@ private:
     /**
      * Task which checks the push key level and resets the ComPlatform
      */
-    static void resetTask(void *parameter);
+    static void resetTask(void* parameter);
 
     /**
      * ISR which resets the ComPlatform which will be inovked when push key is being pressed
@@ -95,7 +95,7 @@ private:
     static void systemResetISR();
 
     /** Reference to IO class */
-    IO &m_io;
+    IO& m_io;
 
     /** Specifies push duration for a long-press event */
     static const uint32_t LONG_PRESS_TIME_MS = 1000;

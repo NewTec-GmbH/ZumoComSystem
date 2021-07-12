@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief WebServer header
  * @date 07/07/2021
- * 
+ *
  * @{
  */
 
@@ -69,19 +69,19 @@ private:
     httpsserver::ResourceNode m_fileServeRoute;
 
     /** Store instance */
-    Store &m_store;
+    Store& m_store;
 
-    /** 
+    /**
      * Handles incoming file requests
-     * 
+     *
      * @param[in] request The incoming HTTP request
      * @param[in] response The outgoing HTTP response
      */
-    static void registerFileServing(httpsserver::HTTPRequest *request, httpsserver::HTTPResponse *response);
+    static void registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response);
 
-    /** 
+    /**
      * Checks if the requested file has valid file ending and returns corresponding MIME type
-     * 
+     *
      * @param[in] filePath The filepath to be checked for its ending
      * @return Returns the MIME type for the detected file ending, Returns 'null' if file ending is invalid
      */

@@ -35,13 +35,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief IO class
  * @date 06/21/2021
- * 
+ *
  * @{
  */
 
 #include <IO.h>
 
-IO::IO() : m_ioMutex(xSemaphoreCreateMutex())
+IO::IO() :
+    m_ioMutex(xSemaphoreCreateMutex())
 {
     if (NULL == m_ioMutex)
     {

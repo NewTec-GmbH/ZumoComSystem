@@ -43,7 +43,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 const char* FileManager::m_directories[] = { "/webspace/", "/firmware/" };
 
-FileManager::FileManager() : m_fileHandle()
+FileManager::FileManager() :
+    m_fileHandle()
 {
     if (true == LITTLEFS.begin(false))
     {

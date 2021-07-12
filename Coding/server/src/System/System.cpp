@@ -35,16 +35,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief System class
  * @date 06/22/2021
- * 
+ *
  * @{
  */
 #include <System.h>
 
-SemaphoreHandle_t System::m_genKeyCertSemaphore = {0};
+SemaphoreHandle_t System::m_genKeyCertSemaphore = { 0 };
 
-System::System() : m_store(Store::getInstance()),
-                   m_wifimgr(),
-                   m_webServer()
+System::System() :
+    m_store(Store::getInstance()),
+    m_wifimgr(),
+    m_webServer()
 {
 }
 
@@ -143,9 +144,9 @@ void System::handleServices()
     delay(SLEEP_TIME_MS);
 }
 
-void System::genKeyCertTask(void *parameter)
+void System::genKeyCertTask(void* parameter)
 {
-    Store &store = Store::getInstance();
+    Store& store = Store::getInstance();
 
     LOG_DEBUG("KeyCert generation task running on core #" + String(xPortGetCoreID()));
 

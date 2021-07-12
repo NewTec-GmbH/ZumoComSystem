@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief KeyCert header
  * @date 06/22/2021
- * 
+ *
  * @{
  */
 
@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Arduino.h>
 #include <Log.h>
 
-/** Data structure for HTTPS/WSS server which supports JSON serialization */
+ /** Data structure for HTTPS/WSS server which supports JSON serialization */
 class KeyCert
 {
 public:
@@ -62,33 +62,33 @@ public:
 
     /**
     * Generates a new SSLCert for this class instance
-    * 
+    *
     * @return Returns true if successful, else false
     */
     bool generateNewCert();
 
     /**
      * Get the SSL cert required for HTTPSServer
-     * 
+     *
      * @return Returns SSLCert instance
      */
     httpsserver::SSLCert* getSSLCert();
 
     /**
      * Serializes this KeyCert object.
-     * 
+     *
      * @param[out] keyBuffer The output buffer to be filled with the serialized binary RSA key. Allocate memory previously
      * @param[out] certBuffer The output buffer to be filled with the serialized binary SSL cert. Allocate memory previously
      */
-    void serialize(uint8_t *keyBuffer, uint8_t *certBuffer);
+    void serialize(uint8_t* keyBuffer, uint8_t* certBuffer);
 
     /**
      * Deserializes this KeyCert object. All passed data is copied. Free passed buffers after this call
-     * 
+     *
      * @param[in] keyBuffer The input buffer which containts the serialized binary RSA key.
      * @param[in] certBuffer The input buffer which containts the serialized binary SSL cert.
      */
-    void deserialize(uint8_t *keyBuffer, uint8_t *certBuffer);
+    void deserialize(uint8_t* keyBuffer, uint8_t* certBuffer);
 
 private:
     /**
@@ -104,7 +104,7 @@ public:
     static const size_t CERT_SIZE_BYTE = 766;
 
 private:
-    /** 
+    /**
     * The DER-X509 certificate which stores the private RSA key as well as the public certificate.
     * This data structure is used by the HTTPs/WSS servers
     */

@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FileManager header
  * @date 07/07/2021
- * 
+ *
  * @{
  */
 
@@ -47,7 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <FS.h>
 #include <LITTLEFS.h>
 
-/** Class used for simply reading and writing binary files */
+ /** Class used for simply reading and writing binary files */
 class FileManager
 {
 public:
@@ -77,7 +77,7 @@ public:
 
     /**
      * Opens a new file for further access.
-     * 
+     *
      * @param[in] filePath The absoulte path to the file to be accessed
      * @param[in] mode The access mode to be used on the file
      * @return Returns true if successful, else false
@@ -99,22 +99,22 @@ public:
      * If the file size exceeds 4K, this method needs to be called multiple times.
      * If the remaining data to be read is smaller than 4K, only the remaining bytes will be written into the buffer.
      * Please note, that the buffer needs to be allocated first.
-     * 
+     *
      * @param[out] buffer The buffer to be filled with the file data
      * @return Returns how many bytes have been written into the output buffer
      */
-    uint16_t read4KBlock(uint8_t *buffer);
+    uint16_t read4KBlock(uint8_t* buffer);
 
     /**
      * Writes the content from the specified buffer into the opened file in 4K blocks (4096 byte).
      * If the data to be written exceeds 4K, this method needs to be called multiple times.
      * Please note, that only that many bytes will be written, which have been specified with the size argument.
-     * 
+     *
      * @param[in] buffer The buffer whose data should be written into file
      * @param[in] size The number of bytes to be written from the buffer into the file
      * @return Returns the number of written bytes
      */
-    uint16_t write4KBlock(uint8_t *buffer, uint16_t size);
+    uint16_t write4KBlock(uint8_t* buffer, uint16_t size);
 
     /**
      * Checks if the specified file exists
@@ -125,14 +125,14 @@ public:
 
     /**
      * Returns the size of the currently opened file in bytes.
-     * 
+     *
      * @return Returns the size of the file in bytes. Returns -1 if file does not exist.
      */
     int32_t getFileSize();
 
     /**
      * Returns the size of the specified file in bytes
-     * 
+     *
      * @param[in] filePath The absoulte path to the file to be checked for size
      * @return Returns the size of the file
      */
@@ -140,7 +140,7 @@ public:
 
     /**
      * Lists all existing files in the specified directory. Existing directories will be ignored.
-     * 
+     *
      * @param[in] directoryPath The absolute path to the path to be checked for files
      * @return Returns string array which contains the file names of all existing files
      */
@@ -149,12 +149,12 @@ public:
 private:
     /**
      * Prints information about the current state of the FS
-     * 
+     *
      * @return Returns the string containing the FS informations
      */
     String getInfo();
 
-    /** 
+    /**
      * Creates all necessary directories
      */
     static void createDirectoryStructure();
@@ -163,6 +163,6 @@ private:
     File m_fileHandle;
 
     /** Specifies the directories which have to be existent */
-    static const char *m_directories[];
+    static const char* m_directories[];
 };
 #endif /** __FILEMANAGER_H__ */

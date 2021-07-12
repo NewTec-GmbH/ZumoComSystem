@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief System header
  * @date 06/22/2021
- * 
+ *
  * @{
  */
 
@@ -52,12 +52,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class System
 {
 public:
-    /** 
+    /**
      * Get System instance
-     * 
+     *
      * @return Returns System singleton instance
      */
-    static System &getInstance()
+    static System& getInstance()
     {
         static System instance;
         return instance;
@@ -80,7 +80,7 @@ public:
 
 private:
     /** Reference to store */
-    Store &m_store;
+    Store& m_store;
 
     /** Instance of WiFiManager */
     WiFiManager m_wifimgr;
@@ -106,10 +106,10 @@ private:
 
     /**
      * Generates a private RSA key and SSL certificate
-     * 
+     *
      * @param[in] parameter Void pointer for passing optional and arbitrary arguments
      */
-    static void genKeyCertTask(void *parameter);
+    static void genKeyCertTask(void* parameter);
 
     /**
      * Registers and starts an asynchronous background task which generates a private RSA key and a SSL certificate
