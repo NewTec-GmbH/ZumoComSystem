@@ -35,13 +35,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FileManager class
  * @date 07/07/2021
- * 
+ *
  * @{
  */
 
 #include <FileManager.h>
 
-const char *FileManager::m_directories[] = {"/webspace/", "/firmware/"};
+const char* FileManager::m_directories[] = { "/webspace/", "/firmware/" };
 
 FileManager::FileManager() : m_fileHandle()
 {
@@ -127,13 +127,13 @@ void FileManager::resetFilePointer()
     m_fileHandle.seek(0, SeekSet);
 }
 
-uint16_t FileManager::read4KBlock(uint8_t *buffer)
+uint16_t FileManager::read4KBlock(uint8_t* buffer)
 {
     static const uint16_t BUFFER_SIZE_BYTES = 4096;
-    return m_fileHandle.readBytes(reinterpret_cast<char *>(const_cast<uint8_t *>(buffer)), BUFFER_SIZE_BYTES);
+    return m_fileHandle.readBytes(reinterpret_cast<char*>(const_cast<uint8_t*>(buffer)), BUFFER_SIZE_BYTES);
 }
 
-uint16_t FileManager::write4KBlock(uint8_t *buffer, uint16_t size)
+uint16_t FileManager::write4KBlock(uint8_t* buffer, uint16_t size)
 {
     static const uint16_t BUFFER_SIZE_BYTES = 4096;
     uint16_t writtenBytes = 0;
@@ -195,7 +195,7 @@ String FileManager::getInfo()
 {
     size_t capacity = LITTLEFS.totalBytes();
     size_t usedBytes = LITTLEFS.usedBytes();
-    size_t usedBytesPercent = (usedBytes / capacity);
+    uint8_t usedBytesPercent = static_cast<uint8_t>((usedBytes / (float)capacity) * 100);
 
     char buffer[128];
     sprintf(buffer, "Data partition size in bytes: %d, Used bytes: %d (%d%%)", capacity, usedBytes, usedBytesPercent);
@@ -205,7 +205,7 @@ String FileManager::getInfo()
 void FileManager::createDirectoryStructure()
 {
     LITTLEFS.begin(false);
-    size_t noOfDirectories = sizeof(m_directories) / sizeof(char *);
+    size_t noOfDirectories = sizeof(m_directories) / sizeof(char*);
     for (uint8_t dirNo = 0; dirNo < noOfDirectories; dirNo++)
     {
         LITTLEFS.mkdir(m_directories[dirNo]);
