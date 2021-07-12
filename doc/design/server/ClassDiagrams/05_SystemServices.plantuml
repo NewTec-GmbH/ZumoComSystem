@@ -65,7 +65,7 @@ package SystemServices {
         - {static} m_directories: char*[] {readonly} = {"/webspace/", "/firmware/"}
         + FileManager()
         + ~FileManager()
-        + {static} formatFS(): bool
+        + {static} initFS(): bool
         + openFile(filepath: String, mode: FileMode): bool
         + closeFile(): void
         + resetFilePointer(): void
@@ -75,8 +75,8 @@ package SystemServices {
         + getFileSize(): int32_t
         + {static} getFileSize(filePath: String): int32_t
         + {static} listDirectory(directoryPath: String): std::vector<String>
-        - getInfo(): String
-        - {static} createDirectoryStructure(): void
+        - {static} getInfo(): String
+        - {static} createDirectoryStructure(): bool
     }
     FileManager ..> FileMode : uses
 

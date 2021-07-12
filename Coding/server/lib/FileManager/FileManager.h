@@ -70,10 +70,10 @@ public:
     ~FileManager();
 
     /**
-     * Formats the data partition with LittleFS file system
+     * Formats the data partition with LittleFS file system and restores the directory structure
      * @return Returns true if successful, else false
      */
-    static bool formatFS();
+    static bool initFS();
 
     /**
      * Opens a new file for further access.
@@ -152,12 +152,14 @@ private:
      *
      * @return Returns the string containing the FS informations
      */
-    String getInfo();
+    static String getInfo();
 
     /**
      * Creates all necessary directories
+     *
+     * @return Returns true if successful, else false
      */
-    static void createDirectoryStructure();
+    static bool createDirectoryStructure();
 
     /** Handle to the currently opened filed */
     File m_fileHandle;

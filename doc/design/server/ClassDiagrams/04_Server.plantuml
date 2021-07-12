@@ -18,6 +18,7 @@ class HTTPsWebServer
     - m_httpsServer: httpsserver::HTTPSServer
     - m_fileServeRoute: httpsserver::ResourceNode
     - m_store: Store&
+    - {static} m_fileManager: FileManager
     - {static} registerFileServing(request: httpsserver::HTTPRequest*, response: httpsserver::HTTPResponse*): void
     - {static} getMIMEType(filePath: String): String
     + HTTPsWebServer()

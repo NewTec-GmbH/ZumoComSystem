@@ -71,6 +71,9 @@ private:
     /** Store instance */
     Store& m_store;
 
+    /** FileManager instance */
+    static FileManager m_fileManager;
+
     /**
      * Handles incoming file requests
      *

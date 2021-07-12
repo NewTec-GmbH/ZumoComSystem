@@ -98,7 +98,11 @@ void System::init()
         }
     }
 
+    /* Initialize the file system */
+    true == FileManager::initFS();
+
     /* Load Users */
+
     /* Load Permissions */
 
     /* Await KeyCert generation task execution */

@@ -41,30 +41,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <FileManager.h>
 
-const char* FileManager::m_directories[] = { "/webspace/", "/firmware/" };
+const char* FileManager::m_directories[] = { "/webspace", "/firmware" };
 
 FileManager::FileManager() :
     m_fileHandle()
 {
-    if (true == LITTLEFS.begin(false))
-    {
-        LOG_DEBUG("LittleFS file system successfully mounted");
-    }
-    else
-    {
-        LOG_WARN("No LittleFS file system existing. Formatting data partition now...");
-        if (true == LITTLEFS.begin(true))
-        {
-            LOG_DEBUG("New LittleFS file system successfuly created");
-            createDirectoryStructure();
-        }
-        else
-        {
-            LOG_ERROR("Could not create a new LittleFS file system!");
-        }
-    }
-
-    LOG_INFO(getInfo());
 }
 
 FileManager::~FileManager()
@@ -75,22 +56,48 @@ FileManager::~FileManager()
     LOG_DEBUG("LittleFS file system unmounted");
 }
 
-bool FileManager::formatFS()
+bool FileManager::initFS()
 {
-    LITTLEFS.begin(false);
-    bool retCode = LITTLEFS.format();
+    bool retCode = false;
 
-    createDirectoryStructure();
-
-    if (true == retCode)
+    if (false == LITTLEFS.begin(false))
     {
-        LOG_DEBUG("Data partition successfully formatted!");
+        if (true == LITTLEFS.format())
+        {
+            LOG_DEBUG("Data partition successfully formatted!");
+
+            retCode = createDirectoryStructure();
+            if (true == retCode)
+            {
+                LOG_DEBUG("Directory structure successfully created!");
+
+                if (true == LITTLEFS.begin(false))
+                {
+                    LOG_DEBUG("LittleFS file system successfully mounted");
+                    retCode = true;
+                }
+                else
+                {
+                    LOG_WARN("No LittleFS file system found. Could not mount the file system!");
+                }
+            }
+            else
+            {
+                LOG_ERROR("Could not create directory structure!");
+            }
+        }
+        else
+        {
+            LOG_ERROR("Could not format data partition nor create the directory structure!");
+        }
     }
     else
     {
-        LOG_ERROR("Could not format data partition!");
+        LOG_DEBUG("File system successfully initialized");
+        retCode = true;
     }
-    LITTLEFS.end();
+
+    LOG_INFO(getInfo());
     return retCode;
 }
 
@@ -203,15 +210,26 @@ String FileManager::getInfo()
     return String(buffer);
 }
 
-void FileManager::createDirectoryStructure()
+bool FileManager::createDirectoryStructure()
 {
+    bool retCode = true;
+
     LITTLEFS.begin(false);
+
     size_t noOfDirectories = sizeof(m_directories) / sizeof(char*);
     for (uint8_t dirNo = 0; dirNo < noOfDirectories; dirNo++)
     {
-        LITTLEFS.mkdir(m_directories[dirNo]);
+        if (false == LITTLEFS.exists(m_directories[dirNo]))
+        {
+            bool success = LITTLEFS.mkdir(m_directories[dirNo]);
+            Serial.println(m_directories[dirNo]);
+            if (false != retCode)
+            {
+                retCode = success;
+            }
+        }
     }
-    LITTLEFS.end();
 
-    LOG_DEBUG("Directory structure created");
+    LITTLEFS.end();
+    return retCode;
 }

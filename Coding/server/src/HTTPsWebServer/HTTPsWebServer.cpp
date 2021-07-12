@@ -47,6 +47,8 @@ const String HTTPsWebServer::m_servedFileTypes[][2] = {
     {".js", "application/javascript"},
     {".jpg", "application/jpeg"} };
 
+FileManager HTTPsWebServer::m_fileManager;
+
 HTTPsWebServer::HTTPsWebServer() :
     m_httpsServer(Store::getInstance().getKeyCert().getSSLCert(), SHARED_TCP_PORT, MAX_CLIENTS),
     m_fileServeRoute("", "", &registerFileServing),
@@ -80,8 +82,6 @@ void HTTPsWebServer::handleServer()
 
 void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response)
 {
-    FileManager m_fileManager;
-
     uint16_t writtenBytes = 0;
     static uint8_t buffer[4096];
 

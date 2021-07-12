@@ -22,11 +22,12 @@ else
     --> [false] "Load NetworkCredentials from disk"
     if "Credetentials available" then
         --> [true] "Init STA"
-        --> "Load Users from disk"
+        --> "Initialize file system"
 else 
         --> [false] initap
 endif
 
+--> "Initialize file system"
 --> "Load Users from disk"
 --> "Load Permissions from disk"
 --> === S2 ===
