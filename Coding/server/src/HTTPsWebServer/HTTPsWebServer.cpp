@@ -31,34 +31,49 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file Log.cpp
+ * @file WebServer.cpp
  * @author Luis Moser
- * @brief Log class
- * @date 06/14/2021
+ * @brief WebServer class
+ * @date 07/07/2021
  *
  * @{
  */
 
-#include <Log.h>
+#include <HTTPsWebServer.h>
 
-Log::LogLevel Log::getLogLevel()
+HTTPsWebServer::HTTPsWebServer() :
+    m_httpsServer(Store::getInstance().getKeyCert().getSSLCert(), SHARED_TCP_PORT, MAX_CLIENTS),
+    m_homeRoute("/", "GET", &handleHome),
+    m_store(Store::getInstance())
 {
-    return m_logLevel;
 }
 
-void Log::setLogLevel(LogLevel level)
+HTTPsWebServer::~HTTPsWebServer()
 {
-    if ((0 <= level) && (level < LEVEL_INVALID))
-    {
-        m_logLevel = level;
-        LOG_DEBUG("Loglevel has been changed to" + m_logLevel);
-    }
+    stopServer();
 }
 
-void Log::writeLog(LogLevel level, String msg)
+bool HTTPsWebServer::startServer()
 {
-    if ((level <= m_logLevel) && (0 < msg.length()))
-    {
-        Serial.println(msg);
-    }
+    m_httpsServer.registerNode(&m_homeRoute);
+
+    return ((1 == m_httpsServer.start()) && (true == m_httpsServer.isRunning()));
+}
+
+void HTTPsWebServer::stopServer()
+{
+    m_httpsServer.stop();
+    LOG_DEBUG("HTTPs and WSS servers have been stopped");
+}
+
+void HTTPsWebServer::handleServer()
+{
+    m_httpsServer.loop();
+}
+
+void HTTPsWebServer::handleHome(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response)
+{
+    response->setHeader("Content-Type", "text/html");
+    String html = "<html><head></head><body><h1>Congratulations! You are successfully accessing the ComPlatform!</body></html>";
+    response->println(html);
 }

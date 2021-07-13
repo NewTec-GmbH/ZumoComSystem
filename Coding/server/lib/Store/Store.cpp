@@ -35,11 +35,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Store class
  * @date 06/18/2021
- * 
+ *
  * @{
  */
 
 #include <Store.h>
+
+Store::Store() :
+    m_nvsmgr(),
+    m_staCredentials(),
+    m_apCredentials(),
+    m_keyCert()
+{
+}
+
+Store::~Store()
+{
+    closeStore();
+}
 
 bool Store::saveSTACredentials()
 {
@@ -82,7 +95,7 @@ void Store::setAPCredentials(NetworkCredentials credentials)
     m_apCredentials = credentials;
 }
 
-KeyCert &Store::getKeyCert()
+KeyCert& Store::getKeyCert()
 {
     return m_keyCert;
 }
@@ -94,8 +107,8 @@ void Store::setKeyCert(KeyCert keycert)
 
 bool Store::saveKeyCert()
 {
-    uint8_t *keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
-    uint8_t *certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
+    uint8_t* keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
+    uint8_t* certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
 
     /* Stores if writing to NVS was successful */
     bool putRSAResult = false;
@@ -120,8 +133,8 @@ bool Store::saveKeyCert()
 
 bool Store::loadKeyCert()
 {
-    uint8_t *keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
-    uint8_t *certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
+    uint8_t* keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
+    uint8_t* certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
 
     /* Stores if reading from NVS was successful */
     bool getRSAResult = m_nvsmgr.readEntry("rsakey", keyBuffer, KeyCert::RSA_KEY_SIZE_BYTE);
@@ -142,4 +155,9 @@ bool Store::loadKeyCert()
     delete[] certBuffer;
 
     return retCode;
+}
+
+void Store::closeStore()
+{
+    m_nvsmgr.closeNVS();
 }

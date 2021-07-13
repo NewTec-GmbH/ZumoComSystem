@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Robot header
  * @date 06/25/2021
- * 
+ *
  * @{
  */
 
@@ -45,16 +45,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Arduino.h>
 #include <IO.h>
 
-/** Class for accessing the robot, connected by GPIOs */
+ /** Class for accessing the robot, connected by GPIOs */
 class Robot
 {
 public:
     /**
      * Get Robot instance
-     * 
+     *
      * @return Returns singleton instance
      */
-    static Robot &getInstance()
+    static Robot& getInstance()
     {
         static Robot instance;
         return instance;
@@ -69,20 +69,15 @@ private:
     /**
      * Default Constructor
      */
-    Robot()
-    {
-        m_io.setPinMode(ROBOT_RESET_PIN, OUTPUT);
-    }
+    Robot();
 
     /**
      * Destructor
      */
-    ~Robot()
-    {
-    }
+    ~Robot();
 
     /** Reference to IO class */
-    IO &m_io = IO::getInstance();
+    IO& m_io;
 
     /** The GPIO output pin used to write the RESET line of robot */
     static const uint8_t ROBOT_RESET_PIN = 2;

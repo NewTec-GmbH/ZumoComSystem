@@ -31,34 +31,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file Log.cpp
+ * @file FileManager.cpp
  * @author Luis Moser
- * @brief Log class
- * @date 06/14/2021
+ * @brief FileManager class
+ * @date 07/07/2021
  *
  * @{
  */
 
-#include <Log.h>
-
-Log::LogLevel Log::getLogLevel()
-{
-    return m_logLevel;
-}
-
-void Log::setLogLevel(LogLevel level)
-{
-    if ((0 <= level) && (level < LEVEL_INVALID))
-    {
-        m_logLevel = level;
-        LOG_DEBUG("Loglevel has been changed to" + m_logLevel);
-    }
-}
-
-void Log::writeLog(LogLevel level, String msg)
-{
-    if ((level <= m_logLevel) && (0 < msg.length()))
-    {
-        Serial.println(msg);
-    }
-}
+#include <FileManager.h>

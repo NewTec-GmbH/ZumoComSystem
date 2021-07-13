@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief System header
  * @date 06/22/2021
- * 
+ *
  * @{
  */
 
@@ -43,6 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __SYSTEM_H__
 
 #include <WiFiManager.h>
+#include <HTTPsWebServer.h>
 #include <Log.h>
 #include <Store.h>
 #include <KeyCert.h>
@@ -51,12 +52,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class System
 {
 public:
-    /** 
+    /**
      * Get System instance
-     * 
+     *
      * @return Returns System singleton instance
      */
-    static System &getInstance()
+    static System& getInstance()
     {
         static System instance;
         return instance;
@@ -78,38 +79,37 @@ public:
     void reset();
 
 private:
+    /** Reference to store */
+    Store& m_store;
+
     /** Instance of WiFiManager */
     WiFiManager m_wifimgr;
 
-    /** Reference to store */
-    Store &m_store = Store::getInstance();
+    /** Instance of HTTPsWebServer */
+    HTTPsWebServer m_webServer;
 
     /** The binary semaphore for synchronizing init task and KeyCert generation task */
     static SemaphoreHandle_t m_genKeyCertSemaphore;
 
     /** Specifies how long the service handling task should be put to sleep */
-    const uint8_t SERVICE_HANDLING_SLEEP_TIME_MS = 1;
+    static const uint8_t SERVICE_HANDLING_SLEEP_TIME_MS = 1;
 
     /**
      * Default Constructor
      */
-    System()
-    {
-    }
+    System();
 
     /**
      * Destructor
      */
-    ~System()
-    {
-    }
+    ~System();
 
     /**
      * Generates a private RSA key and SSL certificate
-     * 
+     *
      * @param[in] parameter Void pointer for passing optional and arbitrary arguments
      */
-    static void genKeyCertTask(void *parameter);
+    static void genKeyCertTask(void* parameter);
 
     /**
      * Registers and starts an asynchronous background task which generates a private RSA key and a SSL certificate

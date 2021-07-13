@@ -46,6 +46,7 @@ package Data
         + KeyCert()
         + ~KeyCert()
         + generateNewCert(): bool
+        + getSSLCert(): httpsserver::SSLCert*
         + serialize(keyBuffer: uint8_t*, certBuffer: uint8_t*): void
         + deserialize(keyBuffer: uint8_t*, certBuffer: uint8_t*): void
         - freeSSLMemory(): void
@@ -72,9 +73,10 @@ package Data
         + setKeyCert(keycert: KeyCert): void
         + saveKeyCert(): bool
         + loadKeyCert(): bool
+        + closeStore(): void
     }
     Store "0..*" *--> "1" NVSManager
-    Store "0..*" *--> "1" NetworkCredentials
+    Store "0..*" *--> "2" NetworkCredentials
     Store "0..*" *--> "1" KeyCert
 }
 @enduml

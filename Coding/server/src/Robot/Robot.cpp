@@ -35,11 +35,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Robot class
  * @date 06/25/2021
- * 
+ *
  * @{
  */
 
 #include <Robot.h>
+
+Robot::Robot() :
+    m_io(IO::getInstance())
+{
+    m_io.setPinMode(ROBOT_RESET_PIN, OUTPUT);
+}
+
+Robot::~Robot()
+{
+}
 
 void Robot::resetRobotNow()
 {

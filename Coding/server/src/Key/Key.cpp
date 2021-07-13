@@ -35,11 +35,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Key class
  * @date 06/25/2021
- * 
+ *
  * @{
  */
 
 #include <Key.h>
+
+Key::Key() :
+    m_io(IO::getInstance())
+{
+    IO::getInstance().setPinMode(WIFI_AND_RESET_KEY_PIN, INPUT_PULLUP);
+}
+
+Key::~Key()
+{
+}
 
 void Key::registerSystemReset()
 {
@@ -52,7 +62,7 @@ bool Key::readKey()
     return (LOW == m_io.readGPIODebounced(WIFI_AND_RESET_KEY_PIN));
 }
 
-void Key::resetTask(void *parameter)
+void Key::resetTask(void* parameter)
 {
     if (true == Key::getInstance().readKey())
     {
@@ -65,14 +75,17 @@ void Key::resetTask(void *parameter)
 
 void Key::systemResetISR()
 {
-    const uint16_t HEAP_SIZE = 16384;
-    const uint8_t PRIORITY = 1;
+    /* Use large stack to be able to use Serial.println() without issues */
+    const uint16_t STACK_SIZE = 8192;
+
+    /* Set task to highest possible priority to always ensure that reset can be invoked */
+    const uint8_t PRIORITY = configMAX_PRIORITIES - 1;
 
     /* Create a new FreeRTOS task */
     xTaskCreate(
         resetTask,
         "SystemReset",
-        HEAP_SIZE,
+        STACK_SIZE,
         NULL,
         PRIORITY,
         NULL);

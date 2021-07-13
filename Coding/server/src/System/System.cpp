@@ -35,12 +35,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief System class
  * @date 06/22/2021
- * 
+ *
  * @{
  */
 #include <System.h>
 
 SemaphoreHandle_t System::m_genKeyCertSemaphore = {0};
+
+System::System() :
+    m_store(Store::getInstance()),
+    m_wifimgr(),
+    m_webServer()
+{
+}
+
+System::~System()
+{
+}
 
 void System::init()
 {
@@ -54,6 +65,10 @@ void System::init()
 
     /* Initialize and aquire binary semaphore */
     m_genKeyCertSemaphore = xSemaphoreCreateBinary();
+    if (NULL == m_genKeyCertSemaphore)
+    {
+        LOG_ERROR("KeyCert generation semaphore could not be created!");
+    }
 
     /* Check if a KeyCert exists, if not, generate new one asynchronously */
     registerKeyCertGenTask();
@@ -79,7 +94,7 @@ void System::init()
         {
             LOG_ERROR("No NetworkCredentials available");
             m_wifimgr.startAP();
-            LOG_DEBUG("AP spwaned because there are no network credentials available");
+            LOG_INFO("AP spwaned because there are no network credentials available");
         }
     }
 
@@ -90,31 +105,48 @@ void System::init()
     xSemaphoreTake(m_genKeyCertSemaphore, portMAX_DELAY);
     xSemaphoreGive(m_genKeyCertSemaphore);
 
-    /* Init HTTPs Server */
-    /* Init WSS Server */
+    /* Init HTTPs and WSS servers */
+    if (true == m_webServer.startServer())
+    {
+        LOG_DEBUG("HTTPs and WSS servers successfully started");
+    }
+    else
+    {
+        LOG_ERROR("Could not start the HTTPs and WSS servers!");
+    }
 
-    LOG_DEBUG("ComPlatform successfully booted up!");
+    LOG_INFO("ComPlatform fully booted up...");
 }
 
 void System::reset()
 {
-    LOG_DEBUG("ComPlatform will be restarted now...");
+    LOG_INFO("ComPlatform will be restarted now...");
+
+    /* Shut down DNS servers and WiFi module */
     m_wifimgr.stopAP();
     m_wifimgr.stopSTA();
+
+    /* Close NVS and store */
+    m_store.closeStore();
+
+    /* Shut down HTTPS/WSS servers */
+    m_webServer.stopServer();
+
     ESP.restart();
 }
 
 void System::handleServices()
 {
-    static const uint8_t SLEEP_TIME_MS = 1;
     m_wifimgr.handleAP_DNS();
+    m_webServer.handleServer();
+
+    static const uint8_t SLEEP_TIME_MS = 1;
     delay(SLEEP_TIME_MS);
 }
 
-void System::genKeyCertTask(void *parameter)
+void System::genKeyCertTask(void* parameter)
 {
-    Store &store = Store::getInstance();
-    KeyCert keyCert;
+    Store& store = Store::getInstance();
 
     LOG_DEBUG("KeyCert generation task running on core #" + String(xPortGetCoreID()));
 
@@ -123,9 +155,7 @@ void System::genKeyCertTask(void *parameter)
     {
         LOG_DEBUG("Missing KeyCert. Generating new SSLCert...");
 
-        keyCert = store.getKeyCert();
-
-        if (true == keyCert.generateNewCert())
+        if (true == store.getKeyCert().generateNewCert())
         {
             LOG_DEBUG("New KeyCert created");
 
@@ -164,7 +194,7 @@ void System::genKeyCertTask(void *parameter)
 void System::registerKeyCertGenTask()
 {
     /* Big stack required, otherwise RSA2048 key generation would override stack canary */
-    const uint16_t HEAP_SIZE = 16384;
+    const uint16_t STACK_SIZE = 16384;
 
     /* Use lowest possible priority because this task does not have a blocking system call */
     const uint8_t PRIORITY = 0;
@@ -175,7 +205,7 @@ void System::registerKeyCertGenTask()
     xTaskCreatePinnedToCore(
         genKeyCertTask,
         "KeyCertGen",
-        HEAP_SIZE,
+        STACK_SIZE,
         NULL,
         PRIORITY,
         NULL,

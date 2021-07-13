@@ -77,17 +77,12 @@ private:
     /**
      * Default Constructor
      */
-    Key()
-    {
-        IO::getInstance().setPinMode(WIFI_AND_RESET_KEY_PIN, INPUT_PULLUP);
-    }
+    Key();
 
     /**
      * Destructor
      */
-    ~Key()
-    {
-    }
+    ~Key();
 
     /**
      * Task which checks the push key level and resets the ComPlatform
@@ -100,7 +95,7 @@ private:
     static void systemResetISR();
 
     /** Reference to IO class */
-    IO &m_io = IO::getInstance();
+    IO &m_io;
 
     /** Specifies push duration for a long-press event */
     static const uint32_t LONG_PRESS_TIME_MS = 1000;

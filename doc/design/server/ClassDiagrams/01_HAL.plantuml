@@ -33,7 +33,7 @@ package HAL
         + registerSystemReset(): void
         + readKey(): bool
     }
-    Key ..> IO : uses
+    Key "0..*" *--> "1" IO
 
     class Robot
     {
@@ -45,6 +45,6 @@ package HAL
         {static} + getInstance(): Robot&
         + resetRobotNow(): void
     }
-    Robot ..> IO : uses
+    Robot "0..*" *--> "1" IO
 }
 @enduml

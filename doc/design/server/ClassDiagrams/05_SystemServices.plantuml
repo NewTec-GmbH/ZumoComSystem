@@ -4,6 +4,16 @@ package Data
     class Store
 }
 
+package "Arduino Core"
+{
+    class Preferences
+}
+
+package Server 
+{
+    class WebServer
+}
+
 package SystemServices {
     enum LogLevel
     {
@@ -38,7 +48,33 @@ package SystemServices {
         + readEntry(key: String): String
         + readEntry(key: String, length: size_t, uint8_t* buffer): bool
         + wipeNVS(): bool
+        + closeNVS(): void
     }
+    NVSManager "0..*" *--> "1" Preferences
+
+    enum FileMode
+    {
+        READ,
+        WRITE,
+        READWRITE
+    }
+
+    class FileManager
+    {
+        + FileManager()
+        + ~FileManager()
+        + openFile(filepath: String, mode: FileMode, isBinary: bool): bool
+        + isOpened(): bool
+        + closeFile(): bool
+        + readLine(lineNo: uint32_t): String
+        + readByte(byteOffset: uint32_t): uint8_t*
+        + writeByte(byteOffset: uint32_t, buffer: uint8_t*): bool
+        + {static} getFileSize(filepath: String): uint32_t
+        + {static} getAllFileNames(): std::vector<String>
+        + {static} getNoOfLines(): uint32_t
+        + {static} fileExists(filepath: String): bool
+    }
+    FileManager ..> FileMode : uses
 
     class WiFiManager
     {
@@ -65,8 +101,9 @@ package SystemServices {
 
     class System
     {
-        - m_wifiManager: WiFiManager
         - m_store: Store&
+        - m_wifiManager: WiFiManager
+        - m_webServer: WebServer
         - {static} m_genKeyCertSemaphore: SemaphoreHandle_t
         - SERVICE_HANDLING_SLEEP_TIME_MS {readonly} = 1
         - System()
@@ -80,5 +117,6 @@ package SystemServices {
     }
     System "0..*" *--> "1" WiFiManager
     System "0..*" *--> "1" Store
+    System "0..*" *--> "1" WebServer
 }
 @enduml

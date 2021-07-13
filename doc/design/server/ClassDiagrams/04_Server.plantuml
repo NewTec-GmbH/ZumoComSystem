@@ -1,10 +1,33 @@
-class WebServer
+package SystemServices
 {
-    - m_store: Store
-    + WebServer()
-    + ~WebServer()
-    + startHTTPS(): bool 
-    + stopHTTPS(): bool
-    + startWSS(): bool
-    + stopWSS(): bool
+    class FileManager
 }
+
+package Data 
+{
+    class Store
+}
+
+class HTTPSServer
+
+class HTTPsWebServer
+{
+    - {static} SHARED_TCP_PORT: uint16_t = {readonly} 443
+    - {static} MAX_CLIENTS: uint8_t = {readonly} = 4
+    - m_httpsServer: httpsserver::HTTPSServer
+    - m_homeRoute: httpsserver::ResourceNode
+    - m_store: Store&
+    - m_fileManager: FileManager&
+    - m_httpsServer: HTTPSServer
+    - registerHome(): bool
+    - registerServices(): bool
+    - handleHome(request: httpsserver::HTTPRequest*, response: httpsserver::HTTPResponse*)
+    + HTTPsWebServer()
+    + ~HTTPsWebServer()
+    + startServer(): bool 
+    + stopServer(): bool
+    + handleServer(): void
+}
+HTTPsWebServer "0..*" *--> "1" FileManager
+HTTPsWebServer "0..*" *--> "1" Store
+HTTPsWebServer "0..*" *--> "1" HTTPSServer

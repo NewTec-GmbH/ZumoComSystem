@@ -31,34 +31,75 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file Log.cpp
+ * @file WebServer.h
  * @author Luis Moser
- * @brief Log class
- * @date 06/14/2021
+ * @brief WebServer header
+ * @date 07/07/2021
  *
  * @{
  */
 
+#ifndef __WEBSERVER_H__
+#define __WEBSERVER_H__
+
+#include <Arduino.h>
+#include <Store.h>
 #include <Log.h>
+#include <FileManager.h>
+#include <HTTPSServer.hpp>
+#include <HTTPRequest.hpp>
+#include <HTTPResponse.hpp>
 
-Log::LogLevel Log::getLogLevel()
+class HTTPsWebServer
 {
-    return m_logLevel;
-}
+private:
+    /** TCP port which is used for frontend delivery as well as backend API services */
+    static const uint16_t SHARED_TCP_PORT = 443;
 
-void Log::setLogLevel(LogLevel level)
-{
-    if ((0 <= level) && (level < LEVEL_INVALID))
-    {
-        m_logLevel = level;
-        LOG_DEBUG("Loglevel has been changed to" + m_logLevel);
-    }
-}
+    /** Max number of concurrent clients which can access the server */
+    static const uint8_t MAX_CLIENTS = 4;
 
-void Log::writeLog(LogLevel level, String msg)
-{
-    if ((level <= m_logLevel) && (0 < msg.length()))
-    {
-        Serial.println(msg);
-    }
-}
+    /** HTTPSServer instance */
+    httpsserver::HTTPSServer m_httpsServer;
+
+    /** Stores all HTTP routes */
+    httpsserver::ResourceNode m_homeRoute;
+
+    /** Store instance */
+    Store& m_store = Store::getInstance();
+
+    /** Registers the route for the home page */
+    bool registerHome();
+
+    /** Registers all API services */
+    bool registerServices();
+
+    /** Handles incoming requests for home page */
+    static void handleHome(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response);
+
+public:
+    /**
+     * Default Constructor
+     */
+    HTTPsWebServer();
+    /**
+     * Destructor
+     */
+    ~HTTPsWebServer();
+
+    /**
+     * Starts the HTTPs and WSS servers
+     */
+    bool startServer();
+
+    /**
+     * Stops the HTTPs and WSS servers
+     */
+    void stopServer();
+
+    /**
+     * This method needs to be called in a loop so that the HTTPs and WSS servers can receive CPU time
+     */
+    void handleServer();
+};
+#endif /** __WEBSERVER_H__ */

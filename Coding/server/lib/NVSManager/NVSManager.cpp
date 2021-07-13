@@ -35,14 +35,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief NVSManager class
  * @date 06/17/2021
- * 
+ *
  * @{
  */
 
 #include <NVSManager.h>
 #include <Log.h>
 
-NVSManager::NVSManager()
+NVSManager::NVSManager() :
+    m_preferences()
 {
     /* Open/Create the namespace for key-value pairs with r/w access */
     m_preferences.begin("complatform", false);
@@ -51,9 +52,7 @@ NVSManager::NVSManager()
 
 NVSManager::~NVSManager()
 {
-    /* Close the currently opened namespace */
-    m_preferences.end();
-    LOG_DEBUG("Closed complatform namespacfe for NVS");
+    closeNVS();
 }
 
 bool NVSManager::putEntry(String key, String value)
@@ -66,7 +65,7 @@ bool NVSManager::putEntry(String key, String value)
     return retCode;
 }
 
-bool NVSManager::putEntry(String key, uint8_t *value, size_t length)
+bool NVSManager::putEntry(String key, uint8_t* value, size_t length)
 {
     bool retCode = (m_preferences.putBytes(key.c_str(), value, length) == length);
     if (false == retCode)
@@ -76,7 +75,7 @@ bool NVSManager::putEntry(String key, uint8_t *value, size_t length)
     return retCode;
 }
 
-bool NVSManager::readEntry(String key, uint8_t *buffer, size_t length)
+bool NVSManager::readEntry(String key, uint8_t* buffer, size_t length)
 {
     return (m_preferences.getBytes(key.c_str(), buffer, length) == length);
 }
@@ -104,4 +103,11 @@ bool NVSManager::wipeNVS()
         LOG_ERROR("NVS could not be wiped");
     }
     return retCode;
+}
+
+void NVSManager::closeNVS()
+{
+    /* Close the currently opened namespace */
+    m_preferences.end();
+    LOG_DEBUG("Closed complatform namespace for NVS");
 }

@@ -35,23 +35,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief IO header
  * @date 06/21/2021
- * 
+ *
  * @{
  */
 
 #include <Arduino.h>
 #include <Log.h>
 
-/** Provides abstraction for IO functionality for ComPlatform */
+ /** Provides abstraction for IO functionality for ComPlatform */
 class IO
 {
 public:
     /**
      * Get IO instance
-     * 
+     *
      * @return Returns the IO singleton instance
      */
-    static IO &getInstance()
+    static IO& getInstance()
     {
         static IO instance;
         return instance;
@@ -59,7 +59,7 @@ public:
 
     /**
      * Specifies the GPIO pin direction
-     * 
+     *
      * @param[in] gpio The GPIO pin to be set
      * @param[in] mode The direction of the GPIO pin
      */
@@ -67,7 +67,7 @@ public:
 
     /**
      * Reads the specified GPIO input but also works with bouncing input signals (e.g. from push keys)
-     * 
+     *
      * @param[in] gpio The GPIO pin to be read
      * @return Returns the read GPIO value
      */
@@ -75,7 +75,7 @@ public:
 
     /**
      * Reads the specified GPIO input
-     * 
+     *
      * @param[in] gpio The GPIO pin to be read
      * @return Returns the read GPIO value
      */
@@ -83,7 +83,7 @@ public:
 
     /**
      * Writes to the specified GPIO output
-     * 
+     *
      * @param[in] gpio The GPIO pin to be written to
      * @param[in] value The value to be written
      */
@@ -93,21 +93,12 @@ private:
     /**
      * Default constructor
      */
-    IO()
-    {
-        m_ioMutex = xSemaphoreCreateMutex();
-        if (NULL == m_ioMutex)
-        {
-            LOG_ERROR("IO mutex could not be created!");
-        }
-    }
+    IO();
 
     /**
      * Destructor
      */
-    ~IO()
-    {
-    }
+    ~IO();
 
     /**
      * Mutex which is used to avoid that two or more concurrent tasks,

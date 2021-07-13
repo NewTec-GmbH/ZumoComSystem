@@ -132,16 +132,17 @@ public:
      */
     void setKeyCert(KeyCert keycert);
 
+    /**
+     * Closes the store. Should be called when access to store is done.
+     */
+    void closeStore();
+
 private:
     /** Default constructor */
-    Store()
-    {
-    }
+    Store();
 
     /** Destructor */
-    ~Store()
-    {
-    }
+    ~Store();
 
     /** Instance of NVSManager for making data persistent */
     NVSManager m_nvsmgr;

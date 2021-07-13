@@ -50,16 +50,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef ACTIVATE_LOGGING
 /** Macro for logging debug messages */
-#define LOG_DEBUG(msg) ((Log::getInstance().writeLog(Log::LEVEL_DEBUG, msg)))
+#define LOG_DEBUG(msg) ((Log::getInstance().writeLog(Log::LEVEL_DEBUG, (String("[+]\t") + msg))))
 
 /** Macro for logging info messages */
-#define LOG_INFO(msg) ((Log::getInstance().writeLog(Log::LEVEL_INFO, msg)))
+#define LOG_INFO(msg) ((Log::getInstance().writeLog(Log::LEVEL_INFO, (String("[i]\t") + msg))))
 
 /** Macro for logging warning messages */
-#define LOG_WARN(msg) ((Log::getInstance().writeLog(Log::LEVEL_WARN, msg)))
+#define LOG_WARN(msg) ((Log::getInstance().writeLog(Log::LEVEL_WARN, (String("[!]\t") + msg))))
 
 /** Macro for logging error messages */
-#define LOG_ERROR(msg) ((Log::getInstance().writeLog(Log::LEVEL_ERROR, msg)))
+#define LOG_ERROR(msg) ((Log::getInstance().writeLog(Log::LEVEL_ERROR, (String("[-]\t") + msg))))
 #else
 #define LOG_DEBUG(msg) \
     do                 \

@@ -35,13 +35,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief WiFiManager class
  * @date 06/25/2021
- * 
+ *
  * @{
  */
 
 #include <WiFiManager.h>
 #include <WiFi.h>
 #include <System.h>
+
+const String WiFiManager::HOSTNAME = "complatform.local";
+
+WiFiManager::WiFiManager() :
+    m_store(Store::getInstance()),
+    m_dnsServer(),
+    m_dnsRetCode(false),
+    m_apActive(false),
+    m_staActive(false)
+
+{
+}
+
+WiFiManager::~WiFiManager()
+{
+}
 
 bool WiFiManager::startAP()
 {
@@ -59,15 +75,16 @@ bool WiFiManager::startAP()
         if (true == m_apActive)
         {
             LOG_DEBUG("AP successfully started");
-            LOG_DEBUG("SSID: " + apCredentials.getSSID() + ", PSK: " + apCredentials.getPassphrase());
-            LOG_DEBUG("IP-Address: " + ipaddr.toString());
+            LOG_INFO("SSID: " + apCredentials.getSSID());
+            LOG_INFO("Passphrase: " + apCredentials.getPassphrase());
+            LOG_INFO("IP-Address: " + ipaddr.toString());
 
             /* Register A-Record which translates to current IP address (DNS) */
             m_dnsRetCode = m_dnsServer.start(DNS_PORT, HOSTNAME.c_str(), ipaddr);
             if (true == m_dnsRetCode)
             {
                 LOG_DEBUG("DNS server successfully started");
-                LOG_DEBUG("Hostname: " + HOSTNAME);
+                LOG_INFO("Hostname: " + HOSTNAME);
             }
             else
             {
@@ -135,15 +152,15 @@ bool WiFiManager::startSTA()
         while (WL_CONNECTED != WiFi.status())
         {
             delay(WIFI_CONNECT_RETRY_DELAY_MS);
-            LOG_DEBUG("Connecting to external network...");
+            LOG_INFO("Connecting to external network...");
         }
 
         if (WL_CONNECTED == WiFi.status())
         {
             m_staActive = true;
             LOG_DEBUG("STA mode successfully started");
-            LOG_DEBUG("SSID: " + staCredentials.getSSID());
-            LOG_DEBUG("IP-Address: " + WiFi.localIP().toString());
+            LOG_INFO("SSID: " + staCredentials.getSSID());
+            LOG_INFO("IP-Address: " + WiFi.localIP().toString());
 
             /* Register A-Record which translates to current IP address (mDNS) */
             MDNS.begin(HOSTNAME.c_str());
