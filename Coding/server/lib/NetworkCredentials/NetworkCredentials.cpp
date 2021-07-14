@@ -99,7 +99,7 @@ String NetworkCredentials::serialize()
     Reserve memory on stack for JSON structure which consists of two key-value pairs.
     The ssid and the passphrase are not copied into the StaticJsonDocument by default.
     */
-    const size_t KEY_VALUE_PAIRS = 2;
+    static const size_t KEY_VALUE_PAIRS = 2;
     StaticJsonDocument<JSON_OBJECT_SIZE(KEY_VALUE_PAIRS)> jsonDocument;
 
     /* The string to be used which will containt the JSON string */

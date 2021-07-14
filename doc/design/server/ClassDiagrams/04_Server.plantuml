@@ -25,7 +25,7 @@ package httpsserver
 
 enum ResponseCode
 {
-    OK = 200,
+    SUCCESS = 200,
     BADREQUEST = 400
     UNAUTHORIZED = 401
     FORBIDDEN = 403
@@ -36,14 +36,24 @@ enum ResponseCode
 
 class ApiRequest
 {
-    - commandId: String
-    - jsonPayload: String
+    - m_commandId: String
+    - m_jsonPayload: String
+    + ApiRequest()
+    + ~ApiRequest()
+    + deserialize(serial: String): bool
+    + getCommandId(): String
+    + getJsonPayload(): String
 }
 
 class ApiResponse
 {
-    - statusCode: ResponseCode
-    - jsonPayload: String
+    - m_statusCode: ResponseCode
+    - m_jsonPayload: String
+    + ApiResponse()
+    + ~ApiResponse()
+    + serialize(): String
+    + setstatusCode(statusCode: ResponseCode): void
+    + setJsonPayload(jsonPayload: String): void
 }
 
 class UserManager
