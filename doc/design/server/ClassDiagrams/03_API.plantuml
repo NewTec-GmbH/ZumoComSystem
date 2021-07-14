@@ -1,0 +1,13 @@
+@startuml
+package API 
+{
+    class ServiceController
+    {
+        - {static} NUMBER_OF_SERVICES: uint8_t = {readonly} 9
+        - m_apiServices: Command[NUMBER_OF_SERVICES]
+        + ServiceController()
+        + ~ServiceController()
+        + makeRequest(request: ApiRequest, connectionCtx: Session): ApiResponse
+    }
+}
+@enduml

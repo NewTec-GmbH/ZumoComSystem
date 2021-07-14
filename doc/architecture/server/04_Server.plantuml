@@ -23,28 +23,24 @@ package Server {
     webserver -down-(Store
 
     component "SessionManager" as sessionsmgmt
-    component "AccessManager" as accessmgmt
     component "UserManager" as usermgmt
     component "RequestResponseHandler" as requesthandler
 
-    note right of sessionsmgmt : Manages the user sessions
-    note right of accessmgmt : Generates and provides\nAPI keys with timeout for authorized users
-    note right of requesthandler : Parses the incoming JSON request,\nchecks the permission of the\nuser and forwards the request\nto controller
-    note right of usermgmt : Checks the username and password\nof the current user
+    note left of sessionsmgmt : Checks and manages active sessions
+    note left of requesthandler : Parses the incoming JSON request,\nchecks the permission of the\nuser and forwards the request\nto controller
+    note left of usermgmt : Checks username, password and permissions\nof the current user
 
     interface "RequestResponseManager" as Request
     requesthandler -up- Request
 
     requesthandler *--> servicecontroller : forwards requests
     requesthandler *--> sessionsmgmt : checks/requests\naccess/session
-    sessionsmgmt *--> accessmgmt : Check/aquire/renew\nAPI key
-    accessmgmt *--> usermgmt : Check existence\nof user and\nits rights
+
+    sessionsmgmt *--> usermgmt
 
     webserver -down-(Request
     sessionsmgmt -down-(Store
-    accessmgmt -down-(Store
-    accessmgmt -down-(Crypt : consume TRNG
-    accessmgmt -down-(Timer : consumes timer\nfor timeout
+    sessionsmgmt -down-(Timer
     usermgmt -down-(Store
     usermgmt -down-(Crypt
 }

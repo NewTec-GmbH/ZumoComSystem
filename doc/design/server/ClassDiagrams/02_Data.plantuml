@@ -9,9 +9,7 @@ package SystemService
 package httpsserver
 {
     class SSLCert
-    {
-
-    }
+    class WebSocketHandler
 }
 
 package Data
@@ -36,7 +34,6 @@ package Data
 
     class KeyCert
     {
-
         + {static} RSA_KEY_SIZE_BYTE : size_t {readonly} = 1190
         + {static} CERT_SIZE_BYTE: size_t {readonly} = 766
         - m_sslCert: httpsserver::SSLCert
@@ -53,16 +50,40 @@ package Data
     }
     KeyCert "0..*" *--> "1" SSLCert
 
+    class Session
+    {
+        - m_sessionAuthenticated: bool = false
+        - m_sessionPermissions: Permission
+        - m_authenticatedUser: User
+        - m_lastAccessTime: uint64_t = 0
+        - {static} MAX_CLIENTS: uint8_t {readonly} = 4
+        - {static} m_sessions: Session[MAX_CLIENTS];
+        + Session()
+        + ~Session()
+        + setAuthenticatedUser(user: User): void
+        + getAuthenticatedUser(): User
+        + setPermission(permission: Permission):void
+        + getPermission(): Permission
+        + deAuthenticate(): void
+        + {static} create(): WebSocketHandler*
+        + onMessage(input: WebsocketInputStreambuf*): void
+        + onClose(): void
+    }
+    Session "1" *--> "4" Session
+    Session <|-down- WebSocketHandler
+
     class Store
     {
         - m_nvsmgr: NVSManager
         - m_staCredentials: NetworkCredentials
         - m_apCredentials: NetworkCredentials
         - m_keyCert: KeyCert
+        - m_session: Session
 
         - Store()
         - ~Store()
         {static} + getInstance(): Store&
+        + getSession(): Session&
         + saveSTACredentials(): bool
         + loadSTACredentials(): bool
         + getSTACredentials(): NetworkCredentials

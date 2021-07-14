@@ -1,14 +1,89 @@
+@startuml
+
 package SystemServices
 {
     class FileManager
+    class CryptoServices
 }
 
 package Data
 {
     class Store
+    class Session
+    class Permission
 }
 
-class HTTPSServer
+package API
+{
+    class ServiceController
+}
+
+package httpsserver
+{
+    class HTTPSServer
+}
+
+enum ResponseCode
+{
+    OK = 200,
+    BADREQUEST = 400
+    UNAUTHORIZED = 401
+    FORBIDDEN = 403
+    NOTFOUND = 404
+    ERROR = 500,
+    NOTIMPLEMENTED = 501,
+}
+
+class ApiRequest
+{
+    - commandId: String
+    - jsonPayload: String
+}
+
+class ApiResponse
+{
+    - statusCode: ResponseCode
+    - jsonPayload: String
+}
+
+class UserManager
+{
+    - m_crypoService: CryptoServices
+    - m_store: Store&
+    + UserManager()
+    + ~UserManager()
+    + checkCredentials(username: String, password: String): bool
+    + checkAccess(request: ApiRequest, connectionCtx: Session): bool
+    + putUser(username: String, password: String, permissions: Permission): bool
+    + deleteUser(username: String): bool
+}
+UserManager "0..*" *--> "1" CryptoServices
+UserManager "0..*" *--> "1" Store
+
+class SessionManager
+{
+    - m_userManager: UserManager
+    - m_Timer: Timer
+    - m_store: Store&
+    + SessionManager()
+    + ~SessionManager()
+    + checkSession(command: Command, connectionCtx: Session): bool
+    + aquireSession(request: ApiRequest, connectionCtx: Session): ApiResponse
+}
+SessionManager "0..*" *--> "1" UserManager
+SessionManager "0..*" *--> "1" Timer
+SessionManager "0..*" *--> "1" Store
+
+class RequestResponseHandler
+{
+    - m_sessionManager: SessionManager
+    - m_serviceController: ServiceController
+    + RequestResponseHandler()
+    + ~RequestResponseHandler()
+    + makeRequest(request: ApiRequest, connectionCtx: Session): ApiResponse
+}
+RequestResponseHandler "0..*" *--> "1" SessionManager
+RequestResponseHandler "0..*" *--> "1" ServiceController
 
 class HTTPsWebServer
 {
@@ -17,8 +92,10 @@ class HTTPsWebServer
     - {static} m_servedFileTypes: String[][] {readonly}
     - m_httpsServer: httpsserver::HTTPSServer
     - m_fileServeRoute: httpsserver::ResourceNode
+    - m_apiRoute: httpsserver::WebSocketNode
     - m_store: Store&
     - {static} m_fileManager: FileManager
+    - m_requestResponseHandler: RequestResponseHandler
     - {static} registerFileServing(request: httpsserver::HTTPRequest*, response: httpsserver::HTTPResponse*): void
     - {static} getMIMEType(filePath: String): String
     + HTTPsWebServer()
@@ -27,6 +104,9 @@ class HTTPsWebServer
     + stopServer(): bool
     + handleServer(): void
 }
-HTTPsWebServer ..> FileManager : uses
+HTTPsWebServer "0..*" *--> "1" FileManager
 HTTPsWebServer "0..*" *--> "1" Store
 HTTPsWebServer "0..*" *--> "1" HTTPSServer
+HTTPsWebServer "0..*" *--> "1" RequestResponseHandler
+
+@enduml

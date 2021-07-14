@@ -1,0 +1,77 @@
+@startuml
+
+abstract class Command
+{
+    - m_serviceID: String
+    - m_reqPermission: Permission
+    + Command(serviceId: String, reqPermission: Permission)
+    + ~Command()
+    + getServiceID(): String
+    + getReqPermission(): Permission
+    + {abstract} run(request: ApiRequest): ApiResponse
+}
+
+class AuthenticateCommand
+{
+    + AuthenticateCommand
+    + ~AuthenticateCommand
+}
+Command <|-down-AuthenticateCommand
+
+class FlashZumoCommand
+{
+    + FlashZumoCommand()
+    + ~FlashZumoCommand()
+}
+Command <|-down-FlashZumoCommand
+
+class UploadZumoCommand
+{
+    + UploadZumoCommand
+    + ~UploadZumoCommand
+}
+Command <|-down-UploadZumoCommand
+
+class RebootZumoCommand
+{
+    + RebootZumoCommand
+    + ~RebootZumoCommand
+
+}
+Command <|-down-RebootZumoCommand
+
+class ConfigureNetworkCommand
+{
+    + ConfigureNetworkCommand
+    + ~ConfigureNetworkCommand
+}
+Command <|-down-ConfigureNetworkCommand
+
+class RebootCOMCommand
+{
+    + RebootCOMCommand
+    + ~RebootCOMCommand
+}
+Command <|-down-RebootCOMCommand
+
+class DebugZumoCommand
+{
+    + DebugZumoCommand
+    + ~DebugZumoCommand
+}
+Command <|-down-DebugZumoCommand
+
+class FlashCOMCommand
+{
+    + FlashCOMCommand
+    + ~FlashCOMCommand
+}
+Command <|-down-FlashCOMCommand
+
+class UploadCOMCommand
+{
+    + UploadCOMCommand
+    + ~UploadCOMCommand
+}
+Command <|-down-UploadCOMCommand
+@enduml

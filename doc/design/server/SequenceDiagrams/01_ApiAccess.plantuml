@@ -1,0 +1,35 @@
+@startuml
+actor User
+participant WebServer
+participant RequestResponseHandler
+participant SessionManager
+participant UserManager
+participant Command
+
+User->WebServer: Calls priviliged service
+WebServer->RequestResponseHandler: Forwards incoming ApiRequest
+RequestResponseHandler->SessionManager: Checks if session is authenticated and priviliged
+SessionManager->RequestResponseHandler: Session unauthenticated
+RequestResponseHandler->WebServer: Forwards outgoing ApiResponse
+WebServer->User : Sends outgoing ApiResponse
+
+User->WebServer: Calls Authenticate(username, password)
+WebServer->RequestResponseHandler: Forwards incoming ApiRequest
+RequestResponseHandler->SessionManager: Check credentials and authenticate
+SessionManager->UserManager: Check credentials
+UserManager-> SessionManager: Return that user is authenticated
+SessionManager->SessionManager: Authenticate session and remember user and its permissions
+SessionManager->RequestResponseHandler: Return that user is authenticated
+RequestResponseHandler->WebServer: Forwards outgoing ApiResponse
+WebServer->User : Sends outgoing ApiResponse
+
+User->WebServer: Calls priviliged service
+WebServer->RequestResponseHandler: Forwards incoming ApiRequest
+RequestResponseHandler->SessionManager: Checks if authenticated and if permissions are granted
+SessionManager->SessionManager: Check if session is authenticated and priviliged
+SessionManager->RequestResponseHandler: Return that session is authenticated and priviliged
+RequestResponseHandler->Command: Pass ApiResponse and execute service
+Command->RequestResponseHandler: Return ApiResponse
+RequestResponseHandler->WebServer: Forwards outgoing ApiResponse
+WebServer->User : Sends outgoing ApiResponse
+@enduml
