@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  * @file HTTPsWebServer.cpp
  * @author Luis Moser
- * @brief WebServer class
+ * @brief HTTPsWebServer class
  * @date 07/07/2021
  *
  * @{
