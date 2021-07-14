@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file WebServer.cpp
+ * @file HTTPsWebServer.cpp
  * @author Luis Moser
  * @brief WebServer class
  * @date 07/07/2021
@@ -96,9 +96,6 @@ void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, http
         {
             requestedFile = "/index.html";
         }
-
-        /* Get the absolute path */
-        requestedFile = "/webspace" + requestedFile;
 
         mimeType = getMIMEType(requestedFile);
 

@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file WebServer.h
+ * @file HTTPsWebServer.h
  * @author Luis Moser
  * @brief WebServer header
  * @date 07/07/2021

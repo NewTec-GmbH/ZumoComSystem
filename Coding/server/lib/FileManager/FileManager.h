@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Arduino.h>
 #include <Log.h>
 #include <FS.h>
-#include <LITTLEFS.h>
+#include <SPIFFS.h>
 
  /** Class used for simply reading and writing binary files */
 class FileManager
@@ -70,7 +70,7 @@ public:
     ~FileManager();
 
     /**
-     * Formats the data partition with LittleFS file system and restores the directory structure
+     * Formats the data partition with SPIFFS file system and restores the directory structure
      * @return Returns true if successful, else false
      */
     static bool initFS();
@@ -78,11 +78,11 @@ public:
     /**
      * Opens a new file for further access.
      *
-     * @param[in] filePath The absoulte path to the file to be accessed
+     * @param[in] fileName The file to be accessed. Needs to start with '/'
      * @param[in] mode The access mode to be used on the file
      * @return Returns true if successful, else false
      */
-    bool openFile(String filePath, FileMode mode);
+    bool openFile(String fileName, FileMode mode);
 
     /**
      * Closes a previously opened file and writes all unwritten data to file
@@ -118,10 +118,10 @@ public:
 
     /**
      * Checks if the specified file exists
-     * @param[in] filePath The absoulte path to the file to be checked for existence
+     * @param[in] fileName The absoulte path to the file to be checked for existence
      * @return Returns if the the file is existing
      */
-    static bool fileExists(String filePath);
+    static bool fileExists(String fileName);
 
     /**
      * Returns the size of the currently opened file in bytes.
@@ -133,18 +133,17 @@ public:
     /**
      * Returns the size of the specified file in bytes
      *
-     * @param[in] filePath The absoulte path to the file to be checked for size
+     * @param[in] fileName The absoulte path to the file to be checked for size
      * @return Returns the size of the file
      */
-    static int32_t getFileSize(String filePath);
+    static int32_t getFileSize(String fileName);
 
     /**
-     * Lists all existing files in the specified directory. Existing directories will be ignored.
-     *
-     * @param[in] directoryPath The absolute path to the path to be checked for files
+     * Lists all existing files in which are located in root directory.
+     * 
      * @return Returns string array which contains the file names of all existing files
      */
-    static std::vector<String> listDirectory(String directoryPath);
+    static std::vector<String> listFiles();
 
 private:
     /**
@@ -154,17 +153,7 @@ private:
      */
     static String getInfo();
 
-    /**
-     * Creates all necessary directories
-     *
-     * @return Returns true if successful, else false
-     */
-    static bool createDirectoryStructure();
-
     /** Handle to the currently opened filed */
     File m_fileHandle;
-
-    /** Specifies the directories which have to be existent */
-    static const String m_directories[];
 };
 #endif /** __FILEMANAGER_H__ */
