@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Log header
  * @date 06/14/2021
- * 
+ *
  * @{
  */
 
@@ -49,7 +49,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif /* USE_ARDUINO_FAKE */
 
 #ifdef ACTIVATE_LOGGING
-/** Macro for logging debug messages */
+ /** Macro for logging debug messages */
 #define LOG_DEBUG(msg) ((Log::getInstance().writeLog(Log::LEVEL_DEBUG, (String("[+]\t") + msg))))
 
 /** Macro for logging info messages */
@@ -79,7 +79,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     } while (0)
 #endif /* ACTIVATE_LOGGING */
 
-/** Singleton logging class used for logging events */
+ /** Singleton logging class used for logging events */
 class Log
 {
 public:
@@ -96,30 +96,30 @@ public:
     };
 
     /** Get the singleton instance of Log class
-    * 
+    *
     * @return Returns the Log class instance
     */
-    static Log &getInstance()
+    static Log& getInstance()
     {
         static Log instance;
         return instance;
     }
 
     /** Get the currently used log level
-    * 
+    *
     * @return Returns the log level
     */
     LogLevel getLogLevel();
 
-    /** Set the log level to be used 
-    * 
-    * @param[in] level The log level to be used 
+    /** Set the log level to be used
+    *
+    * @param[in] level The log level to be used
     */
     void setLogLevel(LogLevel level);
 
     /** Write the passed string message into log
-    * 
-    * @param[in] level The log level to be used 
+    *
+    * @param[in] level The log level to be used
     * @param[in] msg The log message to be written
     */
     void writeLog(LogLevel level, String msg);

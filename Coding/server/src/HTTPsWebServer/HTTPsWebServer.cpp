@@ -31,9 +31,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file WebServer.cpp
+ * @file HTTPsWebServer.cpp
  * @author Luis Moser
- * @brief WebServer class
+ * @brief HTTPsWebServer class
  * @date 07/07/2021
  *
  * @{
@@ -41,9 +41,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <HTTPsWebServer.h>
 
+const String HTTPsWebServer::m_servedFileTypes[][2] = {
+    {".html", "text/html"},
+    {".css", "text/css"},
+    {".js", "application/javascript"},
+    {".jpg", "application/jpeg"}};
+
+FileManager HTTPsWebServer::m_fileManager;
+
 HTTPsWebServer::HTTPsWebServer() :
     m_httpsServer(Store::getInstance().getKeyCert().getSSLCert(), SHARED_TCP_PORT, MAX_CLIENTS),
-    m_homeRoute("/", "GET", &handleHome),
+    m_fileServeRoute("", "", &registerFileServing),
     m_store(Store::getInstance())
 {
 }
@@ -55,7 +63,8 @@ HTTPsWebServer::~HTTPsWebServer()
 
 bool HTTPsWebServer::startServer()
 {
-    m_httpsServer.registerNode(&m_homeRoute);
+    m_httpsServer.registerNode(&m_fileServeRoute);
+    m_httpsServer.setDefaultNode(&m_fileServeRoute);
 
     return ((1 == m_httpsServer.start()) && (true == m_httpsServer.isRunning()));
 }
@@ -71,9 +80,78 @@ void HTTPsWebServer::handleServer()
     m_httpsServer.loop();
 }
 
-void HTTPsWebServer::handleHome(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response)
+void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response)
 {
-    response->setHeader("Content-Type", "text/html");
-    String html = "<html><head></head><body><h1>Congratulations! You are successfully accessing the ComPlatform!</body></html>";
-    response->println(html);
+    int16_t writtenBytes = 0;
+    const uint16_t BUFFER_SIZE_BYTES = 4096;
+    static uint8_t buffer[BUFFER_SIZE_BYTES];
+
+    String mimeType;
+
+    if (request->getMethod() == "GET")
+    {
+        String requestedFile = request->getRequestString().c_str();
+
+        /* Rewrite to index.html */
+        if ((requestedFile == "/") || (requestedFile == ""))
+        {
+            requestedFile = "/index.html";
+        }
+
+        mimeType = getMIMEType(requestedFile);
+
+        if ((true == FileManager::fileExists(requestedFile))
+            && (mimeType != "null")
+            && (true == m_fileManager.openFile(requestedFile, FILE_READ)))
+        {
+            response->setHeader("Content-Length", httpsserver::intToString(m_fileManager.getFileSize()));
+            response->setHeader("Content-Type", mimeType.c_str());
+
+            do
+            {
+                writtenBytes = m_fileManager.read4KBlock(buffer);
+
+                if (-1 == writtenBytes)
+                {
+                    response->setStatusCode(ERROR);
+                    response->println("An error occurred while reading the file!");
+                }
+                else
+                {
+                    response->write(buffer, writtenBytes);
+                }
+
+            } while ((0 != writtenBytes) && (-1 != writtenBytes));
+        }
+        else
+        {
+            response->setStatusCode(NOTFOUND);
+            response->println("Could not find such resource!");
+        }
+
+        m_fileManager.closeFile();
+    }
+    else
+    {
+        request->discardRequestBody();
+        response->setStatusCode(METHODNOTALLOWED);
+        response->println("Invalid request!");
+    }
+}
+
+String HTTPsWebServer::getMIMEType(String filePath)
+{
+    String mimeType = "null";
+
+    const uint8_t arrLength = sizeof(m_servedFileTypes) / sizeof(m_servedFileTypes[0]);
+
+    for (uint8_t endingIdx = 0; endingIdx < arrLength; endingIdx++)
+    {
+        if (true == filePath.endsWith(m_servedFileTypes[endingIdx][0]))
+        {
+            mimeType = m_servedFileTypes[endingIdx][1];
+            break;
+        }
+    }
+    return mimeType;
 }

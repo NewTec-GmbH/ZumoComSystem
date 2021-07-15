@@ -31,57 +31,34 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file WebServer.h
+ * @file HTTPsWebServer.h
  * @author Luis Moser
- * @brief WebServer header
+ * @brief HTTPsWebServer header
  * @date 07/07/2021
  *
  * @{
  */
 
-#ifndef __WEBSERVER_H__
-#define __WEBSERVER_H__
+#ifndef __HTTPSWEBSERVER_H__
+#define __HTTPSWEBSERVER_H__
 
 #include <Arduino.h>
 #include <Store.h>
 #include <Log.h>
-#include <FileManager.h>
 #include <HTTPSServer.hpp>
 #include <HTTPRequest.hpp>
 #include <HTTPResponse.hpp>
+#include <ResponseCode.h>
+#include <FileManager.h>
 
 class HTTPsWebServer
 {
-private:
-    /** TCP port which is used for frontend delivery as well as backend API services */
-    static const uint16_t SHARED_TCP_PORT = 443;
-
-    /** Max number of concurrent clients which can access the server */
-    static const uint8_t MAX_CLIENTS = 4;
-
-    /** HTTPSServer instance */
-    httpsserver::HTTPSServer m_httpsServer;
-
-    /** Stores all HTTP routes */
-    httpsserver::ResourceNode m_homeRoute;
-
-    /** Store instance */
-    Store& m_store = Store::getInstance();
-
-    /** Registers the route for the home page */
-    bool registerHome();
-
-    /** Registers all API services */
-    bool registerServices();
-
-    /** Handles incoming requests for home page */
-    static void handleHome(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response);
-
 public:
     /**
      * Default Constructor
      */
     HTTPsWebServer();
+
     /**
      * Destructor
      */
@@ -89,6 +66,8 @@ public:
 
     /**
      * Starts the HTTPs and WSS servers
+     *
+     * @return Returns true if successful, else false
      */
     bool startServer();
 
@@ -101,5 +80,43 @@ public:
      * This method needs to be called in a loop so that the HTTPs and WSS servers can receive CPU time
      */
     void handleServer();
+
+private:
+    /**
+     * Handles incoming file requests
+     *
+     * @param[in] request The incoming HTTP request
+     * @param[in] response The outgoing HTTP response
+     */
+    static void registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response);
+
+    /**
+     * Checks if the requested file has valid file ending and returns corresponding MIME type
+     *
+     * @param[in] filePath The filepath to be checked for its ending
+     * @return Returns the MIME type for the detected file ending, Returns 'null' if file ending is invalid
+     */
+    static String getMIMEType(String filePath);
+
+    /** TCP port which is used for frontend delivery as well as backend API services */
+    static const uint16_t SHARED_TCP_PORT = 443;
+
+    /** Max number of concurrent clients which can access the server */
+    static const uint8_t MAX_CLIENTS = 4;
+
+    /** Specifies MIME type and which file types should be deployed by web server and */
+    static const String m_servedFileTypes[4][2];
+
+    /** HTTPSServer instance */
+    httpsserver::HTTPSServer m_httpsServer;
+
+    /** Specifies the file serving route */
+    httpsserver::ResourceNode m_fileServeRoute;
+
+    /** Store instance */
+    Store& m_store;
+
+    /** FileManager instance */
+    static FileManager m_fileManager;
 };
-#endif /** __WEBSERVER_H__ */
+#endif /** __HTTPSWEBSERVER_H__ */

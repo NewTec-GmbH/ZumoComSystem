@@ -41,8 +41,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <KeyCert.h>
 
-uint8_t KeyCert::m_binaryKey[RSA_KEY_SIZE_BYTE] = {0};
-uint8_t KeyCert::m_binaryCert[CERT_SIZE_BYTE] = {0};
+uint8_t KeyCert::m_binaryKey[RSA_KEY_SIZE_BYTE] = { 0 };
+uint8_t KeyCert::m_binaryCert[CERT_SIZE_BYTE] = { 0 };
 
 KeyCert::KeyCert() :
     m_sslCert(),

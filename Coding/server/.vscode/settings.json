@@ -13,6 +13,8 @@
         "system_error": "cpp",
         "new": "cpp",
         "atomic": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "string_view": "cpp",
+        "fstream": "cpp"
     }
 }

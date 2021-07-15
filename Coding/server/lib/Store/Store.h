@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Store header
  * @date 06/18/2021
- * 
+ *
  * @{
  */
 
@@ -47,87 +47,87 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <NetworkCredentials.h>
 #include <KeyCert.h>
 
-/** Manages, buffers, loads and saves all required data structures for the ComPlatform */
+ /** Manages, buffers, loads and saves all required data structures for the ComPlatform */
 class Store
 {
 public:
-    /** 
+    /**
      * Get Store instance
-     * 
+     *
      * @return Returns Store singleton instance
      */
-    static Store &getInstance()
+    static Store& getInstance()
     {
         static Store instance;
         return instance;
     }
 
-    /** 
+    /**
      * Save NetworkCredentials for STA mode to disk
-     * 
+     *
      * @return Returns true if successful, false if error occured
      */
     bool saveSTACredentials();
 
     /**
      * Load NetworkCredentials for STA mode from disk to store
-     * 
+     *
      * @return Returns true if succesful, false if error occured
      */
     bool loadSTACredentials();
 
-    /** 
+    /**
      * Save KeyCert to disk
-     * 
+     *
      * @return Returns true if successful, false if error occured
      */
     bool saveKeyCert();
 
     /**
      * Load KeyCert from disk to store
-     * 
+     *
      * @return Returns true if succesful, false if error occured
      */
     bool loadKeyCert();
 
-    /** 
+    /**
      * Get the network credentials for STA mode
-     * 
+     *
      * @return Returns the NetworkCredentials instance
      */
     NetworkCredentials getSTACredentials();
 
     /**
      * Set the network credentials for STA mode
-     * 
+     *
      * @param[in] credentials The new NetworkCredentials instance to be set
      */
     void setSTACredentials(NetworkCredentials credentials);
 
-    /** 
+    /**
      * Get the network credentials for AP mode
-     * 
+     *
      * @return Returns the NetworkCredentials instance
      */
     NetworkCredentials getAPCredentials();
 
     /**
      * Set the network credentials for AP mode
-     * 
+     *
      * @param[in] credentials The new NetworkCredentials instance to be set
      */
     void setAPCredentials(NetworkCredentials credentials);
 
-    /** 
+    /**
      * Get the private RSA key and the public certificate
-     * 
+     *
      * @return Returns the KeyCert instance
      */
-    KeyCert &getKeyCert();
+    KeyCert& getKeyCert();
 
     /**
      * Set the private RSA key and the public certificate
-     * 
+     *
      * @param[in] keycert The new KeyCert instance to be saved
      */
     void setKeyCert(KeyCert keycert);
