@@ -51,14 +51,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class FileManager
 {
 public:
-    /** Enum for specifying the different access modes */
-    enum FileMode
-    {
-        READ,
-        READWRITE,
-        INVALID
-    };
-
     /**
      * Default Constructor
      */
@@ -82,7 +74,7 @@ public:
      * @param[in] mode The access mode to be used on the file
      * @return Returns true if successful, else false
      */
-    bool openFile(String fileName, FileMode mode);
+    bool openFile(String fileName, const char* mode);
 
     /**
      * Closes a previously opened file and writes all unwritten data to file
@@ -91,8 +83,10 @@ public:
 
     /**
      * Sets the file pointer to the beginning (byte 0) of the file
+     *
+     * @return Returns true if successful, else false
      */
-    void resetFilePointer();
+    bool resetFilePointer();
 
     /**
      * Reads the content from the opened file into the specified buffer in 4K blocks (4096 byte).
@@ -101,9 +95,9 @@ public:
      * Please note, that the buffer needs to be allocated first.
      *
      * @param[out] buffer The buffer to be filled with the file data
-     * @return Returns how many bytes have been written into the output buffer
+     * @return Returns how many bytes have been written into the output buffer. Returns -1 in case of error
      */
-    uint16_t read4KBlock(uint8_t* buffer);
+    int16_t read4KBlock(uint8_t* buffer);
 
     /**
      * Writes the content from the specified buffer into the opened file in 4K blocks (4096 byte).
@@ -112,9 +106,9 @@ public:
      *
      * @param[in] buffer The buffer whose data should be written into file
      * @param[in] size The number of bytes to be written from the buffer into the file
-     * @return Returns the number of written bytes
+     * @return Returns the number of written bytes. Returns -1 in case of error
      */
-    uint16_t write4KBlock(uint8_t* buffer, uint16_t size);
+    int16_t write4KBlock(uint8_t* buffer, uint16_t size);
 
     /**
      * Checks if the specified file exists
@@ -140,7 +134,7 @@ public:
 
     /**
      * Lists all existing files in which are located in root directory.
-     * 
+     *
      * @return Returns string array which contains the file names of all existing files
      */
     static std::vector<String> listFiles();

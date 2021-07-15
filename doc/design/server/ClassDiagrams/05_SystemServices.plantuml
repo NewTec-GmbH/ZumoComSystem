@@ -52,24 +52,17 @@ package SystemServices {
     }
     NVSManager "0..*" *--> "1" Preferences
 
-    enum FileMode
-    {
-        READ,
-        WRITE,
-        READWRITE
-    }
-
     class FileManager
     {
         - m_fileHandle: File
         + FileManager()
         + ~FileManager()
         + {static} initFS(): bool
-        + openFile(fileName: String, mode: FileMode): bool
+        + openFile(fileName: String, mode: const char*): bool
         + closeFile(): void
-        + resetFilePointer(): void
-        + read4KBlock(buffer: uint8_t*): uint16_t
-        + write4KBlock(buffer: uint8_t*, size: uint16_t): uint16_t
+        + resetFilePointer(): bool
+        + read4KBlock(buffer: uint8_t*): int16_t
+        + write4KBlock(buffer: uint8_t*, size: uint16_t): int16_t
         + {static} fileExists(fileName: String): bool
         + getFileSize(): int32_t
         + {static} getFileSize(fileName: String): int32_t

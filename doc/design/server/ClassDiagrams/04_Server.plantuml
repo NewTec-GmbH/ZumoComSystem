@@ -30,3 +30,4 @@ class HTTPsWebServer
 HTTPsWebServer ..> FileManager : uses
 HTTPsWebServer "0..*" *--> "1" Store
 HTTPsWebServer "0..*" *--> "1" HTTPSServer
+HTTPsWebServer ..> ResponseCode

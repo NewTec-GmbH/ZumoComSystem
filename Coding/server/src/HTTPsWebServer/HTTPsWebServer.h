@@ -48,6 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <HTTPSServer.hpp>
 #include <HTTPRequest.hpp>
 #include <HTTPResponse.hpp>
+#include <ResponseCode.h>
 #include <FileManager.h>
 
 class HTTPsWebServer

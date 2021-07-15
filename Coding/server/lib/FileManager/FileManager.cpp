@@ -90,30 +90,24 @@ bool FileManager::initFS()
     return retCode;
 }
 
-bool FileManager::openFile(String fileName, FileMode mode)
+bool FileManager::openFile(String fileName, const char* mode)
 {
     bool retCode = true;
+    const uint8_t MAX_FILENAME_LENGTH = 31;
 
     /* Close possibily opened files */
-    if (m_fileHandle)
+    if (true == m_fileHandle)
     {
         closeFile();
     }
 
     /* SPIFFS filenames are limited in length */
-    if (31 >= fileName.length())
+    if (MAX_FILENAME_LENGTH >= fileName.length())
     {
-        if (READ == mode)
-        {
-            m_fileHandle = SPIFFS.open(fileName, "r");
-        }
-        else if (READWRITE == mode)
-        {
-            m_fileHandle = SPIFFS.open(fileName, "w+");
-        }
+        m_fileHandle = SPIFFS.open(fileName, mode);
     }
 
-    if (!m_fileHandle)
+    if (false == m_fileHandle)
     {
         LOG_ERROR("File " + String(fileName) + " could not be opened!");
         retCode = false;
@@ -123,30 +117,43 @@ bool FileManager::openFile(String fileName, FileMode mode)
 
 void FileManager::closeFile()
 {
-    if (m_fileHandle)
+    if (true == m_fileHandle)
     {
         m_fileHandle.flush();
         m_fileHandle.close();
     }
 }
 
-void FileManager::resetFilePointer()
+bool FileManager::resetFilePointer()
 {
+    bool retCode = false;
+
     /* Set file pointer to first byte of file */
-    m_fileHandle.seek(0, SeekSet);
+    if (true == m_fileHandle)
+    {
+        retCode = m_fileHandle.seek(0, SeekSet);
+    }
+    return retCode;
 }
 
-uint16_t FileManager::read4KBlock(uint8_t* buffer)
+int16_t FileManager::read4KBlock(uint8_t* buffer)
 {
-    static const uint16_t BUFFER_SIZE_BYTES = 4096;
-    return m_fileHandle.readBytes(reinterpret_cast<char*>(const_cast<uint8_t*>(buffer)), BUFFER_SIZE_BYTES);
+    const uint16_t BUFFER_SIZE_BYTES = 4096;
+    int16_t readBytes = -1;
+
+    if (true == m_fileHandle)
+    {
+        readBytes = m_fileHandle.readBytes(reinterpret_cast<char*>(const_cast<uint8_t*>(buffer)), BUFFER_SIZE_BYTES);
+    }
+    return readBytes;
 }
 
-uint16_t FileManager::write4KBlock(uint8_t* buffer, uint16_t size)
+int16_t FileManager::write4KBlock(uint8_t* buffer, uint16_t size)
 {
-    static const uint16_t BUFFER_SIZE_BYTES = 4096;
-    uint16_t writtenBytes = 0;
-    if (size <= BUFFER_SIZE_BYTES)
+    const uint16_t BUFFER_SIZE_BYTES = 4096;
+    int16_t writtenBytes = -1;
+
+    if ((true == m_fileHandle) && (size <= BUFFER_SIZE_BYTES))
     {
         writtenBytes = m_fileHandle.write(buffer, size);
     }
@@ -165,13 +172,13 @@ int32_t FileManager::getFileSize()
 
 int32_t FileManager::getFileSize(String fileName)
 {
-    int32_t fileSize = -1;
     File fileHandle;
-
+    int32_t fileSize = -1;
+    
     SPIFFS.begin(false);
     fileHandle = SPIFFS.open(fileName, "r");
 
-    if (fileHandle)
+    if (true == fileHandle)
     {
         fileSize = fileHandle.size();
     }
@@ -189,7 +196,7 @@ std::vector<String> FileManager::listFiles()
     File rootDir = SPIFFS.open("/", "r");
     File currentFile = rootDir.openNextFile();
 
-    while (currentFile)
+    while (true == currentFile)
     {
         existingFiles.push_back(currentFile.name());
         currentFile = rootDir.openNextFile();
@@ -208,7 +215,9 @@ String FileManager::getInfo()
     size_t usedBytes = SPIFFS.usedBytes();
     uint8_t usedBytesPercent = static_cast<uint8_t>((usedBytes / (float)capacity) * 100);
 
-    char buffer[128];
+    const uint8_t PRINT_BUFFER_SIZE = 128;
+    char buffer[PRINT_BUFFER_SIZE];
+
     sprintf(buffer, "Data partition size in bytes: %d, Used bytes: %d (%d%%)", capacity, usedBytes, usedBytesPercent);
     return String(buffer);
 }
