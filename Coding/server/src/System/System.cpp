@@ -65,7 +65,7 @@ void System::init()
 
     /* Initialize and aquire binary semaphore */
     m_genKeyCertSemaphore = xSemaphoreCreateBinary();
-    if (NULL == m_genKeyCertSemaphore)
+    if (nullptr == m_genKeyCertSemaphore)
     {
         LOG_ERROR("KeyCert generation semaphore could not be created!");
     }
@@ -192,7 +192,7 @@ void System::genKeyCertTask(void* parameter)
     xSemaphoreGive(m_genKeyCertSemaphore);
 
     /* Destroy this task */
-    vTaskDelete(NULL);
+    vTaskDelete(nullptr);
 }
 
 void System::registerKeyCertGenTask()
@@ -210,8 +210,8 @@ void System::registerKeyCertGenTask()
         genKeyCertTask,
         "KeyCertGen",
         STACK_SIZE,
-        NULL,
+        nullptr,
         PRIORITY,
-        NULL,
+        nullptr,
         CPU_CORE);
 }

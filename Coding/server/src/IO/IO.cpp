@@ -44,7 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 IO::IO() :
     m_ioMutex(xSemaphoreCreateMutex())
 {
-    if (NULL == m_ioMutex)
+    if (nullptr == m_ioMutex)
     {
         LOG_ERROR("IO mutex could not be created!");
     }

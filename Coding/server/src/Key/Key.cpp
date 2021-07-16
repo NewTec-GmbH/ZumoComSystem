@@ -70,7 +70,7 @@ void Key::resetTask(void* parameter)
     }
 
     /* Destroy this task */
-    vTaskDelete(NULL);
+    vTaskDelete(nullptr);
 }
 
 void Key::systemResetISR()
@@ -86,7 +86,7 @@ void Key::systemResetISR()
         resetTask,
         "SystemReset",
         STACK_SIZE,
-        NULL,
+        nullptr,
         PRIORITY,
-        NULL);
+        nullptr);
 }
