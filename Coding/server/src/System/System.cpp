@@ -40,7 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <System.h>
 
-SemaphoreHandle_t System::m_genKeyCertSemaphore = { 0 };
+SemaphoreHandle_t System::m_genKeyCertSemaphore = {0};
 
 System::System() :
     m_store(Store::getInstance()),
@@ -99,7 +99,7 @@ void System::init()
     }
 
     /* Initialize the file system */
-    true == FileManager::initFS();
+    FileManager::initFS();
 
     /* Load Users */
 

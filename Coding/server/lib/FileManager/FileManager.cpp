@@ -41,8 +41,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <FileManager.h>
 
-const String FileManager::m_directories[] = { "/webspace", "/firmware" };
-
 FileManager::FileManager() :
     m_fileHandle()
 {
@@ -51,44 +49,35 @@ FileManager::FileManager() :
 FileManager::~FileManager()
 {
     closeFile();
-    LITTLEFS.end();
+    SPIFFS.end();
 
-    LOG_DEBUG("LittleFS file system unmounted");
+    LOG_DEBUG("SPIFFS file system unmounted");
 }
 
 bool FileManager::initFS()
 {
     bool retCode = false;
-
-    if (false == LITTLEFS.begin(false))
+    if (false == SPIFFS.begin(false))
     {
-        if (true == LITTLEFS.format())
+        LOG_WARN("No SPIFFS file system found. Formatting now...");
+
+        if (true == SPIFFS.format())
         {
             LOG_DEBUG("Data partition successfully formatted!");
 
-            retCode = createDirectoryStructure();
-            if (true == retCode)
+            if (true == SPIFFS.begin(false))
             {
-                LOG_DEBUG("Directory structure successfully created!");
-
-                if (true == LITTLEFS.begin(false))
-                {
-                    LOG_DEBUG("LittleFS file system successfully mounted");
-                    retCode = true;
-                }
-                else
-                {
-                    LOG_WARN("No LittleFS file system found. Could not mount the file system!");
-                }
+                LOG_DEBUG("SPIFFS file system successfully mounted");
+                retCode = true;
             }
             else
             {
-                LOG_ERROR("Could not create directory structure!");
+                LOG_WARN("No SPIFFS file system found. Could not mount the file system!");
             }
         }
         else
         {
-            LOG_ERROR("Could not format data partition nor create the directory structure!");
+            LOG_ERROR("Could not format data partition");
         }
     }
     else
@@ -101,22 +90,26 @@ bool FileManager::initFS()
     return retCode;
 }
 
-bool FileManager::openFile(String filePath, FileMode mode)
+bool FileManager::openFile(String fileName, const char* mode)
 {
     bool retCode = true;
+    const uint8_t MAX_FILENAME_LENGTH = 31;
 
-    if (READ == mode)
+    /* Close possibily opened files */
+    if (true == m_fileHandle)
     {
-        m_fileHandle = LITTLEFS.open(filePath, "r");
-    }
-    else if (READWRITE == mode)
-    {
-        m_fileHandle = LITTLEFS.open(filePath, "w+");
+        closeFile();
     }
 
-    if (!m_fileHandle)
+    /* SPIFFS filenames are limited in length */
+    if (MAX_FILENAME_LENGTH >= fileName.length())
     {
-        LOG_ERROR("File " + String(filePath) + " could not be opened!");
+        m_fileHandle = SPIFFS.open(fileName, mode);
+    }
+
+    if (false == m_fileHandle)
+    {
+        LOG_ERROR("File " + String(fileName) + " could not be opened!");
         retCode = false;
     }
     return retCode;
@@ -124,37 +117,52 @@ bool FileManager::openFile(String filePath, FileMode mode)
 
 void FileManager::closeFile()
 {
-    m_fileHandle.flush();
-    m_fileHandle.close();
-    LOG_DEBUG("File " + String(m_fileHandle.name()) + " flushed and closed");
+    if (true == m_fileHandle)
+    {
+        m_fileHandle.flush();
+        m_fileHandle.close();
+    }
 }
 
-void FileManager::resetFilePointer()
+bool FileManager::resetFilePointer()
 {
+    bool retCode = false;
+
     /* Set file pointer to first byte of file */
-    m_fileHandle.seek(0, SeekSet);
+    if (true == m_fileHandle)
+    {
+        retCode = m_fileHandle.seek(0, SeekSet);
+    }
+    return retCode;
 }
 
-uint16_t FileManager::read4KBlock(uint8_t* buffer)
+int16_t FileManager::read4KBlock(uint8_t* buffer)
 {
-    static const uint16_t BUFFER_SIZE_BYTES = 4096;
-    return m_fileHandle.readBytes(reinterpret_cast<char*>(const_cast<uint8_t*>(buffer)), BUFFER_SIZE_BYTES);
+    const uint16_t BUFFER_SIZE_BYTES = 4096;
+    int16_t readBytes = -1;
+
+    if (true == m_fileHandle)
+    {
+        readBytes = m_fileHandle.readBytes(reinterpret_cast<char*>(const_cast<uint8_t*>(buffer)), BUFFER_SIZE_BYTES);
+    }
+    return readBytes;
 }
 
-uint16_t FileManager::write4KBlock(uint8_t* buffer, uint16_t size)
+int16_t FileManager::write4KBlock(uint8_t* buffer, uint16_t size)
 {
-    static const uint16_t BUFFER_SIZE_BYTES = 4096;
-    uint16_t writtenBytes = 0;
-    if (size <= BUFFER_SIZE_BYTES)
+    const uint16_t BUFFER_SIZE_BYTES = 4096;
+    int16_t writtenBytes = -1;
+
+    if ((true == m_fileHandle) && (size <= BUFFER_SIZE_BYTES))
     {
         writtenBytes = m_fileHandle.write(buffer, size);
     }
     return writtenBytes;
 }
 
-bool FileManager::fileExists(String filePath)
+bool FileManager::fileExists(String fileName)
 {
-    return LITTLEFS.exists(filePath);
+    return SPIFFS.exists(fileName);
 }
 
 int32_t FileManager::getFileSize()
@@ -162,73 +170,54 @@ int32_t FileManager::getFileSize()
     return m_fileHandle.size();
 }
 
-int32_t FileManager::getFileSize(String filePath)
+int32_t FileManager::getFileSize(String fileName)
 {
+    File fileHandle;
     int32_t fileSize = -1;
-    bool mountSuccessful = LITTLEFS.begin(false);
-    File fileHandle = LITTLEFS.open(filePath, "r");
+    
+    SPIFFS.begin(false);
+    fileHandle = SPIFFS.open(fileName, "r");
 
-    if ((true == mountSuccessful) && fileHandle && (false == fileHandle.isDirectory()))
+    if (true == fileHandle)
     {
         fileSize = fileHandle.size();
     }
     fileHandle.close();
-    LITTLEFS.end();
+    SPIFFS.end();
 
     return fileSize;
 }
 
-std::vector<String> FileManager::listDirectory(String directoryPath)
+std::vector<String> FileManager::listFiles()
 {
     std::vector<String> existingFiles;
-    LITTLEFS.begin(false);
+    SPIFFS.begin(false);
 
-    File selectedDirectory = LITTLEFS.open(directoryPath, "r");
-    File currentFile = selectedDirectory.openNextFile();
+    File rootDir = SPIFFS.open("/", "r");
+    File currentFile = rootDir.openNextFile();
 
-    while (currentFile)
+    while (true == currentFile)
     {
         existingFiles.push_back(currentFile.name());
-        currentFile = selectedDirectory.openNextFile();
+        currentFile = rootDir.openNextFile();
     }
 
     currentFile.close();
-    selectedDirectory.close();
-    LITTLEFS.end();
+    rootDir.close();
+    SPIFFS.end();
 
     return existingFiles;
 }
 
 String FileManager::getInfo()
 {
-    size_t capacity = LITTLEFS.totalBytes();
-    size_t usedBytes = LITTLEFS.usedBytes();
+    size_t capacity = SPIFFS.totalBytes();
+    size_t usedBytes = SPIFFS.usedBytes();
     uint8_t usedBytesPercent = static_cast<uint8_t>((usedBytes / (float)capacity) * 100);
 
-    char buffer[128];
+    const uint8_t PRINT_BUFFER_SIZE = 128;
+    char buffer[PRINT_BUFFER_SIZE];
+
     sprintf(buffer, "Data partition size in bytes: %d, Used bytes: %d (%d%%)", capacity, usedBytes, usedBytesPercent);
     return String(buffer);
-}
-
-bool FileManager::createDirectoryStructure()
-{
-    bool retCode = true;
-
-    LITTLEFS.begin(false);
-
-    size_t noOfDirectories = sizeof(m_directories) / sizeof(m_directories[0]);
-    for (uint8_t dirNo = 0; dirNo < noOfDirectories; dirNo++)
-    {
-        if (false == LITTLEFS.exists(m_directories[dirNo]))
-        {
-            bool success = LITTLEFS.mkdir(m_directories[dirNo]);
-            if (false != retCode)
-            {
-                retCode = success;
-            }
-        }
-    }
-
-    LITTLEFS.end();
-    return retCode;
 }

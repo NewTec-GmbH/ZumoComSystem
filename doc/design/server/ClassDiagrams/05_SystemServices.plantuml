@@ -52,31 +52,22 @@ package SystemServices {
     }
     NVSManager "0..*" *--> "1" Preferences
 
-    enum FileMode
-    {
-        READ,
-        WRITE,
-        READWRITE
-    }
-
     class FileManager
     {
         - m_fileHandle: File
-        - {static} m_directories: String[] {readonly} = {"/webspace", "/firmware"}
         + FileManager()
         + ~FileManager()
         + {static} initFS(): bool
-        + openFile(filepath: String, mode: FileMode): bool
+        + openFile(fileName: String, mode: const char*): bool
         + closeFile(): void
-        + resetFilePointer(): void
-        + read4KBlock(buffer: uint8_t*): uint16_t
-        + write4KBlock(buffer: uint8_t*, size: uint16_t): uint16_t
-        + {static} fileExists(filePath: String): bool
+        + resetFilePointer(): bool
+        + read4KBlock(buffer: uint8_t*): int16_t
+        + write4KBlock(buffer: uint8_t*, size: uint16_t): int16_t
+        + {static} fileExists(fileName: String): bool
         + getFileSize(): int32_t
-        + {static} getFileSize(filePath: String): int32_t
-        + {static} listDirectory(directoryPath: String): std::vector<String>
+        + {static} getFileSize(fileName: String): int32_t
+        + {static} listFiles(): std::vector<String>
         - {static} getInfo(): String
-        - {static} createDirectoryStructure(): bool
     }
     FileManager ..> FileMode : uses
 

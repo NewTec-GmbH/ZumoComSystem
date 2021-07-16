@@ -31,9 +31,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file WebServer.cpp
+ * @file HTTPsWebServer.cpp
  * @author Luis Moser
- * @brief WebServer class
+ * @brief HTTPsWebServer class
  * @date 07/07/2021
  *
  * @{
@@ -45,7 +45,7 @@ const String HTTPsWebServer::m_servedFileTypes[][2] = {
     {".html", "text/html"},
     {".css", "text/css"},
     {".js", "application/javascript"},
-    {".jpg", "application/jpeg"} };
+    {".jpg", "application/jpeg"}};
 
 FileManager HTTPsWebServer::m_fileManager;
 
@@ -82,8 +82,9 @@ void HTTPsWebServer::handleServer()
 
 void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response)
 {
-    uint16_t writtenBytes = 0;
-    static uint8_t buffer[4096];
+    int16_t writtenBytes = 0;
+    const uint16_t BUFFER_SIZE_BYTES = 4096;
+    static uint8_t buffer[BUFFER_SIZE_BYTES];
 
     String mimeType;
 
@@ -97,36 +98,43 @@ void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, http
             requestedFile = "/index.html";
         }
 
-        /* Get the absolute path */
-        requestedFile = "/webspace" + requestedFile;
-
         mimeType = getMIMEType(requestedFile);
 
-        if ((true == FileManager::fileExists(requestedFile)) && (mimeType != "null"))
+        if ((true == FileManager::fileExists(requestedFile))
+            && (mimeType != "null")
+            && (true == m_fileManager.openFile(requestedFile, FILE_READ)))
         {
-            m_fileManager.openFile(requestedFile, FileManager::READ);
-
             response->setHeader("Content-Length", httpsserver::intToString(m_fileManager.getFileSize()));
             response->setHeader("Content-Type", mimeType.c_str());
 
             do
             {
                 writtenBytes = m_fileManager.read4KBlock(buffer);
-                response->write(buffer, writtenBytes);
-            } while (0 != writtenBytes);
 
-            m_fileManager.closeFile();
+                if (-1 == writtenBytes)
+                {
+                    response->setStatusCode(ERROR);
+                    response->println("An error occurred while reading the file!");
+                }
+                else
+                {
+                    response->write(buffer, writtenBytes);
+                }
+
+            } while ((0 != writtenBytes) && (-1 != writtenBytes));
         }
         else
         {
-            response->setStatusCode(404);
+            response->setStatusCode(NOTFOUND);
             response->println("Could not find such resource!");
         }
+
+        m_fileManager.closeFile();
     }
     else
     {
         request->discardRequestBody();
-        response->setStatusCode(405);
+        response->setStatusCode(METHODNOTALLOWED);
         response->println("Invalid request!");
     }
 }

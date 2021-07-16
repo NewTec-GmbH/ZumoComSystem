@@ -73,6 +73,9 @@ public:
      */
     bool readKey();
 
+    /** The GPIO input pin used for the button which resets the ComPlatform or spawns WiFi*/
+    static const uint8_t WIFI_AND_RESET_KEY_PIN = 0;
+
 private:
     /**
      * Default Constructor
@@ -99,9 +102,5 @@ private:
 
     /** Specifies push duration for a long-press event */
     static const uint32_t LONG_PRESS_TIME_MS = 1000;
-
-public:
-    /** The GPIO input pin used for the button which resets the ComPlatform or spawns WiFi*/
-    static const uint8_t WIFI_AND_RESET_KEY_PIN = 0;
 };
 #endif /** __KEY_H__ */

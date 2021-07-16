@@ -31,16 +31,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file WebServer.h
+ * @file HTTPsWebServer.h
  * @author Luis Moser
- * @brief WebServer header
+ * @brief HTTPsWebServer header
  * @date 07/07/2021
  *
  * @{
  */
 
-#ifndef __WEBSERVER_H__
-#define __WEBSERVER_H__
+#ifndef __HTTPSWEBSERVER_H__
+#define __HTTPSWEBSERVER_H__
 
 #include <Arduino.h>
 #include <Store.h>
@@ -48,11 +48,56 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <HTTPSServer.hpp>
 #include <HTTPRequest.hpp>
 #include <HTTPResponse.hpp>
+#include <ResponseCode.h>
 #include <FileManager.h>
 
 class HTTPsWebServer
 {
+public:
+    /**
+     * Default Constructor
+     */
+    HTTPsWebServer();
+
+    /**
+     * Destructor
+     */
+    ~HTTPsWebServer();
+
+    /**
+     * Starts the HTTPs and WSS servers
+     *
+     * @return Returns true if successful, else false
+     */
+    bool startServer();
+
+    /**
+     * Stops the HTTPs and WSS servers
+     */
+    void stopServer();
+
+    /**
+     * This method needs to be called in a loop so that the HTTPs and WSS servers can receive CPU time
+     */
+    void handleServer();
+
 private:
+    /**
+     * Handles incoming file requests
+     *
+     * @param[in] request The incoming HTTP request
+     * @param[in] response The outgoing HTTP response
+     */
+    static void registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response);
+
+    /**
+     * Checks if the requested file has valid file ending and returns corresponding MIME type
+     *
+     * @param[in] filePath The filepath to be checked for its ending
+     * @return Returns the MIME type for the detected file ending, Returns 'null' if file ending is invalid
+     */
+    static String getMIMEType(String filePath);
+
     /** TCP port which is used for frontend delivery as well as backend API services */
     static const uint16_t SHARED_TCP_PORT = 443;
 
@@ -73,46 +118,5 @@ private:
 
     /** FileManager instance */
     static FileManager m_fileManager;
-
-    /**
-     * Handles incoming file requests
-     *
-     * @param[in] request The incoming HTTP request
-     * @param[in] response The outgoing HTTP response
-     */
-    static void registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response);
-
-    /**
-     * Checks if the requested file has valid file ending and returns corresponding MIME type
-     *
-     * @param[in] filePath The filepath to be checked for its ending
-     * @return Returns the MIME type for the detected file ending, Returns 'null' if file ending is invalid
-     */
-    static String getMIMEType(String filePath);
-
-public:
-    /**
-     * Default Constructor
-     */
-    HTTPsWebServer();
-    /**
-     * Destructor
-     */
-    ~HTTPsWebServer();
-
-    /**
-     * Starts the HTTPs and WSS servers
-     */
-    bool startServer();
-
-    /**
-     * Stops the HTTPs and WSS servers
-     */
-    void stopServer();
-
-    /**
-     * This method needs to be called in a loop so that the HTTPs and WSS servers can receive CPU time
-     */
-    void handleServer();
 };
-#endif /** __WEBSERVER_H__ */
+#endif /** __HTTPSWEBSERVER_H__ */

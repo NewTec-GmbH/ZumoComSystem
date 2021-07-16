@@ -90,13 +90,6 @@ public:
      */
     void deserialize(uint8_t* keyBuffer, uint8_t* certBuffer);
 
-private:
-    /**
-     * Helper method which cleans up the SSLCert internal's memory which has been dynamically allocated
-     */
-    void freeSSLMemory();
-
-public:
     /** Size of the binary RSA key in bytes */
     static const size_t RSA_KEY_SIZE_BYTE = 1190;
 
@@ -104,6 +97,11 @@ public:
     static const size_t CERT_SIZE_BYTE = 766;
 
 private:
+    /**
+     * Helper method which cleans up the SSLCert internal's memory which has been dynamically allocated
+     */
+    void freeSSLMemory();
+
     /**
     * The DER-X509 certificate which stores the private RSA key as well as the public certificate.
     * This data structure is used by the HTTPs/WSS servers

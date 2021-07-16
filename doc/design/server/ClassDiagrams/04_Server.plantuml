@@ -118,5 +118,6 @@ HTTPsWebServer "0..*" *--> "1" FileManager
 HTTPsWebServer "0..*" *--> "1" Store
 HTTPsWebServer "0..*" *--> "1" HTTPSServer
 HTTPsWebServer "0..*" *--> "1" RequestResponseHandler
+HTTPsWebServer ..> ResponseCode
 
 @enduml
