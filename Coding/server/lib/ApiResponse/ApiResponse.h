@@ -68,7 +68,7 @@ public:
     ~ApiResponse();
 
     /**
-     * Serializes this instance to JSON object
+     * Serializes this instance to JSON object. Omits jsonPayload field if passed payload equals empty string
      *
      * @return Returns serialized JSON string
      */

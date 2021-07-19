@@ -31,63 +31,68 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file ApiRequest.h
+ * @file RequestResponseHandler.h
  * @author Luis Moser
- * @brief ApiRequest header
- * @date 07/14/2021
+ * @brief RequestResponseHandler header
+ * @date 07/16/2021
  *
  * @{
  */
 
-#ifndef __APIREQUEST_H__
-#define __APIREQUEST_H__
+#ifndef __REQUESTRESPONSEHANDLER_H__
+#define __REQUESTRESPONSEHANDLER_H__
 
 #include <Arduino.h>
-#include <ArduinoJson.h>
-#include <Log.h>
+#include <SessionManager.h>
+#include <AuthCommand.h>
+#include <Command.h>
+#include <Session.h>
 
- /* Data structure for data exchange using the Api */
-class ApiRequest
+ /** Simple class which handles requests and responses between the API service implementations and the webserver */
+class RequestResponseHandler
 {
 private:
-    /** Specifies the command to be executed */
-    String m_commandId;
+    /** Specifies how many API services are registered */
+    static const uint8_t NUMBER_OF_API_SERVICES = 1;
 
-    /** Specifies optional/additional payload required for this command */
-    String m_jsonPayload;
+    /** Stores pointers to all registered API services */
+    Command* m_apiServices[NUMBER_OF_API_SERVICES];
 
-public:
+    /** Instance of SessionManager */
+    SessionManager m_sessionManager;
+
     /**
      * Default Constructor
      */
-    ApiRequest();
+    RequestResponseHandler();
 
     /**
      * Destructor
      */
-    ~ApiRequest();
+    ~RequestResponseHandler();
 
     /**
-     * Deserializes passed JSON object and re-creates internal state. It automatically checks the shapeliness of the incoming request
-     * according to the defined request structure design.
+     * Returns pointer to API service class which corresponds to passed service id inside request
      *
-     * @param[in] serial The serialized JSON string
-     * @return Returns true if successul, else false
+     * @param[in] request The API request to be checked for its service id
+     * @return Returns pointer to correct service class instance. Returns nullpointer if there is no such service
      */
-    bool deserialize(String serial);
+    Command* getCommandOfApiRequest(ApiRequest& request);
+
+public:
+    /** Get the singleton instance of RequestResponseHandler
+    *
+    * @return Returns the RequestResponseHandler instance
+    */
+    static RequestResponseHandler& getInstance();
 
     /**
-     * Returns the command id of the current ApiRequest
+     * Make a new request to the API
      *
-     * @return Returns the command id 
+     * @param[in] request Reference to the incoming ApiRequest
+     * @param[out] response Reference to the outgoing ApiResponse
+     * @param[in] connectionCtx Pointer to Session class instance
      */
-    String getCommandId();
-
-    /**
-     * Returns the JSON object
-     *
-     * @return Returns the JSON object string
-     */
-    String getJsonPayload();
+    void makeRequest(ApiRequest& request, ApiResponse& response, Session* connectionCtx);
 };
-#endif /** __APIREQUEST_H__ */
+#endif /** __REQUESTRESPONSEHANDLER_H__ */

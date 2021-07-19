@@ -31,63 +31,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file ApiRequest.h
+ * @file Permission.h
  * @author Luis Moser
- * @brief ApiRequest header
- * @date 07/14/2021
+ * @brief Permission header
+ * @date 07/15/2021
  *
  * @{
  */
 
-#ifndef __APIREQUEST_H__
-#define __APIREQUEST_H__
-
-#include <Arduino.h>
-#include <ArduinoJson.h>
-#include <Log.h>
-
- /* Data structure for data exchange using the Api */
-class ApiRequest
+#ifndef __PERMISSION_H__
+#define __PERMISSION_H__
+enum Permission
 {
-private:
-    /** Specifies the command to be executed */
-    String m_commandId;
-
-    /** Specifies optional/additional payload required for this command */
-    String m_jsonPayload;
-
-public:
-    /**
-     * Default Constructor
-     */
-    ApiRequest();
-
-    /**
-     * Destructor
-     */
-    ~ApiRequest();
-
-    /**
-     * Deserializes passed JSON object and re-creates internal state. It automatically checks the shapeliness of the incoming request
-     * according to the defined request structure design.
-     *
-     * @param[in] serial The serialized JSON string
-     * @return Returns true if successul, else false
-     */
-    bool deserialize(String serial);
-
-    /**
-     * Returns the command id of the current ApiRequest
-     *
-     * @return Returns the command id 
-     */
-    String getCommandId();
-
-    /**
-     * Returns the JSON object
-     *
-     * @return Returns the JSON object string
-     */
-    String getJsonPayload();
+    NONE,
+    DEBUG_ZUMO,
+    FLASH_ZUMO,
+    FLASH_COM,
+    REBOOT_ZUMO,
+    REBOOT_COM,
+    CONFIGURE_NETWORK,
 };
-#endif /** __APIREQUEST_H__ */
+#endif /** __PERMISSION_H__ */

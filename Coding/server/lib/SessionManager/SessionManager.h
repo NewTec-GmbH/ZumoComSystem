@@ -31,63 +31,60 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file ApiRequest.h
+ * @file SessionManager.h
  * @author Luis Moser
- * @brief ApiRequest header
- * @date 07/14/2021
+ * @brief SessionManager header
+ * @date 07/16/2021
  *
  * @{
  */
 
-#ifndef __APIREQUEST_H__
-#define __APIREQUEST_H__
+#ifndef __SESSIONMANAGER_H__
+#define __SESSIONMANAGER_H__
+
 
 #include <Arduino.h>
-#include <ArduinoJson.h>
-#include <Log.h>
+#include <Store.h>
+#include <Session.h>
+#include <ApiRequest.h>
+#include <ApiResponse.h>
+#include <Command.h>
 
- /* Data structure for data exchange using the Api */
-class ApiRequest
+ /** Simple class for managing the websocket sessions */
+class SessionManager
 {
 private:
-    /** Specifies the command to be executed */
-    String m_commandId;
-
-    /** Specifies optional/additional payload required for this command */
-    String m_jsonPayload;
+    /** Reference to store */
+    Store& m_store;
 
 public:
     /**
      * Default Constructor
      */
-    ApiRequest();
+    SessionManager();
 
     /**
-     * Destructor
+     * Desturctor
      */
-    ~ApiRequest();
+    ~SessionManager();
 
     /**
-     * Deserializes passed JSON object and re-creates internal state. It automatically checks the shapeliness of the incoming request
-     * according to the defined request structure design.
+     * Checks if the current session is authorized to invoke the specified API service
      *
-     * @param[in] serial The serialized JSON string
-     * @return Returns true if successul, else false
+     * @param[in] command Pointer to command which needs to be invoked
+     * @param[in] connectionCtx Pointer to the currently used session whose permissions should be checked
+     *
+     * @return Returns true if successful, else false
      */
-    bool deserialize(String serial);
+    bool checkSession(Command* command, Session* connectionCtx);
 
     /**
-     * Returns the command id of the current ApiRequest
+     * Requests authentication for this session. Remembers user and its permissions
      *
-     * @return Returns the command id 
+     * @param[in] request The authentication request including the user credentials to be checked
+     * @param[in] connectionCtx Pointer to the currently used session which should get authenticated
+     * @return Returns the ApiResponse which containts the status code of the operation
      */
-    String getCommandId();
-
-    /**
-     * Returns the JSON object
-     *
-     * @return Returns the JSON object string
-     */
-    String getJsonPayload();
+    ApiResponse aquireSession(ApiRequest& request, Session* connectionCtx);
 };
-#endif /** __APIREQUEST_H__ */
+#endif /** __SESSIONMANAGER_H__ */

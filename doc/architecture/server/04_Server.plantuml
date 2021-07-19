@@ -7,10 +7,6 @@ interface "Crypt" as Crypt
 interface "Store" as Store
 interface "Timer" as Timer
 
-package "API" as api {
-    component "Servicecontroller" as servicecontroller
-}
-
 package Server {
     component "WebServer" as webserver
 
@@ -33,7 +29,6 @@ package Server {
     interface "RequestResponseManager" as Request
     requesthandler -up- Request
 
-    requesthandler *--> servicecontroller : forwards requests
     requesthandler *--> sessionsmgmt : checks/requests\naccess/session
 
     sessionsmgmt *--> usermgmt

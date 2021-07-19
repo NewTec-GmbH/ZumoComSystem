@@ -31,63 +31,39 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file ApiRequest.h
+ * @file AuthCommand.h
  * @author Luis Moser
- * @brief ApiRequest header
- * @date 07/14/2021
+ * @brief AuthCommand header
+ * @date 07/16/2021
  *
  * @{
  */
 
-#ifndef __APIREQUEST_H__
-#define __APIREQUEST_H__
+#ifndef __AUTHCOMMAND_H__
+#define __AUTHCOMMAND_H__
 
-#include <Arduino.h>
-#include <ArduinoJson.h>
-#include <Log.h>
+#include <Command.h>
 
- /* Data structure for data exchange using the Api */
-class ApiRequest
+ /** Simple class which allows API authentication */
+class AuthCommand : public Command
 {
-private:
-    /** Specifies the command to be executed */
-    String m_commandId;
-
-    /** Specifies optional/additional payload required for this command */
-    String m_jsonPayload;
-
 public:
     /**
      * Default Constructor
      */
-    ApiRequest();
+    AuthCommand();
 
     /**
      * Destructor
      */
-    ~ApiRequest();
+    ~AuthCommand();
 
     /**
-     * Deserializes passed JSON object and re-creates internal state. It automatically checks the shapeliness of the incoming request
-     * according to the defined request structure design.
+     * Implements the API service business logic
      *
-     * @param[in] serial The serialized JSON string
-     * @return Returns true if successul, else false
+     * @param[in] request Reference to the incoming ApiRequest
+     * @param[out] response Reference to the outgoing ApiResponse
      */
-    bool deserialize(String serial);
-
-    /**
-     * Returns the command id of the current ApiRequest
-     *
-     * @return Returns the command id 
-     */
-    String getCommandId();
-
-    /**
-     * Returns the JSON object
-     *
-     * @return Returns the JSON object string
-     */
-    String getJsonPayload();
+    void run(ApiRequest& request, ApiResponse& response);
 };
-#endif /** __APIREQUEST_H__ */
+#endif /** __AUTHCOMMAND_H__ */

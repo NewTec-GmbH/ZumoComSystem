@@ -31,63 +31,69 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file ApiRequest.h
+ * @file Session.h
  * @author Luis Moser
- * @brief ApiRequest header
- * @date 07/14/2021
+ * @brief Session header
+ * @date 07/15/2021
  *
  * @{
  */
 
-#ifndef __APIREQUEST_H__
-#define __APIREQUEST_H__
+#ifndef __SESSION_H__
+#define __SESSION_H__
 
 #include <Arduino.h>
-#include <ArduinoJson.h>
 #include <Log.h>
+#include <Permission.h>
+#include <WebsocketHandler.hpp>
 
- /* Data structure for data exchange using the Api */
-class ApiRequest
+ /** Simple class to store websocket sessions and their authentication status */
+class Session : public httpsserver::WebsocketHandler
 {
 private:
-    /** Specifies the command to be executed */
-    String m_commandId;
+    /** Specifies if the current session is authenticated */
+    bool m_sessionAuthenticated;
 
-    /** Specifies optional/additional payload required for this command */
-    String m_jsonPayload;
+    /** Timestamp which gets updated each time a request is made with this session */
+    uint64_t m_lastAccessTime;
+
+    /** Specifies the maximum number of concurrent websocket clients */
+    static const uint8_t MAX_CLIENTS = 4;
+
+    /** Stores all active Session instances/websocket sessions */
+    static Session* m_sessions[];
+
+    /** Stores how many clients are currently connected to websocket API */
+    static uint8_t m_numberOfActiveClients;
 
 public:
     /**
      * Default Constructor
      */
-    ApiRequest();
+    Session();
 
     /**
      * Destructor
      */
-    ~ApiRequest();
+    ~Session();
 
     /**
-     * Deserializes passed JSON object and re-creates internal state. It automatically checks the shapeliness of the incoming request
-     * according to the defined request structure design.
+     * Called on each new session initiation by the WebSocketServer
      *
-     * @param[in] serial The serialized JSON string
-     * @return Returns true if successul, else false
+     * @return Returns the WebSocketHandler pointer
      */
-    bool deserialize(String serial);
+    static httpsserver::WebsocketHandler* create();
 
     /**
-     * Returns the command id of the current ApiRequest
+     * Is called each time this session receives a message
      *
-     * @return Returns the command id 
+     * @param[in] inputBuffer The WebSocketInputStreambuf pointer
      */
-    String getCommandId();
+    void onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer);
 
     /**
-     * Returns the JSON object
-     *
-     * @return Returns the JSON object string
+     * Is called when this session needs to be closed
      */
-    String getJsonPayload();
+    void onClose();
 };
-#endif /** __APIREQUEST_H__ */
+#endif /** __SESSION_H__ */

@@ -3,19 +3,11 @@
 package SystemServices
 {
     class FileManager
-    class CryptoServices
 }
 
 package Data
 {
     class Store
-    class Session
-    class Permission
-}
-
-package API
-{
-    class ServiceController
 }
 
 package httpsserver
@@ -26,12 +18,13 @@ package httpsserver
 enum ResponseCode
 {
     SUCCESS = 200,
-    BADREQUEST = 400
-    UNAUTHORIZED = 401
-    FORBIDDEN = 403
-    NOTFOUND = 404
+    BAD_REQUEST = 400,
+    UNAUTHORIZED = 401,
+    FORBIDDEN = 403,
+    NOT_FOUND = 404,
+    METHOD_NOT_ALLOWED = 405,
     ERROR = 500,
-    NOTIMPLEMENTED = 501,
+    NOT_IMPLEMENTED = 501
 }
 
 class ApiRequest
@@ -52,48 +45,36 @@ class ApiResponse
     + ApiResponse()
     + ~ApiResponse()
     + serialize(): String
-    + setstatusCode(statusCode: ResponseCode): void
     + setJsonPayload(jsonPayload: String): void
+    + setstatusCode(statusCode: ResponseCode): void
 }
-
-class UserManager
-{
-    - m_crypoService: CryptoServices
-    - m_store: Store&
-    + UserManager()
-    + ~UserManager()
-    + checkCredentials(username: String, password: String): bool
-    + checkAccess(request: ApiRequest, connectionCtx: Session): bool
-    + putUser(username: String, password: String, permissions: Permission): bool
-    + deleteUser(username: String): bool
-}
-UserManager "0..*" *--> "1" CryptoServices
-UserManager "0..*" *--> "1" Store
 
 class SessionManager
 {
-    - m_userManager: UserManager
-    - m_Timer: Timer
     - m_store: Store&
     + SessionManager()
     + ~SessionManager()
-    + checkSession(command: Command, connectionCtx: Session): bool
-    + aquireSession(request: ApiRequest, connectionCtx: Session): ApiResponse
+    + checkSession(command: Command*, connectionCtx: Session*): bool
+    + aquireSession(request: ApiRequest&, connectionCtx: Session*): ApiResponse
 }
-SessionManager "0..*" *--> "1" UserManager
-SessionManager "0..*" *--> "1" Timer
 SessionManager "0..*" *--> "1" Store
 
 class RequestResponseHandler
 {
+    - {static} NUMBER_OF_API_SERVICES: uint8_t = {readonly} 1
+    - m_apiServices: Command*[]
     - m_sessionManager: SessionManager
-    - m_serviceController: ServiceController
-    + RequestResponseHandler()
-    + ~RequestResponseHandler()
-    + makeRequest(request: ApiRequest, connectionCtx: Session): ApiResponse
+    - RequestResponseHandler()
+    - ~RequestResponseHandler()
+    - getCommandOfApiRequest(request: ApiRequest&): Command*
+    + {static} getInstance(): RequestResponseHandler&
+    + makeRequest(request: ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void
 }
 RequestResponseHandler "0..*" *--> "1" SessionManager
-RequestResponseHandler "0..*" *--> "1" ServiceController
+RequestResponseHandler "0..*" o--> "0..*" Command
+RequestResponseHandler ..> ApiRequest
+RequestResponseHandler ..> ApiResponse
+RequestResponseHandler ..> ResponseCode
 
 class HTTPsWebServer
 {
@@ -118,6 +99,4 @@ HTTPsWebServer "0..*" *--> "1" FileManager
 HTTPsWebServer "0..*" *--> "1" Store
 HTTPsWebServer "0..*" *--> "1" HTTPSServer
 HTTPsWebServer "0..*" *--> "1" RequestResponseHandler
-HTTPsWebServer ..> ResponseCode
-
 @enduml

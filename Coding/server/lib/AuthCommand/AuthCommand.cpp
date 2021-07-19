@@ -31,63 +31,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file ApiRequest.h
+ * @file AuthCommand.cpp
  * @author Luis Moser
- * @brief ApiRequest header
- * @date 07/14/2021
+ * @brief AuthCommand class
+ * @date 07/16/2021
  *
  * @{
  */
 
-#ifndef __APIREQUEST_H__
-#define __APIREQUEST_H__
+#include <AuthCommand.h>
 
-#include <Arduino.h>
-#include <ArduinoJson.h>
-#include <Log.h>
-
- /* Data structure for data exchange using the Api */
-class ApiRequest
+AuthCommand::AuthCommand() :
+    Command("authenticate", NONE)
 {
-private:
-    /** Specifies the command to be executed */
-    String m_commandId;
+}
 
-    /** Specifies optional/additional payload required for this command */
-    String m_jsonPayload;
+AuthCommand::~AuthCommand()
+{
+}
 
-public:
-    /**
-     * Default Constructor
-     */
-    ApiRequest();
-
-    /**
-     * Destructor
-     */
-    ~ApiRequest();
-
-    /**
-     * Deserializes passed JSON object and re-creates internal state. It automatically checks the shapeliness of the incoming request
-     * according to the defined request structure design.
-     *
-     * @param[in] serial The serialized JSON string
-     * @return Returns true if successul, else false
-     */
-    bool deserialize(String serial);
-
-    /**
-     * Returns the command id of the current ApiRequest
-     *
-     * @return Returns the command id 
-     */
-    String getCommandId();
-
-    /**
-     * Returns the JSON object
-     *
-     * @return Returns the JSON object string
-     */
-    String getJsonPayload();
-};
-#endif /** __APIREQUEST_H__ */
+void AuthCommand::run(ApiRequest& request, ApiResponse& response)
+{
+    response.setStatusCode(NOT_IMPLEMENTED);
+    /* TODO: Replace mock code with real code */
+}

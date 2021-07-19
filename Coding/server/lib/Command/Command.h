@@ -31,63 +31,67 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file ApiRequest.h
+ * @file Command.h
  * @author Luis Moser
- * @brief ApiRequest header
- * @date 07/14/2021
+ * @brief Command header
+ * @date 07/16/2021
  *
  * @{
  */
 
-#ifndef __APIREQUEST_H__
-#define __APIREQUEST_H__
+#ifndef __COMMAND_H__
+#define __COMMAND_H__
 
 #include <Arduino.h>
-#include <ArduinoJson.h>
-#include <Log.h>
+#include <Permission.h>
+#include <ApiRequest.h>
+#include <ApiResponse.h>
+#include <ResponseCode.h>
 
- /* Data structure for data exchange using the Api */
-class ApiRequest
+ /** Simple abstract class which defines the mandatory interface of API services */
+class Command
 {
 private:
-    /** Specifies the command to be executed */
-    String m_commandId;
+    /** Specifies the unique mnemonic name of the API service which is used to call the service remotely */
+    String m_serviceID;
 
-    /** Specifies optional/additional payload required for this command */
-    String m_jsonPayload;
+    /** Specifies the permissions required to invoke the API service */
+    Permission m_reqPermission;
 
 public:
     /**
-     * Default Constructor
+     * Constructor
+     *
+     * @param[in] serviceID The service id of the API service
+     * @param[in] reqPermission The required permission for this service
      */
-    ApiRequest();
+    Command(String serviceID, Permission reqPermission);
 
     /**
      * Destructor
      */
-    ~ApiRequest();
+    virtual ~Command();
 
     /**
-     * Deserializes passed JSON object and re-creates internal state. It automatically checks the shapeliness of the incoming request
-     * according to the defined request structure design.
+     * Returns the mnemonic service ID of the API service
      *
-     * @param[in] serial The serialized JSON string
-     * @return Returns true if successul, else false
+     * @return Return the service name
      */
-    bool deserialize(String serial);
+    String getServiceID();
 
     /**
-     * Returns the command id of the current ApiRequest
+     * Returns the permissions required for invoking the API service
      *
-     * @return Returns the command id 
+     * @return Returns the required permission
      */
-    String getCommandId();
+    Permission getReqPermission();
 
     /**
-     * Returns the JSON object
+     * Implements the API service business logic
      *
-     * @return Returns the JSON object string
+     * @param[in] request Reference to the incoming ApiRequest
+     * @param[out] response Reference to the outgoing ApiResponse
      */
-    String getJsonPayload();
+    virtual void run(ApiRequest& request, ApiResponse& response) = 0;
 };
-#endif /** __APIREQUEST_H__ */
+#endif

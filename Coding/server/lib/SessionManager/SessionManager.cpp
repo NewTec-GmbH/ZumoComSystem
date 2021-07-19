@@ -31,63 +31,34 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file ApiRequest.h
+ * @file SessionManager.cpp
  * @author Luis Moser
- * @brief ApiRequest header
- * @date 07/14/2021
+ * @brief SessionManager class
+ * @date 07/16/2021
  *
  * @{
  */
 
-#ifndef __APIREQUEST_H__
-#define __APIREQUEST_H__
+#include <SessionManager.h>
 
-#include <Arduino.h>
-#include <ArduinoJson.h>
-#include <Log.h>
-
- /* Data structure for data exchange using the Api */
-class ApiRequest
+SessionManager::SessionManager() :
+    m_store(Store::getInstance())
 {
-private:
-    /** Specifies the command to be executed */
-    String m_commandId;
+}
 
-    /** Specifies optional/additional payload required for this command */
-    String m_jsonPayload;
+SessionManager::~SessionManager()
+{
+}
 
-public:
-    /**
-     * Default Constructor
-     */
-    ApiRequest();
+bool SessionManager::checkSession(Command* command, Session* connectionCtx)
+{
+    /* TODO: Check if passed session is authenticated and the linked user has required rights for passed command */
+    return false;
+}
 
-    /**
-     * Destructor
-     */
-    ~ApiRequest();
-
-    /**
-     * Deserializes passed JSON object and re-creates internal state. It automatically checks the shapeliness of the incoming request
-     * according to the defined request structure design.
-     *
-     * @param[in] serial The serialized JSON string
-     * @return Returns true if successul, else false
-     */
-    bool deserialize(String serial);
-
-    /**
-     * Returns the command id of the current ApiRequest
-     *
-     * @return Returns the command id 
-     */
-    String getCommandId();
-
-    /**
-     * Returns the JSON object
-     *
-     * @return Returns the JSON object string
-     */
-    String getJsonPayload();
-};
-#endif /** __APIREQUEST_H__ */
+ApiResponse SessionManager::aquireSession(ApiRequest& request, Session* connectionCtx)
+{
+    /* TODO: Parse request payload, check user credentials and authenticate passed session */
+    ApiResponse response;
+    return response;
+}

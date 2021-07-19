@@ -59,13 +59,16 @@ bool ApiRequest::deserialize(String serial)
     The value specified in DOC_SIZE has been computed with the help of the ArduinoJson Assistant v6
     which is accessible at: https://arduinojson.org/v6/assistant/
     */
+    bool retCode = false;
+
     const size_t DOC_SIZE = 2048;
     DynamicJsonDocument jsonDocument(DOC_SIZE);
     DeserializationError jsonRet = deserializeJson(jsonDocument, serial);
 
-    bool retCode = false;
-
-    if (DeserializationError::Ok == jsonRet)
+    /* Check shapeliness of incoming JSON request */
+    if ((DeserializationError::Ok == jsonRet)
+        && (jsonDocument.containsKey("commandId"))
+        && ((1 == jsonDocument.size()) || ((2 == jsonDocument.size()) && (true == jsonDocument.containsKey("jsonPayload")))))
     {
         m_commandId = jsonDocument["commandId"].as<String>();
         m_jsonPayload = jsonDocument["jsonPayload"].as<String>();
@@ -73,8 +76,8 @@ bool ApiRequest::deserialize(String serial)
     }
     else
     {
-        LOG_ERROR("Error on deserializing the ApiRequest JSON object");
-        LOG_ERROR(jsonRet.c_str());
+        LOG_ERROR("Error on deserializing the ApiRequest JSON object. JSON may be malformed!");
+        LOG_ERROR(String("ArduinoJson result: ") + jsonRet.c_str());
     }
     return retCode;
 }

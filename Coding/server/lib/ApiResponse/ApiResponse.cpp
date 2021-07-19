@@ -68,7 +68,12 @@ String ApiResponse::serialize()
     will not copy/duplicate the values
     */
     jsonDocument["statusCode"] = static_cast<const uint16_t>(m_statusCode);
-    jsonDocument["jsonPayload"] = m_jsonPayload.c_str();
+
+    /* Optionally serialize jsonPayload if set */
+    if (m_jsonPayload != "")
+    {
+        jsonDocument["jsonPayload"] = m_jsonPayload.c_str();
+    }
 
     serializeJson(jsonDocument, serialized);
     LOG_DEBUG("ApiResponse successfully serialized to JSON");

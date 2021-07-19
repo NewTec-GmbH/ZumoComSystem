@@ -50,27 +50,32 @@ package Data
     }
     KeyCert "0..*" *--> "1" SSLCert
 
+    enum Permission
+    {
+        NONE,
+        DEBUG_ZUMO,
+        FLASH_ZUMO,
+        FLASH_COM,
+        REBOOT_ZUMO,
+        REBOOT_COM,
+        CONFIGURE_NETWORK
+    }
+
     class Session
     {
         - m_sessionAuthenticated: bool = false
-        - m_sessionPermissions: Permission
-        - m_authenticatedUser: User
         - m_lastAccessTime: uint64_t = 0
         - {static} MAX_CLIENTS: uint8_t {readonly} = 4
         - {static} m_sessions: Session[MAX_CLIENTS];
+        - {static} m_numberOfActiveClients: uint8_t = 0
         + Session()
         + ~Session()
-        + setAuthenticatedUser(user: User): void
-        + getAuthenticatedUser(): User
-        + setPermission(permission: Permission):void
-        + getPermission(): Permission
-        + deAuthenticate(): void
-        + {static} create(): WebSocketHandler*
-        + onMessage(input: WebsocketInputStreambuf*): void
+        + {static} create(): httpsserver::WebSocketHandler*
+        + onMessage(inputBuffer: httpsserver::WebsocketInputStreambuf*): void
         + onClose(): void
     }
     Session "1" *--> "4" Session
-    Session <|-down- WebSocketHandler
+    WebSocketHandler <|-down- Session : is a
 
     class Store
     {

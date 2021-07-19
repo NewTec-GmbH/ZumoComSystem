@@ -5,18 +5,18 @@ abstract class Command
     - m_serviceID: String
     - m_reqPermission: Permission
     + Command(serviceId: String, reqPermission: Permission)
-    + ~Command()
+    + {virtual} ~Command()
     + getServiceID(): String
     + getReqPermission(): Permission
     + {abstract} run(request: ApiRequest): ApiResponse
 }
 
-class AuthenticateCommand
+class AuthCommand
 {
-    + AuthenticateCommand
-    + ~AuthenticateCommand
+    + AuthCommand
+    + ~AuthCommand
 }
-Command <|-down-AuthenticateCommand
+Command <|-down-AuthCommand
 
 class FlashZumoCommand
 {

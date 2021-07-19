@@ -25,7 +25,6 @@ package Data {
     store -up- Store
 
     store "0..*" *--> "1" keycert
-    store "0..*" *--> "0..*" session
     store "0..*" *--> "1" netcredentials
     store "1" *-- "1..*" user
     user "0..*" *--> "1" persmissions

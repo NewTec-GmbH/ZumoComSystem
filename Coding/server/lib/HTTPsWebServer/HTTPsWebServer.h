@@ -50,6 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <HTTPResponse.hpp>
 #include <ResponseCode.h>
 #include <FileManager.h>
+#include <Session.h>
 
 class HTTPsWebServer
 {
@@ -112,6 +113,9 @@ private:
 
     /** Specifies the file serving route */
     httpsserver::ResourceNode m_fileServeRoute;
+
+    /** Specifies the API route */
+    httpsserver::WebsocketNode m_apiRoute;
 
     /** Store instance */
     Store& m_store;

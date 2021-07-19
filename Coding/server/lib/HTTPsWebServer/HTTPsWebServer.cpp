@@ -52,6 +52,7 @@ FileManager HTTPsWebServer::m_fileManager;
 HTTPsWebServer::HTTPsWebServer() :
     m_httpsServer(Store::getInstance().getKeyCert().getSSLCert(), SHARED_TCP_PORT, MAX_CLIENTS),
     m_fileServeRoute("", "", &registerFileServing),
+    m_apiRoute("/api", &Session::create),
     m_store(Store::getInstance())
 {
 }
@@ -65,6 +66,10 @@ bool HTTPsWebServer::startServer()
 {
     m_httpsServer.registerNode(&m_fileServeRoute);
     m_httpsServer.setDefaultNode(&m_fileServeRoute);
+    LOG_INFO("Registered file serving route");
+
+    m_httpsServer.registerNode(&m_apiRoute);
+    LOG_INFO("Registered websocket API route");
 
     return ((1 == m_httpsServer.start()) && (true == m_httpsServer.isRunning()));
 }
@@ -125,7 +130,7 @@ void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, http
         }
         else
         {
-            response->setStatusCode(NOTFOUND);
+            response->setStatusCode(NOT_FOUND);
             response->println("Could not find such resource!");
         }
 
@@ -134,7 +139,7 @@ void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, http
     else
     {
         request->discardRequestBody();
-        response->setStatusCode(METHODNOTALLOWED);
+        response->setStatusCode(METHOD_NOT_ALLOWED);
         response->println("Invalid request!");
     }
 }

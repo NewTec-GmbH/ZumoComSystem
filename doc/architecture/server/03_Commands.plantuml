@@ -1,0 +1,48 @@
+@startuml
+package Server {
+    component "RequestResponseHandler" as RequestResponseHandler
+}
+
+interface "COMReset" as comreset
+interface "RobotReset" as robotreset
+interface "Debug" as debug
+interface "OTA" as ota
+interface "FlashRobot" as flashrobot
+interface "FWCheck" as FWCheck
+interface "File" as File
+interface "Store" as Store
+
+package Commands {
+    component Command
+    component "UploadZumoFirmware" as uploadzumoservice
+    component "FlashZumoFirmware" as flashzumoservice
+    component "ConfigureNetwork" as credconfig
+    component "RebootZumo" as resetzumoservice
+    component "RebootCOM" as resetcomplatforomservice
+    component "DebugZumo" as zumodebug
+    component "UploadCOMFirmware" as uploadcomfirmware
+    component "FlashCOMFirmware" as flashcomfirmware
+
+    Command <|-- uploadzumoservice
+    Command <|-- flashzumoservice
+    Command <|-- credconfig
+    Command <|-- resetzumoservice
+    Command <|-- resetcomplatforomservice
+    Command <|-- zumodebug
+    Command <|-- uploadcomfirmware
+    Command <|-- flashcomfirmware
+    RequestResponseHandler *--> Command
+
+    uploadzumoservice -down-(File
+    uploadcomfirmware -down-(ota
+    flashcomfirmware -down-(ota
+    credconfig -down-(Store
+    flashzumoservice -down-(FWCheck
+    flashzumoservice -down-(File
+    flashzumoservice -down-(flashrobot
+    flashzumoservice -down-(robotreset
+    resetcomplatforomservice -down-(comreset
+    resetzumoservice -down-(robotreset
+    zumodebug -down-(debug
+}
+@enduml
