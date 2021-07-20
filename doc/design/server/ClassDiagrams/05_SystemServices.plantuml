@@ -9,7 +9,12 @@ package "Arduino Core"
     class Preferences
 }
 
-package Server 
+package "Crypto"
+{
+    class BLAKE2b
+}
+
+package Server
 {
     class WebServer
 }
@@ -70,6 +75,18 @@ package SystemServices {
         - {static} getInfo(): String
     }
     FileManager ..> FileMode : uses
+
+    class CryptoServices
+    {
+        - {static} SALT_LENGTH_BYTE: uint8_t {readonly} = 64
+        - {static} HASH_LENGTH_BYTE: uint8_t {readonly} = 64
+        - m_hasherInstance: BLAKE2b
+        + CryptoServices()
+        + ~CryptoServices()
+        + getRandomSalt(outputString: String&): void
+        + hashBlake2b(cleartext: String&, salt: String&, outputString: String&): void
+    }
+    CryptoServices "0..*" *--> "1" BLAKE2b
 
     class WiFiManager
     {
