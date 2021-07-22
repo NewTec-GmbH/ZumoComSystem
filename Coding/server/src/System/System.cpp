@@ -102,8 +102,20 @@ void System::init()
     FileManager::initFS();
 
     /* Load Users */
+    if (true == m_store.loadUsers())
+    {
+        LOG_DEBUG("Successfully loaded users from disk");
+    }
+    else
+    {
+        LOG_ERROR("Could not load users from disk");
+    }
 
-    /* Load Permissions */
+    /* Create and save admin account with default credentials and full priviliges if it is missing */
+    if (true == User::checkAdminAccount())
+    {
+        m_store.saveUsers();
+    }
 
     /* Await KeyCert generation task execution */
     xSemaphoreTake(m_genKeyCertSemaphore, portMAX_DELAY);

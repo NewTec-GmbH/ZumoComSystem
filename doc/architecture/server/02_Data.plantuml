@@ -9,7 +9,7 @@ package httpsserver {
 
 package Data {
     component "Store" as store
-    component "Permission" as persmissions
+    component "Permission" as persmission
     component "User" as user
     component "NetworkCredentials" as netcredentials
     component "Session" as session
@@ -18,7 +18,7 @@ package Data {
     note right of store : Manages, (un-)loads, buffers,\nupdates and saves\nspecified data structures to disk
     note right of netcredentials : Stores SSID and passphrase\nfor external WiFi network
     note right of user : Stores user, username and password
-    note right of persmissions : Stores the system permissions for one user
+    note right of persmission : Specifies permission 
     note right of session : Stores active WebSocket session,if session is\nauthenticated and authentication duration
     note right of keycert : Stores private key and\ncertificate for HTTPs and WSS servers
 
@@ -26,8 +26,9 @@ package Data {
 
     store "0..*" *--> "1" keycert
     store "0..*" *--> "1" netcredentials
-    store "1" *-- "1..*" user
-    user "0..*" *--> "1" persmissions
+    store "1" *-- "1" user
+    user "0-*" o--> "0..*" user
+    user "0..*" *--> "0..*" persmission
 
     session "0..*" *--> "1" wshandler
 

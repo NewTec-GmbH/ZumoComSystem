@@ -45,13 +45,24 @@ Store::Store() :
     m_nvsmgr(),
     m_staCredentials(),
     m_apCredentials(),
-    m_keyCert()
+    m_keyCert(),
+    m_users()
 {
 }
 
 Store::~Store()
 {
     closeStore();
+}
+
+NetworkCredentials Store::getSTACredentials()
+{
+    return m_staCredentials;
+}
+
+void Store::setSTACredentials(NetworkCredentials credentials)
+{
+    m_staCredentials = credentials;
 }
 
 bool Store::saveSTACredentials()
@@ -73,26 +84,6 @@ bool Store::loadSTACredentials()
         LOG_ERROR("Could not load NetworkCredentials from disk");
     }
     return retCode;
-}
-
-NetworkCredentials Store::getSTACredentials()
-{
-    return m_staCredentials;
-}
-
-void Store::setSTACredentials(NetworkCredentials credentials)
-{
-    m_staCredentials = credentials;
-}
-
-NetworkCredentials Store::getAPCredentials()
-{
-    return m_apCredentials;
-}
-
-void Store::setAPCredentials(NetworkCredentials credentials)
-{
-    m_apCredentials = credentials;
 }
 
 KeyCert& Store::getKeyCert()
@@ -155,6 +146,50 @@ bool Store::loadKeyCert()
     delete[] certBuffer;
 
     return retCode;
+}
+
+User& Store::getUsers()
+{
+    return m_users;
+}
+
+void Store::setUsers(User users)
+{
+    m_users = users;
+}
+
+bool Store::saveUsers()
+{
+    String serialized;
+    m_users.serialize(serialized);
+
+    bool retCode = m_nvsmgr.putEntry("users", serialized);
+    if (false == retCode)
+    {
+        LOG_ERROR("Could not save users to disk");
+    }
+    return retCode;
+}
+
+bool Store::loadUsers()
+{
+    String json = m_nvsmgr.readEntry("users");
+    bool retCode = ((String("null") != json) && (true == m_users.deserialize(json)));
+    if (false == retCode)
+    {
+        LOG_ERROR("Could not load users from disk");
+    }
+    return retCode;
+}
+
+NetworkCredentials Store::getAPCredentials()
+{
+    return m_apCredentials;
+}
+
+void Store::setAPCredentials(NetworkCredentials credentials)
+{
+    m_apCredentials = credentials;
 }
 
 void Store::closeStore()

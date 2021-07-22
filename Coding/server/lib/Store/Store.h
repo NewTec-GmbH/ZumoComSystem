@@ -46,97 +46,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Log.h>
 #include <NetworkCredentials.h>
 #include <KeyCert.h>
+#include <User.h>
 
  /** Manages, buffers, loads and saves all required data structures for the ComPlatform */
 class Store
 {
-public:
-    /**
-     * Get Store instance
-     *
-     * @return Returns Store singleton instance
-     */
-    static Store& getInstance()
-    {
-        static Store instance;
-        return instance;
-    }
-
-    /**
-     * Save NetworkCredentials for STA mode to disk
-     *
-     * @return Returns true if successful, false if error occured
-     */
-    bool saveSTACredentials();
-
-    /**
-     * Load NetworkCredentials for STA mode from disk to store
-     *
-     * @return Returns true if succesful, false if error occured
-     */
-    bool loadSTACredentials();
-
-    /**
-     * Save KeyCert to disk
-     *
-     * @return Returns true if successful, false if error occured
-     */
-    bool saveKeyCert();
-
-    /**
-     * Load KeyCert from disk to store
-     *
-     * @return Returns true if succesful, false if error occured
-     */
-    bool loadKeyCert();
-
-    /**
-     * Get the network credentials for STA mode
-     *
-     * @return Returns the NetworkCredentials instance
-     */
-    NetworkCredentials getSTACredentials();
-
-    /**
-     * Set the network credentials for STA mode
-     *
-     * @param[in] credentials The new NetworkCredentials instance to be set
-     */
-    void setSTACredentials(NetworkCredentials credentials);
-
-    /**
-     * Get the network credentials for AP mode
-     *
-     * @return Returns the NetworkCredentials instance
-     */
-    NetworkCredentials getAPCredentials();
-
-    /**
-     * Set the network credentials for AP mode
-     *
-     * @param[in] credentials The new NetworkCredentials instance to be set
-     */
-    void setAPCredentials(NetworkCredentials credentials);
-
-    /**
-     * Get the private RSA key and the public certificate
-     *
-     * @return Returns the KeyCert instance
-     */
-    KeyCert& getKeyCert();
-
-    /**
-     * Set the private RSA key and the public certificate
-     *
-     * @param[in] keycert The new KeyCert instance to be saved
-     */
-    void setKeyCert(KeyCert keycert);
-
-    /**
-     * Closes the store. Should be called when access to store is done.
-     */
-    void closeStore();
-
 private:
     /** Default constructor */
     Store();
@@ -153,10 +67,123 @@ private:
     /** Instance of NetworkCredentials which contains SSID and passphrase for AP mode */
     NetworkCredentials m_apCredentials;
 
-    /**
-     * Instance of KeyCert to store private RSA key as well as
-     * public certificate for HTTPs and WSS servers
-     */
+    /** Instance of KeyCert to store private RSA key as well as public certificate for HTTPs and WSS servers */
     KeyCert m_keyCert;
+
+    /** Instance of users */
+    User m_users;
+
+public:
+    /**
+     * Get Store instance
+     *
+     * @return Returns Store singleton instance
+     */
+    static Store& getInstance()
+    {
+        static Store instance;
+        return instance;
+    }
+
+    /**
+    * Get the network credentials for STA mode
+    *
+    * @return Returns the NetworkCredentials instance
+    */
+    NetworkCredentials getSTACredentials();
+
+    /**
+     * Set the network credentials for STA mode
+     *
+     * @param[in] credentials The new NetworkCredentials instance to be set
+     */
+    void setSTACredentials(NetworkCredentials credentials);
+
+    /**
+     * Save NetworkCredentials for STA mode to disk
+     *
+     * @return Returns true if successful, false if error occured
+     */
+    bool saveSTACredentials();
+
+    /**
+     * Load NetworkCredentials for STA mode from disk to store
+     *
+     * @return Returns true if succesful, false if error occured
+     */
+    bool loadSTACredentials();
+
+    /**
+    * Get the private RSA key and the public certificate
+    *
+    * @return Returns the KeyCert instance
+    */
+    KeyCert& getKeyCert();
+
+    /**
+     * Set the private RSA key and the public certificate
+     *
+     * @param[in] keycert The new KeyCert instance to be saved
+     */
+    void setKeyCert(KeyCert keycert);
+
+    /**
+     * Save KeyCert to disk
+     *
+     * @return Returns true if successful, false if error occured
+     */
+    bool saveKeyCert();
+
+    /**
+     * Load KeyCert from disk to store
+     *
+     * @return Returns true if succesful, false if error occured
+     */
+    bool loadKeyCert();
+
+    /**
+     * Returns the User instance
+     *
+     * @return Returns reference to User class instance
+     */
+    User& getUsers();
+
+    /**
+     * Copies the passed User class instance into store
+     */
+    void setUsers(User users);
+
+    /**
+     * Save all registered users to disk
+     *
+     * @return Returns true if successul, else false
+     */
+    bool saveUsers();
+
+    /**
+     * Loads all registered users from disk
+     *
+     * @return Returns true if successful, else false
+     */
+    bool loadUsers();
+
+    /**
+     * Get the network credentials for AP mode
+     *
+     * @return Returns the NetworkCredentials instance
+     */
+    NetworkCredentials getAPCredentials();
+
+    /**
+     * Set the network credentials for AP mode
+     *
+     * @param[in] credentials The new NetworkCredentials instance to be set
+     */
+    void setAPCredentials(NetworkCredentials credentials);
+
+    /**
+     * Closes the store. Should be called when access to store is done.
+     */
+    void closeStore();
 };
 #endif /** __STORE_H__ */

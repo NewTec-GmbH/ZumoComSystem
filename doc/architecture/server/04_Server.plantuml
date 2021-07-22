@@ -3,14 +3,13 @@ interface "WSS" as WSS
 interface "HTTPS" as HTTPS
 
 interface "File" as File
-interface "Crypt" as Crypt
 interface "Store" as Store
 interface "Timer" as Timer
 
 package Server {
     component "WebServer" as webserver
 
-    note left of webserver : Serves the static HTML/JS/CSS\nfiles for web interface\nand provides access to\nall endpoint services
+    note left of webserver : Serves the HTML/JS/CSS\nfiles for web interface\nand provides access to\nall endpoint services
 
     webserver -up- WSS
     webserver -up- HTTPS
@@ -19,24 +18,18 @@ package Server {
     webserver -down-(Store
 
     component "SessionManager" as sessionsmgmt
-    component "UserManager" as usermgmt
     component "RequestResponseHandler" as requesthandler
 
-    note left of sessionsmgmt : Checks and manages active sessions
-    note left of requesthandler : Parses the incoming JSON request,\nchecks the permission of the\nuser and forwards the request\nto controller
-    note left of usermgmt : Checks username, password and permissions\nof the current user
+    note left of sessionsmgmt : Checks and manages active sessions.\nChecks user credentials and permissions
+    note left of requesthandler : Parses the incoming JSON request,\nchecks the session rights and invokes\ncorresponding API services
 
     interface "RequestResponseManager" as Request
     requesthandler -up- Request
 
     requesthandler *--> sessionsmgmt : checks/requests\naccess/session
 
-    sessionsmgmt *--> usermgmt
-
     webserver -down-(Request
     sessionsmgmt -down-(Store
     sessionsmgmt -down-(Timer
-    usermgmt -down-(Store
-    usermgmt -down-(Crypt
 }
 @enduml

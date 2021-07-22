@@ -66,7 +66,7 @@ void CryptoServices::getRandomSalt(String& outputString)
     }
 }
 
-void CryptoServices::hashBlake2b(String& cleartext, String& salt, String& outputString)
+void CryptoServices::hashBlake2b(const String& cleartext, const String& salt, String& outputString)
 {
     String inputString = cleartext + salt;
     uint8_t outputHash[HASH_LENGTH_BYTE];

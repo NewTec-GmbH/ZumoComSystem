@@ -84,7 +84,7 @@ package SystemServices {
         + CryptoServices()
         + ~CryptoServices()
         + getRandomSalt(outputString: String&): void
-        + hashBlake2b(cleartext: String&, salt: String&, outputString: String&): void
+        + hashBlake2b(cleartext: const String&, salt: const String&, outputString: String&): void
     }
     CryptoServices "0..*" *--> "1" BLAKE2b
 

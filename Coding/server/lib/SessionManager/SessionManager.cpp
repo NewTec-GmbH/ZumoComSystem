@@ -52,6 +52,7 @@ SessionManager::~SessionManager()
 
 bool SessionManager::checkSession(Command* command, Session* connectionCtx)
 {
+    /* TODO: Accept permission ANY for admin */
     /* TODO: Check if passed session is authenticated and the linked user has required rights for passed command */
     return false;
 }

@@ -41,7 +41,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Arduino.h>
 #include <BLAKE2b.h>
-#include <Crypto.h>
 
  /** Simple class which provides basic cryptography algorithms */
 class CryptoServices
@@ -81,5 +80,5 @@ public:
      * @param[in] salt Reference to the salt string
      * @param[out] outputString The calculated hash value
      */
-    void hashBlake2b(String& cleartext, String& salt, String& outputString);
+    void hashBlake2b(const String& cleartext, const String& salt, String& outputString);
 };
