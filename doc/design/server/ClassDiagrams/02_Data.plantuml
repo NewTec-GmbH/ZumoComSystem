@@ -59,7 +59,8 @@ package Data
         FLASH_COM,
         REBOOT_ZUMO,
         REBOOT_COM,
-        CONFIGURE_NETWORK
+        CONFIGURE_NETWORK,
+        ECHO_DEMO
     }
 
     class User
@@ -82,7 +83,8 @@ package Data
         + User()
         + ~User()
         + {static} checkAdminAccount(): bool
-        + {static} getPermissions(username: const String&, numberOfPermissions: uint8_t&): const Permission*
+        + {static} getPermissions(numberOfPermissions: uint8_t&): Permission*
+        + {static} getUser(username: String): User*
         + {static} checkCredentials(username: const String&, password: const String&): bool
         + {static} putUser(username: const String&, password: const String&, permissions: const Permission*, numberOfPermissions: const uint8_t, updateUser: const bool)
         + {static} deleteUser(username: const String&): bool
@@ -93,16 +95,26 @@ package Data
 
     class Session
     {
-        - m_sessionAuthenticated: bool = false
-        - m_lastAccessTime: uint64_t = 0
         - {static} MAX_CLIENTS: uint8_t {readonly} = 4
+        - {static} SESSION_TIMEOUT_SECONDS {readonly} = 900;
+        - {static} m_timer: Timer
         - {static} m_sessions: Session[MAX_CLIENTS];
         - {static} m_numberOfActiveClients: uint8_t = 0
+        - m_sessionAuthenticated: bool = false
+        - m_linkedUser: User
+        - m_lastAccessTime: unsigned long = 0
         + Session()
         + ~Session()
+        + {static} start(): bool
+        + {static} stop(): bool
         + {static} create(): httpsserver::WebSocketHandler*
         + onMessage(inputBuffer: httpsserver::WebsocketInputStreambuf*): void
         + onClose(): void
+        + isAuthenticated(): bool 
+        + authenticateSession(user: User): void
+        + deauthenticateSession(): void
+        + handleSessionTimeout(): void
+        + getPermissions(): const Permission*
     }
     Session "1" *--> "4" Session
     WebSocketHandler <|-down- Session : is a

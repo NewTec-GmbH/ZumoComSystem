@@ -123,12 +123,19 @@ public:
     /**
      * Returns the permissions and the number of permissions of the specified user
      *
-     * @param[in] username The username of the user whose permissions need to be fetched
      * @param[out] numberOfPermissions Contains the number of permissions this user has
      *
-     * @return Returns const pointer to array of users permissions
+     * @return Returns pointer to array of users permissions
      */
-    static const Permission* getPermissions(const String& username, uint8_t& numberOfPermissions);
+    Permission* getPermissions(uint8_t& numberOfPermissions);
+
+    /**
+     * Returns pointer to specified user
+     *
+     * @param[in] username The user to be fetched
+     * @return Returns the specified user instance
+     */
+    static User* getUser(String username);
 
     /**
      * Checks if the passed username and password are correct

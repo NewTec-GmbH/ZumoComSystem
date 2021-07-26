@@ -117,6 +117,16 @@ void System::init()
         m_store.saveUsers();
     }
 
+    /* Start/Register the ISR for session timeouts */
+    if (true == Session::start())
+    {
+        LOG_DEBUG("Succesfully registered session timeout ISR");
+    }
+    else
+    {
+        LOG_ERROR("Could not register session timeout ISR!");
+    }
+
     /* Await KeyCert generation task execution */
     xSemaphoreTake(m_genKeyCertSemaphore, portMAX_DELAY);
     xSemaphoreGive(m_genKeyCertSemaphore);
@@ -147,6 +157,9 @@ void System::reset()
 
     /* Shut down HTTPS/WSS servers */
     m_webServer.stopServer();
+
+    /* Detach the session timeout ISR and shut down timer */
+    Session::stop();
 
     ESP.restart();
 }

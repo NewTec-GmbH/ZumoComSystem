@@ -31,27 +31,61 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file AuthCommand.cpp
+ * @file UserCredentials.cpp
  * @author Luis Moser
- * @brief AuthCommand class
- * @date 07/16/2021
+ * @brief UserCredentials class
+ * @date 07/23/2021
  *
  * @{
  */
 
-#include <AuthCommand.h>
+#include <UserCredentials.h>
 
-AuthCommand::AuthCommand() :
-    Command("authenticate", NONE)
+
+UserCredentials::UserCredentials() :
+    m_username(),
+    m_password()
 {
 }
 
-AuthCommand::~AuthCommand()
+UserCredentials::~UserCredentials()
 {
 }
 
-void AuthCommand::run(ApiRequest& request, ApiResponse& response)
+const String& UserCredentials::getUsername()
 {
-    response.setStatusCode(NOT_IMPLEMENTED);
-    /* TODO: Replace mock code with real code */
+    return m_username;
+}
+
+const String& UserCredentials::getPassword()
+{
+    return m_password;
+}
+
+bool UserCredentials::deserialize(String serial)
+{
+    /*
+    Reserve memory on stack for JSON structure which consists of two key-value pairs.
+    The username and the password are copied into the StaticJsonDocument by default.
+    The value specified in DOC_SIZE has been computed with the help of the ArduinoJson Assistant v6
+    which is accessible at: https://arduinojson.org/v6/assistant/
+    */
+    const size_t DOC_SIZE = 384;
+    StaticJsonDocument<DOC_SIZE> jsonDocument;
+    DeserializationError jsonRet = deserializeJson(jsonDocument, serial);
+
+    bool retCode = false;
+
+    if (DeserializationError::Ok == jsonRet)
+    {
+        m_username = jsonDocument["username"].as<String>();
+        m_password = jsonDocument["password"].as<String>();
+        retCode = true;
+    }
+    else
+    {
+        LOG_ERROR("Error on deserializing the UserCredentials JSON object");
+        LOG_ERROR(jsonRet.c_str());
+    }
+    return retCode;
 }

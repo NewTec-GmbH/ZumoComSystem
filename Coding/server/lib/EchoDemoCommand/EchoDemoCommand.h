@@ -31,26 +31,39 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file Permission.h
+ * @file EchoDemoCommand.h
  * @author Luis Moser
- * @brief Permission header
- * @date 07/15/2021
+ * @brief EchoDemoCommand header
+ * @date 07/23/2021
  *
  * @{
  */
 
-#ifndef __PERMISSION_H__
-#define __PERMISSION_H__
-enum Permission
+#ifndef __ECHODEMOCOMMAND_H__
+#define __ECHODEMOCOMMAND_H__
+
+#include <Command.h>
+
+ /** Simple greeter class for demonstrating API services */
+class EchoDemoCommand : public Command
 {
-    ANY,
-    NONE,
-    DEBUG_ZUMO,
-    FLASH_ZUMO,
-    FLASH_COM,
-    REBOOT_ZUMO,
-    REBOOT_COM,
-    CONFIGURE_NETWORK,
-    ECHO_DEMO
+public:
+    /**
+     * Default Constructor
+     */
+    EchoDemoCommand();
+
+    /**
+     * Destructor
+     */
+    ~EchoDemoCommand();
+
+    /**
+     * Implements the API service business logic
+     *
+     * @param[in] request Reference to the incoming ApiRequest
+     * @param[out] response Reference to the outgoing ApiResponse
+     */
+    void run(ApiRequest& request, ApiResponse& response);
 };
-#endif /** __PERMISSION_H__ */
+#endif /** __ECHODEMOCOMMAND_H__ */

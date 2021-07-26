@@ -46,25 +46,36 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Log.h>
 #include <Permission.h>
 #include <WebsocketHandler.hpp>
+#include <User.h>
+#include <Timer.h>
 
  /** Simple class to store websocket sessions and their authentication status */
 class Session : public httpsserver::WebsocketHandler
 {
 private:
-    /** Specifies if the current session is authenticated */
-    bool m_sessionAuthenticated;
-
-    /** Timestamp which gets updated each time a request is made with this session */
-    uint64_t m_lastAccessTime;
-
     /** Specifies the maximum number of concurrent websocket clients */
     static const uint8_t MAX_CLIENTS = 4;
+
+    /** Specifies how many seconds need to pass before session gets deauthenticated due to timeout */
+    static const uint16_t SESSION_TIMEOUT_SECONDS = 900;
+
+    /** Instance of timer for session timeouts */
+    static Timer m_timer;
 
     /** Stores all active Session instances/websocket sessions */
     static Session* m_sessions[];
 
     /** Stores how many clients are currently connected to websocket API */
     static uint8_t m_numberOfActiveClients;
+
+    /** Specifies if the current session is authenticated */
+    bool m_sessionAuthenticated;
+
+    /** Specifies the linked user */
+    User* m_linkedUser;
+
+    /** Timestamp which gets updated each time a request is made with this session */
+    unsigned long m_lastAccessTime;
 
 public:
     /**
@@ -76,6 +87,20 @@ public:
      * Destructor
      */
     ~Session();
+
+    /**
+     * Starts the timer
+     * 
+     * @return Returns true if successful, else false
+     */
+    static bool start();
+
+    /**
+     * Stops the timer
+     * 
+     * @return Returns true if successful, else false
+     */
+    static bool stop();
 
     /**
      * Called on each new session initiation by the WebSocketServer
@@ -95,5 +120,37 @@ public:
      * Is called when this session needs to be closed
      */
     void onClose();
+
+    /**
+     * Returns if this session is authenticated
+     *
+     * @return Returns true if session is authenticated, else false
+     */
+    bool isAuthenticated();
+
+    /**
+     * Authenticates this session and links this session with the specified user
+     *
+     * @param[in] user Pointer to the user to be linked with this session
+     */
+    void authenticateSession(User* user);
+
+    /**
+     * Deauthenticates this session
+     */
+    void deauthenticateSession();
+
+    /**
+     * Checks which sessions need to be invalidated because of timeout
+     */
+    static void handleSessionTimeout();
+
+    /**
+     * Returns the permissions of the user which is linked to this session
+     *
+     * @param[out] numberOfPermissions Specifies the length of the returned array
+     * @return Returns the permissions of the linked user
+     */
+    const Permission* getPermissions(uint8_t& numberOfPermissions);
 };
 #endif /** __SESSION_H__ */

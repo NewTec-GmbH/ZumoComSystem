@@ -11,12 +11,12 @@ abstract class Command
     + {abstract} run(request: ApiRequest): ApiResponse
 }
 
-class AuthCommand
+class EchoDemoCommand
 {
     + AuthCommand
     + ~AuthCommand
 }
-Command <|-down-AuthCommand
+Command <|-down-EchoDemoCommand
 
 class FlashZumoCommand
 {

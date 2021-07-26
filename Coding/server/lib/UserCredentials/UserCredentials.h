@@ -31,26 +31,62 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file Permission.h
+ * @file UserCredentials.h
  * @author Luis Moser
- * @brief Permission header
- * @date 07/15/2021
+ * @brief UserCredentials header
+ * @date 07/23/2021
  *
  * @{
  */
 
-#ifndef __PERMISSION_H__
-#define __PERMISSION_H__
-enum Permission
+#ifndef __USERCREDENTIALS_H__
+#define __USERCREDENTIALS_H__
+
+#include <Arduino.h>
+#include <ArduinoJson.h>
+#include <Log.h>
+
+ /** Simple class for specifying User credentials for the API */
+class UserCredentials
 {
-    ANY,
-    NONE,
-    DEBUG_ZUMO,
-    FLASH_ZUMO,
-    FLASH_COM,
-    REBOOT_ZUMO,
-    REBOOT_COM,
-    CONFIGURE_NETWORK,
-    ECHO_DEMO
+private:
+    /** Username of the user */
+    String m_username;
+
+    /** Password of the user */
+    String m_password;
+
+public:
+    /**
+     * Default Constructor
+     */
+    UserCredentials();
+
+    /**
+     * Destructor
+     */
+    ~UserCredentials();
+
+    /**
+     * Returns the username
+     *
+     * @return Returns reference to username
+     */
+    const String& getUsername();
+
+    /**
+     * Returns the password
+     *
+     * @return Returns reference to password
+     */
+    const String& getPassword();
+
+    /**
+     * Deserializes the passed JSON string and re-creates object
+     *
+     * @param[in] serial The serialized JSON string
+     * @return Returns true if successful, else false
+     */
+    bool deserialize(String serial);
 };
-#endif /** __PERMISSION_H__ */
+#endif /** __USERCREDENTIALS_H__ */

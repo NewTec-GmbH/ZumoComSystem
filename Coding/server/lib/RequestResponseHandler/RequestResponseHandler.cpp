@@ -42,7 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <RequestResponseHandler.h>
 
 RequestResponseHandler::RequestResponseHandler() :
-    m_apiServices{new AuthCommand()},
+    m_apiServices{new EchoDemoCommand()},
     m_sessionManager()
 {
 }
@@ -63,17 +63,14 @@ RequestResponseHandler& RequestResponseHandler::getInstance()
 
 void RequestResponseHandler::makeRequest(ApiRequest& request, ApiResponse& response, Session* connectionCtx)
 {
-    String serviceID;
-    Command* apiService = getCommandOfApiRequest(request);
-
-    if (apiService != nullptr)
+    if (request.getCommandId() == "authenticate")
     {
-        serviceID = apiService->getServiceID();
-        if (serviceID == "authenticate")
-        {
-            apiService->run(request, response);
-        }
-        else
+        m_sessionManager.aquireSession(request, response, connectionCtx);
+    }
+    else
+    {
+        Command* apiService = getCommandOfApiRequest(request);
+        if (nullptr != apiService)
         {
             if (NONE != apiService->getReqPermission())
             {
@@ -91,17 +88,17 @@ void RequestResponseHandler::makeRequest(ApiRequest& request, ApiResponse& respo
                 apiService->run(request, response);
             }
         }
-    }
-    else
-    {
-        response.setStatusCode(NOT_IMPLEMENTED);
+        else
+        {
+            response.setStatusCode(NOT_IMPLEMENTED);
+        }
     }
 }
 
 Command* RequestResponseHandler::getCommandOfApiRequest(ApiRequest& request)
 {
     Command* command = nullptr;
-    if (request.getCommandId() == "authenticate")
+    if (request.getCommandId() == "echodemo")
     {
         command = m_apiServices[0];
     }

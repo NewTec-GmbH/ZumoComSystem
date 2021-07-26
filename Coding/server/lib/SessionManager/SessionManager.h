@@ -49,14 +49,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ApiRequest.h>
 #include <ApiResponse.h>
 #include <Command.h>
+#include <UserCredentials.h>
 
  /** Simple class for managing the websocket sessions */
 class SessionManager
 {
-private:
-    /** Reference to store */
-    Store& m_store;
-
 public:
     /**
      * Default Constructor
@@ -82,9 +79,9 @@ public:
      * Requests authentication for this session. Remembers user and its permissions
      *
      * @param[in] request The authentication request including the user credentials to be checked
+     * @param[out] response Reference to the ApiResponse
      * @param[in] connectionCtx Pointer to the currently used session which should get authenticated
-     * @return Returns the ApiResponse which containts the status code of the operation
      */
-    ApiResponse aquireSession(ApiRequest& request, Session* connectionCtx);
+    void aquireSession(ApiRequest& request, ApiResponse& response, Session* connectionCtx);
 };
 #endif /** __SESSIONMANAGER_H__ */

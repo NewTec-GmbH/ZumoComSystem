@@ -43,17 +43,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <RequestResponseHandler.h>
 
 Session* Session::m_sessions[MAX_CLIENTS] = {};
+Timer Session::m_timer(SESSION_TIMEOUT_SECONDS);
 
 uint8_t Session::m_numberOfActiveClients = 0;
 
 Session::Session() :
     m_sessionAuthenticated(false),
+    m_linkedUser(nullptr),
     m_lastAccessTime(0)
 {
 }
 
 Session::~Session()
 {
+}
+
+bool Session::start()
+{
+    bool reg = m_timer.registerISR(handleSessionTimeout);
+    bool enable = m_timer.enableTimer();
+    return (reg && enable);
+}
+
+bool Session::stop()
+{
+    bool detach = m_timer.detachISR();
+    bool disable = m_timer.disableTimer();
+    return (detach && disable);
 }
 
 httpsserver::WebsocketHandler* Session::create()
@@ -120,4 +136,50 @@ void Session::onClose()
             break;
         }
     }
+}
+
+bool Session::isAuthenticated()
+{
+    return m_sessionAuthenticated;
+}
+
+void Session::authenticateSession(User* user)
+{
+    m_sessionAuthenticated = true;
+    m_linkedUser = user;
+}
+
+void Session::deauthenticateSession()
+{
+    m_sessionAuthenticated = false;
+}
+
+void Session::handleSessionTimeout()
+{
+    Session* currentSession = nullptr;
+    unsigned long currentTimeStamp = millis();
+
+    for (uint8_t sessionIdx = 0; sessionIdx < MAX_CLIENTS; sessionIdx++)
+    {
+        currentSession = m_sessions[sessionIdx];
+
+        /* Check if the session exists or has been stopped before timeout */
+        if (nullptr != currentSession)
+        {
+            if (((currentTimeStamp - currentSession->m_lastAccessTime) / 1000) > SESSION_TIMEOUT_SECONDS)
+            {
+                currentSession->deauthenticateSession();
+            }
+        }
+    }
+}
+
+const Permission* Session::getPermissions(uint8_t& numberOfPermissions)
+{
+    Permission* permission = nullptr;
+    if (nullptr != m_linkedUser)
+    {
+        permission = m_linkedUser->getPermissions(numberOfPermissions);
+    }
+    return permission;
 }

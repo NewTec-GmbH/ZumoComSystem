@@ -31,39 +31,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file AuthCommand.h
+ * @file EchoDemoCommand.cpp
  * @author Luis Moser
- * @brief AuthCommand header
- * @date 07/16/2021
+ * @brief EchoDemoCommand class
+ * @date 07/23/2021
  *
  * @{
  */
 
-#ifndef __AUTHCOMMAND_H__
-#define __AUTHCOMMAND_H__
+#include <EchoDemoCommand.h>
 
-#include <Command.h>
-
- /** Simple class which allows API authentication */
-class AuthCommand : public Command
+EchoDemoCommand::EchoDemoCommand() :
+    Command("echodemo", ECHO_DEMO)
 {
-public:
-    /**
-     * Default Constructor
-     */
-    AuthCommand();
+}
 
-    /**
-     * Destructor
-     */
-    ~AuthCommand();
+EchoDemoCommand::~EchoDemoCommand()
+{
+}
 
-    /**
-     * Implements the API service business logic
-     *
-     * @param[in] request Reference to the incoming ApiRequest
-     * @param[out] response Reference to the outgoing ApiResponse
-     */
-    void run(ApiRequest& request, ApiResponse& response);
-};
-#endif /** __AUTHCOMMAND_H__ */
+void EchoDemoCommand::run(ApiRequest& request, ApiResponse& response)
+{
+    response.setStatusCode(SUCCESS);
+    response.setJsonPayload("Hello dear " + request.getJsonPayload());
+}

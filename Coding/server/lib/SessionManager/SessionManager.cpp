@@ -41,8 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <SessionManager.h>
 
-SessionManager::SessionManager() :
-    m_store(Store::getInstance())
+SessionManager::SessionManager()
 {
 }
 
@@ -52,14 +51,42 @@ SessionManager::~SessionManager()
 
 bool SessionManager::checkSession(Command* command, Session* connectionCtx)
 {
-    /* TODO: Accept permission ANY for admin */
-    /* TODO: Check if passed session is authenticated and the linked user has required rights for passed command */
-    return false;
+    bool sessionAuthenticated = connectionCtx->isAuthenticated();
+
+    uint8_t numberOfPermissions = 0;
+    const Permission* permissions = connectionCtx->getPermissions(numberOfPermissions);
+    bool permissionAvailable = false;
+
+    if (nullptr != permissions)
+    {
+        for (uint8_t permIdx = 0; permIdx < numberOfPermissions; permIdx++)
+        {
+            /* Check if linked user has required permission or has full priviliges */
+            if ((permissions[permIdx] == ANY) || (command->getReqPermission() == permissions[permIdx]))
+            {
+                permissionAvailable = true;
+                break;
+            }
+        }
+    }
+
+    return (sessionAuthenticated && permissionAvailable);
 }
 
-ApiResponse SessionManager::aquireSession(ApiRequest& request, Session* connectionCtx)
+void SessionManager::aquireSession(ApiRequest& request, ApiResponse& response, Session* connectionCtx)
 {
-    /* TODO: Parse request payload, check user credentials and authenticate passed session */
-    ApiResponse response;
-    return response;
+    UserCredentials credentials;
+    credentials.deserialize(request.getJsonPayload());
+
+    if (true == User::checkCredentials(credentials.getUsername(), credentials.getPassword()))
+    {
+        User* linkedUser = User::getUser(credentials.getUsername());
+        connectionCtx->authenticateSession(linkedUser);
+
+        response.setStatusCode(SUCCESS);
+    }
+    else
+    {
+        response.setStatusCode(ERROR);
+    }
 }

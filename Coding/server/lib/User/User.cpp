@@ -81,17 +81,21 @@ bool User::checkAdminAccount()
     return putUser("admin", "21091986", &permission, NUMBER_OF_PERMISSIONS, false);
 }
 
-const Permission* User::getPermissions(const String& username, uint8_t& numberOfPermissions)
+Permission* User::getPermissions(uint8_t& numberOfPermissions)
 {
-    Permission* retPtr = nullptr;
-    int8_t userIdx = getUserIdx(username);
+    numberOfPermissions = m_numberOfPermissions;
+    return m_permissions;
+}
 
+User* User::getUser(String username)
+{
+    User* retUser = nullptr;
+    int8_t userIdx = getUserIdx(username);
     if (-1 != userIdx)
     {
-        retPtr = m_registeredUsers[userIdx]->m_permissions;
-        numberOfPermissions = m_registeredUsers[userIdx]->m_numberOfPermissions;
+        retUser = m_registeredUsers[userIdx];
     }
-    return retPtr;
+    return retUser;
 }
 
 bool User::checkCredentials(const String& username, const String& password)

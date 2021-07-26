@@ -45,7 +45,9 @@ const String HTTPsWebServer::m_servedFileTypes[][2] = {
     {".html", "text/html"},
     {".css", "text/css"},
     {".js", "application/javascript"},
-    {".jpg", "application/jpeg"}};
+    {".jpg", "image/jpeg"},
+    {".png", "image/png"},
+    {".ico", "image/vnd.microsoft.icon"}};
 
 FileManager HTTPsWebServer::m_fileManager;
 

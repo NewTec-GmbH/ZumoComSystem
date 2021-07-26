@@ -49,15 +49,25 @@ class ApiResponse
     + setstatusCode(statusCode: ResponseCode): void
 }
 
+class UserCredentials
+{
+    - m_username: String
+    - m_password: String
+    + UserCredentials
+    + ~UserCredentials
+    + getUsername(): const String&
+    + getPassword(): const String&
+    + deserialize(serial: String): bool
+}
+
 class SessionManager
 {
     - m_store: Store&
     + SessionManager()
     + ~SessionManager()
     + checkSession(command: Command*, connectionCtx: Session*): bool
-    + aquireSession(request: ApiRequest&, connectionCtx: Session*): ApiResponse
+    + aquireSession(request: ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void
 }
-SessionManager "0..*" *--> "1" Store
 
 class RequestResponseHandler
 {
