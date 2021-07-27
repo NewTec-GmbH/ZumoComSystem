@@ -87,7 +87,7 @@ public:
      * @param[in] keyBuffer The input buffer which containts the serialized binary RSA key.
      * @param[in] certBuffer The input buffer which containts the serialized binary SSL cert.
      */
-    void deserialize(uint8_t* keyBuffer, uint8_t* certBuffer);
+    void deserialize(const uint8_t* keyBuffer, const uint8_t* certBuffer);
 
     /** Size of the binary RSA key in bytes */
     static const size_t RSA_KEY_SIZE_BYTE = 1190;

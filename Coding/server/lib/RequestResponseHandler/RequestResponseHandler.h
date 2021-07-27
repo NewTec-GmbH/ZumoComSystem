@@ -64,7 +64,7 @@ public:
      * @param[out] response Reference to the outgoing ApiResponse
      * @param[in] connectionCtx Pointer to Session class instance
      */
-    void makeRequest(ApiRequest& request, ApiResponse& response, Session* connectionCtx);
+    void makeRequest(const ApiRequest& request, ApiResponse& response, Session* connectionCtx);
 
 private:
     /**
@@ -83,7 +83,7 @@ private:
      * @param[in] request The API request to be checked for its service id
      * @return Returns pointer to correct service class instance. Returns nullpointer if there is no such service
      */
-    Command* getCommandOfApiRequest(ApiRequest& request);
+    const Command* getCommandOfApiRequest(const ApiRequest& request) const;
 
     /** Specifies how many API services are registered */
     static const uint8_t NUMBER_OF_API_SERVICES = 1;

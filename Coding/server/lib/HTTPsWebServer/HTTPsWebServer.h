@@ -91,9 +91,9 @@ private:
      * Checks if the requested file has valid file ending and returns corresponding MIME type
      *
      * @param[in] filePath The filepath to be checked for its ending
-     * @return Returns the MIME type for the detected file ending, Returns 'null' if file ending is invalid
+     * @param[out] mimeType The MIME type for the detected file ending, Returns 'null' if file ending is invalid
      */
-    static String getMIMEType(String filePath);
+    static void getMIMEType(const String& filePath, String& mimeType);
 
     /** TCP port which is used for frontend delivery as well as backend API services */
     static const uint16_t SHARED_TCP_PORT = 443;

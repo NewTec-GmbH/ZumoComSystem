@@ -59,7 +59,7 @@ public:
      *
      * @return Returns the SSID string
     */
-    String getSSID();
+    const String& getSSID() const;
 
     /**
      * Sets Service Set Identifier. Please note that the lenght of the SSID should not exceed 32 printable chars
@@ -68,14 +68,14 @@ public:
      * @param[in] staMode Specifies if credentials are to be used in STA mode.
      * @return Returns true if the SSID is well-formed, else false
      */
-    bool setSSID(String ssid, bool staMode);
+    bool setSSID(const String& ssid, const bool staMode);
 
     /**
      * Returns the WiFi passphrase
      *
      * @return Returns the passphrase string
      */
-    String getPassphrase();
+    const String& getPassphrase() const;
 
     /**
      * Sets the passphrase used for the WiFi. Please note that the length of the passphrase should range between 8 and 63 printable chars
@@ -85,14 +85,14 @@ public:
      * @param[in] passphrase The passphrase to be set
      * @return Returns true if the passphrase is well-formed, else false
      */
-    bool setPassphrase(String passphrase);
+    bool setPassphrase(const String& passphrase);
 
     /**
      * Returns JSON string
      *
-     * @return Returns the serialized object in JSON string
+     * @param[out] serial The serialized object as JSON string
      */
-    String serialize();
+    void serialize(String& serial) const;
 
     /**
      * Re-creates object from serialized JSON string
@@ -100,7 +100,7 @@ public:
      * @param serial The serialized JSON string
      * @return Returns false in case of failure, true in case of success
      */
-    bool deserialize(String serial);
+    bool deserialize(const String& serial);
 
 private:
     /** Maximum number of printable chars (excluding null terminator) for SSIDs according to IEEE 802.11 */

@@ -72,7 +72,7 @@ public:
      *
      * @return Returns true if successful, else false
      */
-    bool checkSession(Command* command, Session* connectionCtx);
+    bool checkSession(const Command* const command, Session* connectionCtx) const;
 
     /**
      * Requests authentication for this session. Remembers user and its permissions
@@ -81,6 +81,6 @@ public:
      * @param[out] response Reference to the ApiResponse
      * @param[in] connectionCtx Pointer to the currently used session which should get authenticated
      */
-    void aquireSession(ApiRequest& request, ApiResponse& response, Session* connectionCtx);
+    void aquireSession(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const;
 };
 #endif /** __SESSIONMANAGER_H__ */

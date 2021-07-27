@@ -50,7 +50,7 @@ EchoDemoCommand::~EchoDemoCommand()
 {
 }
 
-void EchoDemoCommand::run(ApiRequest& request, ApiResponse& response)
+void EchoDemoCommand::run(const ApiRequest& request, ApiResponse& response) const
 {
     response.setStatusCode(SUCCESS);
     response.setJsonPayload("Hello dear " + request.getJsonPayload());

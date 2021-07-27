@@ -53,7 +53,7 @@ ApiRequest::~ApiRequest()
 {
 }
 
-bool ApiRequest::deserialize(String serial)
+bool ApiRequest::deserialize(const String& serial)
 {
     /*
     Reserve memory on heap for JSON structure which consists of two key-value pairs.
@@ -85,12 +85,12 @@ bool ApiRequest::deserialize(String serial)
     return retCode;
 }
 
-String ApiRequest::getCommandId()
+String ApiRequest::getCommandId() const
 {
     return m_commandId;
 }
 
-String ApiRequest::getJsonPayload()
+String ApiRequest::getJsonPayload() const
 {
     return m_jsonPayload;
 }

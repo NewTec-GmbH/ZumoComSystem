@@ -109,7 +109,7 @@ void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, http
             requestedFile = "/index.html";
         }
 
-        mimeType = getMIMEType(requestedFile);
+        getMIMEType(requestedFile, mimeType);
 
         if ((true == FileManager::fileExists(requestedFile))
             && (mimeType != "null")
@@ -150,9 +150,9 @@ void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, http
     }
 }
 
-String HTTPsWebServer::getMIMEType(String filePath)
+void HTTPsWebServer::getMIMEType(const String& filePath, String& mimeType)
 {
-    String mimeType = "null";
+    mimeType = "null";
 
     const uint8_t arrLength = sizeof(m_servedFileTypes) / sizeof(m_servedFileTypes[0]);
 
@@ -164,5 +164,4 @@ String HTTPsWebServer::getMIMEType(String filePath)
             break;
         }
     }
-    return mimeType;
 }

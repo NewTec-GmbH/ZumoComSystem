@@ -58,7 +58,7 @@ public:
      * @param[in] serviceID The service id of the API service
      * @param[in] reqPermission The required permission for this service
      */
-    Command(String serviceID, Permission reqPermission);
+    Command(const String& serviceID, const Permission& reqPermission);
 
     /**
      * Destructor
@@ -70,14 +70,14 @@ public:
      *
      * @return Return the service name
      */
-    String getServiceID();
+    const String& getServiceID() const;
 
     /**
      * Returns the permissions required for invoking the API service
      *
      * @return Returns the required permission
      */
-    Permission getReqPermission();
+    const Permission& getReqPermission() const;
 
     /**
      * Implements the API service business logic
@@ -85,7 +85,7 @@ public:
      * @param[in] request Reference to the incoming ApiRequest
      * @param[out] response Reference to the outgoing ApiResponse
      */
-    virtual void run(ApiRequest& request, ApiResponse& response) = 0;
+    virtual void run(const ApiRequest& request, ApiResponse& response) const = 0;
 
 private:
     /** Specifies the unique mnemonic name of the API service which is used to call the service remotely */

@@ -98,7 +98,7 @@ void KeyCert::serialize(uint8_t* keyBuffer, uint8_t* certBuffer)
     }
 }
 
-void KeyCert::deserialize(uint8_t* keyBuffer, uint8_t* certBuffer)
+void KeyCert::deserialize(const uint8_t* keyBuffer, const uint8_t* certBuffer)
 {
     freeSSLMemory();
 

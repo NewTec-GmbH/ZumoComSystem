@@ -64,6 +64,6 @@ public:
      * @param[in] request Reference to the incoming ApiRequest
      * @param[out] response Reference to the outgoing ApiResponse
      */
-    void run(ApiRequest& request, ApiResponse& response);
+    void run(const ApiRequest& request, ApiResponse& response) const;
 };
 #endif /** __ECHODEMOCOMMAND_H__ */

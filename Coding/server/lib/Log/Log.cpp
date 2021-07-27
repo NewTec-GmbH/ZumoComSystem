@@ -41,12 +41,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Log.h>
 
-Log::LogLevel Log::getLogLevel()
+const Log::LogLevel& Log::getLogLevel() const
 {
     return m_logLevel;
 }
 
-void Log::setLogLevel(LogLevel level)
+void Log::setLogLevel(const LogLevel& level)
 {
     if ((0 <= level) && (level < LEVEL_INVALID))
     {
@@ -55,7 +55,7 @@ void Log::setLogLevel(LogLevel level)
     }
 }
 
-void Log::writeLog(LogLevel level, String msg)
+void Log::writeLog(const LogLevel& level, const String& msg)
 {
     if ((level <= m_logLevel) && (0 < msg.length()))
     {

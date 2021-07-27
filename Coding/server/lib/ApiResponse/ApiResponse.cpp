@@ -53,7 +53,7 @@ ApiResponse::~ApiResponse()
 {
 }
 
-String ApiResponse::serialize()
+void ApiResponse::serialize(String& serial)
 {
     /*
     Reserve memory on stack for JSON structure which consists of two key-value pairs.
@@ -61,9 +61,6 @@ String ApiResponse::serialize()
     */
     static const size_t KEY_VALUE_PAIRS = 2;
     StaticJsonDocument<JSON_OBJECT_SIZE(KEY_VALUE_PAIRS)> jsonDocument;
-
-    /* The string to be used which will containt the JSON string */
-    String serialized;
 
     /*
     Pass the const int/string data to ArduinoJson so that ArduinoJson
@@ -77,17 +74,16 @@ String ApiResponse::serialize()
         jsonDocument["jsonPayload"] = m_jsonPayload.c_str();
     }
 
-    serializeJson(jsonDocument, serialized);
+    serializeJson(jsonDocument, serial);
     LOG_DEBUG("ApiResponse successfully serialized to JSON");
-    return serialized;
 }
 
-void ApiResponse::setJsonPayload(String jsonPayload)
+void ApiResponse::setJsonPayload(const String& jsonPayload)
 {
     m_jsonPayload = jsonPayload;
 }
 
-void ApiResponse::setStatusCode(ResponseCode statusCode)
+void ApiResponse::setStatusCode(const ResponseCode& statusCode)
 {
     m_statusCode = statusCode;
 }

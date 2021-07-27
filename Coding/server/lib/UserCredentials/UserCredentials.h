@@ -63,14 +63,14 @@ public:
      *
      * @return Returns reference to username
      */
-    const String& getUsername();
+    const String& getUsername() const;
 
     /**
      * Returns the password
      *
      * @return Returns reference to password
      */
-    const String& getPassword();
+    const String& getPassword() const;
 
     /**
      * Deserializes the passed JSON string and re-creates object
@@ -78,7 +78,7 @@ public:
      * @param[in] serial The serialized JSON string
      * @return Returns true if successful, else false
      */
-    bool deserialize(String serial);
+    bool deserialize(const String& serial);
 
 private:
     /** Username of the user */

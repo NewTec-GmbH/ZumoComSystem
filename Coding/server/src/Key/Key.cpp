@@ -58,7 +58,7 @@ void Key::registerSystemReset()
     LOG_DEBUG("System-Reset ISR registered");
 }
 
-bool Key::readKey()
+bool Key::readKey() const
 {
     return (LOW == m_io.readGPIODebounced(WIFI_AND_RESET_KEY_PIN));
 }

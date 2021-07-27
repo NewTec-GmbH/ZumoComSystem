@@ -61,23 +61,23 @@ public:
     /**
      * Serializes this instance to JSON object. Omits jsonPayload field if passed payload equals empty string
      *
-     * @return Returns serialized JSON string
+     * @param[out] The serialized JSON output string
      */
-    String serialize();
+    void serialize(String& serial);
 
     /**
      * Sets the JSON payload of this APIRequest
      *
      * @param[in] jsonPayload The JSON object string
      */
-    void setJsonPayload(String jsonPayload);
+    void setJsonPayload(const String& jsonPayload);
 
     /**
      * Sets the status code of this APIRequest
      *
      * @param[in] statusCode The status code
      */
-    void setStatusCode(ResponseCode statusCode);
+    void setStatusCode(const ResponseCode& statusCode);
 
 private:
     /** Specifies the status code of the response */

@@ -61,7 +61,7 @@ public:
      *
      * @param[in] outputString The random salt string
      */
-    void getRandomSalt(String& outputString);
+    void getRandomSalt(String& outputString) const;
 
     /**
      * Generates the Blake2b hash value of the cleartext and its salt

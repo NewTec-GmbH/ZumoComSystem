@@ -67,21 +67,21 @@ public:
      * @param[in] serial The serialized JSON string
      * @return Returns true if successul, else false
      */
-    bool deserialize(String serial);
+    bool deserialize(const String& serial);
 
     /**
      * Returns the command id of the current ApiRequest
      *
      * @return Returns the command id
      */
-    String getCommandId();
+    String getCommandId() const;
 
     /**
      * Returns the JSON object
      *
      * @return Returns the JSON object string
      */
-    String getJsonPayload();
+    String getJsonPayload() const;
 
 private:
     /** Specifies the command to be executed */

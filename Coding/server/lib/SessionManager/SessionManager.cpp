@@ -50,7 +50,7 @@ SessionManager::~SessionManager()
 {
 }
 
-bool SessionManager::checkSession(Command* command, Session* connectionCtx)
+bool SessionManager::checkSession(const Command* command, Session* connectionCtx) const
 {
     bool sessionAuthenticated = connectionCtx->isAuthenticated();
 
@@ -74,7 +74,7 @@ bool SessionManager::checkSession(Command* command, Session* connectionCtx)
     return (sessionAuthenticated && permissionAvailable);
 }
 
-void SessionManager::aquireSession(ApiRequest& request, ApiResponse& response, Session* connectionCtx)
+void SessionManager::aquireSession(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const
 {
     UserCredentials credentials;
     credentials.deserialize(request.getJsonPayload());

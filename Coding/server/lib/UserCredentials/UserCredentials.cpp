@@ -53,17 +53,17 @@ UserCredentials::~UserCredentials()
 {
 }
 
-const String& UserCredentials::getUsername()
+const String& UserCredentials::getUsername() const
 {
     return m_username;
 }
 
-const String& UserCredentials::getPassword()
+const String& UserCredentials::getPassword() const
 {
     return m_password;
 }
 
-bool UserCredentials::deserialize(String serial)
+bool UserCredentials::deserialize(const String& serial)
 {
     /*
     Reserve memory on stack for JSON structure which consists of two key-value pairs.

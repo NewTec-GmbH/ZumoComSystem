@@ -56,19 +56,21 @@ Store::~Store()
     closeStore();
 }
 
-NetworkCredentials Store::getSTACredentials()
+const NetworkCredentials& Store::getSTACredentials() const
 {
     return m_staCredentials;
 }
 
-void Store::setSTACredentials(NetworkCredentials credentials)
+void Store::setSTACredentials(const NetworkCredentials& credentials)
 {
     m_staCredentials = credentials;
 }
 
 bool Store::saveSTACredentials()
 {
-    bool retCode = m_nvsmgr.putEntry("netCredentials", m_staCredentials.serialize());
+    String serialized;
+    m_staCredentials.serialize(serialized);
+    bool retCode = m_nvsmgr.putEntry("netCredentials", serialized);
     if (false == retCode)
     {
         LOG_ERROR("Could not save NetworkCredentials to persistent storage");
@@ -78,7 +80,8 @@ bool Store::saveSTACredentials()
 
 bool Store::loadSTACredentials()
 {
-    String json = m_nvsmgr.readEntry("netCredentials");
+    String json;
+    m_nvsmgr.readEntry("netCredentials", json);
     bool retCode = ((String("null") != json) && (true == m_staCredentials.deserialize(json)));
     if (false == retCode)
     {
@@ -92,7 +95,7 @@ KeyCert& Store::getKeyCert()
     return m_keyCert;
 }
 
-void Store::setKeyCert(KeyCert keycert)
+void Store::setKeyCert(const KeyCert& keycert)
 {
     m_keyCert = keycert;
 }
@@ -149,12 +152,12 @@ bool Store::loadKeyCert()
     return retCode;
 }
 
-User& Store::getUsers()
+const User& Store::getUsers() const
 {
     return m_users;
 }
 
-void Store::setUsers(User users)
+void Store::setUsers(const User& users)
 {
     m_users = users;
 }
@@ -174,7 +177,8 @@ bool Store::saveUsers()
 
 bool Store::loadUsers()
 {
-    String json = m_nvsmgr.readEntry("users");
+    String json;
+    m_nvsmgr.readEntry("users", json);
     bool retCode = ((String("null") != json) && (true == m_users.deserialize(json)));
     if (false == retCode)
     {
@@ -183,12 +187,12 @@ bool Store::loadUsers()
     return retCode;
 }
 
-NetworkCredentials Store::getAPCredentials()
+const NetworkCredentials& Store::getAPCredentials() const
 {
     return m_apCredentials;
 }
 
-void Store::setAPCredentials(NetworkCredentials credentials)
+void Store::setAPCredentials(const NetworkCredentials& credentials)
 {
     m_apCredentials = credentials;
 }

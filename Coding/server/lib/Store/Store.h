@@ -67,14 +67,14 @@ public:
     *
     * @return Returns the NetworkCredentials instance
     */
-    NetworkCredentials getSTACredentials();
+    const NetworkCredentials& getSTACredentials() const;
 
     /**
      * Set the network credentials for STA mode
      *
      * @param[in] credentials The new NetworkCredentials instance to be set
      */
-    void setSTACredentials(NetworkCredentials credentials);
+    void setSTACredentials(const NetworkCredentials& credentials);
 
     /**
      * Save NetworkCredentials for STA mode to persistent storage
@@ -102,7 +102,7 @@ public:
      *
      * @param[in] keycert The new KeyCert instance to be saved
      */
-    void setKeyCert(KeyCert keycert);
+    void setKeyCert(const KeyCert& keycert);
 
     /**
      * Save KeyCert to persistent storage
@@ -123,12 +123,12 @@ public:
      *
      * @return Returns reference to User class instance
      */
-    User& getUsers();
+    const User& getUsers() const;
 
     /**
      * Copies the passed User class instance into store
      */
-    void setUsers(User users);
+    void setUsers(const User& users);
 
     /**
      * Save all registered users to persistent storage
@@ -149,14 +149,14 @@ public:
      *
      * @return Returns the NetworkCredentials instance
      */
-    NetworkCredentials getAPCredentials();
+    const NetworkCredentials& getAPCredentials() const;
 
     /**
      * Set the network credentials for AP mode
      *
      * @param[in] credentials The new NetworkCredentials instance to be set
      */
-    void setAPCredentials(NetworkCredentials credentials);
+    void setAPCredentials(const NetworkCredentials& credentials);
 
     /**
      * Closes the store. Should be called when access to store is done.

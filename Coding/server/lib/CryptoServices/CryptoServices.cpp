@@ -52,11 +52,14 @@ CryptoServices::~CryptoServices()
 {
 }
 
-void CryptoServices::getRandomSalt(String& outputString)
+void CryptoServices::getRandomSalt(String& outputString) const
 {
     const uint8_t MAX_VALUE = 255;
     const uint8_t NUMBER_OF_CHARS = 3;
     char strBuffer[NUMBER_OF_CHARS];
+
+    /* Clear output buffer */
+    outputString = "";
 
     for (uint8_t hexIdx = 0; hexIdx < SALT_LENGTH_BYTE; hexIdx++)
     {

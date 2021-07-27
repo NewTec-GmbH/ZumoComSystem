@@ -90,7 +90,7 @@ public:
      *
      * @return Returns true if session is authenticated, else false
      */
-    bool isAuthenticated();
+    bool isAuthenticated() const;
 
     /**
      * Authenticates this session and links this session with the specified user

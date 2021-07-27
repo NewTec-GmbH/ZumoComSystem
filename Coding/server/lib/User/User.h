@@ -74,7 +74,7 @@ public:
      *
      * @return Returns pointer to array of users permissions
      */
-    Permission* getPermissions(uint8_t& numberOfPermissions);
+    const Permission* getPermissions(uint8_t& numberOfPermissions) const;
 
     /**
      * Returns pointer to specified user
@@ -82,7 +82,7 @@ public:
      * @param[in] username The user to be fetched
      * @return Returns the specified user instance
      */
-    static User* getUser(String username);
+    static User* getUser(const String& username);
 
     /**
      * Checks if the passed username and password are correct
@@ -117,7 +117,7 @@ public:
      *
      * @param[out] The output serialized data
      */
-    void serialize(String& serialized);
+    void serialize(String& serialized) const;
 
     /**
      * Deserializes the passed data and re-creates user data
@@ -125,7 +125,7 @@ public:
      * @param[in] The serialized JSON string data
      * @return Returns true if successful, else false
      */
-    bool deserialize(String& serial);
+    bool deserialize(const String& serial);
 
 private:
     /**

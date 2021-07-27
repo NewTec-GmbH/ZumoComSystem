@@ -109,20 +109,20 @@ public:
     *
     * @return Returns the log level
     */
-    LogLevel getLogLevel();
+    const LogLevel& getLogLevel() const;
 
     /** Set the log level to be used
     *
     * @param[in] level The log level to be used
     */
-    void setLogLevel(LogLevel level);
+    void setLogLevel(const LogLevel& level);
 
     /** Write the passed string message into log
     *
     * @param[in] level The log level to be used
     * @param[in] msg The log message to be written
     */
-    void writeLog(LogLevel level, String msg);
+    void writeLog(const LogLevel& level, const String& msg);
 
 private:
     /** Constructor */

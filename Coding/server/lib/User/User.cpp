@@ -86,13 +86,13 @@ bool User::checkAdminAccount()
     return putUser(defaultUsername, defaultPassword, &permission, NUMBER_OF_PERMISSIONS, false);
 }
 
-Permission* User::getPermissions(uint8_t& numberOfPermissions)
+const Permission* User::getPermissions(uint8_t& numberOfPermissions) const
 {
     numberOfPermissions = m_numberOfPermissions;
     return m_permissions;
 }
 
-User* User::getUser(String username)
+User* User::getUser(const String& username)
 {
     User* retUser = nullptr;
     int8_t userIdx = getUserIdx(username);
@@ -206,7 +206,7 @@ bool User::deleteUser(const String& username)
     return retCode;
 }
 
-void User::serialize(String& serialized)
+void User::serialize(String& serialized) const
 {
     /*
     Reserve memory on heap for JSON structure.
@@ -245,7 +245,7 @@ void User::serialize(String& serialized)
     LOG_DEBUG("Users successfully serialized to JSON");
 }
 
-bool User::deserialize(String& serial)
+bool User::deserialize(const String& serial)
 {
     bool retCode = false;
 

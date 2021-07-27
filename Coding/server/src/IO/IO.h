@@ -62,7 +62,7 @@ public:
      * @param[in] gpio The GPIO pin to be set
      * @param[in] mode The direction of the GPIO pin
      */
-    void setPinMode(uint8_t gpio, uint8_t mode);
+    void setPinMode(const uint8_t gpio, const uint8_t mode);
 
     /**
      * Reads the specified GPIO input but also works with bouncing input signals (e.g. from push keys)
@@ -70,7 +70,7 @@ public:
      * @param[in] gpio The GPIO pin to be read
      * @return Returns the read GPIO value
      */
-    uint8_t readGPIODebounced(uint8_t gpio);
+    uint8_t readGPIODebounced(const uint8_t gpio);
 
     /**
      * Reads the specified GPIO input
@@ -78,7 +78,7 @@ public:
      * @param[in] gpio The GPIO pin to be read
      * @return Returns the read GPIO value
      */
-    uint8_t readGPIO(uint8_t gpio);
+    uint8_t readGPIO(const uint8_t gpio);
 
     /**
      * Writes to the specified GPIO output
@@ -86,7 +86,7 @@ public:
      * @param[in] gpio The GPIO pin to be written to
      * @param[in] value The value to be written
      */
-    void writeGPIO(uint8_t gpio, uint8_t value);
+    void writeGPIO(const uint8_t gpio, const uint8_t value);
 
 private:
     /**

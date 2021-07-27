@@ -101,6 +101,7 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
     ApiRequest request;
     std::ostringstream stringStream;
     std::string inputString;
+    String serialResponse;
 
     LOG_DEBUG("New session message received!");
 
@@ -112,7 +113,8 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
     inputString = stringStream.str();
     LOG_DEBUG(String("Incoming request data:\n") + inputString.c_str());
 
-    if (true == request.deserialize(inputString.c_str()))
+    String serial = inputString.c_str();
+    if (true == request.deserialize(serial))
     {
         /* Invoke the API call and send back response */
         RequestResponseHandler::getInstance().makeRequest(request, response, this);
@@ -121,7 +123,9 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
     {
         response.setStatusCode(BAD_REQUEST);
     }
-    send(response.serialize().c_str(), SEND_TYPE_TEXT);
+
+    response.serialize(serialResponse);
+    send(serialResponse.c_str(), SEND_TYPE_TEXT);
 }
 
 void Session::onClose()
@@ -141,7 +145,7 @@ void Session::onClose()
     }
 }
 
-bool Session::isAuthenticated()
+bool Session::isAuthenticated() const
 {
     return m_sessionAuthenticated;
 }
@@ -187,7 +191,7 @@ void Session::handleSessionTimeout(void* parameter)
 
 const Permission* Session::getPermissions(uint8_t& numberOfPermissions)
 {
-    Permission* permission = nullptr;
+    const Permission* permission = nullptr;
     if (nullptr != m_linkedUser)
     {
         permission = m_linkedUser->getPermissions(numberOfPermissions);

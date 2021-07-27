@@ -62,7 +62,7 @@ RequestResponseHandler& RequestResponseHandler::getInstance()
     return instance;
 }
 
-void RequestResponseHandler::makeRequest(ApiRequest& request, ApiResponse& response, Session* connectionCtx)
+void RequestResponseHandler::makeRequest(const ApiRequest& request, ApiResponse& response, Session* connectionCtx)
 {
     if (request.getCommandId() == "authenticate")
     {
@@ -70,7 +70,7 @@ void RequestResponseHandler::makeRequest(ApiRequest& request, ApiResponse& respo
     }
     else
     {
-        Command* apiService = getCommandOfApiRequest(request);
+        const Command* apiService = getCommandOfApiRequest(request);
         if (nullptr != apiService)
         {
             if (NONE != apiService->getReqPermission())
@@ -96,7 +96,7 @@ void RequestResponseHandler::makeRequest(ApiRequest& request, ApiResponse& respo
     }
 }
 
-Command* RequestResponseHandler::getCommandOfApiRequest(ApiRequest& request)
+const Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& request) const
 {
     Command* command = nullptr;
     if (request.getCommandId() == "echodemo")

@@ -41,7 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Command.h>
 
-Command::Command(String serviceID, Permission reqPermission) :
+Command::Command(const String& serviceID, const Permission& reqPermission) :
     m_serviceID(serviceID),
     m_reqPermission(reqPermission)
 {
@@ -51,12 +51,12 @@ Command::~Command()
 {
 }
 
-String Command::getServiceID()
+const String& Command::getServiceID() const 
 {
     return m_serviceID;
 }
 
-Permission Command::getReqPermission()
+const Permission& Command::getReqPermission() const
 {
     return m_reqPermission;
 }
