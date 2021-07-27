@@ -49,13 +49,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  /* Data structure for data exchange using the Api */
 class ApiRequest
 {
-private:
-    /** Specifies the command to be executed */
-    String m_commandId;
-
-    /** Specifies optional/additional payload required for this command */
-    String m_jsonPayload;
-
 public:
     /**
      * Default Constructor
@@ -79,7 +72,7 @@ public:
     /**
      * Returns the command id of the current ApiRequest
      *
-     * @return Returns the command id 
+     * @return Returns the command id
      */
     String getCommandId();
 
@@ -89,5 +82,12 @@ public:
      * @return Returns the JSON object string
      */
     String getJsonPayload();
+
+private:
+    /** Specifies the command to be executed */
+    String m_commandId;
+
+    /** Specifies optional/additional payload required for this command */
+    String m_jsonPayload;
 };
 #endif /** __APIREQUEST_H__ */

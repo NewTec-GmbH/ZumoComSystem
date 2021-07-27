@@ -51,57 +51,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  /** Simple class for storing user data */
 class User
 {
-private:
-    /** Specifies the minimum password length in printable characters */
-    static const uint8_t MIN_PASSWORD_CHARS = 8;
-
-    /** Specifies the maximum password length in printable characters */
-    static const uint8_t MAX_PASSWORD_CHARS = 128;
-
-    /** Specifies the minimum username length in printable characters */
-    static const uint8_t MIN_USERNAME_CHARS = 2;
-
-    /** Specifies the maximum username length in printable characters */
-    static const uint8_t MAX_USERNAME_CHARS = 16;
-
-    /** Specifies how many users can be registered at max */
-    static const uint8_t MAX_REGISTERED_USERS = 8;
-
-    /** Specifies how many permisssions one user can have */
-    static const uint8_t MAX_PERMISSIONS_PER_USER = 32;
-
-    /** Stores how many users are currently registered */
-    static uint8_t m_numberOfRegisteredUsers;
-
-    /** Stores pointers to all registered users */
-    static User* m_registeredUsers[];
-
-    /** Instance of CryptoServices */
-    static CryptoServices m_crypto;
-
-    /** The username of the current user */
-    String m_username;
-
-    /** The hashed password of the current user */
-    String m_hashedPassword;
-
-    /** The random password salt of the current user */
-    String m_passwordSalt;
-
-    /** Permissions of the current user */
-    Permission m_permissions[MAX_PERMISSIONS_PER_USER];
-
-    /** The number of permissions the current user has */
-    uint8_t m_numberOfPermissions;
-
-    /**
-     * Returns the array index of the user with the specified username
-     *
-     * @param[in] Reference to the username string
-     * @return Returns index if user has been found, returns -1 if user is not existing
-     */
-    static int8_t getUserIdx(const String& username);
-
 public:
     /**
      * Default Constructor
@@ -179,5 +128,56 @@ public:
      * @return Returns true if successful, else false
      */
     bool deserialize(String& serial);
+
+private:
+    /**
+     * Returns the array index of the user with the specified username
+     *
+     * @param[in] Reference to the username string
+     * @return Returns index if user has been found, returns -1 if user is not existing
+     */
+    static int8_t getUserIdx(const String& username);
+
+    /** Specifies the minimum password length in printable characters */
+    static const uint8_t MIN_PASSWORD_CHARS = 8;
+
+    /** Specifies the maximum password length in printable characters */
+    static const uint8_t MAX_PASSWORD_CHARS = 128;
+
+    /** Specifies the minimum username length in printable characters */
+    static const uint8_t MIN_USERNAME_CHARS = 2;
+
+    /** Specifies the maximum username length in printable characters */
+    static const uint8_t MAX_USERNAME_CHARS = 16;
+
+    /** Specifies how many users can be registered at max */
+    static const uint8_t MAX_REGISTERED_USERS = 8;
+
+    /** Specifies how many permisssions one user can have */
+    static const uint8_t MAX_PERMISSIONS_PER_USER = 32;
+
+    /** Stores how many users are currently registered */
+    static uint8_t m_numberOfRegisteredUsers;
+
+    /** Stores pointers to all registered users */
+    static User* m_registeredUsers[];
+
+    /** Instance of CryptoServices */
+    static CryptoServices m_crypto;
+
+    /** The username of the current user */
+    String m_username;
+
+    /** The hashed password of the current user */
+    String m_hashedPassword;
+
+    /** The random password salt of the current user */
+    String m_passwordSalt;
+
+    /** Permissions of the current user */
+    Permission m_permissions[MAX_PERMISSIONS_PER_USER];
+
+    /** The number of permissions the current user has */
+    uint8_t m_numberOfPermissions;
 };
 #endif /** __USER_H__ */

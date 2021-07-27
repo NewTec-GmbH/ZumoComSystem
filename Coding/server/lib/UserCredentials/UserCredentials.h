@@ -49,13 +49,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  /** Simple class for specifying User credentials for the API */
 class UserCredentials
 {
-private:
-    /** Username of the user */
-    String m_username;
-
-    /** Password of the user */
-    String m_password;
-
 public:
     /**
      * Default Constructor
@@ -88,5 +81,12 @@ public:
      * @return Returns true if successful, else false
      */
     bool deserialize(String serial);
+
+private:
+    /** Username of the user */
+    String m_username;
+
+    /** Password of the user */
+    String m_password;
 };
 #endif /** __USERCREDENTIALS_H__ */

@@ -51,28 +51,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  /** Manages, buffers, loads and saves all required data structures for the ComPlatform */
 class Store
 {
-private:
-    /** Default constructor */
-    Store();
-
-    /** Destructor */
-    ~Store();
-
-    /** Instance of NVSManager for making data persistent */
-    NVSManager m_nvsmgr;
-
-    /** Instance of NetworkCredentials which contains SSID and passphrase for STA mode */
-    NetworkCredentials m_staCredentials;
-
-    /** Instance of NetworkCredentials which contains SSID and passphrase for AP mode */
-    NetworkCredentials m_apCredentials;
-
-    /** Instance of KeyCert to store private RSA key as well as public certificate for HTTPs and WSS servers */
-    KeyCert m_keyCert;
-
-    /** Instance of users */
-    User m_users;
-
 public:
     /**
      * Get Store instance
@@ -185,5 +163,27 @@ public:
      * Closes the store. Should be called when access to store is done.
      */
     void closeStore();
+
+private:
+    /** Default constructor */
+    Store();
+
+    /** Destructor */
+    ~Store();
+
+    /** Instance of NVSManager for making data persistent */
+    NVSManager m_nvsmgr;
+
+    /** Instance of NetworkCredentials which contains SSID and passphrase for STA mode */
+    NetworkCredentials m_staCredentials;
+
+    /** Instance of NetworkCredentials which contains SSID and passphrase for AP mode */
+    NetworkCredentials m_apCredentials;
+
+    /** Instance of KeyCert to store private RSA key as well as public certificate for HTTPs and WSS servers */
+    KeyCert m_keyCert;
+
+    /** Instance of users */
+    User m_users;
 };
 #endif /** __STORE_H__ */

@@ -51,16 +51,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  /** Simple class which handles requests and responses between the API service implementations and the webserver */
 class RequestResponseHandler
 {
+public:
+    /** Get the singleton instance of RequestResponseHandler
+    *
+    * @return Returns the RequestResponseHandler instance
+    */
+    static RequestResponseHandler& getInstance();
+
+    /**
+     * Make a new request to the API
+     *
+     * @param[in] request Reference to the incoming ApiRequest
+     * @param[out] response Reference to the outgoing ApiResponse
+     * @param[in] connectionCtx Pointer to Session class instance
+     */
+    void makeRequest(ApiRequest& request, ApiResponse& response, Session* connectionCtx);
+
 private:
-    /** Specifies how many API services are registered */
-    static const uint8_t NUMBER_OF_API_SERVICES = 1;
-
-    /** Stores pointers to all registered API services */
-    Command* m_apiServices[NUMBER_OF_API_SERVICES];
-
-    /** Instance of SessionManager */
-    SessionManager m_sessionManager;
-
     /**
      * Default Constructor
      */
@@ -79,20 +86,13 @@ private:
      */
     Command* getCommandOfApiRequest(ApiRequest& request);
 
-public:
-    /** Get the singleton instance of RequestResponseHandler
-    *
-    * @return Returns the RequestResponseHandler instance
-    */
-    static RequestResponseHandler& getInstance();
+    /** Specifies how many API services are registered */
+    static const uint8_t NUMBER_OF_API_SERVICES = 1;
 
-    /**
-     * Make a new request to the API
-     *
-     * @param[in] request Reference to the incoming ApiRequest
-     * @param[out] response Reference to the outgoing ApiResponse
-     * @param[in] connectionCtx Pointer to Session class instance
-     */
-    void makeRequest(ApiRequest& request, ApiResponse& response, Session* connectionCtx);
+    /** Stores pointers to all registered API services */
+    Command* m_apiServices[NUMBER_OF_API_SERVICES];
+
+    /** Instance of SessionManager */
+    SessionManager m_sessionManager;
 };
 #endif /** __REQUESTRESPONSEHANDLER_H__ */

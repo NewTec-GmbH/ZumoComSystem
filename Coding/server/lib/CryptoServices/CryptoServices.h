@@ -45,16 +45,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  /** Simple class which provides basic cryptography algorithms */
 class CryptoServices
 {
-private:
-    /** Specifies the lenght of the random salt to be generated in byte */
-    static const uint8_t SALT_LENGTH_BYTE = 64;
-
-    /** Specifies the length of the output hash to be calculated */
-    static const uint8_t HASH_LENGTH_BYTE = 64;
-
-    /** Instance of the Blake2 class from Crypto library */
-    BLAKE2b m_hasherInstance;
-
 public:
     /**
      * Default Constructor
@@ -81,4 +71,14 @@ public:
      * @param[out] outputString The calculated hash value
      */
     void hashBlake2b(const String& cleartext, const String& salt, String& outputString);
+
+private:
+    /** Specifies the lenght of the random salt to be generated in byte */
+    static const uint8_t SALT_LENGTH_BYTE = 64;
+
+    /** Specifies the length of the output hash to be calculated */
+    static const uint8_t HASH_LENGTH_BYTE = 64;
+
+    /** Instance of the Blake2 class from Crypto library */
+    BLAKE2b m_hasherInstance;
 };

@@ -47,22 +47,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  /** Simple class for registering cyclical ISR callbacks */
 class Timer
 {
-private:
-    /** Pointer to the timer handle */
-    hw_timer_t* m_timerHandle;
-
-    /** Specifies the counting frequency of the timer */
-    static const uint32_t COUNTER_CLOCK_SPEED_HZ = 80000000;
-
-    /** Specifies by which factor the counting frequency shall be divided */
-    static const uint16_t PRESCALER_FACTOR = 40000;
-
-    /** Specifies how many hardware timers are available on this target */
-    static const uint8_t AVAILABLE_TIMERS = 4;
-
-    /** Stores how many timers are currently used */
-    static uint8_t m_numberOfActiveTimers;
-
 public:
     /**
      * Constructor
@@ -110,5 +94,21 @@ public:
      * @return Returns true if successful, else false
      */
     bool disableTimer();
+
+private:
+    /** Pointer to the timer handle */
+    hw_timer_t* m_timerHandle;
+
+    /** Specifies the counting frequency of the timer */
+    static const uint32_t COUNTER_CLOCK_SPEED_HZ = 80000000;
+
+    /** Specifies by which factor the counting frequency shall be divided */
+    static const uint16_t PRESCALER_FACTOR = 40000;
+
+    /** Specifies how many hardware timers are available on this target */
+    static const uint8_t AVAILABLE_TIMERS = 4;
+
+    /** Stores how many timers are currently used */
+    static uint8_t m_numberOfActiveTimers;
 };
 #endif /** __TIMER_H__ */

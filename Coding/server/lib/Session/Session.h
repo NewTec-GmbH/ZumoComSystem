@@ -52,31 +52,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  /** Simple class to store websocket sessions and their authentication status */
 class Session : public httpsserver::WebsocketHandler
 {
-private:
-    /** Specifies the maximum number of concurrent websocket clients */
-    static const uint8_t MAX_CLIENTS = 4;
-
-    /** Specifies how many seconds need to pass before session gets deauthenticated due to timeout */
-    static const uint16_t SESSION_TIMEOUT_SECONDS = 900;
-
-    /** Instance of timer for session timeouts */
-    static Timer m_timer;
-
-    /** Stores all active Session instances/websocket sessions */
-    static Session* m_sessions[];
-
-    /** Stores how many clients are currently connected to websocket API */
-    static uint8_t m_numberOfActiveClients;
-
-    /** Specifies if the current session is authenticated */
-    bool m_sessionAuthenticated;
-
-    /** Specifies the linked user */
-    User* m_linkedUser;
-
-    /** Timestamp which gets updated each time a request is made with this session */
-    unsigned long m_lastAccessTime;
-
 public:
     /**
      * Default Constructor
@@ -90,14 +65,14 @@ public:
 
     /**
      * Starts the timer
-     * 
+     *
      * @return Returns true if successful, else false
      */
     static bool start();
 
     /**
      * Stops the timer
-     * 
+     *
      * @return Returns true if successful, else false
      */
     static bool stop();
@@ -152,5 +127,30 @@ public:
      * @return Returns the permissions of the linked user
      */
     const Permission* getPermissions(uint8_t& numberOfPermissions);
+
+private:
+    /** Specifies the maximum number of concurrent websocket clients */
+    static const uint8_t MAX_CLIENTS = 4;
+
+    /** Specifies how many seconds need to pass before session gets deauthenticated due to timeout */
+    static const uint16_t SESSION_TIMEOUT_SECONDS = 900;
+
+    /** Instance of timer for session timeouts */
+    static Timer m_timer;
+
+    /** Stores all active Session instances/websocket sessions */
+    static Session* m_sessions[];
+
+    /** Stores how many clients are currently connected to websocket API */
+    static uint8_t m_numberOfActiveClients;
+
+    /** Specifies if the current session is authenticated */
+    bool m_sessionAuthenticated;
+
+    /** Specifies the linked user */
+    User* m_linkedUser;
+
+    /** Timestamp which gets updated each time a request is made with this session */
+    unsigned long m_lastAccessTime;
 };
 #endif /** __SESSION_H__ */

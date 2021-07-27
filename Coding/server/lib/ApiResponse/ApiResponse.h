@@ -49,13 +49,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ApiResponse
 {
-private:
-    /** Specifies the status code of the response */
-    ResponseCode m_statusCode;
-
-    /** Specifies optional/additional payload required for this command */
-    String m_jsonPayload;
-
 public:
     /**
      * Default Constructor
@@ -87,5 +80,12 @@ public:
      * @param[in] statusCode The status code
      */
     void setStatusCode(ResponseCode statusCode);
+
+private:
+    /** Specifies the status code of the response */
+    ResponseCode m_statusCode;
+
+    /** Specifies optional/additional payload required for this command */
+    String m_jsonPayload;
 };
 #endif /** __APIRESPONSE_H__ */

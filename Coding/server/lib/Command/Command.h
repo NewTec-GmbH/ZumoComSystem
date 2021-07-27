@@ -51,13 +51,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  /** Simple abstract class which defines the mandatory interface of API services */
 class Command
 {
-private:
-    /** Specifies the unique mnemonic name of the API service which is used to call the service remotely */
-    String m_serviceID;
-
-    /** Specifies the permissions required to invoke the API service */
-    Permission m_reqPermission;
-
 public:
     /**
      * Constructor
@@ -93,5 +86,12 @@ public:
      * @param[out] response Reference to the outgoing ApiResponse
      */
     virtual void run(ApiRequest& request, ApiResponse& response) = 0;
+
+private:
+    /** Specifies the unique mnemonic name of the API service which is used to call the service remotely */
+    String m_serviceID;
+
+    /** Specifies the permissions required to invoke the API service */
+    Permission m_reqPermission;
 };
 #endif
