@@ -14,6 +14,7 @@ interface "Store" as Store
 
 package Commands {
     component Command
+    component "EchoDemoCommand" as echodemocommand
     component "UploadZumoFirmware" as uploadzumoservice
     component "FlashZumoFirmware" as flashzumoservice
     component "ConfigureNetwork" as credconfig
@@ -23,6 +24,7 @@ package Commands {
     component "UploadCOMFirmware" as uploadcomfirmware
     component "FlashCOMFirmware" as flashcomfirmware
 
+    Command <|-- echodemocommand
     Command <|-- uploadzumoservice
     Command <|-- flashzumoservice
     Command <|-- credconfig

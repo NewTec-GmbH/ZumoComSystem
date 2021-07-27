@@ -88,22 +88,6 @@ package SystemServices {
     }
     CryptoServices "0..*" *--> "1" BLAKE2b
 
-    class Timer
-    {
-        - m_timerHandle: hw_timer_t*
-        - {static} COUNTER_CLOCK_SPEED_HZ: uint32_t {readonly} = 80000000
-        - {static} PRESCALER_FACTOR: uint16_t {readonly} = 40000
-        - {static} AVAILABLE_TIMERS: uint8_t {readonly} = 4
-        - {static} m_numberOfActiveTimers: uint8_t = 0
-        + Timer(callAfterSeconds: uint32_t)
-        + ~Timer()
-        + {static} timerAvailable(): bool
-        + registerISR(isrFunction: void(*)(void)): bool
-        + detachISR(): bool
-        + enableTimer(): bool
-        + disableTimer(): bool
-    }
-
     class WiFiManager
     {
         - m_store: Store&

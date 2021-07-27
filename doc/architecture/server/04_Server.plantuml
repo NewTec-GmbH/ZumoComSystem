@@ -4,7 +4,6 @@ interface "HTTPS" as HTTPS
 
 interface "File" as File
 interface "Store" as Store
-interface "Timer" as Timer
 
 package Server {
     component "WebServer" as webserver
@@ -30,6 +29,5 @@ package Server {
 
     webserver -down-(Request
     sessionsmgmt -down-(Store
-    sessionsmgmt -down-(Timer
 }
 @enduml

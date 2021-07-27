@@ -37,7 +37,7 @@ else
     --> "Save new user 'admin' to disk"
 endif
 
---> "Start/Register session-timeout Timer"
+--> "Start session timeout service"
 --> === S2 ===
 --> "Init HTTPs Server"
 --> "Init WSS Server"

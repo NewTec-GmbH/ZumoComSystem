@@ -76,7 +76,7 @@ void Key::resetTask(void* parameter)
 void Key::systemResetISR()
 {
     /* Use large stack to be able to use Serial.println() without issues */
-    const uint16_t STACK_SIZE = 8192;
+    const uint16_t STACK_SIZE_BYTE = 8192;
 
     /* Set task to highest possible priority to always ensure that reset can be invoked */
     const uint8_t PRIORITY = configMAX_PRIORITIES - 1;
@@ -85,7 +85,7 @@ void Key::systemResetISR()
     xTaskCreate(
         resetTask,
         "SystemReset",
-        STACK_SIZE,
+        STACK_SIZE_BYTE,
         nullptr,
         PRIORITY,
         nullptr);

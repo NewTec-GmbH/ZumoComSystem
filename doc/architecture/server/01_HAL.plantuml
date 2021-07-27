@@ -12,7 +12,6 @@ package "Hardware Absraction Layer (HAL)" {
     interface "OTA" as ota
     interface "FS" as FS
     interface "Preferences" as nvshal
-    interface "Timer" as timer
     interface "IO" as IO
 
     interface "SPIUSB" as SPIUSB
@@ -30,7 +29,6 @@ package "Hardware Absraction Layer (HAL)" {
         component "SPI" as spihal
         component "Digital I/O" as iohal
         component "ArduinoOTA" as arduinoota
-        component "Timer" as timerhal
 
         note right of spihal : Serial Peripheral Interface\nabstraction/drivers
         note left of esp : Basic abstraction/drivers\nfor ESP32 functions, such as reset
@@ -42,7 +40,6 @@ package "Hardware Absraction Layer (HAL)" {
         note right of mbedtlshal : Abstraction/drivers to use\nhardware-accelerated RSA2048
         note right of dnsserver : Abstraction/drivers to provide\nlocal Domain Name System driver
         note right of fshal : Abstraction/drivers to\nread/write files to\nfile system
-        note right of timerhal : Abstraction/drivers for\ntime-based ISRs/callbacks
 
         cryptohal -up- Crypto
         mbedtlshal -up- mbedtls
@@ -53,7 +50,6 @@ package "Hardware Absraction Layer (HAL)" {
         dnsserver -up- DNS
         preferences -up- nvshal
         arduinoota -up- ota
-        timerhal -up-timer
     }
 
     component "RobotFlasher" as zumoflasher

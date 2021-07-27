@@ -47,7 +47,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Permission.h>
 #include <WebsocketHandler.hpp>
 #include <User.h>
-#include <Timer.h>
 
  /** Simple class to store websocket sessions and their authentication status */
 class Session : public httpsserver::WebsocketHandler
@@ -64,18 +63,9 @@ public:
     ~Session();
 
     /**
-     * Starts the timer
-     *
-     * @return Returns true if successful, else false
+     * Starts the timeout service
      */
-    static bool start();
-
-    /**
-     * Stops the timer
-     *
-     * @return Returns true if successful, else false
-     */
-    static bool stop();
+    static void start();
 
     /**
      * Called on each new session initiation by the WebSocketServer
@@ -117,8 +107,10 @@ public:
 
     /**
      * Checks which sessions need to be invalidated because of timeout
+     * 
+     * @param[in] parameter Generic input parameter for FreeRTOS task
      */
-    static void handleSessionTimeout();
+    static void handleSessionTimeout(void* parameter);
 
     /**
      * Returns the permissions of the user which is linked to this session
@@ -134,9 +126,6 @@ private:
 
     /** Specifies how many seconds need to pass before session gets deauthenticated due to timeout */
     static const uint16_t SESSION_TIMEOUT_SECONDS = 900;
-
-    /** Instance of timer for session timeouts */
-    static Timer m_timer;
 
     /** Stores all active Session instances/websocket sessions */
     static Session* m_sessions[];

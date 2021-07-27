@@ -97,7 +97,6 @@ package Data
     {
         - {static} MAX_CLIENTS: uint8_t {readonly} = 4
         - {static} SESSION_TIMEOUT_SECONDS {readonly} = 900;
-        - {static} m_timer: Timer
         - {static} m_sessions: Session[MAX_CLIENTS];
         - {static} m_numberOfActiveClients: uint8_t = 0
         - m_sessionAuthenticated: bool = false
@@ -105,16 +104,15 @@ package Data
         - m_lastAccessTime: unsigned long = 0
         + Session()
         + ~Session()
-        + {static} start(): bool
-        + {static} stop(): bool
+        + {static} start(): void
         + {static} create(): httpsserver::WebSocketHandler*
         + onMessage(inputBuffer: httpsserver::WebsocketInputStreambuf*): void
         + onClose(): void
         + isAuthenticated(): bool 
         + authenticateSession(user: User): void
         + deauthenticateSession(): void
-        + handleSessionTimeout(): void
-        + getPermissions(): const Permission*
+        + {static} handleSessionTimeout(parameter: void*): void
+        + getPermissions(): Permission*
     }
     Session "1" *--> "4" Session
     WebSocketHandler <|-down- Session : is a

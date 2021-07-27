@@ -43,7 +43,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <RequestResponseHandler.h>
 
 Session* Session::m_sessions[MAX_CLIENTS] = {};
-Timer Session::m_timer(SESSION_TIMEOUT_SECONDS);
 
 uint8_t Session::m_numberOfActiveClients = 0;
 
@@ -58,18 +57,21 @@ Session::~Session()
 {
 }
 
-bool Session::start()
+void Session::start()
 {
-    bool reg = m_timer.registerISR(handleSessionTimeout);
-    bool enable = m_timer.enableTimer();
-    return (reg && enable);
-}
+    /* Small stack sufficient */
+    const uint16_t STACK_SIZE_BYTE = 4096;
 
-bool Session::stop()
-{
-    bool detach = m_timer.detachISR();
-    bool disable = m_timer.disableTimer();
-    return (detach && disable);
+    /* Use rather high priority to ensure that session are always timed out */
+    const uint8_t PRIORITY = configMAX_PRIORITIES - 2;
+
+    xTaskCreate(
+        handleSessionTimeout,
+        "HandleSessionTimeout",
+        STACK_SIZE_BYTE,
+        nullptr,
+        PRIORITY,
+        nullptr);
 }
 
 httpsserver::WebsocketHandler* Session::create()
@@ -154,24 +156,31 @@ void Session::deauthenticateSession()
     m_sessionAuthenticated = false;
 }
 
-void Session::handleSessionTimeout()
+void Session::handleSessionTimeout(void* parameter)
 {
     Session* currentSession = nullptr;
-    unsigned long currentTimeStamp = millis();
     const uint16_t MILLISECONDS = 1000;
 
-    for (uint8_t sessionIdx = 0; sessionIdx < MAX_CLIENTS; sessionIdx++)
+    while (true)
     {
-        currentSession = m_sessions[sessionIdx];
+        unsigned long currentTimeStamp = millis();
 
-        /* Check if the session exists or has been stopped before timeout */
-        if (nullptr != currentSession)
+        for (uint8_t sessionIdx = 0; sessionIdx < MAX_CLIENTS; sessionIdx++)
         {
-            if (((currentTimeStamp - currentSession->m_lastAccessTime) / MILLISECONDS) > SESSION_TIMEOUT_SECONDS)
+            currentSession = m_sessions[sessionIdx];
+
+            /* Check if the session exists or has been stopped before timeout */
+            if (nullptr != currentSession)
             {
-                currentSession->deauthenticateSession();
+                if (((currentTimeStamp - currentSession->m_lastAccessTime) / MILLISECONDS) > SESSION_TIMEOUT_SECONDS)
+                {
+                    currentSession->deauthenticateSession();
+                }
             }
         }
+
+        /* Put task to sleep and re-check after SESSION_TIMEOUT_SECONDS */
+        delay(SESSION_TIMEOUT_SECONDS * MILLISECONDS);
     }
 }
 

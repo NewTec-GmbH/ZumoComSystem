@@ -117,15 +117,8 @@ void System::init()
         m_store.saveUsers();
     }
 
-    /* Start/Register the ISR for session timeouts */
-    if (true == Session::start())
-    {
-        LOG_DEBUG("Succesfully registered session timeout ISR");
-    }
-    else
-    {
-        LOG_ERROR("Could not register session timeout ISR!");
-    }
+    /* Start the background task to enable session timeouts */
+    Session::start();
 
     /* Await KeyCert generation task execution */
     xSemaphoreTake(m_genKeyCertSemaphore, portMAX_DELAY);
@@ -157,9 +150,6 @@ void System::reset()
 
     /* Shut down HTTPS/WSS servers */
     m_webServer.stopServer();
-
-    /* Detach the session timeout ISR and shut down timer */
-    Session::stop();
 
     ESP.restart();
 }
@@ -223,7 +213,7 @@ void System::genKeyCertTask(void* parameter)
 void System::registerKeyCertGenTask()
 {
     /* Big stack required, otherwise RSA2048 key generation would override stack canary */
-    const uint16_t STACK_SIZE = 16384;
+    const uint16_t STACK_SIZE_BYTE = 16384;
 
     /* Use lowest possible priority because this task does not have a blocking system call */
     const uint8_t PRIORITY = 0;
@@ -234,7 +224,7 @@ void System::registerKeyCertGenTask()
     xTaskCreatePinnedToCore(
         genKeyCertTask,
         "KeyCertGen",
-        STACK_SIZE,
+        STACK_SIZE_BYTE,
         nullptr,
         PRIORITY,
         nullptr,
