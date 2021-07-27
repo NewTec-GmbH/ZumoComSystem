@@ -66,12 +66,14 @@ bool ApiRequest::deserialize(String serial)
     DeserializationError jsonRet = deserializeJson(jsonDocument, serial);
 
     /* Check shapeliness of incoming JSON request */
-    if ((DeserializationError::Ok == jsonRet)
-        && (jsonDocument.containsKey("commandId"))
-        && ((1 == jsonDocument.size()) || ((2 == jsonDocument.size()) && (true == jsonDocument.containsKey("jsonPayload")))))
+    if ((DeserializationError::Ok == jsonRet) && (true == jsonDocument.containsKey("commandId")))
     {
         m_commandId = jsonDocument["commandId"].as<String>();
-        m_jsonPayload = jsonDocument["jsonPayload"].as<String>();
+
+        if (true == jsonDocument.containsKey("jsonPayload"))
+        {
+            m_jsonPayload = jsonDocument["jsonPayload"].as<String>();
+        }
         retCode = true;
     }
     else
