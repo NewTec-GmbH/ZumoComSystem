@@ -48,7 +48,7 @@ Timer::Timer(uint32_t callAfterSeconds) :
 {
     const bool RISING_EDGE_COUNT_UP_TRIGGER = true;
     const bool AUTO_RELOAD_COUNTER = true;
-    uint32_t MAX_COUNTER_VALUE = (COUNTER_CLOCK_SPEED_HZ / (float)PRESCALER_FACTOR) * callAfterSeconds;
+    uint32_t MAX_COUNTER_VALUE = (COUNTER_CLOCK_SPEED_HZ / PRESCALER_FACTOR) * callAfterSeconds;
 
     m_timerHandle = timerBegin(m_numberOfActiveTimers, PRESCALER_FACTOR, RISING_EDGE_COUNT_UP_TRIGGER);
     if (nullptr != m_timerHandle)

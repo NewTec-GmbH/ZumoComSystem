@@ -94,21 +94,22 @@ httpsserver::WebsocketHandler* Session::create()
 
 void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
 {
+    ApiResponse response;
+    ApiRequest request;
+    std::ostringstream stringStream;
+    std::string inputString;
+
     LOG_DEBUG("New session message received!");
 
     /* Update timestamp */
     m_lastAccessTime = millis();
 
     /* Get the request payload text */
-    std::ostringstream stringStream;
     stringStream << inputBuffer;
-    std::string str = stringStream.str();
-    LOG_DEBUG(String("Incoming request data:\n") + str.c_str());
+    inputString = stringStream.str();
+    LOG_DEBUG(String("Incoming request data:\n") + inputString.c_str());
 
-    ApiResponse response;
-    ApiRequest request;
-
-    if (true == request.deserialize(str.c_str()))
+    if (true == request.deserialize(inputString.c_str()))
     {
         /* Invoke the API call and send back response */
         RequestResponseHandler::getInstance().makeRequest(request, response, this);
@@ -125,7 +126,6 @@ void Session::onClose()
     LOG_INFO("Session closed!");
 
     /* Find this session in the sessions list and remove it */
-
     for (uint8_t sessionIdx = 0; sessionIdx < MAX_CLIENTS; sessionIdx++)
     {
         if (this == m_sessions[sessionIdx])
@@ -158,6 +158,7 @@ void Session::handleSessionTimeout()
 {
     Session* currentSession = nullptr;
     unsigned long currentTimeStamp = millis();
+    const uint16_t MILLISECONDS = 1000;
 
     for (uint8_t sessionIdx = 0; sessionIdx < MAX_CLIENTS; sessionIdx++)
     {
@@ -166,7 +167,7 @@ void Session::handleSessionTimeout()
         /* Check if the session exists or has been stopped before timeout */
         if (nullptr != currentSession)
         {
-            if (((currentTimeStamp - currentSession->m_lastAccessTime) / 1000) > SESSION_TIMEOUT_SECONDS)
+            if (((currentTimeStamp - currentSession->m_lastAccessTime) / MILLISECONDS) > SESSION_TIMEOUT_SECONDS)
             {
                 currentSession->deauthenticateSession();
             }

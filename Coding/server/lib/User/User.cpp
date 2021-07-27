@@ -76,9 +76,12 @@ int8_t User::getUserIdx(const String& username)
 
 bool User::checkAdminAccount()
 {
+    const String defaultUsername = "admin";
+    const String defaultPassword = "21091986";
     const uint8_t NUMBER_OF_PERMISSIONS = 1;
     Permission permission = ANY;
-    return putUser("admin", "21091986", &permission, NUMBER_OF_PERMISSIONS, false);
+    
+    return putUser(defaultUsername, defaultPassword, &permission, NUMBER_OF_PERMISSIONS, false);
 }
 
 Permission* User::getPermissions(uint8_t& numberOfPermissions)
