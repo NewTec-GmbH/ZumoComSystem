@@ -44,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <SSLCert.hpp>
 #include <Arduino.h>
-#include <Log.h>
 
  /** Data structure for HTTPS/WSS server which supports JSON serialization */
 class KeyCert

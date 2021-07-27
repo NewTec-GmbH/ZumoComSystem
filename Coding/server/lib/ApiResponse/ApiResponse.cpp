@@ -40,6 +40,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <ApiResponse.h>
+#include <ArduinoJson.h>
+#include <Log.h>
 
 ApiResponse::ApiResponse() :
     m_statusCode(),

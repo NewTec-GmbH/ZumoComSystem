@@ -40,6 +40,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <FileManager.h>
+#include <SPIFFS.h>
+#include <Log.h>
 
 FileManager::FileManager() :
     m_fileHandle()

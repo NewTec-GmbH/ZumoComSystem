@@ -40,7 +40,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <Arduino.h>
-#include <Log.h>
 
  /** Provides abstraction for IO functionality for ComPlatform */
 class IO

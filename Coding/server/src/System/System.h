@@ -44,11 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <WiFiManager.h>
 #include <HTTPsWebServer.h>
-#include <Log.h>
 #include <Store.h>
-#include <KeyCert.h>
-#include <Key.h>
-#include <User.h>
 
 class System
 {

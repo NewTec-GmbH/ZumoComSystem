@@ -44,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Arduino.h>
 #include <SessionManager.h>
-#include <EchoDemoCommand.h>
 #include <Command.h>
 #include <Session.h>
 

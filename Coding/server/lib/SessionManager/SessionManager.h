@@ -49,7 +49,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ApiRequest.h>
 #include <ApiResponse.h>
 #include <Command.h>
-#include <UserCredentials.h>
 
  /** Simple class for managing the websocket sessions */
 class SessionManager

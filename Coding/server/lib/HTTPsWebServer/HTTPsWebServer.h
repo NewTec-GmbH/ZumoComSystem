@@ -44,11 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Arduino.h>
 #include <Store.h>
-#include <Log.h>
 #include <HTTPSServer.hpp>
-#include <HTTPRequest.hpp>
-#include <HTTPResponse.hpp>
-#include <ResponseCode.h>
 #include <FileManager.h>
 #include <Session.h>
 

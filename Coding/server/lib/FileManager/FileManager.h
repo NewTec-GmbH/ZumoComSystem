@@ -43,9 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __FILEMANAGER_H__
 
 #include <Arduino.h>
-#include <Log.h>
 #include <FS.h>
-#include <SPIFFS.h>
 
  /** Class used for simply reading and writing binary files */
 class FileManager

@@ -41,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <NetworkCredentials.h>
 #include <Log.h>
+#include <ArduinoJson.h>
 
 NetworkCredentials::NetworkCredentials() :
     m_ssid(),

@@ -43,7 +43,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __STORE_H__
 
 #include <NVSManager.h>
-#include <Log.h>
 #include <NetworkCredentials.h>
 #include <KeyCert.h>
 #include <User.h>

@@ -40,6 +40,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <User.h>
+#include <ArduinoJson.h>
+#include <Log.h>
 
 User* User::m_registeredUsers[MAX_REGISTERED_USERS];
 uint8_t User::m_numberOfRegisteredUsers = 0;

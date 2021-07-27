@@ -40,6 +40,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <HTTPsWebServer.h>
+#include <Log.h>
+#include <HTTPRequest.hpp>
+#include <HTTPResponse.hpp>
+#include <ResponseCode.h>
 
 const String HTTPsWebServer::m_servedFileTypes[][2] = {
     {".html", "text/html"},

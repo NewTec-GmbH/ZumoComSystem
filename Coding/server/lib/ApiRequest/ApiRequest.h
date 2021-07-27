@@ -43,8 +43,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __APIREQUEST_H__
 
 #include <Arduino.h>
-#include <ArduinoJson.h>
-#include <Log.h>
 
  /* Data structure for data exchange using the Api */
 class ApiRequest

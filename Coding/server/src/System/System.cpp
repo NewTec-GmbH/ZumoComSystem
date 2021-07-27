@@ -39,6 +39,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @{
  */
 #include <System.h>
+#include <KeyCert.h>
+#include <User.h>
+#include <Key.h>
+#include <Log.h>
 
 SemaphoreHandle_t System::m_genKeyCertSemaphore = {0};
 

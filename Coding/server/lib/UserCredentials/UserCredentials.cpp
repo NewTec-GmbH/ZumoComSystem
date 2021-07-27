@@ -40,7 +40,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <UserCredentials.h>
-
+#include <ArduinoJson.h>
+#include <Log.h>
 
 UserCredentials::UserCredentials() :
     m_username(),

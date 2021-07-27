@@ -43,7 +43,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __SESSION_H__
 
 #include <Arduino.h>
-#include <Log.h>
 #include <Permission.h>
 #include <WebsocketHandler.hpp>
 #include <User.h>

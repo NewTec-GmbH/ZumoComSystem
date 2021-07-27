@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <Store.h>
+#include <Log.h>
 
 Store::Store() :
     m_nvsmgr(),

@@ -43,10 +43,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __USER_H__
 
 #include <Arduino.h>
-#include <ArduinoJson.h>
 #include <Permission.h>
 #include <CryptoServices.h>
-#include <Log.h>
 
  /** Simple class for storing user data */
 class User

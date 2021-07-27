@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <IO.h>
+#include <Log.h>
 
 IO::IO() :
     m_ioMutex(xSemaphoreCreateMutex())

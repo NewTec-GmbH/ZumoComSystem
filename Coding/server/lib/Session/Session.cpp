@@ -41,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Session.h>
 #include <RequestResponseHandler.h>
+#include <Log.h>
 
 Session* Session::m_sessions[MAX_CLIENTS] = {};
 

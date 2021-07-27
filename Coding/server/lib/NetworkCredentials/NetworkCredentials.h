@@ -43,7 +43,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __NETWORKCREDENTIALS_H__
 
 #include <Arduino.h>
-#include <ArduinoJson.h>
 
  /** Data structure for network credentials which supports JSON serialization */
 class NetworkCredentials

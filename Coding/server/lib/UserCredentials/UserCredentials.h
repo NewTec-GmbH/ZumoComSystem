@@ -43,8 +43,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __USERCREDENTIALS_H__
 
 #include <Arduino.h>
-#include <ArduinoJson.h>
-#include <Log.h>
 
  /** Simple class for specifying User credentials for the API */
 class UserCredentials
