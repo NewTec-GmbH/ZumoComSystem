@@ -44,7 +44,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Arduino.h>
 
- /* Data structure for data exchange using the Api */
+ /** Data structure for specifying the requested websocket API service as well as passing additional
+  * arguments to API service implementations using the websocket service API
+  */
 class ApiRequest
 {
 public:

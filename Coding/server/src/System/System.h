@@ -46,6 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <HTTPsWebServer.h>
 #include <Store.h>
 
+ /** Class responsible for initializing the ComPlatform, starting, handling and stopping all running services */
 class System
 {
 public:

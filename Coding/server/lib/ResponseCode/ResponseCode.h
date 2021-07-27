@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __RESPONSECODE_H__
 #define __RESPONSECODE_H__
 
+ /** Enumeration which describes return/status codes for the websocket API service implementations. Codes match the HTTP protocol status codes */
 enum ResponseCode
 {
     SUCCESS = 200,

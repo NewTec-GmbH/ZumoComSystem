@@ -71,7 +71,7 @@ bool Store::saveSTACredentials()
     bool retCode = m_nvsmgr.putEntry("netCredentials", m_staCredentials.serialize());
     if (false == retCode)
     {
-        LOG_ERROR("Could not save NetworkCredentials to disk");
+        LOG_ERROR("Could not save NetworkCredentials to persistent storage");
     }
     return retCode;
 }
@@ -82,7 +82,7 @@ bool Store::loadSTACredentials()
     bool retCode = ((String("null") != json) && (true == m_staCredentials.deserialize(json)));
     if (false == retCode)
     {
-        LOG_ERROR("Could not load NetworkCredentials from disk");
+        LOG_ERROR("Could not load NetworkCredentials from persistent storage");
     }
     return retCode;
 }
@@ -118,7 +118,7 @@ bool Store::saveKeyCert()
     retCode = (true == putRSAResult) && (true == putCertResult);
     if (false == retCode)
     {
-        LOG_ERROR("Could not save KeyCert to disk");
+        LOG_ERROR("Could not save KeyCert to persistent storage");
     }
     return retCode;
 }
@@ -140,7 +140,7 @@ bool Store::loadKeyCert()
     }
     else
     {
-        LOG_ERROR("Could not load KeyCert from disk");
+        LOG_ERROR("Could not load KeyCert from persistent storage");
     }
 
     delete[] keyBuffer;
@@ -167,7 +167,7 @@ bool Store::saveUsers()
     bool retCode = m_nvsmgr.putEntry("users", serialized);
     if (false == retCode)
     {
-        LOG_ERROR("Could not save users to disk");
+        LOG_ERROR("Could not save users to persistent storage");
     }
     return retCode;
 }
@@ -178,7 +178,7 @@ bool Store::loadUsers()
     bool retCode = ((String("null") != json) && (true == m_users.deserialize(json)));
     if (false == retCode)
     {
-        LOG_ERROR("Could not load users from disk");
+        LOG_ERROR("Could not load users from persistent storage");
     }
     return retCode;
 }

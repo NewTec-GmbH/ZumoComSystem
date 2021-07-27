@@ -41,6 +41,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef __PERMISSION_H__
 #define __PERMISSION_H__
+
+ /** Enumeration which describes permissions which can be assigned to websocket API services and users
+  * and can be used to check if user is priviliged to invoke API service
+  */
 enum Permission
 {
     ANY,

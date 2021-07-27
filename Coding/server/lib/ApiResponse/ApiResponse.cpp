@@ -66,7 +66,7 @@ String ApiResponse::serialize()
     String serialized;
 
     /*
-    Pass the const data/pointer to ArduinoJson so that ArduinoJson
+    Pass the const int/string data to ArduinoJson so that ArduinoJson
     will not copy/duplicate the values
     */
     jsonDocument["statusCode"] = static_cast<const uint16_t>(m_statusCode);

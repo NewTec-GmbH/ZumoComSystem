@@ -57,7 +57,6 @@ bool ApiRequest::deserialize(String serial)
 {
     /*
     Reserve memory on heap for JSON structure which consists of two key-value pairs.
-    The command id and the json payload are copied into the DynamicJsonDocument by default.
     The value specified in DOC_SIZE has been computed with the help of the ArduinoJson Assistant v6
     which is accessible at: https://arduinojson.org/v6/assistant/
     */

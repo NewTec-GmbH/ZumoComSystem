@@ -122,7 +122,6 @@ bool NetworkCredentials::deserialize(String serial)
 {
     /*
     Reserve memory on stack for JSON structure which consists of two key-value pairs.
-    The ssid and the passphrase are copied into the StaticJsonDocument by default.
     The value specified in DOC_SIZE has been computed with the help of the ArduinoJson Assistant v6
     which is accessible at: https://arduinojson.org/v6/assistant/
     */

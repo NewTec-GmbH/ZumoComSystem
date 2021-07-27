@@ -77,14 +77,14 @@ public:
     void setSTACredentials(NetworkCredentials credentials);
 
     /**
-     * Save NetworkCredentials for STA mode to disk
+     * Save NetworkCredentials for STA mode to persistent storage
      *
      * @return Returns true if successful, false if error occured
      */
     bool saveSTACredentials();
 
     /**
-     * Load NetworkCredentials for STA mode from disk to store
+     * Load NetworkCredentials for STA mode from persistent storage to store
      *
      * @return Returns true if succesful, false if error occured
      */
@@ -105,14 +105,14 @@ public:
     void setKeyCert(KeyCert keycert);
 
     /**
-     * Save KeyCert to disk
+     * Save KeyCert to persistent storage
      *
      * @return Returns true if successful, false if error occured
      */
     bool saveKeyCert();
 
     /**
-     * Load KeyCert from disk to store
+     * Load KeyCert from persistent storage to store
      *
      * @return Returns true if succesful, false if error occured
      */
@@ -131,14 +131,14 @@ public:
     void setUsers(User users);
 
     /**
-     * Save all registered users to disk
+     * Save all registered users to persistent storage
      *
      * @return Returns true if successul, else false
      */
     bool saveUsers();
 
     /**
-     * Loads all registered users from disk
+     * Loads all registered users from persistent storage
      *
      * @return Returns true if successful, else false
      */

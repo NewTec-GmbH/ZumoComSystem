@@ -89,7 +89,7 @@ void System::init()
     }
     else
     {
-        /* Load NetworkCredentials from disk */
+        /* Load NetworkCredentials from persistent storage */
         if (true == m_store.loadSTACredentials())
         {
             m_wifimgr.startSTA();
@@ -108,11 +108,11 @@ void System::init()
     /* Load Users */
     if (true == m_store.loadUsers())
     {
-        LOG_DEBUG("Successfully loaded users from disk");
+        LOG_DEBUG("Successfully loaded users from persistent storage");
     }
     else
     {
-        LOG_ERROR("Could not load users from disk");
+        LOG_ERROR("Could not load users from persistent storage");
     }
 
     /* Create and save admin account with default credentials and full priviliges if it is missing */
@@ -188,7 +188,7 @@ void System::genKeyCertTask(void* parameter)
             }
             else
             {
-                LOG_ERROR("Could not save the created SSL certificate to disk");
+                LOG_ERROR("Could not save the created SSL certificate to persistent storage");
             }
         }
         else
@@ -204,7 +204,7 @@ void System::genKeyCertTask(void* parameter)
     }
     else
     {
-        LOG_DEBUG("KeyCert successfully loaded from disk!");
+        LOG_DEBUG("KeyCert successfully loaded from persistent storage!");
     }
 
     /* Notify init task about finished task */

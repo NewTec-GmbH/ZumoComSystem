@@ -48,7 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ApiResponse.h>
 #include <ResponseCode.h>
 
- /** Simple abstract class which defines the mandatory interface of API services */
+ /** Simple class which defines the mandatory members of any API services */
 class Command
 {
 public:
