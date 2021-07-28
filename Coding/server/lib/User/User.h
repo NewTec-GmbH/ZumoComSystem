@@ -65,7 +65,7 @@ public:
      *
      * @return Returns true if user has been created, else false
      */
-    static bool checkAdminAccount();
+    static bool registerAdminAccount();
 
     /**
      * Returns the permissions and the number of permissions of the specified user
@@ -153,6 +153,12 @@ private:
 
     /** Specifies how many permisssions one user can have */
     static const uint8_t MAX_PERMISSIONS_PER_USER = 32;
+
+    /** Specifies the default admin username */
+    static const char* m_defaultAdminUsername;
+
+    /** Specifies the default admin password */
+    static const char* m_defaultAdminPassword;
 
     /** Stores how many users are currently registered */
     static uint8_t m_numberOfRegisteredUsers;

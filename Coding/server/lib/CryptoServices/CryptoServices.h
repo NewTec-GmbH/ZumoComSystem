@@ -60,8 +60,9 @@ public:
      * Returns a random salt string with SALT_LENGTH_BYTE characters
      *
      * @param[in] outputString The random salt string
+     * @return Returns true if successful, else false
      */
-    void getRandomSalt(String& outputString) const;
+    bool getRandomSalt(String& outputString) const;
 
     /**
      * Generates the Blake2b hash value of the cleartext and its salt
@@ -69,8 +70,9 @@ public:
      * @param[in] cleartext Reference to the cleartext string
      * @param[in] salt Reference to the salt string
      * @param[out] outputString The calculated hash value
+     * @return Returns true if successful, else false
      */
-    void hashBlake2b(const String& cleartext, const String& salt, String& outputString);
+    bool hashBlake2b(const String& cleartext, const String& salt, String& outputString);
 
 private:
     /** Specifies the lenght of the random salt to be generated in byte */

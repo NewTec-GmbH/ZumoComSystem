@@ -58,7 +58,7 @@ Session::~Session()
 {
 }
 
-void Session::start()
+bool Session::start()
 {
     /* Small stack sufficient */
     const uint16_t STACK_SIZE_BYTE = 4096;
@@ -66,13 +66,15 @@ void Session::start()
     /* Use rather high priority to ensure that session are always timed out */
     const uint8_t PRIORITY = configMAX_PRIORITIES - 2;
 
-    xTaskCreate(
+    BaseType_t retCode = xTaskCreate(
         handleSessionTimeout,
         "HandleSessionTimeout",
         STACK_SIZE_BYTE,
         nullptr,
         PRIORITY,
         nullptr);
+
+    return (pdPASS == retCode);
 }
 
 httpsserver::WebsocketHandler* Session::create()

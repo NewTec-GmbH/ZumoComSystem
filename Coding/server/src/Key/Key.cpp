@@ -83,11 +83,16 @@ void Key::systemResetISR()
     const uint8_t PRIORITY = configMAX_PRIORITIES - 1;
 
     /* Create a new FreeRTOS task */
-    xTaskCreate(
+    BaseType_t retCode = xTaskCreate(
         resetTask,
         "SystemReset",
         STACK_SIZE_BYTE,
         nullptr,
         PRIORITY,
         nullptr);
+
+    if (pdPASS != retCode)
+    {
+        LOG_ERROR("Could not start system reset task!");
+    }
 }

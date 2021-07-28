@@ -46,6 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <SessionManager.h>
 #include <Command.h>
 #include <Session.h>
+#include <EchoDemoCommand.h>
 
  /** Simple class which handles requests and responses between the API service implementations and the webserver */
 class RequestResponseHandler
@@ -83,13 +84,10 @@ private:
      * @param[in] request The API request to be checked for its service id
      * @return Returns pointer to correct service class instance. Returns nullpointer if there is no such service
      */
-    const Command* getCommandOfApiRequest(const ApiRequest& request) const;
+    const Command* getCommandOfApiRequest(const ApiRequest& request);
 
-    /** Specifies how many API services are registered */
-    static const uint8_t NUMBER_OF_API_SERVICES = 1;
-
-    /** Stores pointers to all registered API services */
-    Command* m_apiServices[NUMBER_OF_API_SERVICES];
+    /** Instance of the EchoDemoCommand */
+    EchoDemoCommand m_echoDemoCommand;
 
     /** Instance of SessionManager */
     SessionManager m_sessionManager;

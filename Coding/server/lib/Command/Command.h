@@ -88,6 +88,11 @@ public:
     virtual void run(const ApiRequest& request, ApiResponse& response) const = 0;
 
 private:
+    /**
+     * Default Constructor
+     */
+    Command();
+
     /** Specifies the unique mnemonic name of the API service which is used to call the service remotely */
     String m_serviceID;
 

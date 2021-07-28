@@ -45,18 +45,20 @@ CryptoServices::CryptoServices() :
     m_hasherInstance()
 {
     /* Initialize the random generator with seed with entropy from analog noise */
-    randomSeed(analogRead(0));
+    const uint8_t GPIO_PIN = 0;
+    randomSeed(analogRead(GPIO_PIN));
 }
 
 CryptoServices::~CryptoServices()
 {
 }
 
-void CryptoServices::getRandomSalt(String& outputString) const
+bool CryptoServices::getRandomSalt(String& outputString) const
 {
-    const uint8_t MAX_VALUE = 255;
-    const uint8_t NUMBER_OF_CHARS = 3;
-    char strBuffer[NUMBER_OF_CHARS];
+    bool retCode = true;
+    const uint16_t MAX_VALUE = 255;
+    const uint8_t NUMBER_OF_PRINTABLE_CHARS = 2;
+    char strBuffer[NUMBER_OF_PRINTABLE_CHARS + 1];
 
     /* Clear output buffer */
     outputString = "";
@@ -64,25 +66,41 @@ void CryptoServices::getRandomSalt(String& outputString) const
     for (uint8_t hexIdx = 0; hexIdx < SALT_LENGTH_BYTE; hexIdx++)
     {
         uint8_t randomNumber = static_cast<uint8_t>(random(MAX_VALUE + 1));
-        sprintf(strBuffer, "%02X", randomNumber);
+        if (NUMBER_OF_PRINTABLE_CHARS != sprintf(strBuffer, "%02X", randomNumber))
+        {
+            retCode = false;
+            break;
+        }
         outputString += strBuffer;
     }
+    return retCode;
 }
 
-void CryptoServices::hashBlake2b(const String& cleartext, const String& salt, String& outputString)
+bool CryptoServices::hashBlake2b(const String& cleartext, const String& salt, String& outputString)
 {
+    bool retCode = true;
+
     String inputString = cleartext + salt;
     uint8_t outputHash[HASH_LENGTH_BYTE];
-    const uint8_t NUMBER_OF_CHARS = 3;
-    char strBuffer[NUMBER_OF_CHARS];
+
+    const uint8_t NUMBER_OF_PRINTABLE_CHARS = 2;
+    char strBuffer[NUMBER_OF_PRINTABLE_CHARS + 1];
 
     m_hasherInstance.reset(HASH_LENGTH_BYTE);
     m_hasherInstance.update(inputString.c_str(), inputString.length());
     m_hasherInstance.finalize(outputHash, HASH_LENGTH_BYTE);
 
+    /* Clear output buffer */
+    outputString = "";
+
     for (uint8_t hexIdx = 0; hexIdx < HASH_LENGTH_BYTE; hexIdx++)
     {
-        sprintf(strBuffer, "%02X", outputHash[hexIdx]);
+        if (NUMBER_OF_PRINTABLE_CHARS != sprintf(strBuffer, "%02X", outputHash[hexIdx]))
+        {
+            retCode = false;
+            break;
+        }
         outputString += strBuffer;
     }
+    return retCode;
 }

@@ -75,6 +75,10 @@ bool ApiRequest::deserialize(const String& serial)
         {
             m_jsonPayload = jsonDocument["jsonPayload"].as<String>();
         }
+        else
+        {
+            m_jsonPayload = "";
+        }
         retCode = true;
     }
     else
@@ -85,12 +89,12 @@ bool ApiRequest::deserialize(const String& serial)
     return retCode;
 }
 
-String ApiRequest::getCommandId() const
+const String& ApiRequest::getCommandId() const
 {
     return m_commandId;
 }
 
-String ApiRequest::getJsonPayload() const
+const String& ApiRequest::getJsonPayload() const
 {
     return m_jsonPayload;
 }

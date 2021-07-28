@@ -63,8 +63,10 @@ public:
 
     /**
      * Starts the timeout service
+     *
+     * @return Returns true if successful, else false
      */
-    static void start();
+    static bool start();
 
     /**
      * Called on each new session initiation by the WebSocketServer
@@ -105,13 +107,6 @@ public:
     void deauthenticateSession();
 
     /**
-     * Checks which sessions need to be invalidated because of timeout
-     * 
-     * @param[in] parameter Generic input parameter for FreeRTOS task
-     */
-    static void handleSessionTimeout(void* parameter);
-
-    /**
      * Returns the permissions of the user which is linked to this session
      *
      * @param[out] numberOfPermissions Specifies the length of the returned array
@@ -120,6 +115,13 @@ public:
     const Permission* getPermissions(uint8_t& numberOfPermissions);
 
 private:
+    /**
+     * Checks which sessions need to be invalidated because of timeout
+     *
+     * @param[in] parameter Generic input parameter for FreeRTOS task
+     */
+    static void handleSessionTimeout(void* parameter);
+
     /** Specifies the maximum number of concurrent websocket clients */
     static const uint8_t MAX_CLIENTS = 4;
 

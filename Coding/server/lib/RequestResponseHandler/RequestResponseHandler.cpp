@@ -40,20 +40,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <RequestResponseHandler.h>
-#include <EchoDemoCommand.h>
 
 RequestResponseHandler::RequestResponseHandler() :
-    m_apiServices{new EchoDemoCommand()},
     m_sessionManager()
 {
 }
 
 RequestResponseHandler::~RequestResponseHandler()
 {
-    for (uint8_t apiServiceIdx = 0; apiServiceIdx < NUMBER_OF_API_SERVICES; apiServiceIdx++)
-    {
-        delete m_apiServices[apiServiceIdx];
-    }
 }
 
 RequestResponseHandler& RequestResponseHandler::getInstance()
@@ -96,12 +90,12 @@ void RequestResponseHandler::makeRequest(const ApiRequest& request, ApiResponse&
     }
 }
 
-const Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& request) const
+const Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& request)
 {
-    Command* command = nullptr;
+    const Command* command = nullptr;
     if (request.getCommandId() == "echodemo")
     {
-        command = m_apiServices[0];
+        command = &m_echoDemoCommand;
     }
     return command;
 }

@@ -59,6 +59,7 @@ System::~System()
 
 void System::init()
 {
+    bool certGenRetCode = false;
     NetworkCredentials apCredentials;
 
     /* Register an ISR for ComPlatform reset on Reset key push */
@@ -75,7 +76,15 @@ void System::init()
     }
 
     /* Check if a KeyCert exists, if not, generate new one asynchronously */
-    registerKeyCertGenTask();
+    certGenRetCode = registerKeyCertGenTask();
+    if (true == certGenRetCode)
+    {
+        LOG_DEBUG("Successfully started KeyCert generation task");
+    }
+    else
+    {
+        LOG_ERROR("Could not start KeyCert generation task!");
+    }
 
     /* Generate the unique SSID for this specific ComPlatform system */
     apCredentials.setSSID("ComPlatform", false);
@@ -116,29 +125,35 @@ void System::init()
     }
 
     /* Create and save admin account with default credentials and full priviliges if it is missing */
-    if (true == User::checkAdminAccount())
+    if (true == User::registerAdminAccount())
     {
         m_store.saveUsers();
     }
-
-    /* Start the background task to enable session timeouts */
-    Session::start();
 
     /* Await KeyCert generation task execution */
     xSemaphoreTake(m_genKeyCertSemaphore, portMAX_DELAY);
     xSemaphoreGive(m_genKeyCertSemaphore);
 
-    /* Init HTTPs and WSS servers */
-    if (true == m_webServer.startServer())
+    /* Start the background task to enable session timeouts */
+    if ((true == certGenRetCode) && (true == Session::start()))
     {
-        LOG_DEBUG("HTTPs and WSS servers successfully started");
+        LOG_DEBUG("Successfully started websocket API timeout service");
+
+        /* Init HTTPs and WSS servers */
+        if (true == m_webServer.startServer())
+        {
+            LOG_DEBUG("HTTPs and WSS servers successfully started");
+        }
+        else
+        {
+            LOG_ERROR("Could not start the HTTPs and WSS servers!");
+        }
     }
     else
     {
-        LOG_ERROR("Could not start the HTTPs and WSS servers!");
+        LOG_ERROR("Did not start webserver because timeout service or KeyCert generation task could not be started!");
     }
-
-    LOG_INFO("ComPlatform fully booted up...");
+    LOG_INFO("++++++++++++++++ Done ++++++++++++++++");
 }
 
 void System::reset()
@@ -214,7 +229,7 @@ void System::genKeyCertTask(void* parameter)
     vTaskDelete(nullptr);
 }
 
-void System::registerKeyCertGenTask()
+bool System::registerKeyCertGenTask()
 {
     /* Big stack required, otherwise RSA2048 key generation would override stack canary */
     const uint16_t STACK_SIZE_BYTE = 16384;
@@ -225,7 +240,7 @@ void System::registerKeyCertGenTask()
     /* Pin task to core 1 to avoid CPU time starvation of idle task */
     const uint8_t CPU_CORE = 1;
 
-    xTaskCreatePinnedToCore(
+    BaseType_t retCode = xTaskCreatePinnedToCore(
         genKeyCertTask,
         "KeyCertGen",
         STACK_SIZE_BYTE,
@@ -233,4 +248,6 @@ void System::registerKeyCertGenTask()
         PRIORITY,
         nullptr,
         CPU_CORE);
+
+    return (pdPASS == retCode);
 }

@@ -46,6 +46,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 User* User::m_registeredUsers[MAX_REGISTERED_USERS];
 uint8_t User::m_numberOfRegisteredUsers = 0;
 CryptoServices User::m_crypto;
+const char* User::m_defaultAdminUsername = "admin";
+const char* User::m_defaultAdminPassword = "21091986";
 
 User::User() :
     m_username(),
@@ -60,30 +62,12 @@ User::~User()
 {
 }
 
-int8_t User::getUserIdx(const String& username)
+bool User::registerAdminAccount()
 {
-    int8_t retIdx = -1;
-
-    for (uint8_t userIdx = 0; userIdx < MAX_REGISTERED_USERS; userIdx++)
-    {
-        if ((nullptr != m_registeredUsers[userIdx])
-            && m_registeredUsers[userIdx]->m_username == username)
-        {
-            retIdx = userIdx;
-            break;
-        }
-    }
-    return retIdx;
-}
-
-bool User::checkAdminAccount()
-{
-    const String defaultUsername = "admin";
-    const String defaultPassword = "21091986";
     const uint8_t NUMBER_OF_PERMISSIONS = 1;
     Permission permission = ANY;
-    
-    return putUser(defaultUsername, defaultPassword, &permission, NUMBER_OF_PERMISSIONS, false);
+
+    return putUser(m_defaultAdminUsername, m_defaultAdminPassword, &permission, NUMBER_OF_PERMISSIONS, false);
 }
 
 const Permission* User::getPermissions(uint8_t& numberOfPermissions) const
@@ -137,10 +121,13 @@ bool User::checkCredentials(const String& username, const String& password)
 
 bool User::putUser(const String& username, const String& password, const Permission* permissions, const uint8_t numberOfPermissions, const bool updateUser)
 {
-    String randomSalt;
-    String hashedPassword;
+    bool saltRetCode = false;
+    bool hashRetCode = false;
     bool retCode = false;
     bool deleted = true;
+
+    String randomSalt;
+    String hashedPassword;
 
     /* Fully re-create user if it needs to be updated */
     if (true == updateUser)
@@ -158,33 +145,40 @@ bool User::putUser(const String& username, const String& password, const Permiss
         {
             if (nullptr == m_registeredUsers[userIdx])
             {
-                User* newUser = new User();
-                newUser->m_username = username;
-
                 /* Generate a unique and random salt for hash */
-                m_crypto.getRandomSalt(randomSalt);
-                newUser->m_passwordSalt = randomSalt;
+                saltRetCode = m_crypto.getRandomSalt(randomSalt);
 
                 /* Calculate the salted hash */
-                m_crypto.hashBlake2b(password, randomSalt, hashedPassword);
-                newUser->m_hashedPassword = hashedPassword;
+                hashRetCode = m_crypto.hashBlake2b(password, randomSalt, hashedPassword);
 
-                newUser->m_numberOfPermissions = numberOfPermissions;
-
-                /* Deep copy permissions */
-                for (uint8_t permIdx = 0; permIdx < numberOfPermissions; permIdx++)
+                if ((true == saltRetCode) && (true == hashRetCode))
                 {
-                    newUser->m_permissions[permIdx] = permissions[permIdx];
-                }
+                    User* newUser = new User();
+                    if (nullptr != newUser)
+                    {
+                        newUser->m_username = username;
+                        newUser->m_passwordSalt = randomSalt;
+                        newUser->m_hashedPassword = hashedPassword;
+                        newUser->m_numberOfPermissions = numberOfPermissions;
 
-                m_registeredUsers[userIdx] = newUser;
-                m_numberOfRegisteredUsers++;
-                retCode = true;
-                break;
+                        /* Deep copy permissions */
+                        for (uint8_t permIdx = 0; permIdx < numberOfPermissions; permIdx++)
+                        {
+                            newUser->m_permissions[permIdx] = permissions[permIdx];
+                        }
+
+                        m_registeredUsers[userIdx] = newUser;
+                        m_numberOfRegisteredUsers++;
+
+                        retCode = true;
+                        break;
+                    }
+                }
             }
         }
     }
-    else
+
+    if (false == retCode)
     {
         LOG_ERROR("Could not create user " + username);
     }
@@ -198,9 +192,9 @@ bool User::deleteUser(const String& username)
 
     if (-1 != userIdx)
     {
+        delete m_registeredUsers[userIdx];
         m_registeredUsers[userIdx] = nullptr;
         m_numberOfRegisteredUsers--;
-        delete m_registeredUsers[userIdx];
         retCode = true;
     }
     return retCode;
@@ -210,7 +204,7 @@ void User::serialize(String& serialized) const
 {
     /*
     Reserve memory on heap for JSON structure.
-    The data is not copied into the DynamicJsonDocument by default.
+    The data is not copied into the DynamicJsonDocument.
     The value specified in DOC_SIZE has been computed with the help of the ArduinoJson Assistant v6
     which is accessible at: https://arduinojson.org/v6/assistant/
     */
@@ -300,4 +294,20 @@ bool User::deserialize(const String& serial)
         LOG_ERROR(jsonRet.c_str());
     }
     return retCode;
+}
+
+int8_t User::getUserIdx(const String& username)
+{
+    int8_t retIdx = -1;
+
+    for (uint8_t userIdx = 0; userIdx < MAX_REGISTERED_USERS; userIdx++)
+    {
+        if ((nullptr != m_registeredUsers[userIdx])
+            && (m_registeredUsers[userIdx]->m_username == username))
+        {
+            retIdx = userIdx;
+            break;
+        }
+    }
+    return retIdx;
 }

@@ -74,20 +74,20 @@ public:
      *
      * @return Returns the command id
      */
-    String getCommandId() const;
+    const String& getCommandId() const;
 
     /**
      * Returns the JSON object
      *
      * @return Returns the JSON object string
      */
-    String getJsonPayload() const;
+    const String& getJsonPayload() const;
 
 private:
-    /** Specifies the command to be executed */
+    /** Specifies the mnemonic command string name to identify the requested API service implementation */
     String m_commandId;
 
-    /** Specifies optional/additional payload required for this command */
+    /** Specifies optional/additional payload required for the requested API service implementation */
     String m_jsonPayload;
 };
 #endif /** __APIREQUEST_H__ */
