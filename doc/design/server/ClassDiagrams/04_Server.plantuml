@@ -33,9 +33,9 @@ class ApiRequest
     - m_jsonPayload: String
     + ApiRequest()
     + ~ApiRequest()
-    + deserialize(serial: String): bool
-    + getCommandId(): String
-    + getJsonPayload(): String
+    + deserialize(serial: const String&): bool
+    + getCommandId(): const String& {const}
+    + getJsonPayload(): const String& {const}
 }
 
 class ApiResponse
@@ -44,9 +44,9 @@ class ApiResponse
     - m_jsonPayload: String
     + ApiResponse()
     + ~ApiResponse()
-    + serialize(): String
-    + setJsonPayload(jsonPayload: String): void
-    + setstatusCode(statusCode: ResponseCode): void
+    + serialize(serial: String&): bool
+    + setJsonPayload(jsonPayload: const String&): void
+    + setstatusCode(statusCode: const ResponseCode&): void
 }
 
 class UserCredentials
@@ -55,30 +55,28 @@ class UserCredentials
     - m_password: String
     + UserCredentials
     + ~UserCredentials
-    + getUsername(): const String&
-    + getPassword(): const String&
-    + deserialize(serial: String): bool
+    + getUsername(): const String& {const}
+    + getPassword(): const String& {const}
+    + deserialize(serial: const String&): bool
 }
 
 class SessionManager
 {
-    - m_store: Store&
     + SessionManager()
     + ~SessionManager()
-    + checkSession(command: Command*, connectionCtx: Session*): bool
-    + aquireSession(request: ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void
+    + checkSession(command: const Command*, connectionCtx: Session*): bool {const}
+    + aquireSession(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void {const}
 }
 
 class RequestResponseHandler
 {
-    - {static} NUMBER_OF_API_SERVICES: uint8_t = {readonly} 1
-    - m_apiServices: Command*[]
+    - m_echoDemoCommand: EchoDemoCommand
     - m_sessionManager: SessionManager
+    + {static} getInstance(): RequestResponseHandler&
+    + makeRequest(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void
     - RequestResponseHandler()
     - ~RequestResponseHandler()
-    - getCommandOfApiRequest(request: ApiRequest&): Command*
-    + {static} getInstance(): RequestResponseHandler&
-    + makeRequest(request: ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void
+    - getCommandOfApiRequest(request: const ApiRequest&): const Command*
 }
 RequestResponseHandler "0..*" *--> "1" SessionManager
 RequestResponseHandler "0..*" o--> "0..*" Command
@@ -90,20 +88,19 @@ class HTTPsWebServer
 {
     - {static} SHARED_TCP_PORT: uint16_t = {readonly} 443
     - {static} MAX_CLIENTS: uint8_t = {readonly} = 4
-    - {static} m_servedFileTypes: String[][] {readonly}
+    - {static} m_servedFileTypes: char* [][2] {readonly}
     - m_httpsServer: httpsserver::HTTPSServer
     - m_fileServeRoute: httpsserver::ResourceNode
     - m_apiRoute: httpsserver::WebSocketNode
     - m_store: Store&
     - {static} m_fileManager: FileManager
-    - m_requestResponseHandler: RequestResponseHandler
-    - {static} registerFileServing(request: httpsserver::HTTPRequest*, response: httpsserver::HTTPResponse*): void
-    - {static} getMIMEType(filePath: String): String
     + HTTPsWebServer()
     + ~HTTPsWebServer()
     + startServer(): bool
     + stopServer(): bool
     + handleServer(): void
+    - {static} registerFileServing(request: httpsserver::HTTPRequest*, response: httpsserver::HTTPResponse*): void
+    - {static} getMIMEType(filePath: const String&, mimeType: const String&): void
 }
 HTTPsWebServer "0..*" *--> "1" FileManager
 HTTPsWebServer "0..*" *--> "1" Store

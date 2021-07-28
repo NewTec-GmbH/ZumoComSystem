@@ -31,27 +31,25 @@ package SystemServices {
     class Log
     {
         - m_LogLevel : LogLevel = DEBUG
-
+        {static} + getInstance(): Log&
+        + getLogLevel(): const LogLevel& {const}
+        + setLogLevel(level: const LogLevel&): void
+        + writeLog(level: const LogLevel&, msg: const String&): void
         - Log()
         - ~Log()
-        {static} + getInstance(): Log&
-        + getLogLevel(): LogLevel
-        + setLogLevel(level: LogLevel): void
-        + writeLog(level: LogLevel, msg: const char*): void
     }
     Log "0..*" *--> "1" LogLevel
 
     class NVSManager
     {
         - m_preferences: Preferences
-
         + NVSManager()
         + ~NVSManager()
-        + putEntry(key: String, value: String): bool
-        + putEntry(key: String, value: uint8_t*, length: size_t): bool
-        + deleteEntry(key: String): bool
-        + readEntry(key: String): String
-        + readEntry(key: String, length: size_t, uint8_t* buffer): bool
+        + putEntry(key: const String&, value: const String&): bool
+        + putEntry(key: const String&, value: const uint8_t*, length: const size_t): bool
+        + deleteEntry(key: const String&): bool
+        + readEntry(key: const String&, outputString: String&): void
+        + readEntry(key: const String&, uint8_t* buffer, length: const size_t): bool
         + wipeNVS(): bool
         + closeNVS(): void
     }
@@ -63,14 +61,14 @@ package SystemServices {
         + FileManager()
         + ~FileManager()
         + {static} initFS(): bool
-        + openFile(fileName: String, mode: const char*): bool
+        + openFile(fileName: const String&, mode: const char*): bool
         + closeFile(): void
         + resetFilePointer(): bool
         + read4KBlock(buffer: uint8_t*): int16_t
-        + write4KBlock(buffer: uint8_t*, size: uint16_t): int16_t
-        + {static} fileExists(fileName: String): bool
-        + getFileSize(): int32_t
-        + {static} getFileSize(fileName: String): int32_t
+        + write4KBlock(buffer: uint8_t*, size: const uint16_t&): int16_t
+        + {static} fileExists(fileName: const String&): bool
+        + getFileSize(): int32_t {const}
+        + {static} getFileSize(fileName: const String&): int32_t
         + {static} listFiles(): std::vector<String>
         - {static} getInfo(): String
     }
@@ -83,8 +81,8 @@ package SystemServices {
         - m_hasherInstance: BLAKE2b
         + CryptoServices()
         + ~CryptoServices()
-        + getRandomSalt(outputString: String&): void
-        + hashBlake2b(cleartext: const String&, salt: const String&, outputString: String&): void
+        + getRandomSalt(outputString: String&): bool
+        + hashBlake2b(cleartext: const String&, salt: const String&, outputString: String&): bool
     }
     CryptoServices "0..*" *--> "1" BLAKE2b
 
@@ -94,11 +92,11 @@ package SystemServices {
         - m_dnsServer: DNSServer
         - DNS_PORT: uint8_t {readonly} = 53
         - m_dnsRetCode: bool = false
-        - HOSTNAME: String {readonly} = "complatform.local"
-        - WIFI_CHANNEL_NO: uint8_t {readonly} = 1
-        - MAX_CLIENT_NO: uint8_t {readonly} = 4
-        - ERROR_REBOOT_DELAY_TIME_MS: uint16_t {readonly} = 2000
-        - WIFI_CONNECT_RETRY_DELAY_MS: uint16_t {readonly} = 500
+        - {static} HOSTNAME: char* = {readonly} "complatform.local"
+        - {static} WIFI_CHANNEL_NO: uint8_t {readonly} = 1
+        - {static} MAX_CLIENT_NO: uint8_t {readonly} = 4
+        - {static} ERROR_REBOOT_DELAY_TIME_MS: uint16_t {readonly} = 2000
+        - {static} WIFI_CONNECT_RETRY_DELAY_MS: uint16_t {readonly} = 500
         - m_apActive: bool = false
         - m_staActive: bool = false
         + WiFiManager()
@@ -118,14 +116,14 @@ package SystemServices {
         - m_webServer: WebServer
         - {static} m_genKeyCertSemaphore: SemaphoreHandle_t
         - SERVICE_HANDLING_SLEEP_TIME_MS {readonly} = 1
-        - System()
-        - ~System()
-        - {static} genKeyCert(parameter: void*): void
-        - registerKeyCertGenTask(): void
         + {static} getInstance(): System&
-        + init(): bool
+        + init(): void
         + handleServices(): void
         + reset(): void
+        - System()
+        - ~System()
+        - {static} genKeyCertTask(parameter: void*): void
+        - registerKeyCertGenTask(): bool
     }
     System "0..*" *--> "1" WiFiManager
     System "0..*" *--> "1" Store

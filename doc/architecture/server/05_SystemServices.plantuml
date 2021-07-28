@@ -9,7 +9,6 @@ package SystemServices {
     interface "Store" as store
     interface "System" as systemhal
 
-    interface "FWCheck" as FWCheck
     interface "File" as File
     interface "Crypt" as Crypt
     interface "NVS" as nvs
@@ -22,10 +21,10 @@ package SystemServices {
     component "FileManager" as filemanager
     component "NVSManager" as nvsmanager
     component "WiFiManager" as wifilayerhal
-    component "Logger" as logger
+    component "Log" as logger
 
     note left of cryptoservices : Provides hardware-accelerated\nSHA256, BLAKE2b, RSA2048 and TRNG
-    note left of fwdeserializer : Converts binary firmware\nfile to object
+    note left of fwdeserializer : Converts binary firmware\nfile and checks integrity
     note right of firmwarecheck : Checks target system\nand signature of firmware.\nPublic key hardcoded
     note right of filemanager : Provides abstraction\nfor easy use of\n(buffered) file operations
     note right of nvsmanager : Provides abstraction to store\nkey-value pairs in\nnon-volatile storage
@@ -34,7 +33,6 @@ package SystemServices {
     note left of logger: Provides easy to use system logging
 
     filemanager -up- File
-    firmwarecheck -up- FWCheck
     cryptoservices -up- Crypt
     nvsmanager -up- nvs
     initcom -up- systemhal
@@ -43,7 +41,7 @@ package SystemServices {
     initcom ..> wifilayerhal
     firmwarecheck *--> fwdeserializer
 
-    firmwarecheck -down-(Crypt
+    fwdeserializer -down(crypthal
     nvsmanager -down-(nvshal
     filemanager -down-(fshal
     initcom -down-(readkey

@@ -6,11 +6,11 @@
 --> "Load/set KeyCert from disk"
 
 if "KeyCert available" then
-    --> [true] "Start/Register session-timeout Timer"
+    --> [true] === S2 ===
 else 
     --> [false] "Generate/set new KeyCert"
     --> "Save new KeyCert to disk"
-    --> "Start/Register session-timeout Timer"
+    --> === S2 ===
 endif
 
 === S1 === --> "Generate unique SSID for AP mode"
@@ -31,15 +31,18 @@ endif
 --> "Load Users and their Permissions from disk"
 
 if "User 'admin' existing" then
-    --> "Start/Register session-timeout Timer"
+    --> [true] === S2 === 
 else
     --> [false] "Create user 'admin' with default password and full priviliges"
     --> "Save new user 'admin' to disk"
 endif
-
---> "Start session timeout service"
 --> === S2 ===
---> "Init HTTPs Server"
---> "Init WSS Server"
---> (*)
+--> "Start session timeout service"
+if "KeyCert set and session timeout service successfully started" then
+    --> [true] "Init HTTPs Server"
+    --> "Init WSS Server"
+    --> (*)
+else
+    --> (*)
+endif
 @enduml
