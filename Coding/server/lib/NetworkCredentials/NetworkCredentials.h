@@ -91,8 +91,9 @@ public:
      * Returns JSON string
      *
      * @param[out] serial The serialized object as JSON string
+     * @return Returns true if successful, else false
      */
-    void serialize(String& serial) const;
+    bool serialize(String& serial) const;
 
     /**
      * Re-creates object from serialized JSON string

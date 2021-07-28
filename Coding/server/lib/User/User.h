@@ -116,8 +116,9 @@ public:
      * Serializes the user data
      *
      * @param[out] The output serialized data
+     * @return Returns true if successful, else false
      */
-    void serialize(String& serialized) const;
+    bool serialize(String& serialized) const;
 
     /**
      * Deserializes the passed data and re-creates user data

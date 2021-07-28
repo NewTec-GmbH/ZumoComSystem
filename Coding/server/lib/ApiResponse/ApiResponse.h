@@ -62,8 +62,9 @@ public:
      * Serializes this instance to JSON object. Omits jsonPayload field if passed payload equals empty string
      *
      * @param[out] The serialized JSON output string
+     * @return Returns true if successful, else false
      */
-    void serialize(String& serial);
+    bool serialize(String& serial);
 
     /**
      * Sets the JSON payload of this APIRequest

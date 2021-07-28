@@ -126,7 +126,10 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
         response.setStatusCode(BAD_REQUEST);
     }
 
-    response.serialize(serialResponse);
+    if (false == response.serialize(serialResponse))
+    {
+        serialResponse = "{\\\"statusCode\\\":" + String(ERROR) + "}";
+    }
     send(serialResponse.c_str(), SEND_TYPE_TEXT);
 }
 

@@ -200,8 +200,11 @@ bool User::deleteUser(const String& username)
     return retCode;
 }
 
-void User::serialize(String& serialized) const
+bool User::serialize(String& serialized) const
 {
+    bool retCode = false;
+    size_t docSize = 0;
+
     /*
     Reserve memory on heap for JSON structure.
     The data is not copied into the DynamicJsonDocument.
@@ -210,8 +213,6 @@ void User::serialize(String& serialized) const
     */
     const size_t DOC_SIZE = 16384;
     DynamicJsonDocument jsonDocument(DOC_SIZE);
-
-    // TODO: Calculate dynamically based on constant!
 
     JsonObject userObjects[MAX_REGISTERED_USERS];
     JsonArray userRights[MAX_REGISTERED_USERS];
@@ -235,8 +236,17 @@ void User::serialize(String& serialized) const
         }
     }
 
-    serializeJson(jsonDocument, serialized);
-    LOG_DEBUG("Users successfully serialized to JSON");
+    docSize = measureJson(jsonDocument);
+    retCode = ((0 < docSize) && (docSize == serializeJson(jsonDocument, serialized)));
+    if (true == retCode)
+    {
+        LOG_DEBUG("Users successfully serialized to JSON");
+    }
+    else
+    {
+        LOG_ERROR("Could not serialize users to JSON!");
+    }
+    return retCode;
 }
 
 bool User::deserialize(const String& serial)

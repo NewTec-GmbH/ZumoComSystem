@@ -94,8 +94,11 @@ bool NetworkCredentials::setPassphrase(const String& passphrase)
     return retCode;
 }
 
-void NetworkCredentials::serialize(String& serial) const
+bool NetworkCredentials::serialize(String& serial) const
 {
+    bool retCode = false;
+    size_t docSize = 0;
+
     /*
     Reserve memory on stack for JSON structure which consists of two key-value pairs.
     The ssid and the passphrase are not copied into the StaticJsonDocument by default.
@@ -110,8 +113,17 @@ void NetworkCredentials::serialize(String& serial) const
     jsonDocument["ssid"] = m_ssid.c_str();
     jsonDocument["passphrase"] = m_passphrase.c_str();
 
-    serializeJson(jsonDocument, serial);
-    LOG_DEBUG("Network credentials successfully serialized to JSON");
+    docSize = measureJson(jsonDocument);
+    retCode = ((0 < docSize) && (docSize == serializeJson(jsonDocument, serial)));
+    if (true == retCode)
+    {
+        LOG_DEBUG("Network credentials successfully serialized to JSON");
+    }
+    else
+    {
+        LOG_ERROR("Could not serialize network credentials!");
+    }
+    return retCode;
 }
 
 bool NetworkCredentials::deserialize(const String& serial)

@@ -69,8 +69,10 @@ void Store::setSTACredentials(const NetworkCredentials& credentials)
 bool Store::saveSTACredentials()
 {
     String serialized;
-    m_staCredentials.serialize(serialized);
-    bool retCode = m_nvsmgr.putEntry("netCredentials", serialized);
+    bool serializeRetCode = m_staCredentials.serialize(serialized);
+    bool saveRetCode = m_nvsmgr.putEntry("netCredentials", serialized);
+    bool retCode = ((true == serializeRetCode) && (true == saveRetCode));
+
     if (false == retCode)
     {
         LOG_ERROR("Could not save NetworkCredentials to persistent storage");
@@ -165,9 +167,9 @@ void Store::setUsers(const User& users)
 bool Store::saveUsers()
 {
     String serialized;
-    m_users.serialize(serialized);
-
-    bool retCode = m_nvsmgr.putEntry("users", serialized);
+    bool serializeRetCode = m_users.serialize(serialized);
+    bool saveRetCode = m_nvsmgr.putEntry("users", serialized);
+    bool retCode = ((true == serializeRetCode) && (true == saveRetCode));
     if (false == retCode)
     {
         LOG_ERROR("Could not save users to persistent storage");

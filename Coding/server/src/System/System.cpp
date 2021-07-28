@@ -112,7 +112,14 @@ void System::init()
     }
 
     /* Initialize the file system */
-    FileManager::initFS();
+    if (true == FileManager::initFS())
+    {
+        LOG_DEBUG("File system has been successfully initialized!");
+    }
+    else
+    {
+        LOG_ERROR("File system could not be initialized!");
+    }
 
     /* Load Users */
     if (true == m_store.loadUsers())
@@ -125,9 +132,9 @@ void System::init()
     }
 
     /* Create and save admin account with default credentials and full priviliges if it is missing */
-    if (true == User::registerAdminAccount())
+    if (true == User::registerAdminAccount() && (true == m_store.saveUsers()))
     {
-        m_store.saveUsers();
+        LOG_INFO("User 'admin' has been created and saved!");
     }
 
     /* Await KeyCert generation task execution */

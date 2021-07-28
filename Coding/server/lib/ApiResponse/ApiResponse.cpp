@@ -53,8 +53,11 @@ ApiResponse::~ApiResponse()
 {
 }
 
-void ApiResponse::serialize(String& serial)
+bool ApiResponse::serialize(String& serial)
 {
+    bool retCode = false;
+    size_t docSize = 0;
+
     /*
     Reserve memory on stack for JSON structure which consists of two key-value pairs.
     The status code and the json payload are not copied into the StaticJsonDocument by default.
@@ -74,8 +77,17 @@ void ApiResponse::serialize(String& serial)
         jsonDocument["jsonPayload"] = m_jsonPayload.c_str();
     }
 
-    serializeJson(jsonDocument, serial);
-    LOG_DEBUG("ApiResponse successfully serialized to JSON");
+    docSize = measureJson(jsonDocument);
+    retCode = ((0 < docSize) && (docSize == serializeJson(jsonDocument, serial)));
+    if (true == retCode)
+    {
+        LOG_DEBUG("ApiResponse successfully serialized to JSON");
+    }
+    else
+    {
+        LOG_ERROR("ApiResponse could not be serialized to JSON!");
+    }
+    return retCode;
 }
 
 void ApiResponse::setJsonPayload(const String& jsonPayload)
