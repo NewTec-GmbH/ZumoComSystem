@@ -251,7 +251,7 @@ bool User::serialize(String& serialized) const
 
 bool User::deserialize(const String& serial)
 {
-    bool retCode = false;
+    bool retCode = true;
 
     /* Clean up prior deserialization */
     m_numberOfRegisteredUsers = 0;
@@ -281,25 +281,34 @@ bool User::deserialize(const String& serial)
         for (uint8_t userIdx = 0; userIdx < userObjects.size(); userIdx++)
         {
             User* newUser = new User();
-            newUser->m_username = userObjects[userIdx]["username"].as<String>();
-            newUser->m_hashedPassword = userObjects[userIdx]["hashedPassword"].as<String>();
-            newUser->m_passwordSalt = userObjects[userIdx]["passwordSalt"].as<String>();
-            newUser->m_numberOfPermissions = userObjects[userIdx]["numberOfPermissions"];
-
-            JsonArray userRights = userObjects[userIdx]["permissions"];
-
-            for (uint8_t permIdx = 0; permIdx < newUser->m_numberOfPermissions; permIdx++)
+            if (nullptr != newUser)
             {
-                newUser->m_permissions[permIdx] = userRights[permIdx];
-            }
+                newUser->m_username = userObjects[userIdx]["username"].as<String>();
+                newUser->m_hashedPassword = userObjects[userIdx]["hashedPassword"].as<String>();
+                newUser->m_passwordSalt = userObjects[userIdx]["passwordSalt"].as<String>();
+                newUser->m_numberOfPermissions = userObjects[userIdx]["numberOfPermissions"];
 
-            m_registeredUsers[userIdx] = newUser;
-            m_numberOfRegisteredUsers++;
+                JsonArray userRights = userObjects[userIdx]["permissions"];
+
+                for (uint8_t permIdx = 0; permIdx < newUser->m_numberOfPermissions; permIdx++)
+                {
+                    newUser->m_permissions[permIdx] = userRights[permIdx];
+                }
+
+                m_registeredUsers[userIdx] = newUser;
+                m_numberOfRegisteredUsers++;
+            }
+            else
+            {
+                LOG_ERROR("Out of memory. Could not create new user!");
+                retCode = false;
+                break;
+            }
         }
-        retCode = true;
     }
     else
     {
+        retCode = false;
         LOG_ERROR("Error on deserializing the NetworkCredentials JSON object");
         LOG_ERROR(jsonRet.c_str());
     }

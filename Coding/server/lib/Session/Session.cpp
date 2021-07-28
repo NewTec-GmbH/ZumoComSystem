@@ -93,8 +93,15 @@ httpsserver::WebsocketHandler* Session::create()
             if (nullptr == m_sessions[sessionIdx])
             {
                 newSession = new Session();
-                m_sessions[sessionIdx] = newSession;
-                m_numberOfActiveClients++;
+                if (nullptr != newSession)
+                {
+                    m_sessions[sessionIdx] = newSession;
+                    m_numberOfActiveClients++;
+                }
+                else
+                {
+                    LOG_ERROR("Out of memory. Could not create new session!");
+                }
                 break;
             }
         }

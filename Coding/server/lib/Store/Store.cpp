@@ -104,53 +104,67 @@ void Store::setKeyCert(const KeyCert& keycert)
 
 bool Store::saveKeyCert()
 {
-    uint8_t* keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
-    uint8_t* certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
-
     /* Stores if writing to NVS was successful */
     bool putRSAResult = false;
     bool putCertResult = false;
-
     bool retCode = false;
 
-    m_keyCert.serialize(keyBuffer, certBuffer);
-    putRSAResult = m_nvsmgr.putEntry("rsakey", keyBuffer, KeyCert::RSA_KEY_SIZE_BYTE);
-    putCertResult = m_nvsmgr.putEntry("sslcert", certBuffer, KeyCert::CERT_SIZE_BYTE);
+    uint8_t* keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
+    uint8_t* certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
 
-    delete[] keyBuffer;
-    delete[] certBuffer;
-
-    retCode = (true == putRSAResult) && (true == putCertResult);
-    if (false == retCode)
+    if ((nullptr != keyBuffer) && (nullptr != certBuffer))
     {
-        LOG_ERROR("Could not save KeyCert to persistent storage");
+        m_keyCert.serialize(keyBuffer, certBuffer);
+        putRSAResult = m_nvsmgr.putEntry("rsakey", keyBuffer, KeyCert::RSA_KEY_SIZE_BYTE);
+        putCertResult = m_nvsmgr.putEntry("sslcert", certBuffer, KeyCert::CERT_SIZE_BYTE);
+
+        delete[] keyBuffer;
+        delete[] certBuffer;
+
+        retCode = (true == putRSAResult) && (true == putCertResult);
+        if (false == retCode)
+        {
+            LOG_ERROR("Could not save KeyCert to persistent storage");
+        }
+    }
+    else
+    {
+        LOG_ERROR("Out of memory. Could not create buffers for KeyCert serialization!");
     }
     return retCode;
 }
 
 bool Store::loadKeyCert()
 {
+    bool getRSAResult = false;
+    bool getCertResult = false;
+    bool retCode = false;
+
     uint8_t* keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
     uint8_t* certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
 
-    /* Stores if reading from NVS was successful */
-    bool getRSAResult = m_nvsmgr.readEntry("rsakey", keyBuffer, KeyCert::RSA_KEY_SIZE_BYTE);
-    bool getCertResult = m_nvsmgr.readEntry("sslcert", certBuffer, KeyCert::CERT_SIZE_BYTE);
-
-    bool retCode = (true == getRSAResult) && (true == getCertResult);
-
-    if (true == retCode)
+    if ((nullptr != keyBuffer) && (nullptr != certBuffer))
     {
-        m_keyCert.deserialize(keyBuffer, certBuffer);
+        /* Stores if reading from NVS was successful */
+        getRSAResult = m_nvsmgr.readEntry("rsakey", keyBuffer, KeyCert::RSA_KEY_SIZE_BYTE);
+        getCertResult = m_nvsmgr.readEntry("sslcert", certBuffer, KeyCert::CERT_SIZE_BYTE);
+
+        retCode = (true == getRSAResult) && (true == getCertResult);
+        if (true == retCode)
+        {
+            m_keyCert.deserialize(keyBuffer, certBuffer);
+        }
+        else
+        {
+            LOG_ERROR("Could not load KeyCert from persistent storage");
+        }
+        delete[] keyBuffer;
+        delete[] certBuffer;
     }
     else
     {
-        LOG_ERROR("Could not load KeyCert from persistent storage");
+        LOG_ERROR("Out of memory. Could not create buffers for KeyCert deserialization!");
     }
-
-    delete[] keyBuffer;
-    delete[] certBuffer;
-
     return retCode;
 }
 
