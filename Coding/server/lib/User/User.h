@@ -167,6 +167,9 @@ private:
     /** Stores pointers to all registered users */
     static User* m_registeredUsers[];
 
+    /** Mutex which is used to control access to the registered websocket sessions */
+    static SemaphoreHandle_t m_usersMutex;
+
     /** Instance of CryptoServices */
     static CryptoServices m_crypto;
 

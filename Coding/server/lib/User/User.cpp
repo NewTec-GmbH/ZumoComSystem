@@ -44,6 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Log.h>
 
 User* User::m_registeredUsers[MAX_REGISTERED_USERS] = {nullptr};
+SemaphoreHandle_t User::m_usersMutex = xSemaphoreCreateMutex();
 uint8_t User::m_numberOfRegisteredUsers = 0;
 CryptoServices User::m_crypto;
 const char* User::DEFAULT_ADMIN_USERNAME = "admin";
@@ -89,6 +90,8 @@ User* User::getUser(const String& username)
 
 bool User::checkCredentials(const String& username, const String& password)
 {
+    xSemaphoreTake(m_usersMutex, portMAX_DELAY);
+
     bool retCode = true;
     int8_t userIdx = getUserIdx(username);
     String computedHash;
@@ -116,6 +119,7 @@ bool User::checkCredentials(const String& username, const String& password)
     {
         retCode = false;
     }
+    xSemaphoreGive(m_usersMutex);
     return retCode;
 }
 
@@ -134,6 +138,8 @@ bool User::putUser(const String& username, const String& password, const Permiss
     {
         deleted = deleteUser(username);
     }
+
+    xSemaphoreTake(m_usersMutex, portMAX_DELAY);
 
     if ((true == deleted)
         && (-1 == getUserIdx(username))
@@ -182,11 +188,15 @@ bool User::putUser(const String& username, const String& password, const Permiss
     {
         LOG_ERROR("Could not create user " + username);
     }
+
+    xSemaphoreGive(m_usersMutex);
     return retCode;
 }
 
 bool User::deleteUser(const String& username)
 {
+    xSemaphoreTake(m_usersMutex, portMAX_DELAY);
+
     bool retCode = false;
     int8_t userIdx = getUserIdx(username);
 
@@ -197,11 +207,14 @@ bool User::deleteUser(const String& username)
         m_numberOfRegisteredUsers--;
         retCode = true;
     }
+    xSemaphoreGive(m_usersMutex);
     return retCode;
 }
 
 bool User::serialize(String& serialized) const
 {
+    xSemaphoreTake(m_usersMutex, portMAX_DELAY);
+
     bool retCode = false;
     size_t docSize = 0;
 
@@ -246,11 +259,14 @@ bool User::serialize(String& serialized) const
     {
         LOG_ERROR("Could not serialize users to JSON!");
     }
+
+    xSemaphoreGive(m_usersMutex);
     return retCode;
 }
 
 bool User::deserialize(const String& serial)
 {
+    xSemaphoreTake(m_usersMutex, portMAX_DELAY);
     bool retCode = true;
 
     /* Clean up prior deserialization */
@@ -312,6 +328,8 @@ bool User::deserialize(const String& serial)
         LOG_ERROR("Error on deserializing the NetworkCredentials JSON object");
         LOG_ERROR(jsonRet.c_str());
     }
+
+    xSemaphoreGive(m_usersMutex);
     return retCode;
 }
 
