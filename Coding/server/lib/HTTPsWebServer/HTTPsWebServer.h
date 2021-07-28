@@ -102,7 +102,7 @@ private:
     static const uint8_t MAX_CLIENTS = 4;
 
     /** Specifies MIME type and which file types should be deployed by web server and */
-    static const String m_servedFileTypes[6][2];
+    static const char* m_servedFileTypes[][2];
 
     /** HTTPSServer instance */
     httpsserver::HTTPSServer m_httpsServer;

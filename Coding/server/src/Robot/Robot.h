@@ -79,9 +79,6 @@ private:
     /** Reference to IO class */
     IO& m_io;
 
-    /** The GPIO output pin used to write the RESET line of robot */
-    static const uint8_t ROBOT_RESET_PIN = 2;
-
     /** The time in ms while RESET line is pulled down */
     static const uint32_t ROBOT_RESET_TIME_MS = 500;
 };

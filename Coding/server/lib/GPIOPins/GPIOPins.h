@@ -31,73 +31,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file Key.h
+ * @file GPIOPins.h
  * @author Luis Moser
- * @brief Key header
- * @date 06/25/2021
+ * @brief GPIOPins header
+ * @date 07/28/2021
  *
  * @{
  */
 
-#ifndef __KEY_H__
-#define __KEY_H__
+#ifndef __GPIOPINS_H__
+#define __GPIOPINS_H__
 
 #include <Arduino.h>
-#include <IO.h>
-#include <System.h>
 
- /** Class for accessing active-low push keys */
-class Key
+ /** Enumeration for specifying all used GPIOs of the ESP32 */
+enum GPIO
 {
-public:
-    /**
-     * Get Key instance
-     *
-     * @return Returns singleton instance
-     */
-    static Key& getInstance()
-    {
-        static Key instance;
-        return instance;
-    }
-
-    /**
-     * Registers an ISR which resets the ComPlatform system and which is invoked when key is pressed
-     */
-    void registerSystemReset();
-
-    /**
-     * Checks if the key connected to WIFI_AND_RESET_KEY_PI is being pressed. Automatically debounces the key
-     *
-     * @return Returns true, if button has been pressed, otherwise false
-     */
-    bool readKey() const;
-
-private:
-    /**
-     * Default Constructor
-     */
-    Key();
-
-    /**
-     * Destructor
-     */
-    ~Key();
-
-    /**
-     * Task which checks the push key level and resets the ComPlatform
-     */
-    static void resetTask(void* parameter);
-
-    /**
-     * ISR which resets the ComPlatform which will be inovked when push key is being pressed
-     */
-    static void systemResetISR();
-
-    /** Reference to IO class */
-    IO& m_io;
-
-    /** Specifies push duration for a long-press event */
-    static const uint32_t LONG_PRESS_TIME_MS = 1000;
+    WIFI_AND_RESET_KEY_PIN = 0,
+    ROBOT_RESET_PIN = 2,
+    ANALOG_NOISE_SEED_PIN = 36
 };
-#endif /** __KEY_H__ */
+#endif /** __GPIOPINS_H__ */

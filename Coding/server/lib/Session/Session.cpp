@@ -43,9 +43,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <RequestResponseHandler.h>
 #include <Log.h>
 
-Session* Session::m_sessions[MAX_CLIENTS] = {};
-
+Session* Session::m_sessions[MAX_CLIENTS] = {nullptr};
 uint8_t Session::m_numberOfActiveClients = 0;
+SemaphoreHandle_t Session::m_sessionMutex = xSemaphoreCreateMutex();
 
 Session::Session() :
     m_sessionAuthenticated(false),
@@ -60,6 +60,11 @@ Session::~Session()
 
 bool Session::start()
 {
+    if (nullptr == m_sessionMutex)
+    {
+        LOG_ERROR("IO mutex could not be created!");
+    }
+
     /* Small stack sufficient */
     const uint16_t STACK_SIZE_BYTE = 4096;
 
@@ -79,6 +84,7 @@ bool Session::start()
 
 httpsserver::WebsocketHandler* Session::create()
 {
+    xSemaphoreTake(m_sessionMutex, portMAX_DELAY);
     Session* newSession = nullptr;
     if (m_numberOfActiveClients < MAX_CLIENTS)
     {
@@ -94,6 +100,7 @@ httpsserver::WebsocketHandler* Session::create()
         }
         LOG_INFO("New websocket session successfully opened!");
     }
+    xSemaphoreGive(m_sessionMutex);
     return newSession;
 }
 
@@ -135,9 +142,8 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
 
 void Session::onClose()
 {
-    LOG_INFO("Session closed!");
-
     /* Find this session in the sessions list and remove it */
+    xSemaphoreTake(m_sessionMutex, portMAX_DELAY);
     for (uint8_t sessionIdx = 0; sessionIdx < MAX_CLIENTS; sessionIdx++)
     {
         if (this == m_sessions[sessionIdx])
@@ -148,6 +154,8 @@ void Session::onClose()
             break;
         }
     }
+    xSemaphoreGive(m_sessionMutex);
+    LOG_INFO("Session closed!");
 }
 
 bool Session::isAuthenticated() const
@@ -174,6 +182,7 @@ void Session::handleSessionTimeout(void* parameter)
     while (true)
     {
         unsigned long currentTimeStamp = millis();
+        xSemaphoreTake(m_sessionMutex, portMAX_DELAY);
 
         for (uint8_t sessionIdx = 0; sessionIdx < MAX_CLIENTS; sessionIdx++)
         {
@@ -188,6 +197,7 @@ void Session::handleSessionTimeout(void* parameter)
                 }
             }
         }
+        xSemaphoreGive(m_sessionMutex);
 
         /* Put task to sleep and re-check after SESSION_TIMEOUT_SECONDS */
         delay(SESSION_TIMEOUT_SECONDS * MILLISECONDS);
@@ -196,10 +206,12 @@ void Session::handleSessionTimeout(void* parameter)
 
 const Permission* Session::getPermissions(uint8_t& numberOfPermissions)
 {
+    xSemaphoreTake(m_sessionMutex, portMAX_DELAY);
     const Permission* permission = nullptr;
     if (nullptr != m_linkedUser)
     {
         permission = m_linkedUser->getPermissions(numberOfPermissions);
     }
+    xSemaphoreGive(m_sessionMutex);
     return permission;
 }

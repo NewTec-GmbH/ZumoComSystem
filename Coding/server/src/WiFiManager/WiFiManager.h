@@ -106,7 +106,7 @@ private:
     bool m_dnsRetCode;
 
     /** ComPlatform's hostname */
-    static const String HOSTNAME;
+    static const char* HOSTNAME;
 
     /** The WiFi channel to be used */
     static const uint8_t WIFI_CHANNEL_NO = 1;

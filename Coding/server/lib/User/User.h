@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Permission.h>
 #include <CryptoServices.h>
 
- /** Simple class for storing user data */
+ /** Class which stores all registered users, implements CRUD operations and provides (de-)serialization */
 class User
 {
 public:
@@ -156,10 +156,10 @@ private:
     static const uint8_t MAX_PERMISSIONS_PER_USER = 32;
 
     /** Specifies the default admin username */
-    static const char* m_defaultAdminUsername;
+    static const char* DEFAULT_ADMIN_USERNAME;
 
     /** Specifies the default admin password */
-    static const char* m_defaultAdminPassword;
+    static const char* DEFAULT_ADMIN_PASSWORD;
 
     /** Stores how many users are currently registered */
     static uint8_t m_numberOfRegisteredUsers;

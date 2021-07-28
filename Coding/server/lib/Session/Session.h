@@ -131,6 +131,9 @@ private:
     /** Stores all active Session instances/websocket sessions */
     static Session* m_sessions[];
 
+    /** Mutex which is used to control access to the registered websocket sessions */
+    static SemaphoreHandle_t m_sessionMutex;
+
     /** Stores how many clients are currently connected to websocket API */
     static uint8_t m_numberOfActiveClients;
 

@@ -41,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Key.h>
 #include <Log.h>
+#include <GPIOPins.h>
 
 Key::Key() :
     m_io(IO::getInstance())

@@ -93,6 +93,16 @@ private:
      */
     Command();
 
+    /**
+     * Copy Constructor
+     */
+    Command(const Command&);
+
+    /**
+     * Assignment operator
+     */
+    Command& operator =(const Command&);
+
     /** Specifies the unique mnemonic name of the API service which is used to call the service remotely */
     String m_serviceID;
 

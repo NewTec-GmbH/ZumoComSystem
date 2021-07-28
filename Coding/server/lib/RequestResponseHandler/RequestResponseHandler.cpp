@@ -42,6 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <RequestResponseHandler.h>
 
 RequestResponseHandler::RequestResponseHandler() :
+    m_echoDemoCommand(),
     m_sessionManager()
 {
 }

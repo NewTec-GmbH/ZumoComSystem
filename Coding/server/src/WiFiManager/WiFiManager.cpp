@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Log.h>
 #include <ESPmDNS.h>
 
-const String WiFiManager::HOSTNAME = "complatform.local";
+const char* WiFiManager::HOSTNAME = "complatform.local";
 
 WiFiManager::WiFiManager() :
     m_store(Store::getInstance()),
@@ -82,11 +82,11 @@ bool WiFiManager::startAP()
             LOG_INFO("IP-Address: " + ipaddr.toString());
 
             /* Register A-Record which translates to current IP address (DNS) */
-            m_dnsRetCode = m_dnsServer.start(DNS_PORT, HOSTNAME.c_str(), ipaddr);
+            m_dnsRetCode = m_dnsServer.start(DNS_PORT, HOSTNAME, ipaddr);
             if (true == m_dnsRetCode)
             {
                 LOG_DEBUG("DNS server successfully started");
-                LOG_INFO("Hostname: " + HOSTNAME);
+                LOG_INFO(String("Hostname: ") + HOSTNAME);
             }
             else
             {
@@ -165,7 +165,7 @@ bool WiFiManager::startSTA()
             LOG_INFO("IP-Address: " + WiFi.localIP().toString());
 
             /* Register A-Record which translates to current IP address (mDNS) */
-            MDNS.begin(HOSTNAME.c_str());
+            MDNS.begin(HOSTNAME);
             LOG_DEBUG("mDNS server successfully started");
         }
         else

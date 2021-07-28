@@ -43,11 +43,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ArduinoJson.h>
 #include <Log.h>
 
-User* User::m_registeredUsers[MAX_REGISTERED_USERS];
+User* User::m_registeredUsers[MAX_REGISTERED_USERS] = {nullptr};
 uint8_t User::m_numberOfRegisteredUsers = 0;
 CryptoServices User::m_crypto;
-const char* User::m_defaultAdminUsername = "admin";
-const char* User::m_defaultAdminPassword = "21091986";
+const char* User::DEFAULT_ADMIN_USERNAME = "admin";
+const char* User::DEFAULT_ADMIN_PASSWORD = "21091986";
 
 User::User() :
     m_username(),
@@ -67,7 +67,7 @@ bool User::registerAdminAccount()
     const uint8_t NUMBER_OF_PERMISSIONS = 1;
     Permission permission = ANY;
 
-    return putUser(m_defaultAdminUsername, m_defaultAdminPassword, &permission, NUMBER_OF_PERMISSIONS, false);
+    return putUser(DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_PASSWORD, &permission, NUMBER_OF_PERMISSIONS, false);
 }
 
 const Permission* User::getPermissions(uint8_t& numberOfPermissions) const
@@ -290,7 +290,7 @@ bool User::deserialize(const String& serial)
 
             for (uint8_t permIdx = 0; permIdx < newUser->m_numberOfPermissions; permIdx++)
             {
-                newUser->m_permissions[permIdx] = static_cast<Permission>(userRights[permIdx]);
+                newUser->m_permissions[permIdx] = userRights[permIdx];
             }
 
             m_registeredUsers[userIdx] = newUser;

@@ -45,13 +45,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <HTTPResponse.hpp>
 #include <ResponseCode.h>
 
-const String HTTPsWebServer::m_servedFileTypes[][2] = {
+const char* HTTPsWebServer::m_servedFileTypes[][2] = {
     {".html", "text/html"},
     {".css", "text/css"},
     {".js", "application/javascript"},
     {".jpg", "image/jpeg"},
     {".png", "image/png"},
-    {".ico", "image/vnd.microsoft.icon"}};
+    {".ico", "image/vnd.microsoft.icon"}
+};
 
 FileManager HTTPsWebServer::m_fileManager;
 

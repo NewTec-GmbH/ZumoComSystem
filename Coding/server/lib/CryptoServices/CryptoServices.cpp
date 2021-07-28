@@ -40,13 +40,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <CryptoServices.h>
+#include <GPIOPins.h>
 
 CryptoServices::CryptoServices() :
     m_hasherInstance()
 {
     /* Initialize the random generator with seed with entropy from analog noise */
-    const uint8_t GPIO_PIN = 0;
-    randomSeed(analogRead(GPIO_PIN));
+    randomSeed(analogRead(ANALOG_NOISE_SEED_PIN));
 }
 
 CryptoServices::~CryptoServices()

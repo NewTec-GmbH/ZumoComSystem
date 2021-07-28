@@ -41,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Robot.h>
 #include <Log.h>
+#include <GPIOPins.h>
 
 Robot::Robot() :
     m_io(IO::getInstance())
