@@ -5,11 +5,11 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 6 7
 Title "Zumo Communication System"
-Date "2021-07-28"
+Date "2021-07-29"
 Rev "V1.0"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
-Comment2 "Schneider, Niklas"
+Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
@@ -22,14 +22,14 @@ Wire Notes Line
 $Comp
 L Connector_Generic:Conn_02x13_Odd_Even J?
 U 1 1 60C60623
-P 5700 4100
+P 4900 4100
 AR Path="/60C60623" Ref="J?"  Part="1" 
 AR Path="/60C50401/60C60623" Ref="J3"  Part="1" 
-F 0 "J3" H 5750 4917 50  0000 C CNN
-F 1 "Left" H 5750 4826 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_2x13_P2.54mm_Vertical_SMD" H 5700 4100 50  0001 C CNN
-F 3 "~" H 5700 4100 50  0001 C CNN
-	1    5700 4100
+F 0 "J3" H 4950 4917 50  0000 C CNN
+F 1 "Left" H 4950 4826 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x13_P2.54mm_Vertical_SMD" H 4900 4100 50  0001 C CNN
+F 3 "~" H 4900 4100 50  0001 C CNN
+	1    4900 4100
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -129,37 +129,35 @@ nLED_C
 $Comp
 L power:GND #PWR037
 U 1 1 6105FDAD
-P 5250 3700
-F 0 "#PWR037" H 5250 3450 50  0001 C CNN
-F 1 "GND" H 5255 3527 50  0000 C CNN
-F 2 "" H 5250 3700 50  0001 C CNN
-F 3 "" H 5250 3700 50  0001 C CNN
-	1    5250 3700
+P 4450 3700
+F 0 "#PWR037" H 4450 3450 50  0001 C CNN
+F 1 "GND" H 4455 3527 50  0000 C CNN
+F 2 "" H 4450 3700 50  0001 C CNN
+F 3 "" H 4450 3700 50  0001 C CNN
+	1    4450 3700
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5250 3600 5250 3700
+	4450 3600 4450 3700
 Text Label 8550 4700 0    50   ~ 0
 nRESET
 Wire Wire Line
 	7900 4950 7900 4700
 Wire Wire Line
-	8000 4950 7900 4950
-Wire Wire Line
 	7900 5350 7900 5600
 $Comp
 L power:GND #PWR041
 U 1 1 61078CFA
-P 6250 3700
-F 0 "#PWR041" H 6250 3450 50  0001 C CNN
-F 1 "GND" H 6255 3527 50  0000 C CNN
-F 2 "" H 6250 3700 50  0001 C CNN
-F 3 "" H 6250 3700 50  0001 C CNN
-	1    6250 3700
+P 5450 3700
+F 0 "#PWR041" H 5450 3450 50  0001 C CNN
+F 1 "GND" H 5455 3527 50  0000 C CNN
+F 2 "" H 5450 3700 50  0001 C CNN
+F 3 "" H 5450 3700 50  0001 C CNN
+	1    5450 3700
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6250 3600 6250 3700
+	5450 3600 5450 3700
 Wire Wire Line
 	8800 1700 8950 1700
 Wire Wire Line
@@ -365,7 +363,7 @@ Wire Wire Line
 Wire Wire Line
 	10600 1550 10450 1550
 Wire Wire Line
-	7150 5150 7600 5150
+	7150 5150 7500 5150
 Text Label 2700 5350 0    50   ~ 0
 LED_C*
 Text Label 9950 4300 2    50   ~ 0
@@ -548,8 +546,6 @@ $EndComp
 Wire Wire Line
 	2550 3000 2550 3100
 Wire Wire Line
-	2550 3100 2650 3100
-Wire Wire Line
 	2550 3500 2550 3550
 Wire Wire Line
 	1600 3000 1600 2900
@@ -607,19 +603,6 @@ Text HLabel 4650 1100 2    50   Output ~ 0
 nBUTTON_B
 Text HLabel 2450 1100 2    50   Output ~ 0
 nBUTTON_A
-$Comp
-L pspice:MPMOS M?
-U 1 1 6118AFF9
-P 2000 1550
-AR Path="/60C4F1BF/6118AFF9" Ref="M?"  Part="1" 
-AR Path="/60C50401/6118AFF9" Ref="M2"  Part="1" 
-F 0 "M2" H 2288 1596 50  0000 L CNN
-F 1 "???" H 2288 1505 50  0000 L CNN
-F 2 "" H 2000 1550 50  0001 C CNN
-F 3 "https://my.centralsemi.com/datasheets/CXDM4060P.PDF" H 2000 1550 50  0001 C CNN
-	1    2000 1550
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	2100 1750 2100 1950
 Text HLabel 1500 1550 0    50   Input ~ 0
@@ -649,12 +632,9 @@ F 3 "~" H 1750 1300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2200 1350 2100 1350
-Wire Wire Line
 	2100 1350 2100 1100
 Wire Wire Line
 	2100 1100 2450 1100
-Connection ~ 2100 1350
 Wire Wire Line
 	1750 1450 1750 1550
 $Comp
@@ -696,10 +676,6 @@ F 3 "~" H 3950 1300 50  0001 C CNN
 	1    3950 1300
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	4400 1350 4300 1350
-Wire Wire Line
-	4300 1350 4300 1100
 Wire Wire Line
 	4300 1100 4650 1100
 Wire Wire Line
@@ -766,8 +742,6 @@ F 3 "~" H 6250 1300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6700 1350 6600 1350
-Wire Wire Line
 	6600 1350 6600 1100
 Wire Wire Line
 	6600 1100 6950 1100
@@ -813,8 +787,6 @@ F 3 "~" H 1950 4150 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	2600 4150 2600 4250
-Wire Wire Line
-	2600 4250 2700 4250
 Wire Wire Line
 	2600 4650 2600 4700
 Wire Wire Line
@@ -877,34 +849,33 @@ Text Label 2750 4150 0    50   ~ 0
 LED_B*
 Text HLabel 7150 5150 0    50   Input ~ 0
 nRST
-Text GLabel 6250 4600 1    50   Input ~ 0
+Text GLabel 5450 4600 1    50   Input ~ 0
 VBAT_ZCS
 Wire Wire Line
-	6250 4600 6250 4700
+	5450 4600 5450 4700
 Wire Wire Line
-	6250 4700 6000 4700
-NoConn ~ 5500 3500
-NoConn ~ 6000 3500
-NoConn ~ 5500 3700
-NoConn ~ 5500 3800
-NoConn ~ 5500 3900
-NoConn ~ 5500 4000
-NoConn ~ 5500 4100
-NoConn ~ 5500 4200
-NoConn ~ 6000 3700
-NoConn ~ 6000 3800
-NoConn ~ 6000 3900
-NoConn ~ 6000 4000
-NoConn ~ 6000 4100
-NoConn ~ 6000 4200
-NoConn ~ 6000 4300
-NoConn ~ 6000 4400
-NoConn ~ 6000 4500
-NoConn ~ 6000 4600
+	5450 4700 5200 4700
+NoConn ~ 4700 3500
+NoConn ~ 5200 3500
+NoConn ~ 4700 3700
+NoConn ~ 4700 3800
+NoConn ~ 4700 3900
+NoConn ~ 4700 4000
+NoConn ~ 4700 4100
+NoConn ~ 4700 4200
+NoConn ~ 5200 3700
+NoConn ~ 5200 3800
+NoConn ~ 5200 3900
+NoConn ~ 5200 4000
+NoConn ~ 5200 4200
+NoConn ~ 5200 4300
+NoConn ~ 5200 4400
+NoConn ~ 5200 4500
+NoConn ~ 5200 4600
 Wire Wire Line
-	6250 3600 6000 3600
+	5450 3600 5200 3600
 Wire Wire Line
-	5250 3600 5500 3600
+	4450 3600 4700 3600
 Wire Wire Line
 	9500 3500 9750 3500
 Wire Wire Line
@@ -933,38 +904,38 @@ Wire Wire Line
 $Comp
 L power:GND #PWR038
 U 1 1 6106979E
-P 5250 4900
-F 0 "#PWR038" H 5250 4650 50  0001 C CNN
-F 1 "GND" H 5255 4727 50  0000 C CNN
-F 2 "" H 5250 4900 50  0001 C CNN
-F 3 "" H 5250 4900 50  0001 C CNN
-	1    5250 4900
+P 4450 4900
+F 0 "#PWR038" H 4450 4650 50  0001 C CNN
+F 1 "GND" H 4455 4727 50  0000 C CNN
+F 2 "" H 4450 4900 50  0001 C CNN
+F 3 "" H 4450 4900 50  0001 C CNN
+	1    4450 4900
 	1    0    0    -1  
 $EndComp
-Connection ~ 5250 4700
+Connection ~ 4450 4700
 Wire Wire Line
-	5500 4700 5250 4700
+	4700 4700 4450 4700
 Wire Wire Line
-	5250 4700 5250 4900
+	4450 4700 4450 4900
 Wire Wire Line
-	5250 4300 5500 4300
+	4450 4300 4700 4300
 Wire Wire Line
-	5250 4400 5500 4400
-Connection ~ 5250 4400
+	4450 4400 4700 4400
+Connection ~ 4450 4400
 Wire Wire Line
-	5250 4400 5250 4300
+	4450 4400 4450 4300
 Wire Wire Line
-	5250 4500 5500 4500
+	4450 4500 4700 4500
 Wire Wire Line
-	5250 4500 5250 4400
-Connection ~ 5250 4500
-Connection ~ 5250 4600
+	4450 4500 4450 4400
+Connection ~ 4450 4500
+Connection ~ 4450 4600
 Wire Wire Line
-	5250 4600 5500 4600
+	4450 4600 4700 4600
 Wire Wire Line
-	5250 4700 5250 4600
+	4450 4700 4450 4600
 Wire Wire Line
-	5250 4600 5250 4500
+	4450 4600 4450 4500
 $Comp
 L Device:R R12
 U 1 1 617380EC
@@ -1110,8 +1081,6 @@ $EndComp
 Wire Wire Line
 	2550 5350 2550 5450
 Wire Wire Line
-	2550 5450 2650 5450
-Wire Wire Line
 	2550 5850 2550 5900
 Wire Wire Line
 	1600 5350 1600 5250
@@ -1139,21 +1108,8 @@ F 3 "" H 1350 5250 50  0001 C CNN
 	1    1350 5250
 	1    0    0    -1  
 $EndComp
-$Comp
-L Device:R R6
-U 1 1 61803A11
-P 1900 5650
-F 0 "R6" V 1693 5650 50  0000 C CNN
-F 1 "R" V 1784 5650 50  0000 C CNN
-F 2 "" V 1830 5650 50  0001 C CNN
-F 3 "~" H 1900 5650 50  0001 C CNN
-	1    1900 5650
-	0    1    1    0   
-$EndComp
 Wire Wire Line
 	2050 5650 2150 5650
-Wire Wire Line
-	1350 5650 1750 5650
 Wire Wire Line
 	1350 5250 1350 5650
 Wire Wire Line
@@ -1165,88 +1121,292 @@ Wire Wire Line
 	2150 5650 2250 5650
 Wire Wire Line
 	2550 5350 2700 5350
+Wire Wire Line
+	5800 6050 5800 5900
+Wire Wire Line
+	5800 6450 5800 6550
+Wire Wire Line
+	5050 6250 5350 6250
 $Comp
-L pspice:MPMOS M?
-U 1 1 618BDBE8
-P 4200 1550
-AR Path="/60C4F1BF/618BDBE8" Ref="M?"  Part="1" 
-AR Path="/60C50401/618BDBE8" Ref="M6"  Part="1" 
-F 0 "M6" H 4488 1596 50  0000 L CNN
-F 1 "???" H 4488 1505 50  0000 L CNN
-F 2 "" H 4200 1550 50  0001 C CNN
-F 3 "https://my.centralsemi.com/datasheets/CXDM4060P.PDF" H 4200 1550 50  0001 C CNN
-	1    4200 1550
+L power:GND #PWR?
+U 1 1 618F40E8
+P 5800 6550
+F 0 "#PWR?" H 5800 6300 50  0001 C CNN
+F 1 "GND" H 5805 6377 50  0000 C CNN
+F 2 "" H 5800 6550 50  0001 C CNN
+F 3 "" H 5800 6550 50  0001 C CNN
+	1    5800 6550
 	1    0    0    -1  
 $EndComp
-Connection ~ 4300 1350
+Wire Wire Line
+	5800 5900 6150 5900
 $Comp
-L pspice:MPMOS M?
-U 1 1 618BDFCC
-P 6500 1550
-AR Path="/60C4F1BF/618BDFCC" Ref="M?"  Part="1" 
-AR Path="/60C50401/618BDFCC" Ref="M7"  Part="1" 
-F 0 "M7" H 6788 1596 50  0000 L CNN
-F 1 "???" H 6788 1505 50  0000 L CNN
-F 2 "" H 6500 1550 50  0001 C CNN
-F 3 "https://my.centralsemi.com/datasheets/CXDM4060P.PDF" H 6500 1550 50  0001 C CNN
-	1    6500 1550
+L power:+3.3V #PWR?
+U 1 1 618F40EF
+P 5800 5400
+F 0 "#PWR?" H 5800 5250 50  0001 C CNN
+F 1 "+3.3V" H 5815 5573 50  0000 C CNN
+F 2 "" H 5800 5400 50  0001 C CNN
+F 3 "" H 5800 5400 50  0001 C CNN
+	1    5800 5400
 	1    0    0    -1  
 $EndComp
-Connection ~ 6600 1350
+Wire Wire Line
+	5800 5450 5800 5400
 $Comp
-L pspice:MPMOS M?
-U 1 1 618BE4FF
-P 2450 3300
-AR Path="/60C4F1BF/618BE4FF" Ref="M?"  Part="1" 
-AR Path="/60C50401/618BE4FF" Ref="M3"  Part="1" 
-F 0 "M3" H 2738 3346 50  0000 L CNN
-F 1 "???" H 2738 3255 50  0000 L CNN
-F 2 "" H 2450 3300 50  0001 C CNN
-F 3 "https://my.centralsemi.com/datasheets/CXDM4060P.PDF" H 2450 3300 50  0001 C CNN
-	1    2450 3300
+L Device:R R?
+U 1 1 618F40F6
+P 5800 5600
+F 0 "R?" H 5870 5646 50  0000 L CNN
+F 1 "10k" H 5870 5555 50  0000 L CNN
+F 2 "" V 5730 5600 50  0001 C CNN
+F 3 "~" H 5800 5600 50  0001 C CNN
+	1    5800 5600
 	1    0    0    -1  
 $EndComp
-Connection ~ 2550 3100
+Connection ~ 5800 5900
+Wire Wire Line
+	5800 5750 5800 5900
+Text HLabel 5050 6250 0    50   Input ~ 0
+nON_OFF
+Text Label 6150 5900 0    50   ~ 0
+Main_Switch
+Text Label 5750 4100 2    50   ~ 0
+Main_Switch
+Wire Wire Line
+	5750 4100 5200 4100
 $Comp
-L pspice:MPMOS M?
-U 1 1 618BEAFB
-P 2500 4450
-AR Path="/60C4F1BF/618BEAFB" Ref="M?"  Part="1" 
-AR Path="/60C50401/618BEAFB" Ref="M5"  Part="1" 
-F 0 "M5" H 2788 4496 50  0000 L CNN
-F 1 "???" H 2788 4405 50  0000 L CNN
-F 2 "" H 2500 4450 50  0001 C CNN
-F 3 "https://my.centralsemi.com/datasheets/CXDM4060P.PDF" H 2500 4450 50  0001 C CNN
-	1    2500 4450
+L power:+3.3V #PWR?
+U 1 1 6194AF19
+P 5350 5400
+F 0 "#PWR?" H 5350 5250 50  0001 C CNN
+F 1 "+3.3V" H 5365 5573 50  0000 C CNN
+F 2 "" H 5350 5400 50  0001 C CNN
+F 3 "" H 5350 5400 50  0001 C CNN
+	1    5350 5400
 	1    0    0    -1  
 $EndComp
-Connection ~ 2600 4250
+Wire Wire Line
+	5350 5450 5350 5400
 $Comp
-L pspice:MPMOS M?
-U 1 1 618BEE30
+L Device:R R?
+U 1 1 6194AF20
+P 5350 5600
+F 0 "R?" H 5420 5646 50  0000 L CNN
+F 1 "10k" H 5420 5555 50  0000 L CNN
+F 2 "" V 5280 5600 50  0001 C CNN
+F 3 "~" H 5350 5600 50  0001 C CNN
+	1    5350 5600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5350 5750 5350 6250
+Connection ~ 5350 6250
+Wire Wire Line
+	5350 6250 5500 6250
+$Comp
+L power:+3.3V #PWR?
+U 1 1 6196F50A
+P 7500 4300
+F 0 "#PWR?" H 7500 4150 50  0001 C CNN
+F 1 "+3.3V" H 7515 4473 50  0000 C CNN
+F 2 "" H 7500 4300 50  0001 C CNN
+F 3 "" H 7500 4300 50  0001 C CNN
+	1    7500 4300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7500 4350 7500 4300
+$Comp
+L Device:R R?
+U 1 1 6196F511
+P 7500 4500
+F 0 "R?" H 7570 4546 50  0000 L CNN
+F 1 "10k" H 7570 4455 50  0000 L CNN
+F 2 "" V 7430 4500 50  0001 C CNN
+F 3 "~" H 7500 4500 50  0001 C CNN
+	1    7500 4500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7500 4650 7500 5150
+Connection ~ 7500 5150
+Wire Wire Line
+	7500 5150 7600 5150
+Wire Wire Line
+	4300 1350 4300 1100
+$Comp
+L power:+3.3V #PWR?
+U 1 1 619B11CA
+P 4300 750
+F 0 "#PWR?" H 4300 600 50  0001 C CNN
+F 1 "+3.3V" H 4315 923 50  0000 C CNN
+F 2 "" H 4300 750 50  0001 C CNN
+F 3 "" H 4300 750 50  0001 C CNN
+	1    4300 750 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4300 800  4300 750 
+$Comp
+L Device:R R?
+U 1 1 619B11D1
+P 4300 950
+F 0 "R?" H 4370 996 50  0000 L CNN
+F 1 "10k" H 4370 905 50  0000 L CNN
+F 2 "" V 4230 950 50  0001 C CNN
+F 3 "~" H 4300 950 50  0001 C CNN
+	1    4300 950 
+	1    0    0    -1  
+$EndComp
+Connection ~ 4300 1100
+$Comp
+L power:+3.3V #PWR?
+U 1 1 619CA8EF
+P 2100 750
+F 0 "#PWR?" H 2100 600 50  0001 C CNN
+F 1 "+3.3V" H 2115 923 50  0000 C CNN
+F 2 "" H 2100 750 50  0001 C CNN
+F 3 "" H 2100 750 50  0001 C CNN
+	1    2100 750 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2100 800  2100 750 
+$Comp
+L Device:R R?
+U 1 1 619CA8F6
+P 2100 950
+F 0 "R?" H 2170 996 50  0000 L CNN
+F 1 "10k" H 2170 905 50  0000 L CNN
+F 2 "" V 2030 950 50  0001 C CNN
+F 3 "~" H 2100 950 50  0001 C CNN
+	1    2100 950 
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR?
+U 1 1 619D7406
+P 6600 750
+F 0 "#PWR?" H 6600 600 50  0001 C CNN
+F 1 "+3.3V" H 6615 923 50  0000 C CNN
+F 2 "" H 6600 750 50  0001 C CNN
+F 3 "" H 6600 750 50  0001 C CNN
+	1    6600 750 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6600 800  6600 750 
+$Comp
+L Device:R R?
+U 1 1 619D740D
+P 6600 950
+F 0 "R?" H 6670 996 50  0000 L CNN
+F 1 "10k" H 6670 905 50  0000 L CNN
+F 2 "" V 6530 950 50  0001 C CNN
+F 3 "~" H 6600 950 50  0001 C CNN
+	1    6600 950 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1350 5650 1750 5650
+$Comp
+L Device:R R6
+U 1 1 61803A11
+P 1900 5650
+F 0 "R6" V 1693 5650 50  0000 C CNN
+F 1 "R" V 1784 5650 50  0000 C CNN
+F 2 "" V 1830 5650 50  0001 C CNN
+F 3 "~" H 1900 5650 50  0001 C CNN
+	1    1900 5650
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:Q_NMOS_GDS Q?
+U 1 1 6105307C
 P 2450 5650
-AR Path="/60C4F1BF/618BEE30" Ref="M?"  Part="1" 
-AR Path="/60C50401/618BEE30" Ref="M4"  Part="1" 
-F 0 "M4" H 2738 5696 50  0000 L CNN
-F 1 "???" H 2738 5605 50  0000 L CNN
-F 2 "" H 2450 5650 50  0001 C CNN
-F 3 "https://my.centralsemi.com/datasheets/CXDM4060P.PDF" H 2450 5650 50  0001 C CNN
+F 0 "Q?" H 2654 5696 50  0000 L CNN
+F 1 "Q_NMOS_GDS" H 2654 5605 50  0000 L CNN
+F 2 "" H 2650 5750 50  0001 C CNN
+F 3 "~" H 2450 5650 50  0001 C CNN
 	1    2450 5650
 	1    0    0    -1  
 $EndComp
-Connection ~ 2550 5450
 $Comp
-L pspice:MPMOS M?
-U 1 1 618C487A
+L Device:Q_NMOS_GDS Q?
+U 1 1 61053CF9
+P 2500 4450
+F 0 "Q?" H 2704 4496 50  0000 L CNN
+F 1 "Q_NMOS_GDS" H 2704 4405 50  0000 L CNN
+F 2 "" H 2700 4550 50  0001 C CNN
+F 3 "~" H 2500 4450 50  0001 C CNN
+	1    2500 4450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Q_NMOS_GDS Q?
+U 1 1 61054072
+P 2450 3300
+F 0 "Q?" H 2654 3346 50  0000 L CNN
+F 1 "Q_NMOS_GDS" H 2654 3255 50  0000 L CNN
+F 2 "" H 2650 3400 50  0001 C CNN
+F 3 "~" H 2450 3300 50  0001 C CNN
+	1    2450 3300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Q_NMOS_GDS Q?
+U 1 1 61054C26
+P 2000 1550
+F 0 "Q?" H 2204 1596 50  0000 L CNN
+F 1 "Q_NMOS_GDS" H 2204 1505 50  0000 L CNN
+F 2 "" H 2200 1650 50  0001 C CNN
+F 3 "~" H 2000 1550 50  0001 C CNN
+	1    2000 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Q_NMOS_GDS Q?
+U 1 1 610552DC
+P 4200 1550
+F 0 "Q?" H 4404 1596 50  0000 L CNN
+F 1 "Q_NMOS_GDS" H 4404 1505 50  0000 L CNN
+F 2 "" H 4400 1650 50  0001 C CNN
+F 3 "~" H 4200 1550 50  0001 C CNN
+	1    4200 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Q_NMOS_GDS Q?
+U 1 1 61055880
+P 6500 1550
+F 0 "Q?" H 6704 1596 50  0000 L CNN
+F 1 "Q_NMOS_GDS" H 6704 1505 50  0000 L CNN
+F 2 "" H 6700 1650 50  0001 C CNN
+F 3 "~" H 6500 1550 50  0001 C CNN
+	1    6500 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Q_NMOS_GDS Q?
+U 1 1 61055EB2
+P 5700 6250
+F 0 "Q?" H 5904 6296 50  0000 L CNN
+F 1 "Q_NMOS_GDS" H 5904 6205 50  0000 L CNN
+F 2 "" H 5900 6350 50  0001 C CNN
+F 3 "~" H 5700 6250 50  0001 C CNN
+	1    5700 6250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Q_NMOS_GDS Q?
+U 1 1 61056B48
 P 7800 5150
-AR Path="/60C4F1BF/618C487A" Ref="M?"  Part="1" 
-AR Path="/60C50401/618C487A" Ref="M8"  Part="1" 
-F 0 "M8" H 8088 5196 50  0000 L CNN
-F 1 "???" H 8088 5105 50  0000 L CNN
-F 2 "" H 7800 5150 50  0001 C CNN
-F 3 "https://my.centralsemi.com/datasheets/CXDM4060P.PDF" H 7800 5150 50  0001 C CNN
+F 0 "Q?" H 8004 5196 50  0000 L CNN
+F 1 "Q_NMOS_GDS" H 8004 5105 50  0000 L CNN
+F 2 "" H 8000 5250 50  0001 C CNN
+F 3 "~" H 7800 5150 50  0001 C CNN
 	1    7800 5150
 	1    0    0    -1  
 $EndComp
-Connection ~ 7900 4950
 $EndSCHEMATC

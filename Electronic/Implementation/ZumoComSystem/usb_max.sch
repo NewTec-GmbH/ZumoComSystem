@@ -5,11 +5,11 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 3 7
 Title "Zumo Communication System"
-Date "2021-07-28"
+Date "2021-07-30"
 Rev "V1.0"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
-Comment2 "Schneider, Niklas"
+Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr

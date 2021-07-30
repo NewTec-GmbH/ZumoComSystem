@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 7
 Title "Zumo Communication System"
-Date "2021-07-28"
+Date "2021-07-29"
 Rev "V1.0"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -36,17 +36,15 @@ S 1500 800  1500 2500
 U 60C3F332
 F0 "Battery" 50
 F1 "battery.sch" 50
-F2 "V_Bat" B R 3000 2000 50 
+F2 "V_Bat" B R 3000 2100 50 
+F3 "V_LOADING" I R 3000 1900 50 
 $EndSheet
 Wire Wire Line
-	3000 2000 3500 2000
+	3000 2100 3500 2100
 Wire Wire Line
-	3500 2000 3500 5000
+	3500 2100 3500 5000
 Wire Wire Line
 	3500 5000 4000 5000
-Connection ~ 3500 2000
-Wire Wire Line
-	3500 2000 4000 2000
 Wire Bus Line
 	5500 1900 6500 1900
 Wire Bus Line
@@ -100,9 +98,9 @@ S 4000 800  1500 2500
 U 60C3F428
 F0 "USB_Power" 50
 F1 "USB_power.sch" 50
-F2 "V_Bat" O L 4000 2000 50 
-F3 "D-" B R 5500 2100 50 
-F4 "D+" B R 5500 1900 50 
+F2 "D-" B R 5500 2100 50 
+F3 "D+" B R 5500 1900 50 
+F4 "V_LOADING" O L 4000 1900 50 
 $EndSheet
 $Sheet
 S 9500 800  950  5500
@@ -122,6 +120,7 @@ F11 "nRemote_Butt_A" I L 9500 1000 50
 F12 "nRemote_Butt_B" I L 9500 1100 50 
 F13 "nRemote_Butt_C" I L 9500 1200 50 
 F14 "nRST" I L 9500 2400 50 
+F15 "nON_OFF" I L 9500 3050 50 
 $EndSheet
 Wire Wire Line
 	8000 2650 9500 2650
@@ -154,6 +153,7 @@ F18 "nRST" O R 8000 2400 50
 F19 "nRemote_Butt_A" O R 8000 1000 50 
 F20 "nRemote_Butt_B" O R 8000 1100 50 
 F21 "nRemote_Butt_C" O R 8000 1200 50 
+F22 "nON_OFF" O R 8000 3050 50 
 $EndSheet
 Wire Wire Line
 	9500 1000 8000 1000
@@ -161,4 +161,8 @@ Wire Wire Line
 	8000 1100 9500 1100
 Wire Wire Line
 	9500 1200 8000 1200
+Wire Wire Line
+	9500 3050 8000 3050
+Wire Wire Line
+	3000 1900 4000 1900
 $EndSCHEMATC

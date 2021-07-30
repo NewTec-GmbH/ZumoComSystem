@@ -5,11 +5,11 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 4 7
 Title "Zumo Communication System"
-Date "2021-07-28"
+Date "2021-07-30"
 Rev "V1.0"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
-Comment2 "Schneider, Niklas"
+Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
@@ -106,4 +106,8 @@ Wire Wire Line
 	3500 2000 4150 2000
 Wire Wire Line
 	3500 1600 3500 2000
+Text HLabel 9250 1950 2    50   Input ~ 0
+V_LOADING
+Wire Wire Line
+	9250 1950 8700 1950
 $EndSCHEMATC
