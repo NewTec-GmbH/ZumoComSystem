@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Key::Key() :
     m_io(IO::getInstance())
 {
-    IO::getInstance().setPinMode(WIFI_AND_RESET_KEY_PIN, INPUT_PULLUP);
+    IO::getInstance().setPinMode(GPIOPins::PIN_WIFI_AND_RESET_KEY, INPUT_PULLUP);
 }
 
 Key::~Key()
@@ -55,13 +55,13 @@ Key::~Key()
 
 void Key::registerSystemReset()
 {
-    attachInterrupt(WIFI_AND_RESET_KEY_PIN, Key::systemResetISR, FALLING);
+    attachInterrupt(GPIOPins::PIN_WIFI_AND_RESET_KEY, Key::systemResetISR, FALLING);
     LOG_DEBUG("System-Reset ISR registered");
 }
 
 bool Key::readKey() const
 {
-    return (LOW == m_io.readGPIODebounced(WIFI_AND_RESET_KEY_PIN));
+    return (LOW == m_io.readGPIODebounced(GPIOPins::PIN_WIFI_AND_RESET_KEY));
 }
 
 void Key::resetTask(void* parameter)

@@ -57,7 +57,6 @@ bool ApiResponse::serialize(String& serial)
 {
     bool retCode = false;
     size_t docSize = 0;
-    static String prevJsonPayload = "";
 
     /*
     Reserve memory on stack for JSON structure which consists of two key-value pairs.
@@ -73,10 +72,9 @@ bool ApiResponse::serialize(String& serial)
     jsonDocument["statusCode"] = static_cast<const uint16_t>(m_statusCode);
 
     /* Optionally serialize jsonPayload if set */
-    if ((m_jsonPayload != prevJsonPayload) && (m_jsonPayload != ""))
+    if (m_jsonPayload != "")
     {
         jsonDocument["jsonPayload"] = m_jsonPayload.c_str();
-        prevJsonPayload = m_jsonPayload;
     }
 
     docSize = measureJson(jsonDocument);

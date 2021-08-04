@@ -84,8 +84,8 @@ bool Session::start()
 
 httpsserver::WebsocketHandler* Session::create()
 {
-    xSemaphoreTake(m_sessionMutex, portMAX_DELAY);
     Session* newSession = nullptr;
+    xSemaphoreTake(m_sessionMutex, portMAX_DELAY);
     if (m_numberOfActiveClients < MAX_CLIENTS)
     {
         for (uint8_t sessionIdx = 0; sessionIdx < MAX_CLIENTS; sessionIdx++)
@@ -190,7 +190,6 @@ void Session::handleSessionTimeout(void* parameter)
     {
         unsigned long currentTimeStamp = millis();
         xSemaphoreTake(m_sessionMutex, portMAX_DELAY);
-
         for (uint8_t sessionIdx = 0; sessionIdx < MAX_CLIENTS; sessionIdx++)
         {
             currentSession = m_sessions[sessionIdx];
@@ -213,8 +212,8 @@ void Session::handleSessionTimeout(void* parameter)
 
 const Permission* Session::getPermissions(uint8_t& numberOfPermissions)
 {
-    xSemaphoreTake(m_sessionMutex, portMAX_DELAY);
     const Permission* permission = nullptr;
+    xSemaphoreTake(m_sessionMutex, portMAX_DELAY);
     if (nullptr != m_linkedUser)
     {
         permission = m_linkedUser->getPermissions(numberOfPermissions);

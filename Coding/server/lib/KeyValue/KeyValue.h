@@ -31,30 +31,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file GPIOPins.h
+ * @file KeyValue.h
  * @author Luis Moser
- * @brief GPIOPins header
- * @date 07/28/2021
+ * @brief KeyValue header
+ * @date 08/04/2021
  *
  * @{
  */
 
-#ifndef __GPIOPINS_H__
-#define __GPIOPINS_H__
+#ifndef __KEYVALUE_H__
+#define __KEYVALUE_H__
 
-#include <Arduino.h>
-
- /** Namespace for specifying all used GPIOs of the ESP32 */
-namespace GPIOPins
+ /** Simple struct for storing key-value pairs */
+struct KeyValue
 {
-    /** Pin for push button for system reset/AP mode start */
-    static const uint8_t PIN_WIFI_AND_RESET_KEY = 0;
+    /** The key string */
+    const char* key;
 
-    /** Pin for resetting the attached Zumo robot */
-    static const uint8_t PIN_ROBOT_RESET = 2;
-
-    /** Unconnected pin for reading random analog data to seed PRNG */
-    static const uint8_t PIN_ANALOG_NOISE_SEED = 36;
-
+    /** The value string */
+    const char* value;
 };
-#endif /** __GPIOPINS_H__ */
+#endif

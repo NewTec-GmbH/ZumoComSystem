@@ -47,6 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <HTTPSServer.hpp>
 #include <FileManager.h>
 #include <Session.h>
+#include <KeyValue.h>
 
 class HTTPsWebServer
 {
@@ -101,8 +102,8 @@ private:
     /** Max number of concurrent clients which can access the server */
     static const uint8_t MAX_CLIENTS = 4;
 
-    /** Specifies MIME type and which file types should be deployed by web server and */
-    static const char* m_servedFileTypes[][2];
+    /** Specifies MIME type and which file types should be deployed by web server */
+    static const KeyValue m_servedFileTypes[];
 
     /** HTTPSServer instance */
     httpsserver::HTTPSServer m_httpsServer;
