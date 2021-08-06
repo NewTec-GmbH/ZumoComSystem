@@ -185,10 +185,13 @@ void Session::handleSessionTimeout(void* parameter)
 {
     Session* currentSession = nullptr;
     const uint16_t MILLISECONDS = 1000;
+    unsigned long currentTimeStamp = 0;
+
+    (void)parameter;
 
     while (true)
     {
-        unsigned long currentTimeStamp = millis();
+        currentTimeStamp = millis();
         xSemaphoreTake(m_sessionMutex, portMAX_DELAY);
         for (uint8_t sessionIdx = 0; sessionIdx < MAX_CLIENTS; sessionIdx++)
         {

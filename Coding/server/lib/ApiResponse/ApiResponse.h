@@ -45,6 +45,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Arduino.h>
 #include <ResponseCode.h>
 
+ /** Data structure for returning information about the invoked websocket API service to the client.
+  * Contains status code and additional/optional json payload
+  */
 class ApiResponse
 {
 public:
