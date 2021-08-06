@@ -71,10 +71,7 @@ public:
      *
      * @return Returns true, if button has been pressed, otherwise false
      */
-    bool readKey();
-
-    /** The GPIO input pin used for the button which resets the ComPlatform or spawns WiFi*/
-    static const uint8_t WIFI_AND_RESET_KEY_PIN = 0;
+    bool readKey() const;
 
 private:
     /**

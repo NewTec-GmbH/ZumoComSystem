@@ -1,0 +1,77 @@
+@startuml
+
+abstract class Command
+{
+    - m_serviceID: String
+    - m_reqPermission: Permission
+    + Command(serviceId: const String&, reqPermission: const Permission&)
+    + {virtual} ~Command()
+    + getServiceID(): const String& {const}
+    + getReqPermission(): const Permission& {const}
+    + {abstract} run(request: const ApiRequest&, response: ApiResponse&): void {const}
+}
+
+class EchoDemoCommand
+{
+    + AuthCommand()
+    + ~AuthCommand()
+}
+Command <|-down-EchoDemoCommand
+
+class FlashZumoCommand
+{
+    + FlashZumoCommand()
+    + ~FlashZumoCommand()
+}
+Command <|-down-FlashZumoCommand
+
+class UploadZumoCommand
+{
+    + UploadZumoCommand()
+    + ~UploadZumoCommand()
+}
+Command <|-down-UploadZumoCommand
+
+class RebootZumoCommand
+{
+    + RebootZumoCommand()
+    + ~RebootZumoCommand()
+
+}
+Command <|-down-RebootZumoCommand
+
+class ConfigureNetworkCommand
+{
+    + ConfigureNetworkCommand()
+    + ~ConfigureNetworkCommand()
+}
+Command <|-down-ConfigureNetworkCommand
+
+class RebootCOMCommand
+{
+    + RebootCOMCommand()
+    + ~RebootCOMCommand()
+}
+Command <|-down-RebootCOMCommand
+
+class DebugZumoCommand
+{
+    + DebugZumoCommand()
+    + ~DebugZumoCommand()
+}
+Command <|-down-DebugZumoCommand
+
+class FlashCOMCommand
+{
+    + FlashCOMCommand()
+    + ~FlashCOMCommand()
+}
+Command <|-down-FlashCOMCommand
+
+class UploadCOMCommand
+{
+    + UploadCOMCommand()
+    + ~UploadCOMCommand()
+}
+Command <|-down-UploadCOMCommand
+@enduml

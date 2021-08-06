@@ -7,14 +7,11 @@ package SystemServices {
     interface "ReadKey" as readkey
     interface "WiFi" as wifihal
     interface "Store" as store
-    interface "Timer" as timerhal
     interface "System" as systemhal
 
-    interface "FWCheck" as FWCheck
     interface "File" as File
     interface "Crypt" as Crypt
     interface "NVS" as nvs
-    interface "Timer" as Timer
     interface "Logging" as Logging
 
     component "System" as initcom
@@ -23,32 +20,28 @@ package SystemServices {
     component "CryptoServices" as cryptoservices
     component "FileManager" as filemanager
     component "NVSManager" as nvsmanager
-    component "Timer" as timer
     component "WiFiManager" as wifilayerhal
-    component "Logger" as logger
+    component "Log" as logger
 
     note left of cryptoservices : Provides hardware-accelerated\nSHA256, BLAKE2b, RSA2048 and TRNG
-    note left of fwdeserializer : Converts binary firmware\nfile to object
+    note left of fwdeserializer : Converts binary firmware\nfile and checks integrity
     note right of firmwarecheck : Checks target system\nand signature of firmware.\nPublic key hardcoded
     note right of filemanager : Provides abstraction\nfor easy use of\n(buffered) file operations
     note right of nvsmanager : Provides abstraction to store\nkey-value pairs in\nnon-volatile storage
     note left of initcom : Provides init and reset of ComPlatform
-    note right of timer: Provides easy to use\ntime-based ISRs/callbacks
     note left of wifilayerhal: Manages AP and STA mode
     note left of logger: Provides easy to use system logging
 
     filemanager -up- File
-    firmwarecheck -up- FWCheck
     cryptoservices -up- Crypt
     nvsmanager -up- nvs
-    timer -up-Timer
     initcom -up- systemhal
     logger -up- Logging
 
     initcom ..> wifilayerhal
     firmwarecheck *--> fwdeserializer
 
-    firmwarecheck -down-(Crypt
+    fwdeserializer -down(crypthal
     nvsmanager -down-(nvshal
     filemanager -down-(fshal
     initcom -down-(readkey
@@ -57,6 +50,5 @@ package SystemServices {
     wifilayerhal -down-(store
     cryptoservices -down-(crypthal
     cryptoservices -down-(mbedtlshal
-    timer -down-(timerhal   
 }
 @enduml

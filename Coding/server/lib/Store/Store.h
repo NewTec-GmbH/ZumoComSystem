@@ -43,9 +43,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __STORE_H__
 
 #include <NVSManager.h>
-#include <Log.h>
 #include <NetworkCredentials.h>
 #include <KeyCert.h>
+#include <User.h>
 
  /** Manages, buffers, loads and saves all required data structures for the ComPlatform */
 class Store
@@ -63,66 +63,38 @@ public:
     }
 
     /**
-     * Save NetworkCredentials for STA mode to disk
-     *
-     * @return Returns true if successful, false if error occured
-     */
-    bool saveSTACredentials();
-
-    /**
-     * Load NetworkCredentials for STA mode from disk to store
-     *
-     * @return Returns true if succesful, false if error occured
-     */
-    bool loadSTACredentials();
-
-    /**
-     * Save KeyCert to disk
-     *
-     * @return Returns true if successful, false if error occured
-     */
-    bool saveKeyCert();
-
-    /**
-     * Load KeyCert from disk to store
-     *
-     * @return Returns true if succesful, false if error occured
-     */
-    bool loadKeyCert();
-
-    /**
-     * Get the network credentials for STA mode
-     *
-     * @return Returns the NetworkCredentials instance
-     */
-    NetworkCredentials getSTACredentials();
+    * Get the network credentials for STA mode
+    *
+    * @return Returns the NetworkCredentials instance
+    */
+    const NetworkCredentials& getSTACredentials() const;
 
     /**
      * Set the network credentials for STA mode
      *
      * @param[in] credentials The new NetworkCredentials instance to be set
      */
-    void setSTACredentials(NetworkCredentials credentials);
+    void setSTACredentials(const NetworkCredentials& credentials);
 
     /**
-     * Get the network credentials for AP mode
+     * Save NetworkCredentials for STA mode to persistent storage
      *
-     * @return Returns the NetworkCredentials instance
+     * @return Returns true if successful, false if error occured
      */
-    NetworkCredentials getAPCredentials();
+    bool saveSTACredentials();
 
     /**
-     * Set the network credentials for AP mode
+     * Load NetworkCredentials for STA mode from persistent storage to store
      *
-     * @param[in] credentials The new NetworkCredentials instance to be set
+     * @return Returns true if succesful, false if error occured
      */
-    void setAPCredentials(NetworkCredentials credentials);
+    bool loadSTACredentials();
 
     /**
-     * Get the private RSA key and the public certificate
-     *
-     * @return Returns the KeyCert instance
-     */
+    * Get the private RSA key and the public certificate
+    *
+    * @return Returns the KeyCert instance
+    */
     KeyCert& getKeyCert();
 
     /**
@@ -130,7 +102,61 @@ public:
      *
      * @param[in] keycert The new KeyCert instance to be saved
      */
-    void setKeyCert(KeyCert keycert);
+    void setKeyCert(const KeyCert& keycert);
+
+    /**
+     * Save KeyCert to persistent storage
+     *
+     * @return Returns true if successful, false if error occured
+     */
+    bool saveKeyCert();
+
+    /**
+     * Load KeyCert from persistent storage to store
+     *
+     * @return Returns true if succesful, false if error occured
+     */
+    bool loadKeyCert();
+
+    /**
+     * Returns the User instance
+     *
+     * @return Returns reference to User class instance
+     */
+    const User& getUsers() const;
+
+    /**
+     * Copies the passed User class instance into store
+     */
+    void setUsers(const User& users);
+
+    /**
+     * Save all registered users to persistent storage
+     *
+     * @return Returns true if successul, else false
+     */
+    bool saveUsers();
+
+    /**
+     * Loads all registered users from persistent storage
+     *
+     * @return Returns true if successful, else false
+     */
+    bool loadUsers();
+
+    /**
+     * Get the network credentials for AP mode
+     *
+     * @return Returns the NetworkCredentials instance
+     */
+    const NetworkCredentials& getAPCredentials() const;
+
+    /**
+     * Set the network credentials for AP mode
+     *
+     * @param[in] credentials The new NetworkCredentials instance to be set
+     */
+    void setAPCredentials(const NetworkCredentials& credentials);
 
     /**
      * Closes the store. Should be called when access to store is done.
@@ -153,10 +179,10 @@ private:
     /** Instance of NetworkCredentials which contains SSID and passphrase for AP mode */
     NetworkCredentials m_apCredentials;
 
-    /**
-     * Instance of KeyCert to store private RSA key as well as
-     * public certificate for HTTPs and WSS servers
-     */
+    /** Instance of KeyCert to store private RSA key as well as public certificate for HTTPs and WSS servers */
     KeyCert m_keyCert;
+
+    /** Instance of users */
+    User m_users;
 };
 #endif /** __STORE_H__ */

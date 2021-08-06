@@ -43,9 +43,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __WIFIMANAGER_H__
 
 #include <Store.h>
-#include <Log.h>
-#include <WiFi.h>
-#include <ESPmDNS.h>
 #include <DNSServer.h>
 
  /** Class which manages STA and AP mode */
@@ -109,7 +106,7 @@ private:
     bool m_dnsRetCode;
 
     /** ComPlatform's hostname */
-    static const String HOSTNAME;
+    static const char* HOSTNAME;
 
     /** The WiFi channel to be used */
     static const uint8_t WIFI_CHANNEL_NO = 1;

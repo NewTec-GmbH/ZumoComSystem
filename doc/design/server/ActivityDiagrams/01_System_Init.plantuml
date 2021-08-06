@@ -28,10 +28,21 @@ else
 endif
 
 --> "Initialize file system"
---> "Load Users from disk"
---> "Load Permissions from disk"
+--> "Load Users and their Permissions from disk"
+
+if "User 'admin' existing" then
+    --> [true] === S2 === 
+else
+    --> [false] "Create user 'admin' with default password and full priviliges"
+    --> "Save new user 'admin' to disk"
+endif
 --> === S2 ===
---> "Init HTTPs Server"
---> "Init WSS Server"
---> (*)
+--> "Start session timeout service"
+if "KeyCert set and session timeout service successfully started" then
+    --> [true] "Init HTTPs Server"
+    --> "Init WSS Server"
+    --> (*)
+else
+    --> (*)
+endif
 @enduml

@@ -40,6 +40,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <FileManager.h>
+#include <SPIFFS.h>
+#include <Log.h>
 
 FileManager::FileManager() :
     m_fileHandle()
@@ -90,7 +92,7 @@ bool FileManager::initFS()
     return retCode;
 }
 
-bool FileManager::openFile(String fileName, const char* mode)
+bool FileManager::openFile(const String& fileName, const char* mode)
 {
     bool retCode = true;
     const uint8_t MAX_FILENAME_LENGTH = 31;
@@ -148,7 +150,7 @@ int16_t FileManager::read4KBlock(uint8_t* buffer)
     return readBytes;
 }
 
-int16_t FileManager::write4KBlock(uint8_t* buffer, uint16_t size)
+int16_t FileManager::write4KBlock(uint8_t* buffer, const uint16_t& size)
 {
     const uint16_t BUFFER_SIZE_BYTES = 4096;
     int16_t writtenBytes = -1;
@@ -160,17 +162,17 @@ int16_t FileManager::write4KBlock(uint8_t* buffer, uint16_t size)
     return writtenBytes;
 }
 
-bool FileManager::fileExists(String fileName)
+bool FileManager::fileExists(const String& fileName)
 {
     return SPIFFS.exists(fileName);
 }
 
-int32_t FileManager::getFileSize()
+int32_t FileManager::getFileSize() const
 {
     return m_fileHandle.size();
 }
 
-int32_t FileManager::getFileSize(String fileName)
+int32_t FileManager::getFileSize(const String& fileName)
 {
     File fileHandle;
     int32_t fileSize = -1;

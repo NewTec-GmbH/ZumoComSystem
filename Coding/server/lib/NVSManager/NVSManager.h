@@ -65,7 +65,7 @@ public:
      * @param[in] value The string value to be saved
      * @return Returns true if successful, else false
      */
-    bool putEntry(String key, String value);
+    bool putEntry(const String& key, const String& value);
 
     /**
      * Creates or updates a new binary key-value pair in persistent storage
@@ -75,7 +75,7 @@ public:
      * @param[in] length The length in bytes of the data to be written
      * @return Returns true if successful, else false
      */
-    bool putEntry(String key, uint8_t* value, size_t length);
+    bool putEntry(const String& key, const uint8_t* value, const size_t length);
 
     /**
      * Deletes a key-value pair from persistent storage
@@ -83,15 +83,15 @@ public:
      * @param[in] key The key-value pair to be removed
      * @return Returns true if successful, else false
      */
-    bool deleteEntry(String key);
+    bool deleteEntry(const String& key);
 
     /**
      * Returns the string value of the key-value pair from persistent storage
      *
      * @param[in] key The key-value pair to be read
-     * @return Returns value in case of success and "null" in case of failure
+     * @param[out] outputString Contains value in case of success and "null" in case of failure
      */
-    String readEntry(String key);
+    void readEntry(const String& key, String& outputString);
 
     /**
      * Returns the binary value of the key-value pair from persistent storage
@@ -101,7 +101,7 @@ public:
      * @param[in] length The lenght in bytes of the passed buffer
      * @return Returns true if successful, else false
      */
-    bool readEntry(String key, uint8_t* buffer, size_t length);
+    bool readEntry(const String& key, uint8_t* buffer, const size_t length);
 
     /**
      * Completely removes all key-value pairs from persistent storage

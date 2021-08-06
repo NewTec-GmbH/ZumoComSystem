@@ -44,12 +44,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Arduino.h>
 #include <Store.h>
-#include <Log.h>
 #include <HTTPSServer.hpp>
-#include <HTTPRequest.hpp>
-#include <HTTPResponse.hpp>
-#include <ResponseCode.h>
 #include <FileManager.h>
+#include <Session.h>
+#include <KeyValue.h>
 
 class HTTPsWebServer
 {
@@ -94,9 +92,9 @@ private:
      * Checks if the requested file has valid file ending and returns corresponding MIME type
      *
      * @param[in] filePath The filepath to be checked for its ending
-     * @return Returns the MIME type for the detected file ending, Returns 'null' if file ending is invalid
+     * @param[out] mimeType The MIME type for the detected file ending, Returns 'null' if file ending is invalid
      */
-    static String getMIMEType(String filePath);
+    static void getMIMEType(const String& filePath, String& mimeType);
 
     /** TCP port which is used for frontend delivery as well as backend API services */
     static const uint16_t SHARED_TCP_PORT = 443;
@@ -104,14 +102,17 @@ private:
     /** Max number of concurrent clients which can access the server */
     static const uint8_t MAX_CLIENTS = 4;
 
-    /** Specifies MIME type and which file types should be deployed by web server and */
-    static const String m_servedFileTypes[4][2];
+    /** Specifies MIME type and which file types should be deployed by web server */
+    static const KeyValue m_servedFileTypes[];
 
     /** HTTPSServer instance */
     httpsserver::HTTPSServer m_httpsServer;
 
     /** Specifies the file serving route */
     httpsserver::ResourceNode m_fileServeRoute;
+
+    /** Specifies the API route */
+    httpsserver::WebsocketNode m_apiRoute;
 
     /** Store instance */
     Store& m_store;

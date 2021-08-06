@@ -1,0 +1,67 @@
+@startuml
+actor Client
+participant WebServer
+participant RequestResponseHandler
+participant SessionManager
+participant User
+participant Command
+
+Client->WebServer: Sends ApiRequest JSON string to socket connection
+WebServer->RequestResponseHandler: makeRequest(request, response, connectionCtx)
+
+RequestResponseHandler->RequestResponseHandler: getCommandId()
+
+alt Authentication command
+    RequestResponseHandler->SessionManager: aquireSession(request,response, connectionCtx)
+    SessionManager->User: checkCredentials(username, password)
+    User-->SessionManager: return
+
+    alt User credentials correct
+        SessionManager->User: getUser(username)
+        User-->SessionManager: return
+        SessionManager->Session: authenticateSession(user)
+        Session->Session: Remember user and set session to authenticated
+    end
+
+    SessionManager-->RequestResponseHandler: return ApiResponse
+    RequestResponseHandler-->WebServer: return ApiResponse
+    WebServer-->Client: Sends ApiResponse JSON string to socket connection
+
+else Regular command
+    RequestResponseHandler->RequestResponseHandler: getCommandOfApiRequest(request)
+    alt Service implemented
+        alt Permission required
+            RequestResponseHandler->SessionManager: checkSession(command, connectionCtx)
+
+            SessionManager->Session: isAuthenticated()
+            Session-->SessionManager: return
+
+            SessionManager->Session: getPermissions()
+            Session-->SessionManager: return Permissions
+
+            SessionManager->SessionManager: Check if session is authenticated and has required permission
+            SessionManager-->RequestResponseHandler: return
+
+            alt Session authenticated and priviliged
+                RequestResponseHandler->Command: run(request, response)
+                Command->RequestResponseHandler: return ApiResponse
+                RequestResponseHandler-->WebServer: Return ApiResponse
+                WebServer-->Client: Sends ApiResponse JSON string to socket connection
+            else Session not authenticated
+                RequestResponseHandler->RequestResponseHandler: response.setStatusCode(UNAUTHORIZED)
+                RequestResponseHandler-->WebServer: return ApiResponse
+                WebServer-->Client: Sends ApiResponse JSON string to socket connection
+            end
+        else No Permission required
+            RequestResponseHandler->Command: run(request, response)
+            Command->RequestResponseHandler: return ApiResponse
+            RequestResponseHandler-->WebServer: return ApiResponse
+            WebServer-->Client: Sends ApiResponse JSON string to socket connection
+        end
+    else Service not implemented
+        RequestResponseHandler->RequestResponseHandler: response.setStatusCode(NOT_IMPLEMENTED)
+        RequestResponseHandler-->WebServer: return ApiResponse
+        WebServer-->Client: Sends ApiResponse JSON string to socket connection
+    end
+end
+@enduml

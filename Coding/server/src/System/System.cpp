@@ -39,6 +39,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @{
  */
 #include <System.h>
+#include <KeyCert.h>
+#include <User.h>
+#include <Key.h>
+#include <Log.h>
 
 SemaphoreHandle_t System::m_genKeyCertSemaphore = {0};
 
@@ -55,6 +59,7 @@ System::~System()
 
 void System::init()
 {
+    bool certGenRetCode = false;
     NetworkCredentials apCredentials;
 
     /* Register an ISR for ComPlatform reset on Reset key push */
@@ -65,13 +70,21 @@ void System::init()
 
     /* Initialize and aquire binary semaphore */
     m_genKeyCertSemaphore = xSemaphoreCreateBinary();
-    if (NULL == m_genKeyCertSemaphore)
+    if (nullptr == m_genKeyCertSemaphore)
     {
         LOG_ERROR("KeyCert generation semaphore could not be created!");
     }
 
     /* Check if a KeyCert exists, if not, generate new one asynchronously */
-    registerKeyCertGenTask();
+    certGenRetCode = registerKeyCertGenTask();
+    if (true == certGenRetCode)
+    {
+        LOG_DEBUG("Successfully started KeyCert generation task");
+    }
+    else
+    {
+        LOG_ERROR("Could not start KeyCert generation task!");
+    }
 
     /* Generate the unique SSID for this specific ComPlatform system */
     apCredentials.setSSID("ComPlatform", false);
@@ -85,7 +98,7 @@ void System::init()
     }
     else
     {
-        /* Load NetworkCredentials from disk */
+        /* Load NetworkCredentials from persistent storage */
         if (true == m_store.loadSTACredentials())
         {
             m_wifimgr.startSTA();
@@ -99,27 +112,55 @@ void System::init()
     }
 
     /* Initialize the file system */
-    FileManager::initFS();
+    if (true == FileManager::initFS())
+    {
+        LOG_DEBUG("File system has been successfully initialized!");
+    }
+    else
+    {
+        LOG_ERROR("File system could not be initialized!");
+    }
 
     /* Load Users */
+    if (true == m_store.loadUsers())
+    {
+        LOG_DEBUG("Successfully loaded users from persistent storage");
+    }
+    else
+    {
+        LOG_ERROR("Could not load users from persistent storage");
+    }
 
-    /* Load Permissions */
+    /* Create and save admin account with default credentials and full priviliges if it is missing */
+    if (true == User::registerAdminAccount() && (true == m_store.saveUsers()))
+    {
+        LOG_INFO("User 'admin' has been created and saved!");
+    }
 
     /* Await KeyCert generation task execution */
     xSemaphoreTake(m_genKeyCertSemaphore, portMAX_DELAY);
     xSemaphoreGive(m_genKeyCertSemaphore);
 
-    /* Init HTTPs and WSS servers */
-    if (true == m_webServer.startServer())
+    /* Start the background task to enable session timeouts */
+    if ((true == certGenRetCode) && (true == Session::start()))
     {
-        LOG_DEBUG("HTTPs and WSS servers successfully started");
+        LOG_DEBUG("Successfully started websocket API timeout service");
+
+        /* Init HTTPs and WSS servers */
+        if (true == m_webServer.startServer())
+        {
+            LOG_DEBUG("HTTPs and WSS servers successfully started");
+        }
+        else
+        {
+            LOG_ERROR("Could not start the HTTPs and WSS servers!");
+        }
     }
     else
     {
-        LOG_ERROR("Could not start the HTTPs and WSS servers!");
+        LOG_ERROR("Did not start webserver because timeout service or KeyCert generation task could not be started!");
     }
-
-    LOG_INFO("ComPlatform fully booted up...");
+    LOG_INFO("++++++++++++++++ Done ++++++++++++++++");
 }
 
 void System::reset()
@@ -169,7 +210,7 @@ void System::genKeyCertTask(void* parameter)
             }
             else
             {
-                LOG_ERROR("Could not save the created SSL certificate to disk");
+                LOG_ERROR("Could not save the created SSL certificate to persistent storage");
             }
         }
         else
@@ -185,20 +226,20 @@ void System::genKeyCertTask(void* parameter)
     }
     else
     {
-        LOG_DEBUG("KeyCert successfully loaded from disk!");
+        LOG_DEBUG("KeyCert successfully loaded from persistent storage!");
     }
 
     /* Notify init task about finished task */
     xSemaphoreGive(m_genKeyCertSemaphore);
 
     /* Destroy this task */
-    vTaskDelete(NULL);
+    vTaskDelete(nullptr);
 }
 
-void System::registerKeyCertGenTask()
+bool System::registerKeyCertGenTask()
 {
     /* Big stack required, otherwise RSA2048 key generation would override stack canary */
-    const uint16_t STACK_SIZE = 16384;
+    const uint16_t STACK_SIZE_BYTE = 16384;
 
     /* Use lowest possible priority because this task does not have a blocking system call */
     const uint8_t PRIORITY = 0;
@@ -206,12 +247,14 @@ void System::registerKeyCertGenTask()
     /* Pin task to core 1 to avoid CPU time starvation of idle task */
     const uint8_t CPU_CORE = 1;
 
-    xTaskCreatePinnedToCore(
+    BaseType_t retCode = xTaskCreatePinnedToCore(
         genKeyCertTask,
         "KeyCertGen",
-        STACK_SIZE,
-        NULL,
+        STACK_SIZE_BYTE,
+        nullptr,
         PRIORITY,
-        NULL,
+        nullptr,
         CPU_CORE);
+
+    return (pdPASS == retCode);
 }

@@ -36,14 +36,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __RESPONSECODE_H__
 #define __RESPONSECODE_H__
 
+ /** Enumeration which describes return/status codes for the websocket API service implementations. Codes match the HTTP protocol status codes */
 enum ResponseCode
 {
     SUCCESS = 200,
-    BADREQUEST = 400,
+    BAD_REQUEST = 400,
+    UNAUTHORIZED = 401,
     FORBIDDEN = 403,
-    NOTFOUND = 404,
-    METHODNOTALLOWED = 405,
+    NOT_FOUND = 404,
+    METHOD_NOT_ALLOWED = 405,
     ERROR = 500,
-    NOTIMPLEMENTED = 501,
+    NOT_IMPLEMENTED = 501,
 };
 #endif /** __RESPONSECODE_H__ */

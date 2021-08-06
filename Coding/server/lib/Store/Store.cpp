@@ -40,12 +40,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <Store.h>
+#include <Log.h>
 
 Store::Store() :
     m_nvsmgr(),
     m_staCredentials(),
     m_apCredentials(),
-    m_keyCert()
+    m_keyCert(),
+    m_users()
 {
 }
 
@@ -54,45 +56,40 @@ Store::~Store()
     closeStore();
 }
 
+const NetworkCredentials& Store::getSTACredentials() const
+{
+    return m_staCredentials;
+}
+
+void Store::setSTACredentials(const NetworkCredentials& credentials)
+{
+    m_staCredentials = credentials;
+}
+
 bool Store::saveSTACredentials()
 {
-    bool retCode = m_nvsmgr.putEntry("netCredentials", m_staCredentials.serialize());
+    String serialized;
+    bool serializeRetCode = m_staCredentials.serialize(serialized);
+    bool saveRetCode = m_nvsmgr.putEntry("netCredentials", serialized);
+    bool retCode = ((true == serializeRetCode) && (true == saveRetCode));
+
     if (false == retCode)
     {
-        LOG_ERROR("Could not save NetworkCredentials to disk");
+        LOG_ERROR("Could not save NetworkCredentials to persistent storage");
     }
     return retCode;
 }
 
 bool Store::loadSTACredentials()
 {
-    String json = m_nvsmgr.readEntry("netCredentials");
+    String json;
+    m_nvsmgr.readEntry("netCredentials", json);
     bool retCode = ((String("null") != json) && (true == m_staCredentials.deserialize(json)));
     if (false == retCode)
     {
-        LOG_ERROR("Could not load NetworkCredentials from disk");
+        LOG_ERROR("Could not load NetworkCredentials from persistent storage");
     }
     return retCode;
-}
-
-NetworkCredentials Store::getSTACredentials()
-{
-    return m_staCredentials;
-}
-
-void Store::setSTACredentials(NetworkCredentials credentials)
-{
-    m_staCredentials = credentials;
-}
-
-NetworkCredentials Store::getAPCredentials()
-{
-    return m_apCredentials;
-}
-
-void Store::setAPCredentials(NetworkCredentials credentials)
-{
-    m_apCredentials = credentials;
 }
 
 KeyCert& Store::getKeyCert()
@@ -100,61 +97,137 @@ KeyCert& Store::getKeyCert()
     return m_keyCert;
 }
 
-void Store::setKeyCert(KeyCert keycert)
+void Store::setKeyCert(const KeyCert& keycert)
 {
     m_keyCert = keycert;
 }
 
 bool Store::saveKeyCert()
 {
-    uint8_t* keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
-    uint8_t* certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
-
     /* Stores if writing to NVS was successful */
     bool putRSAResult = false;
     bool putCertResult = false;
-
     bool retCode = false;
 
-    m_keyCert.serialize(keyBuffer, certBuffer);
-    putRSAResult = m_nvsmgr.putEntry("rsakey", keyBuffer, KeyCert::RSA_KEY_SIZE_BYTE);
-    putCertResult = m_nvsmgr.putEntry("sslcert", certBuffer, KeyCert::CERT_SIZE_BYTE);
+    uint8_t* keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
+    uint8_t* certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
 
-    delete[] keyBuffer;
-    delete[] certBuffer;
-
-    retCode = (true == putRSAResult) && (true == putCertResult);
-    if (false == retCode)
+    if ((nullptr != keyBuffer) && (nullptr != certBuffer))
     {
-        LOG_ERROR("Could not save KeyCert to disk");
+        m_keyCert.serialize(keyBuffer, certBuffer);
+        putRSAResult = m_nvsmgr.putEntry("rsakey", keyBuffer, KeyCert::RSA_KEY_SIZE_BYTE);
+        putCertResult = m_nvsmgr.putEntry("sslcert", certBuffer, KeyCert::CERT_SIZE_BYTE);
+
+        retCode = (true == putRSAResult) && (true == putCertResult);
+        if (false == retCode)
+        {
+            LOG_ERROR("Could not save KeyCert to persistent storage");
+        }
     }
+    else
+    {
+        LOG_ERROR("Out of memory. Could not create buffers for KeyCert serialization!");
+    }
+
+    if (nullptr != keyBuffer)
+    {
+        delete[] keyBuffer;
+    }
+
+    if (nullptr != certBuffer)
+    {
+        delete[] certBuffer;
+    }
+
     return retCode;
 }
 
 bool Store::loadKeyCert()
 {
+    bool getRSAResult = false;
+    bool getCertResult = false;
+    bool retCode = false;
+
     uint8_t* keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
     uint8_t* certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
 
-    /* Stores if reading from NVS was successful */
-    bool getRSAResult = m_nvsmgr.readEntry("rsakey", keyBuffer, KeyCert::RSA_KEY_SIZE_BYTE);
-    bool getCertResult = m_nvsmgr.readEntry("sslcert", certBuffer, KeyCert::CERT_SIZE_BYTE);
-
-    bool retCode = (true == getRSAResult) && (true == getCertResult);
-
-    if (true == retCode)
+    if ((nullptr != keyBuffer) && (nullptr != certBuffer))
     {
-        m_keyCert.deserialize(keyBuffer, certBuffer);
+        /* Stores if reading from NVS was successful */
+        getRSAResult = m_nvsmgr.readEntry("rsakey", keyBuffer, KeyCert::RSA_KEY_SIZE_BYTE);
+        getCertResult = m_nvsmgr.readEntry("sslcert", certBuffer, KeyCert::CERT_SIZE_BYTE);
+
+        retCode = (true == getRSAResult) && (true == getCertResult);
+        if (true == retCode)
+        {
+            m_keyCert.deserialize(keyBuffer, certBuffer);
+        }
+        else
+        {
+            LOG_ERROR("Could not load KeyCert from persistent storage");
+        }
     }
     else
     {
-        LOG_ERROR("Could not load KeyCert from disk");
+        LOG_ERROR("Out of memory. Could not create buffers for KeyCert deserialization!");
     }
 
-    delete[] keyBuffer;
-    delete[] certBuffer;
+    if (nullptr != keyBuffer)
+    {
+        delete[] keyBuffer;
+    }
+
+    if (nullptr != certBuffer)
+    {
+        delete[] certBuffer;
+    }
 
     return retCode;
+}
+
+const User& Store::getUsers() const
+{
+    return m_users;
+}
+
+void Store::setUsers(const User& users)
+{
+    m_users = users;
+}
+
+bool Store::saveUsers()
+{
+    String serialized;
+    bool serializeRetCode = m_users.serialize(serialized);
+    bool saveRetCode = m_nvsmgr.putEntry("users", serialized);
+    bool retCode = ((true == serializeRetCode) && (true == saveRetCode));
+    if (false == retCode)
+    {
+        LOG_ERROR("Could not save users to persistent storage");
+    }
+    return retCode;
+}
+
+bool Store::loadUsers()
+{
+    String json;
+    m_nvsmgr.readEntry("users", json);
+    bool retCode = ((String("null") != json) && (true == m_users.deserialize(json)));
+    if (false == retCode)
+    {
+        LOG_ERROR("Could not load users from persistent storage");
+    }
+    return retCode;
+}
+
+const NetworkCredentials& Store::getAPCredentials() const
+{
+    return m_apCredentials;
+}
+
+void Store::setAPCredentials(const NetworkCredentials& credentials)
+{
+    m_apCredentials = credentials;
 }
 
 void Store::closeStore()

@@ -9,10 +9,10 @@ package "Hardware Absraction Layer (HAL)" {
     interface "mbedTLS" as mbedtls
     interface "WiFi" as WiFi
     interface "DNS" as DNS
+    interface "mDNS" as MDNS
     interface "OTA" as ota
     interface "FS" as FS
     interface "Preferences" as nvshal
-    interface "Timer" as timer
     interface "IO" as IO
 
     interface "SPIUSB" as SPIUSB
@@ -24,13 +24,13 @@ package "Hardware Absraction Layer (HAL)" {
         component "mbedTLS" as mbedtlshal
         component "ESP" as esp
         component "WiFi" as wifihal
-        component "LittleFS" as fshal
+        component "SPIFFS" as fshal
         component "Preferences" as preferences
         component "DNSServer" as dnsserver
+        component "mDNS" as mdnsserver
         component "SPI" as spihal
         component "Digital I/O" as iohal
         component "ArduinoOTA" as arduinoota
-        component "Timer" as timerhal
 
         note right of spihal : Serial Peripheral Interface\nabstraction/drivers
         note left of esp : Basic abstraction/drivers\nfor ESP32 functions, such as reset
@@ -41,8 +41,8 @@ package "Hardware Absraction Layer (HAL)" {
         note right of cryptohal: Abstraction/drivers to use\nhardware-accelerated SHA256, BLAKE2b and TRNG
         note right of mbedtlshal : Abstraction/drivers to use\nhardware-accelerated RSA2048
         note right of dnsserver : Abstraction/drivers to provide\nlocal Domain Name System driver
+        note right of mdnsserver : Abstraction/drivers to provide\nlocal Domain Name System driver
         note right of fshal : Abstraction/drivers to\nread/write files to\nfile system
-        note right of timerhal : Abstraction/drivers for\ntime-based ISRs/callbacks
 
         cryptohal -up- Crypto
         mbedtlshal -up- mbedtls
@@ -51,9 +51,9 @@ package "Hardware Absraction Layer (HAL)" {
         iohal -up- arduinoIO
         spihal -up- SPI
         dnsserver -up- DNS
+        mdnsserver -up- MDNS
         preferences -up- nvshal
         arduinoota -up- ota
-        timerhal -up-timer
     }
 
     component "RobotFlasher" as zumoflasher

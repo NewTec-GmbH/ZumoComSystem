@@ -40,11 +40,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <Key.h>
+#include <Log.h>
+#include <GPIOPins.h>
 
 Key::Key() :
     m_io(IO::getInstance())
 {
-    IO::getInstance().setPinMode(WIFI_AND_RESET_KEY_PIN, INPUT_PULLUP);
+    IO::getInstance().setPinMode(GPIOPins::PIN_WIFI_AND_RESET_KEY, INPUT_PULLUP);
 }
 
 Key::~Key()
@@ -53,13 +55,13 @@ Key::~Key()
 
 void Key::registerSystemReset()
 {
-    attachInterrupt(WIFI_AND_RESET_KEY_PIN, Key::systemResetISR, FALLING);
+    attachInterrupt(GPIOPins::PIN_WIFI_AND_RESET_KEY, Key::systemResetISR, FALLING);
     LOG_DEBUG("System-Reset ISR registered");
 }
 
-bool Key::readKey()
+bool Key::readKey() const
 {
-    return (LOW == m_io.readGPIODebounced(WIFI_AND_RESET_KEY_PIN));
+    return (LOW == m_io.readGPIODebounced(GPIOPins::PIN_WIFI_AND_RESET_KEY));
 }
 
 void Key::resetTask(void* parameter)
@@ -70,23 +72,28 @@ void Key::resetTask(void* parameter)
     }
 
     /* Destroy this task */
-    vTaskDelete(NULL);
+    vTaskDelete(nullptr);
 }
 
 void Key::systemResetISR()
 {
     /* Use large stack to be able to use Serial.println() without issues */
-    const uint16_t STACK_SIZE = 8192;
+    const uint16_t STACK_SIZE_BYTE = 8192;
 
     /* Set task to highest possible priority to always ensure that reset can be invoked */
     const uint8_t PRIORITY = configMAX_PRIORITIES - 1;
 
     /* Create a new FreeRTOS task */
-    xTaskCreate(
+    BaseType_t retCode = xTaskCreate(
         resetTask,
         "SystemReset",
-        STACK_SIZE,
-        NULL,
+        STACK_SIZE_BYTE,
+        nullptr,
         PRIORITY,
-        NULL);
+        nullptr);
+
+    if (pdPASS != retCode)
+    {
+        LOG_ERROR("Could not start system reset task!");
+    }
 }

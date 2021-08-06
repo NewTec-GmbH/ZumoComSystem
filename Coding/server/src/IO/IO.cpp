@@ -40,11 +40,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <IO.h>
+#include <Log.h>
 
 IO::IO() :
     m_ioMutex(xSemaphoreCreateMutex())
 {
-    if (NULL == m_ioMutex)
+    if (nullptr == m_ioMutex)
     {
         LOG_ERROR("IO mutex could not be created!");
     }
@@ -54,12 +55,12 @@ IO::~IO()
 {
 }
 
-void IO::setPinMode(uint8_t gpio, uint8_t mode)
+void IO::setPinMode(const uint8_t gpio, const uint8_t mode)
 {
     pinMode(gpio, mode);
 }
 
-uint8_t IO::readGPIODebounced(uint8_t gpio)
+uint8_t IO::readGPIODebounced(const uint8_t gpio)
 {
     /* The last time a bounce took place */
     unsigned long lastBounceTime = 0;
@@ -92,12 +93,12 @@ uint8_t IO::readGPIODebounced(uint8_t gpio)
     } while (true);
 }
 
-uint8_t IO::readGPIO(uint8_t gpio)
+uint8_t IO::readGPIO(const uint8_t gpio)
 {
     return digitalRead(gpio);
 }
 
-void IO::writeGPIO(uint8_t gpio, uint8_t value)
+void IO::writeGPIO(const uint8_t gpio, const uint8_t value)
 {
     xSemaphoreTake(m_ioMutex, portMAX_DELAY);
     digitalWrite(gpio, value);

@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <KeyCert.h>
+#include <Log.h>
 
 uint8_t KeyCert::m_binaryKey[RSA_KEY_SIZE_BYTE] = { 0 };
 uint8_t KeyCert::m_binaryCert[CERT_SIZE_BYTE] = { 0 };
@@ -97,7 +98,7 @@ void KeyCert::serialize(uint8_t* keyBuffer, uint8_t* certBuffer)
     }
 }
 
-void KeyCert::deserialize(uint8_t* keyBuffer, uint8_t* certBuffer)
+void KeyCert::deserialize(const uint8_t* keyBuffer, const uint8_t* certBuffer)
 {
     freeSSLMemory();
 

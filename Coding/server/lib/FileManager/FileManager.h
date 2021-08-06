@@ -43,9 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __FILEMANAGER_H__
 
 #include <Arduino.h>
-#include <Log.h>
 #include <FS.h>
-#include <SPIFFS.h>
 
  /** Class used for simply reading and writing binary files */
 class FileManager
@@ -74,7 +72,7 @@ public:
      * @param[in] mode The access mode to be used on the file
      * @return Returns true if successful, else false
      */
-    bool openFile(String fileName, const char* mode);
+    bool openFile(const String& fileName, const char* mode);
 
     /**
      * Closes a previously opened file and writes all unwritten data to file
@@ -108,21 +106,21 @@ public:
      * @param[in] size The number of bytes to be written from the buffer into the file
      * @return Returns the number of written bytes. Returns -1 in case of error
      */
-    int16_t write4KBlock(uint8_t* buffer, uint16_t size);
+    int16_t write4KBlock(uint8_t* buffer, const uint16_t& size);
 
     /**
      * Checks if the specified file exists
      * @param[in] fileName The absoulte path to the file to be checked for existence
      * @return Returns if the the file is existing
      */
-    static bool fileExists(String fileName);
+    static bool fileExists(const String& fileName);
 
     /**
      * Returns the size of the currently opened file in bytes.
      *
      * @return Returns the size of the file in bytes. Returns -1 if file does not exist.
      */
-    int32_t getFileSize();
+    int32_t getFileSize() const;
 
     /**
      * Returns the size of the specified file in bytes
@@ -130,7 +128,7 @@ public:
      * @param[in] fileName The absoulte path to the file to be checked for size
      * @return Returns the size of the file
      */
-    static int32_t getFileSize(String fileName);
+    static int32_t getFileSize(const String& fileName);
 
     /**
      * Lists all existing files in which are located in root directory.

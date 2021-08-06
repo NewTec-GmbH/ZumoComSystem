@@ -1,3 +1,5 @@
+@startuml
+
 package SystemServices
 {
     class FileManager
@@ -8,26 +10,100 @@ package Data
     class Store
 }
 
-class HTTPSServer
+package httpsserver
+{
+    class HTTPSServer
+}
+
+enum ResponseCode
+{
+    SUCCESS = 200,
+    BAD_REQUEST = 400,
+    UNAUTHORIZED = 401,
+    FORBIDDEN = 403,
+    NOT_FOUND = 404,
+    METHOD_NOT_ALLOWED = 405,
+    ERROR = 500,
+    NOT_IMPLEMENTED = 501
+}
+
+class ApiRequest
+{
+    - m_commandId: String
+    - m_jsonPayload: String
+    + ApiRequest()
+    + ~ApiRequest()
+    + deserialize(serial: const String&): bool
+    + getCommandId(): const String& {const}
+    + getJsonPayload(): const String& {const}
+}
+
+class ApiResponse
+{
+    - m_statusCode: ResponseCode
+    - m_jsonPayload: String
+    + ApiResponse()
+    + ~ApiResponse()
+    + serialize(serial: String&): bool
+    + setJsonPayload(jsonPayload: const String&): void
+    + setstatusCode(statusCode: const ResponseCode&): void
+}
+
+class UserCredentials
+{
+    - m_username: String
+    - m_password: String
+    + UserCredentials
+    + ~UserCredentials
+    + getUsername(): const String& {const}
+    + getPassword(): const String& {const}
+    + deserialize(serial: const String&): bool
+}
+
+class SessionManager
+{
+    + SessionManager()
+    + ~SessionManager()
+    + checkSession(command: const Command*, connectionCtx: Session*): bool {const}
+    + aquireSession(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void {const}
+}
+
+class RequestResponseHandler
+{
+    - m_echoDemoCommand: EchoDemoCommand
+    - m_sessionManager: SessionManager
+    + {static} getInstance(): RequestResponseHandler&
+    + makeRequest(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void
+    - RequestResponseHandler()
+    - ~RequestResponseHandler()
+    - getCommandOfApiRequest(request: const ApiRequest&): const Command*
+}
+RequestResponseHandler "0..*" *--> "1" SessionManager
+RequestResponseHandler "0..*" o--> "0..*" Command
+RequestResponseHandler ..> ApiRequest
+RequestResponseHandler ..> ApiResponse
+RequestResponseHandler ..> ResponseCode
 
 class HTTPsWebServer
 {
     - {static} SHARED_TCP_PORT: uint16_t = {readonly} 443
     - {static} MAX_CLIENTS: uint8_t = {readonly} = 4
-    - {static} m_servedFileTypes: String[][] {readonly}
+    - {static} m_servedFileTypes: char* [][2] {readonly}
     - m_httpsServer: httpsserver::HTTPSServer
     - m_fileServeRoute: httpsserver::ResourceNode
+    - m_apiRoute: httpsserver::WebSocketNode
     - m_store: Store&
     - {static} m_fileManager: FileManager
-    - {static} registerFileServing(request: httpsserver::HTTPRequest*, response: httpsserver::HTTPResponse*): void
-    - {static} getMIMEType(filePath: String): String
     + HTTPsWebServer()
     + ~HTTPsWebServer()
     + startServer(): bool
     + stopServer(): bool
     + handleServer(): void
+    - {static} registerFileServing(request: httpsserver::HTTPRequest*, response: httpsserver::HTTPResponse*): void
+    - {static} getMIMEType(filePath: const String&, mimeType: const String&): void
 }
-HTTPsWebServer ..> FileManager : uses
+HTTPsWebServer "0..*" *--> "1" FileManager
 HTTPsWebServer "0..*" *--> "1" Store
 HTTPsWebServer "0..*" *--> "1" HTTPSServer
-HTTPsWebServer ..> ResponseCode
+HTTPsWebServer "0..*" *--> "1" RequestResponseHandler
+@enduml

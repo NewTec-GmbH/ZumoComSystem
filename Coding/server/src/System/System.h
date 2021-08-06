@@ -44,11 +44,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <WiFiManager.h>
 #include <HTTPsWebServer.h>
-#include <Log.h>
 #include <Store.h>
-#include <KeyCert.h>
-#include <Key.h>
 
+ /** Class responsible for initializing the ComPlatform, starting, handling and stopping all running services */
 class System
 {
 public:
@@ -79,6 +77,32 @@ public:
     void reset();
 
 private:
+
+    /**
+     * Default Constructor
+     */
+    System();
+
+    /**
+     * Destructor
+     */
+    ~System();
+
+    /**
+    * Generates a private RSA key and SSL certificate
+    *
+    * @param[in] parameter Void pointer for passing optional and arbitrary arguments
+    */
+    static void genKeyCertTask(void* parameter);
+
+    /**
+     * Registers and starts an asynchronous background task which generates a private RSA key and a SSL certificate
+     * if it does not already exist. The task will automatically be deleted when the task has finished work.
+     *
+     * @return Returns true if successful, else false
+     */
+    bool registerKeyCertGenTask();
+
     /** Reference to store */
     Store& m_store;
 
@@ -93,28 +117,5 @@ private:
 
     /** Specifies how long the service handling task should be put to sleep */
     static const uint8_t SERVICE_HANDLING_SLEEP_TIME_MS = 1;
-
-    /**
-     * Default Constructor
-     */
-    System();
-
-    /**
-     * Destructor
-     */
-    ~System();
-
-    /**
-     * Generates a private RSA key and SSL certificate
-     *
-     * @param[in] parameter Void pointer for passing optional and arbitrary arguments
-     */
-    static void genKeyCertTask(void* parameter);
-
-    /**
-     * Registers and starts an asynchronous background task which generates a private RSA key and a SSL certificate
-     * if it does not already exist. The task will automatically be deleted when the task has finished work.
-     */
-    void registerKeyCertGenTask();
 };
 #endif /** __SYSTEM_H__ */

@@ -41,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <NetworkCredentials.h>
 #include <Log.h>
+#include <ArduinoJson.h>
 
 NetworkCredentials::NetworkCredentials() :
     m_ssid(),
@@ -52,12 +53,12 @@ NetworkCredentials::~NetworkCredentials()
 {
 }
 
-String NetworkCredentials::getSSID()
+const String& NetworkCredentials::getSSID() const
 {
     return m_ssid;
 }
 
-bool NetworkCredentials::setSSID(String ssid, bool staMode)
+bool NetworkCredentials::setSSID(const String& ssid, const bool staMode)
 {
     /* Number of appended SSID chars which are reserved when using AP mode to avoid SSID conflicts */
     const uint8_t RESERVED_DEVICE_ID_CHARS = 13;
@@ -77,12 +78,12 @@ bool NetworkCredentials::setSSID(String ssid, bool staMode)
     return retCode;
 }
 
-String NetworkCredentials::getPassphrase()
+const String& NetworkCredentials::getPassphrase() const
 {
     return m_passphrase;
 }
 
-bool NetworkCredentials::setPassphrase(String passphrase)
+bool NetworkCredentials::setPassphrase(const String& passphrase)
 {
     bool retCode = false;
     if ((passphrase.length() >= MIN_PASSPHRASE_LENGTH_CHARS) && (passphrase.length() <= MAX_PASSPHRASE_LENGTH_CHARS))
@@ -93,17 +94,17 @@ bool NetworkCredentials::setPassphrase(String passphrase)
     return retCode;
 }
 
-String NetworkCredentials::serialize()
+bool NetworkCredentials::serialize(String& serial) const
 {
+    bool retCode = false;
+    size_t docSize = 0;
+
     /*
     Reserve memory on stack for JSON structure which consists of two key-value pairs.
     The ssid and the passphrase are not copied into the StaticJsonDocument by default.
     */
-    const size_t KEY_VALUE_PAIRS = 2;
+    static const size_t KEY_VALUE_PAIRS = 2;
     StaticJsonDocument<JSON_OBJECT_SIZE(KEY_VALUE_PAIRS)> jsonDocument;
-
-    /* The string to be used which will containt the JSON string */
-    String serialized;
 
     /*
     Pass the const/non-volatile char* pointers to ArduinoJson so that ArduinoJson
@@ -112,16 +113,23 @@ String NetworkCredentials::serialize()
     jsonDocument["ssid"] = m_ssid.c_str();
     jsonDocument["passphrase"] = m_passphrase.c_str();
 
-    serializeJson(jsonDocument, serialized);
-    LOG_DEBUG("Network credentials successfully serialized to JSON");
-    return serialized;
+    docSize = measureJson(jsonDocument);
+    retCode = ((0 < docSize) && (docSize == serializeJson(jsonDocument, serial)));
+    if (true == retCode)
+    {
+        LOG_DEBUG("Network credentials successfully serialized to JSON");
+    }
+    else
+    {
+        LOG_ERROR("Could not serialize network credentials!");
+    }
+    return retCode;
 }
 
-bool NetworkCredentials::deserialize(String serial)
+bool NetworkCredentials::deserialize(const String& serial)
 {
     /*
     Reserve memory on stack for JSON structure which consists of two key-value pairs.
-    The ssid and the passphrase are copied into the StaticJsonDocument by default.
     The value specified in DOC_SIZE has been computed with the help of the ArduinoJson Assistant v6
     which is accessible at: https://arduinojson.org/v6/assistant/
     */

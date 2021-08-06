@@ -3,18 +3,12 @@ interface "WSS" as WSS
 interface "HTTPS" as HTTPS
 
 interface "File" as File
-interface "Crypt" as Crypt
 interface "Store" as Store
-interface "Timer" as Timer
-
-package "API" as api {
-    component "Servicecontroller" as servicecontroller
-}
 
 package Server {
     component "WebServer" as webserver
 
-    note left of webserver : Serves the static HTML/JS/CSS\nfiles for web interface\nand provides access to\nall endpoint services
+    note left of webserver : Serves the HTML/JS/CSS\nfiles for web interface\nand provides access to\nall endpoint services
 
     webserver -up- WSS
     webserver -up- HTTPS
@@ -23,29 +17,17 @@ package Server {
     webserver -down-(Store
 
     component "SessionManager" as sessionsmgmt
-    component "AccessManager" as accessmgmt
-    component "UserManager" as usermgmt
     component "RequestResponseHandler" as requesthandler
 
-    note right of sessionsmgmt : Manages the user sessions
-    note right of accessmgmt : Generates and provides\nAPI keys with timeout for authorized users
-    note right of requesthandler : Parses the incoming JSON request,\nchecks the permission of the\nuser and forwards the request\nto controller
-    note right of usermgmt : Checks the username and password\nof the current user
+    note left of sessionsmgmt : Checks and manages active sessions.\nChecks user credentials and permissions
+    note left of requesthandler : Parses the incoming JSON request,\nchecks the session rights and invokes\ncorresponding API services
 
     interface "RequestResponseManager" as Request
     requesthandler -up- Request
 
-    requesthandler *--> servicecontroller : forwards requests
     requesthandler *--> sessionsmgmt : checks/requests\naccess/session
-    sessionsmgmt *--> accessmgmt : Check/aquire/renew\nAPI key
-    accessmgmt *--> usermgmt : Check existence\nof user and\nits rights
 
     webserver -down-(Request
     sessionsmgmt -down-(Store
-    accessmgmt -down-(Store
-    accessmgmt -down-(Crypt : consume TRNG
-    accessmgmt -down-(Timer : consumes timer\nfor timeout
-    usermgmt -down-(Store
-    usermgmt -down-(Crypt
 }
 @enduml

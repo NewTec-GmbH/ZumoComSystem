@@ -55,7 +55,7 @@ NVSManager::~NVSManager()
     closeNVS();
 }
 
-bool NVSManager::putEntry(String key, String value)
+bool NVSManager::putEntry(const String& key, const String& value)
 {
     bool retCode = (m_preferences.putString(key.c_str(), value) > 0);
     if (false == retCode)
@@ -65,7 +65,7 @@ bool NVSManager::putEntry(String key, String value)
     return retCode;
 }
 
-bool NVSManager::putEntry(String key, uint8_t* value, size_t length)
+bool NVSManager::putEntry(const String& key, const uint8_t* value, const size_t length)
 {
     bool retCode = (m_preferences.putBytes(key.c_str(), value, length) == length);
     if (false == retCode)
@@ -75,12 +75,12 @@ bool NVSManager::putEntry(String key, uint8_t* value, size_t length)
     return retCode;
 }
 
-bool NVSManager::readEntry(String key, uint8_t* buffer, size_t length)
+bool NVSManager::readEntry(const String& key, uint8_t* buffer, const size_t length)
 {
     return (m_preferences.getBytes(key.c_str(), buffer, length) == length);
 }
 
-bool NVSManager::deleteEntry(String key)
+bool NVSManager::deleteEntry(const String& key)
 {
     bool retCode = m_preferences.remove(key.c_str());
     if (false == retCode)
@@ -90,9 +90,9 @@ bool NVSManager::deleteEntry(String key)
     return retCode;
 }
 
-String NVSManager::readEntry(String key)
+void NVSManager::readEntry(const String& key, String& outputString)
 {
-    return m_preferences.getString(key.c_str(), "null");
+    outputString = m_preferences.getString(key.c_str(), "null");
 }
 
 bool NVSManager::wipeNVS()

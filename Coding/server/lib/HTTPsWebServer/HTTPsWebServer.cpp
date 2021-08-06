@@ -40,18 +40,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <HTTPsWebServer.h>
+#include <Log.h>
+#include <HTTPRequest.hpp>
+#include <HTTPResponse.hpp>
+#include <ResponseCode.h>
 
-const String HTTPsWebServer::m_servedFileTypes[][2] = {
+const KeyValue HTTPsWebServer::m_servedFileTypes[] =
+{
     {".html", "text/html"},
     {".css", "text/css"},
     {".js", "application/javascript"},
-    {".jpg", "application/jpeg"}};
+    {".jpg", "image/jpeg"},
+    {".png", "image/png"},
+    {".ico", "image/vnd.microsoft.icon"}
+};
 
 FileManager HTTPsWebServer::m_fileManager;
 
 HTTPsWebServer::HTTPsWebServer() :
     m_httpsServer(Store::getInstance().getKeyCert().getSSLCert(), SHARED_TCP_PORT, MAX_CLIENTS),
     m_fileServeRoute("", "", &registerFileServing),
+    m_apiRoute("/api", &Session::create),
     m_store(Store::getInstance())
 {
 }
@@ -65,6 +74,10 @@ bool HTTPsWebServer::startServer()
 {
     m_httpsServer.registerNode(&m_fileServeRoute);
     m_httpsServer.setDefaultNode(&m_fileServeRoute);
+    LOG_INFO("Registered file serving route");
+
+    m_httpsServer.registerNode(&m_apiRoute);
+    LOG_INFO("Registered websocket API route");
 
     return ((1 == m_httpsServer.start()) && (true == m_httpsServer.isRunning()));
 }
@@ -98,7 +111,7 @@ void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, http
             requestedFile = "/index.html";
         }
 
-        mimeType = getMIMEType(requestedFile);
+        getMIMEType(requestedFile, mimeType);
 
         if ((true == FileManager::fileExists(requestedFile))
             && (mimeType != "null")
@@ -125,7 +138,7 @@ void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, http
         }
         else
         {
-            response->setStatusCode(NOTFOUND);
+            response->setStatusCode(NOT_FOUND);
             response->println("Could not find such resource!");
         }
 
@@ -134,24 +147,23 @@ void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, http
     else
     {
         request->discardRequestBody();
-        response->setStatusCode(METHODNOTALLOWED);
+        response->setStatusCode(METHOD_NOT_ALLOWED);
         response->println("Invalid request!");
     }
 }
 
-String HTTPsWebServer::getMIMEType(String filePath)
+void HTTPsWebServer::getMIMEType(const String& filePath, String& mimeType)
 {
-    String mimeType = "null";
+    mimeType = "null";
 
     const uint8_t arrLength = sizeof(m_servedFileTypes) / sizeof(m_servedFileTypes[0]);
 
     for (uint8_t endingIdx = 0; endingIdx < arrLength; endingIdx++)
     {
-        if (true == filePath.endsWith(m_servedFileTypes[endingIdx][0]))
+        if (true == filePath.endsWith(m_servedFileTypes[endingIdx].key))
         {
-            mimeType = m_servedFileTypes[endingIdx][1];
+            mimeType = m_servedFileTypes[endingIdx].value;
             break;
         }
     }
-    return mimeType;
 }

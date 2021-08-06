@@ -40,11 +40,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <Robot.h>
+#include <Log.h>
+#include <GPIOPins.h>
 
 Robot::Robot() :
     m_io(IO::getInstance())
 {
-    m_io.setPinMode(ROBOT_RESET_PIN, OUTPUT);
+    m_io.setPinMode(GPIOPins::PIN_ROBOT_RESET, OUTPUT);
 }
 
 Robot::~Robot()
@@ -54,9 +56,9 @@ Robot::~Robot()
 void Robot::resetRobotNow()
 {
     /* Pull down RESET line for ROBOT_RESET_TIME */
-    m_io.writeGPIO(ROBOT_RESET_PIN, LOW);
+    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
     delay(ROBOT_RESET_TIME_MS);
-    m_io.writeGPIO(ROBOT_RESET_PIN, HIGH);
+    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
 
     LOG_DEBUG("Robot will be restarted");
 }
