@@ -77,7 +77,8 @@ class RequestResponseHandler
     - m_fwCheck : FirmwareChecker
     + {static} getInstance(): RequestResponseHandler&
     + makeRequest(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void
-    + makeRequest(stream: std::istream&, response: ApiResponse&, connectionCtx: Session*): void
+    + makeRequest(response: ApiResponse&, connectionCtx: Session*): void
+    + resetBinaryTransmission(): void
     - RequestResponseHandler()
     - ~RequestResponseHandler()
     - getCommandOfApiRequest(request: const ApiRequest&): const Command*
@@ -88,6 +89,13 @@ RequestResponseHandler "0..*" o--> "0..*" Command
 RequestResponseHandler ..> ApiRequest
 RequestResponseHandler ..> ApiResponse
 RequestResponseHandler ..> ResponseCode
+RequestResponseHandler ..> Session
+
+class KeyValue
+{
+    key: char* {readonly}
+    value: char* {readonly}
+}
 
 class HTTPsWebServer
 {

@@ -56,14 +56,16 @@ package Data
         - {static} m_fwInfos: FirmwareInfo[NUMBER_OF_FIRMWARES]
         - m_available: bool
         - m_targetSystem: String
+        - m_payloadHashValue: String
         - m_isValid: bool
         - m_sizeBytes: uint32_t
         + FirmwareInfo()
-        + putInfo(targetSystem: const String&, isValid: const bool, sizeBytes: const uin32_t): bool
-        + deleteInfo(targetSystem: const String&): bool
         + ~FirmwareInfo()
-        + serialize(serial: String&): bool
-        + deserialize(serial: const String&): bool
+        + {static} putInfo(targetSystem: const String&, payloadHashValue: const String&, isValid: const bool, sizeBytes: const uin32_t, updateInfo: const bool): bool
+        + {static} getInfo(targetSystem: const String&): const FirmwareInfo*
+        + {static} deleteInfo(targetSystem: const String&): bool
+        + {static} serialize(serial: String&): bool
+        + {static} deserialize(serial: const String&): bool
     }
 
     enum Permission
@@ -124,13 +126,20 @@ package Data
         - m_sessionAuthenticated: bool = false
         - m_linkedUser: User*
         - m_lastAccessTime: unsigned long = 0
+        + {static} MAX_BUFFER_SIZE_BYTE: uin16_t = {readonly} 2048
+        + {static} API_TIMEOUT_MS: uin16_t = {readonly} 15000
+        + m_readBytes: uint32_t
+        + m_streamByteIdx: uint32_t
+        + m_expectingBytes: uint32_t
+        + m_binaryBuffer: uint8_t[MAX_BUFFER_SIZE_BYTE]
         + Session()
         + ~Session()
         + {static} start(): bool
         + {static} create(): httpsserver::WebSocketHandler*
         + onMessage(inputBuffer: httpsserver::WebsocketInputStreambuf*): void
         + onClose(): void
-        + expectBinary(): void
+        + expectBinary(binarySize: const uint32_t): void
+        + resetBinaryTransmission(): void
         + isAuthenticated(): bool  {const}
         + authenticateSession(user: User*): void
         + deauthenticateSession(): void

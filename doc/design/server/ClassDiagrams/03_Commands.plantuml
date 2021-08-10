@@ -27,10 +27,14 @@ Command <|-down-FlashZumoCommand
 
 class UploadZumoCommand
 {
+    - m_writtenFirmwareBytes: uint32_t
+    - m_fileManager: FileManager
+    - writeFile(dataChunk: const uint8_t*, chunkSize: const uint16_t, response: ApiResponse&)
     + UploadZumoCommand()
     + ~UploadZumoCommand()
-    + run(stream: std::istream&, fwChecker: FirmwareChecker&, response: ApiResponse&, connectionCtx: Session*):  void {const}
+    + run(fwChecker: FirmwareChecker&, response: ApiResponse&, connectionCtx: Session*):  void {const}
 }
+UploadZumoCommand "0..*" *--> "1" FileManager
 
 class UploadZumoCommand
 {

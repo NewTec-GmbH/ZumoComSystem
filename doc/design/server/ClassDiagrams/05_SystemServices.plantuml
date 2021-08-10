@@ -7,6 +7,7 @@ package Data
 package "Arduino Core"
 {
     class Preferences
+    class mbedTLS
 }
 
 package "Crypto"
@@ -62,42 +63,50 @@ package SystemServices {
         + ~FileManager()
         + {static} initFS(): bool
         + openFile(fileName: const String&, mode: const char*): bool
+        + fileOpened(): bool
         + closeFile(): void
         + resetFilePointer(): bool
         + read4KBlock(buffer: uint8_t*): int16_t
-        + write4KBlock(buffer: uint8_t*, size: const uint16_t&): int16_t
+        + write4KBlock(buffer: const uint8_t*, size: const uint16_t&): int16_t
         + {static} fileExists(fileName: const String&): bool
         + getFileSize(): int32_t {const}
         + {static} getFileSize(fileName: const String&): int32_t
-        + {static} listFiles(): std::vector<String>
-        - {static} getInfo(): String
+        - {static} getInfo(infoString: String&): void
     }
     FileManager ..> FileMode : uses
 
     class PublicSigningKey
     {
-        + {static} RSA2048_PUBLIC_KEY {readonly}
+        + {static} RSA2048_PUBLIC_KEY: char* {readonly}
+        + {static} KEY_LENGTH_BYTES: uint16_t {readonly}
     }
 
     class CryptoServices
     {
         - {static} SALT_LENGTH_BYTE: uint8_t {readonly} = 64
-        - {static} HASH_LENGTH_BYTE: uint8_t {readonly} = 64
+        - {static} BLAKE2b_LENGTH_BYTE: uint8_t {readonly} = 64
+        - {static} SHA256_LENGTH_BYTE: uint8_t {readonly} = 32
         - m_hasherInstance: BLAKE2b
+        - m_hashBuffer: uint8_t[SHA256_LENGTH_BYTE]
+        - m_hashAvailable: bool
+        - m_publicKeyContext: mbedtls_pk_context
+        - m_messageDigestContext: mbedtls_md_context_t
         + CryptoServices()
         + ~CryptoServices()
         + getRandomSalt(outputString: String&): bool
         + hashBlake2b(cleartext: const String&, salt: const String&, outputString: String&): bool
         + updateVerifySignature(dataChunk: const uint8_t*, dataSize: const uint16_t): bool
         + resetVerifySignature(): bool
-        + verifySignature(signedHash: const uint8_t*, signedHashSize: const uint16_t): bool
+        + getComputedHashValue(outputString: String&): bool
+        + verifySignature(signature: const uint8_t*, signatureSize: const uint16_t): bool
     }
     CryptoServices "0..*" *--> "1" BLAKE2b
+    CryptoServices "0..*" *--> "1" mbedTLS
+
     CryptoServices ..> PublicSigningKey : includes
 
     class FirmwareHeader
     {
-        - {static} AWAIT_STREAM_TIMEOUT_MS: uint16_t = {readonly} 15000
         + {static} HEADER_SIZE_BYTE: uint16_t = {readonly} 337
         - {static} ID_SIZE_BYTE: uint8_t = {readonly} 16
         - {static} TARGET_SIZE_BYTE: uint8_t = {readonly} 16
@@ -105,28 +114,28 @@ package SystemServices {
         - {static} HASH_ALG_SIZE_BYTE: uint8_t = {readonly} 16
         - {static} SIGN_ALG_SIZE_BYTE: uint8_t = {readonly} 32
         - {static} SIGNATURE_SIZE_BYTE: uint16_t = {readonly} 256
+        - m_readHeaderBytes: uint16_t
         - m_idBuffer: uint8_t[ID_SIZE_BYTE]
         - m_targetBuffer: uint8_t[TARGET_SIZE_BYTE]
         - m_versionBuffer: uint8_t[VERSION_SIZE_BYTE]
         - m_hashAlgBuffer: uint8_t[HASH_ALG_SIZE_BYTE]
         - m_signAlgBuffer: uint8_t[SIGN_ALG_SIZE_BYTE]
         - m_signatureBuffer: uint8_t[SIGNATURE_SIZE_BYTE]
-        + FirmwareInfo()
-        + ~FirmwareInfo()
-        + deserialize(stream: std::istream&): bool
+        + FirmwareHeader()
+        + ~FirmwareHeader()
+        + deserialize(dataChunk: const uint8_t*, chunkSize: const uint16_t): bool
         + reset(): void
         + getID(id: String&): void {const}
-        + getVersion(version: String&): void {const}
+        + getVersion(): uint8_t {const}
         + getHashAlg(alg: String&): void {const}
         + getSignAlg(alg: String&): void {const}
         + getTarget(target: String&): void {const}
-        + getSignature(signature: const uint8_t*): void {const}
+        + getSignature(): const uint8_t* {const}
     }
 
     class FirmwareChecker
     {
-        - {static} AWAIT_STREAM_TIMEOUT_MS: uint16_t = {readonly} 15000
-        + {static} MAX_ZUMO_FW_BLOB_SIZE_BYTE: uint16_t = {readonly} 32000
+        + {static} MAX_ZUMO_FW_BLOB_SIZE_BYTE: uint32_t = {readonly} 2000000
         + {static} MAX_COM_FW_BLOB_SIZE_BYTE: uint32_t = {readonly} 1310720
         - {static} EXPECTED_ID: char* = {readonly} "CPSFW"
         - {static} EXPECTED_VERSION: uint8_t = {readonly} 1
@@ -137,11 +146,12 @@ package SystemServices {
         - m_readPayloadBytes: uint32_t
         + FirmwareChecker()
         + ~FirmwareChecker()
-        + deserialize(stream: std::istream&): bool
-        + readHeader(stream: std::istream&): bool
+        + deserializeHeader(dataChunk: const uint8_t*, chunkSize: const uint16_t): void
+        + deserializePayload(dataChunk: const uint8_t*, chunkSize: const uint16_t): bool
         + reset(): void
         + idOK(): bool
-        + getTarget(target: String&): bool {const}
+        + getTarget(target: String&): void {const}
+        + getComputedHashValue(outputString: String&): bool
         + isValid(expectedTarget: const String&): bool
     }
     FirmwareChecker "0..*" *--> "1" FirmwareHeader
