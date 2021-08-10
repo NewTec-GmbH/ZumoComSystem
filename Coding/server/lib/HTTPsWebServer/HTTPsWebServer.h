@@ -46,7 +46,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Store.h>
 #include <HTTPSServer.hpp>
 #include <FileManager.h>
-#include <Session.h>
 
 class HTTPsWebServer
 {
@@ -79,22 +78,6 @@ public:
     void handleServer();
 
 private:
-    /**
-     * Handles incoming file requests
-     *
-     * @param[in] request The incoming HTTP request
-     * @param[in] response The outgoing HTTP response
-     */
-    static void registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response);
-
-    /**
-     * Checks if the requested file has valid file ending and returns corresponding MIME type
-     *
-     * @param[in] filePath The filepath to be checked for its ending
-     * @param[out] mimeType The MIME type for the detected file ending, Returns 'null' if file ending is invalid
-     */
-    static void getMIMEType(const String& filePath, String& mimeType);
-
     /** TCP port which is used for frontend delivery as well as backend API services */
     static const uint16_t SHARED_TCP_PORT = 443;
 
@@ -118,5 +101,21 @@ private:
 
     /** FileManager instance */
     static FileManager m_fileManager;
+
+    /**
+     * Handles incoming file requests
+     *
+     * @param[in] request The incoming HTTP request
+     * @param[in] response The outgoing HTTP response
+     */
+    static void registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response);
+
+    /**
+     * Checks if the requested file has valid file ending and returns corresponding MIME type
+     *
+     * @param[in] filePath The filepath to be checked for its ending
+     * @param[out] mimeType The MIME type for the detected file ending, Returns 'null' if file ending is invalid
+     */
+    static void getMIMEType(const String& filePath, String& mimeType);
 };
 #endif /** __HTTPSWEBSERVER_H__ */

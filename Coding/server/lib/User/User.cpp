@@ -254,6 +254,7 @@ bool User::serialize(String& serialized) const
     if (true == retCode)
     {
         LOG_DEBUG("Users successfully serialized to JSON");
+        LOG_DEBUG(serialized);
     }
     else
     {

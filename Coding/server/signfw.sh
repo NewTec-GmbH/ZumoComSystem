@@ -1,3 +1,6 @@
+#!/bin/bash
+
+<< LICENSE
 /*
 BSD 3-Clause License
 
@@ -29,42 +32,16 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+LICENSE
 
-/**
- * @file EchoDemoCommand.h
- * @author Luis Moser
- * @brief EchoDemoCommand header
- * @date 07/23/2021
- *
- * @{
- */
-
-#ifndef __ECHODEMOCOMMAND_H__
-#define __ECHODEMOCOMMAND_H__
-
-#include <Command.h>
-
- /** Simple greeter class for demonstrating API services */
-class EchoDemoCommand : public Command
-{
-public:
-    /**
-     * Default Constructor
-     */
-    EchoDemoCommand();
-
-    /**
-     * Destructor
-     */
-    ~EchoDemoCommand();
-
-    /**
-     * Implements the API service business logic
-     *
-     * @param[in] request Reference to the incoming ApiRequest
-     * @param[out] response Reference to the outgoing ApiResponse
-     * @param[in] connectionCtx Pointer to Session class instance
-     */
-    void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const;
-};
-#endif /** __ECHODEMOCOMMAND_H__ */
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+    echo "Missing command line arguments!"
+    echo "usage: ./signfw <your_private_rsa_key> <your_firmware_to_be_signed> <your_output_signature_file>"
+else
+    echo "[i] Signing your firmware image now"
+    prv_key_file=$1
+    input_binary_file=$2
+    output_sig_file=$3
+    openssl dgst -sha256 -sign $prv_key_file < $input_binary_file > $output_sig_file
+    echo "[+] Done"
+fi

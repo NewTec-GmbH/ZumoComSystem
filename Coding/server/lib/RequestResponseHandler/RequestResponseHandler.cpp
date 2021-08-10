@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <RequestResponseHandler.h>
+#include <Log.h>
 
 RequestResponseHandler::RequestResponseHandler() :
     m_echoDemoCommand(),
@@ -72,7 +73,7 @@ void RequestResponseHandler::makeRequest(const ApiRequest& request, ApiResponse&
             {
                 if (true == m_sessionManager.checkSession(apiService, connectionCtx))
                 {
-                    apiService->run(request, response);
+                    apiService->run(request, response, connectionCtx);
                 }
                 else
                 {
@@ -81,7 +82,7 @@ void RequestResponseHandler::makeRequest(const ApiRequest& request, ApiResponse&
             }
             else
             {
-                apiService->run(request, response);
+                apiService->run(request, response, connectionCtx);
             }
         }
         else
@@ -91,10 +92,52 @@ void RequestResponseHandler::makeRequest(const ApiRequest& request, ApiResponse&
     }
 }
 
+void RequestResponseHandler::makeRequest(ApiResponse& response, Session* connectionCtx)
+{
+    String targetSystem;
+
+    m_fwCheck.deserializeHeader(connectionCtx->m_binaryBuffer, connectionCtx->m_readBytes);
+
+    if (true == m_fwCheck.idOK())
+    {
+        m_fwCheck.getTarget(targetSystem);
+        if (targetSystem == "ZUMO")
+        {
+            m_uploadZumoCommand.run(m_fwCheck, response, connectionCtx);
+        }
+        else if (targetSystem == "COM")
+        {
+            /* TODO: Implement UploadCOMCommand */
+            response.setStatusCode(NOT_IMPLEMENTED);
+            LOG_ERROR("UploadCOMCommand not implemented!");
+        }
+        else
+        {
+            response.setStatusCode(BAD_REQUEST);
+            LOG_ERROR("Invalid firmware header target!");
+        }
+    }
+    else
+    {
+        response.setStatusCode(BAD_REQUEST);
+        LOG_ERROR("Invalid firmware header id!");
+    }
+}
+
+void RequestResponseHandler::resetBinaryTransmission()
+{
+    m_fwCheck.reset();
+}
+
 const Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& request)
 {
     const Command* command = nullptr;
-    if (request.getCommandId() == "echodemo")
+    const String commandID = request.getCommandId();
+    if (commandID == "uploadzumo")
+    {
+        command = &m_uploadZumoCommand;
+    }
+    else if (commandID == "echodemo")
     {
         command = &m_echoDemoCommand;
     }

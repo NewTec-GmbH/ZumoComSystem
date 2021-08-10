@@ -118,6 +118,7 @@ bool NetworkCredentials::serialize(String& serial) const
     if (true == retCode)
     {
         LOG_DEBUG("Network credentials successfully serialized to JSON");
+        LOG_DEBUG(serial);
     }
     else
     {

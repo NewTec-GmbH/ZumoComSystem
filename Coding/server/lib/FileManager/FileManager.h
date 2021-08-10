@@ -75,6 +75,13 @@ public:
     bool openFile(const String& fileName, const char* mode);
 
     /**
+     * Checks if the current instance has an opened file available
+     *
+     * @return Returns true if file is opened, else false
+     */
+    bool fileOpened();
+
+    /**
      * Closes a previously opened file and writes all unwritten data to file
      */
     void closeFile();
@@ -106,7 +113,7 @@ public:
      * @param[in] size The number of bytes to be written from the buffer into the file
      * @return Returns the number of written bytes. Returns -1 in case of error
      */
-    int16_t write4KBlock(uint8_t* buffer, const uint16_t& size);
+    int16_t write4KBlock(const uint8_t* buffer, const uint16_t& size);
 
     /**
      * Checks if the specified file exists
@@ -130,22 +137,15 @@ public:
      */
     static int32_t getFileSize(const String& fileName);
 
-    /**
-     * Lists all existing files in which are located in root directory.
-     *
-     * @return Returns string array which contains the file names of all existing files
-     */
-    static std::vector<String> listFiles();
-
 private:
+    /** Handle to the currently opened filed */
+    File m_fileHandle;
+
     /**
      * Prints information about the current state of the FS
      *
-     * @return Returns the string containing the FS informations
+     * @param[out] infoString string reference containing the FS information
      */
-    static String getInfo();
-
-    /** Handle to the currently opened filed */
-    File m_fileHandle;
+    static void getInfo(String& infoString);
 };
 #endif /** __FILEMANAGER_H__ */

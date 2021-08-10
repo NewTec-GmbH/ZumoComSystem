@@ -49,6 +49,23 @@ package Data
     }
     KeyCert "0..*" *--> "1" SSLCert
 
+    class FirmwareInfo
+    {
+        - {static} NUMBER_OF_SAVED_FIRMWARES: uint8_t {readonly} = 2
+        - {static} m_savedFirmwares:uint8_t = 0
+        - {static} m_fwInfos: FirmwareInfo[NUMBER_OF_FIRMWARES]
+        - m_available: bool
+        - m_targetSystem: String
+        - m_isValid: bool
+        - m_sizeBytes: uint32_t
+        + FirmwareInfo()
+        + putInfo(targetSystem: const String&, isValid: const bool, sizeBytes: const uin32_t): bool
+        + deleteInfo(targetSystem: const String&): bool
+        + ~FirmwareInfo()
+        + serialize(serial: String&): bool
+        + deserialize(serial: const String&): bool
+    }
+
     enum Permission
     {
         ANY,
@@ -98,10 +115,12 @@ package Data
     class Session
     {
         - {static} MAX_CLIENTS: uint8_t {readonly} = 4
+        - {static} MAX_TEXT_REQUEST_SIZE_BYTE: uint16_t {readonly} = 512
         - {static} SESSION_TIMEOUT_SECONDS {readonly} = 900;
         - {static} m_sessions: Session*[MAX_CLIENTS];
         - {static} m_sessionMutex: SemaphoreHandle_t
         - {static} m_numberOfActiveClients: uint8_t = 0
+        - m_expectBinary: bool = false
         - m_sessionAuthenticated: bool = false
         - m_linkedUser: User*
         - m_lastAccessTime: unsigned long = 0
@@ -111,6 +130,7 @@ package Data
         + {static} create(): httpsserver::WebSocketHandler*
         + onMessage(inputBuffer: httpsserver::WebsocketInputStreambuf*): void
         + onClose(): void
+        + expectBinary(): void
         + isAuthenticated(): bool  {const}
         + authenticateSession(user: User*): void
         + deauthenticateSession(): void
@@ -127,6 +147,7 @@ package Data
         - m_apCredentials: NetworkCredentials
         - m_keyCert: KeyCert
         - m_users: User
+        - m_firmwareInfo: FirmwareInfo
         {static} + getInstance(): Store&
         + getSTACredentials(): const NetworkCredentials& {const}
         + setSTACredentials(credentials: const NetworkCredentials&): void
@@ -140,6 +161,10 @@ package Data
         + setUsers(users: const User&): void
         + saveUsers(): bool
         + loadUsers(): bool
+        + getFirmwareInfo(): const FirmwareInfo& {const}
+        + setFirmwareInfo(info: const FirmwareInfo&): void
+        + saveFirmwareInfo(): bool
+        + loadFirmwareInfo(): bool
         + getAPCredentials(): const NetworkCredentials& {const}
         + setAPCredentials(credentials: const NetworkCredentials&): void
         + closeStore(): void
@@ -150,5 +175,6 @@ package Data
     Store "0..*" *--> "2" NetworkCredentials
     Store "0..*" *--> "1" KeyCert
     Store "0..*" *--> "1" User
+    Store "0..*" *--> "1" FirmwareInfo
 }
 @enduml

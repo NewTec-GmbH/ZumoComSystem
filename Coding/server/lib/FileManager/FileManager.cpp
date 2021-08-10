@@ -88,7 +88,12 @@ bool FileManager::initFS()
         retCode = true;
     }
 
-    LOG_INFO(getInfo());
+#ifdef ACTIVATE_LOGGING
+    String outputString = "";
+    getInfo(outputString);
+    LOG_INFO(outputString);
+#endif
+
     return retCode;
 }
 
@@ -115,6 +120,11 @@ bool FileManager::openFile(const String& fileName, const char* mode)
         retCode = false;
     }
     return retCode;
+}
+
+bool FileManager::fileOpened()
+{
+    return (true == m_fileHandle);
 }
 
 void FileManager::closeFile()
@@ -150,7 +160,7 @@ int16_t FileManager::read4KBlock(uint8_t* buffer)
     return readBytes;
 }
 
-int16_t FileManager::write4KBlock(uint8_t* buffer, const uint16_t& size)
+int16_t FileManager::write4KBlock(const uint8_t* buffer, const uint16_t& size)
 {
     const uint16_t BUFFER_SIZE_BYTES = 4096;
     int16_t writtenBytes = -1;
@@ -176,7 +186,7 @@ int32_t FileManager::getFileSize(const String& fileName)
 {
     File fileHandle;
     int32_t fileSize = -1;
-    
+
     SPIFFS.begin(false);
     fileHandle = SPIFFS.open(fileName, "r");
 
@@ -190,36 +200,40 @@ int32_t FileManager::getFileSize(const String& fileName)
     return fileSize;
 }
 
-std::vector<String> FileManager::listFiles()
+void FileManager::getInfo(String& infoString)
 {
-    std::vector<String> existingFiles;
-    SPIFFS.begin(false);
-
-    File rootDir = SPIFFS.open("/", "r");
-    File currentFile = rootDir.openNextFile();
-
-    while (true == currentFile)
-    {
-        existingFiles.push_back(currentFile.name());
-        currentFile = rootDir.openNextFile();
-    }
-
-    currentFile.close();
-    rootDir.close();
-    SPIFFS.end();
-
-    return existingFiles;
-}
-
-String FileManager::getInfo()
-{
-    size_t capacity = SPIFFS.totalBytes();
-    size_t usedBytes = SPIFFS.usedBytes();
-    uint8_t usedBytesPercent = static_cast<uint8_t>((usedBytes / (float)capacity) * 100);
-
+    uint8_t usedBytesPercent;
     const uint8_t PRINT_BUFFER_SIZE = 128;
     char buffer[PRINT_BUFFER_SIZE];
 
+    File rootDir;
+    File currentFile;
+
+    size_t capacity = SPIFFS.totalBytes();
+    size_t usedBytes = SPIFFS.usedBytes();
+
+    /* Clear output buffer string */
+    infoString = "";
+
+    usedBytesPercent = static_cast<uint8_t>((usedBytes / (float)capacity) * 100);
+
+    /* Print the data into the output buffer */
     sprintf(buffer, "Data partition size in bytes: %d, Used bytes: %d (%d%%)", capacity, usedBytes, usedBytesPercent);
-    return String(buffer);
+    infoString += String(buffer) + "\nAvailable files on the SPIFFS partition:\n";
+
+    if (true == SPIFFS.begin(false))
+    {
+        rootDir = SPIFFS.open("/", "r");
+        if (true == rootDir)
+        {
+            File currentFile = rootDir.openNextFile();
+            while (true == currentFile)
+            {
+                infoString += currentFile.name() + String("\t(") + String(currentFile.size()) + String(" bytes)\n");
+                currentFile.close();
+                currentFile = rootDir.openNextFile();
+            }
+            rootDir.close();
+        }
+    }
 }

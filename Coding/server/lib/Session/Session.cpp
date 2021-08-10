@@ -42,12 +42,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Session.h>
 #include <RequestResponseHandler.h>
 #include <Log.h>
+#include <iostream>
 
 Session* Session::m_sessions[MAX_CLIENTS] = {nullptr};
 uint8_t Session::m_numberOfActiveClients = 0;
 SemaphoreHandle_t Session::m_sessionMutex = xSemaphoreCreateMutex();
 
 Session::Session() :
+    m_readBytes(0),
+    m_streamByteIdx(0),
+    m_expectingBytes(0),
+    m_binaryBuffer(),
+    m_expectBinary(false),
     m_sessionAuthenticated(false),
     m_linkedUser(nullptr),
     m_lastAccessTime(0)
@@ -114,36 +120,108 @@ httpsserver::WebsocketHandler* Session::create()
 void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
 {
     ApiResponse response;
-    ApiRequest request;
-    std::ostringstream stringStream;
-    std::string inputString;
     String serialResponse;
+    uint32_t messageSizeBytes = inputBuffer->getRecordSize();
+    unsigned long readBufferStartTime = 0;
+    char singleByteBuffer;
 
-    LOG_DEBUG("New session message received!");
+    LOG_INFO("New session message received!");
+    LOG_INFO(String("API-Mode: ") + (true == m_expectBinary ? "BINARY_STREAM" : "TEXT"));
 
     /* Update timestamp */
     m_lastAccessTime = millis();
 
-    /* Get the request payload text */
-    stringStream << inputBuffer;
-    inputString = stringStream.str();
-    LOG_DEBUG(String("Incoming request data:\n") + inputString.c_str());
-
-    String serial = inputString.c_str();
-    if (true == request.deserialize(serial))
+    if (true == m_expectBinary)
     {
-        /* Invoke the API call and send back response */
-        RequestResponseHandler::getInstance().makeRequest(request, response, this);
+        m_readBytes = 0;
+
+        uint32_t recordSize = inputBuffer->getRecordSize();
+        if (MAX_BUFFER_SIZE_BYTE >= recordSize)
+        {
+            std::istream inputStream{inputBuffer};
+            while (m_readBytes < recordSize)
+            {
+                readBufferStartTime = millis();
+                do
+                {
+                    if (true == inputStream.eof() && false == inputStream.bad())
+                    {
+                        LOG_WARN("Unexpected EOF in binary prior actual EOF. Resetting EOF flag and trying again...");
+                        inputStream.clear();
+                    }
+                    singleByteBuffer = inputStream.get();
+                } while ((true == inputStream.eof()) && ((millis() - readBufferStartTime) < API_TIMEOUT_MS));
+
+                if (false == inputStream.eof())
+                {
+                    m_binaryBuffer[m_readBytes] = singleByteBuffer;
+                    m_readBytes++;
+                    m_streamByteIdx++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (m_readBytes == recordSize)
+            {
+                RequestResponseHandler::getInstance().makeRequest(response, this);
+            }
+            else
+            {
+                response.setStatusCode(ERROR);
+                LOG_ERROR("Could not read entire websocket buffer! Request discarded!");
+            }
+        }
+        else
+        {
+            LOG_ERROR(String("Input record bigger than input buffer. Discarding data!. Please decrease record size! Max buffer size: ") + MAX_BUFFER_SIZE_BYTE);
+            response.setStatusCode(BAD_REQUEST);
+        }
     }
     else
     {
-        response.setStatusCode(BAD_REQUEST);
+        ApiRequest request;
+        std::ostringstream stringStream;
+        std::string inputString;
+
+        if (messageSizeBytes <= MAX_TEXT_REQUEST_SIZE_BYTE)
+        {
+            /* Read entire buffer. Get the request payload text */
+            stringStream << inputBuffer;
+            inputString = stringStream.str();
+            LOG_DEBUG(String("Incoming request data:\n") + inputString.c_str());
+
+            String serial = inputString.c_str();
+            if (true == request.deserialize(serial))
+            {
+                /* Invoke the API call and send back response */
+                RequestResponseHandler::getInstance().makeRequest(request, response, this);
+            }
+            else
+            {
+                LOG_ERROR("Could not deserialize the incoming ApiResponse!");
+                response.setStatusCode(BAD_REQUEST);
+            }
+        }
+        else
+        {
+            LOG_ERROR("Exceeded MAX_TEXT_REQUEST_SIZE_BYTE for API TEXT mode!");
+            response.setStatusCode(BAD_REQUEST);
+        }
     }
+
+    /* Clear the input buffer */
+    inputBuffer->discard();
 
     if (false == response.serialize(serialResponse))
     {
         serialResponse = "{\\\"statusCode\\\":" + String(ERROR) + "}";
+        LOG_ERROR("Could not serialize the outgoing ApiResponse!");
     }
+
+    /* Always send the ApiResponse */
     send(serialResponse.c_str(), SEND_TYPE_TEXT);
 }
 
@@ -158,11 +236,32 @@ void Session::onClose()
             /* No need to delete instance, as this has already been done by HTTPConnection class */
             m_sessions[sessionIdx] = nullptr;
             m_numberOfActiveClients--;
+            RequestResponseHandler::getInstance().resetBinaryTransmission();
             break;
         }
     }
     xSemaphoreGive(m_sessionMutex);
     LOG_INFO("Session closed!");
+}
+
+void Session::expectBinary(const uint32_t binarySize)
+{
+    m_expectBinary = true;
+    m_expectingBytes = binarySize;
+    LOG_INFO("Switching API to binary mode now!");
+    LOG_INFO(String("Expecting ") + binarySize + String(" bytes during this session"));
+}
+
+void Session::resetBinaryTransmission()
+{
+    if (true == m_expectBinary)
+    {
+        m_readBytes = 0;
+        m_streamByteIdx = 0;
+        m_expectingBytes = 0;
+        memset(m_binaryBuffer, 0, sizeof(m_binaryBuffer));
+        RequestResponseHandler::getInstance().resetBinaryTransmission();
+    }
 }
 
 bool Session::isAuthenticated() const
@@ -179,6 +278,7 @@ void Session::authenticateSession(User* user)
 void Session::deauthenticateSession()
 {
     m_sessionAuthenticated = false;
+    LOG_INFO("Session de-authenticated!");
 }
 
 void Session::handleSessionTimeout(void* parameter)

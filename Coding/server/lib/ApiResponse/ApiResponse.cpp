@@ -84,6 +84,7 @@ bool ApiResponse::serialize(String& serial)
     if (true == retCode)
     {
         LOG_DEBUG("ApiResponse successfully serialized to JSON");
+        LOG_DEBUG(serial);
     }
     else
     {

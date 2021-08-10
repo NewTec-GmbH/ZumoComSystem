@@ -44,6 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <HTTPRequest.hpp>
 #include <HTTPResponse.hpp>
 #include <ResponseCode.h>
+#include <Session.h>
 
 const char* HTTPsWebServer::m_servedFileTypes[][2] = {
     {".html", "text/html"},

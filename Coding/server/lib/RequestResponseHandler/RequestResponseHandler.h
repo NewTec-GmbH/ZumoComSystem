@@ -45,10 +45,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Arduino.h>
 #include <SessionManager.h>
 #include <Command.h>
-#include <Session.h>
 #include <EchoDemoCommand.h>
+#include <FirmwareChecker.h>
+#include <UploadZumoCommand.h>
 
- /** Simple class which handles requests and responses between the API service implementations and the webserver */
+ /** Class which handles requests and responses between the API service implementations and the webserver */
 class RequestResponseHandler
 {
 public:
@@ -66,6 +67,22 @@ public:
      * @param[in] connectionCtx Pointer to Session class instance
      */
     void makeRequest(const ApiRequest& request, ApiResponse& response, Session* connectionCtx);
+
+    /**
+     * Make a new request to the binary API
+     *
+     * @param[in] stream Reference to the incoming binary istream
+     * @param[out] response Reference to the outgoing ApiResponse
+     * @param[in] connectionCtx Pointer to Session class instance
+     */
+    void makeRequest(ApiResponse& response, Session* connectionCtx);
+
+    /**
+     * Clears all buffers and variables which have been used in the API BINARY mode.
+     * Call this method when you want to re-use an open session in API BINARY mode when
+     * there has been any transmissions prior.
+     */
+    void resetBinaryTransmission();
 
 private:
     /**
@@ -89,7 +106,13 @@ private:
     /** Instance of the EchoDemoCommand */
     EchoDemoCommand m_echoDemoCommand;
 
+    /** Instance of UploadZumoCommand */
+    UploadZumoCommand m_uploadZumoCommand;
+
     /** Instance of SessionManager */
     SessionManager m_sessionManager;
+
+    /** Instance of FirmwareChecker */
+    FirmwareChecker m_fwCheck;
 };
 #endif /** __REQUESTRESPONSEHANDLER_H__ */

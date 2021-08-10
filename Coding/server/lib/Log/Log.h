@@ -126,7 +126,8 @@ public:
 
 private:
     /** Constructor */
-    Log() : m_logLevel(LEVEL_DEBUG)
+    Log() :
+        m_logLevel(LEVEL_DEBUG)
     {
     }
 

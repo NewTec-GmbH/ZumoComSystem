@@ -8,7 +8,7 @@ abstract class Command
     + {virtual} ~Command()
     + getServiceID(): const String& {const}
     + getReqPermission(): const Permission& {const}
-    + {abstract} run(request: const ApiRequest&, response: ApiResponse&): void {const}
+    + {abstract} run(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void {const}
 }
 
 class EchoDemoCommand
@@ -29,8 +29,15 @@ class UploadZumoCommand
 {
     + UploadZumoCommand()
     + ~UploadZumoCommand()
+    + run(stream: std::istream&, fwChecker: FirmwareChecker&, response: ApiResponse&, connectionCtx: Session*):  void {const}
 }
-Command <|-down-UploadZumoCommand
+
+class UploadZumoCommand
+{
+    + UploadZumoCommand()
+    + ~UploadZumoCommand()
+}
+Command <|-down-FlashZumoCommand
 
 class RebootZumoCommand
 {
@@ -74,4 +81,5 @@ class UploadCOMCommand
     + ~UploadCOMCommand()
 }
 Command <|-down-UploadCOMCommand
+
 @enduml

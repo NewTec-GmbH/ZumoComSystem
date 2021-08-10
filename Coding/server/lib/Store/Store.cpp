@@ -203,6 +203,31 @@ bool Store::loadUsers()
     return retCode;
 }
 
+bool Store::saveFirmwareInfo()
+{
+    String serialized;
+    bool serializeRetCode = FirmwareInfo::serialize(serialized);
+    bool saveRetCode = m_nvsmgr.putEntry("fwinfo", serialized);
+    bool retCode = ((true == serializeRetCode) && (true == saveRetCode));
+    if (false == retCode)
+    {
+        LOG_ERROR("Could not save FirmwareInfo to persistent storage");
+    }
+    return retCode;
+}
+
+bool Store::loadFirmwareInfo()
+{
+    String json;
+    m_nvsmgr.readEntry("fwinfo", json);
+    bool retCode = ((String("null") != json) && (true == FirmwareInfo::deserialize(json)));
+    if (false == retCode)
+    {
+        LOG_ERROR("Could not load FirmwareInfo from persistent storage");
+    }
+    return retCode;
+}
+
 const NetworkCredentials& Store::getAPCredentials() const
 {
     return m_apCredentials;

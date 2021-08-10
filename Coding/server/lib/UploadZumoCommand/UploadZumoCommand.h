@@ -31,32 +31,35 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file EchoDemoCommand.h
+ * @file UploadZumoCommand.h
  * @author Luis Moser
- * @brief EchoDemoCommand header
- * @date 07/23/2021
+ * @brief UploadZumoCommand header
+ * @date 08/03/2021
  *
  * @{
  */
 
-#ifndef __ECHODEMOCOMMAND_H__
-#define __ECHODEMOCOMMAND_H__
+#ifndef __UPLOADZUMOCOMMAND_H__
+#define __UPLOADZUMOCOMMAND_H__
 
+#include <FirmwareChecker.h>
+#include <ApiResponse.h>
 #include <Command.h>
+#include <FileManager.h>
 
- /** Simple greeter class for demonstrating API services */
-class EchoDemoCommand : public Command
+ /** Class which implements the firmare upload for the Zumo robot system */
+class UploadZumoCommand : public Command
 {
 public:
     /**
      * Default Constructor
      */
-    EchoDemoCommand();
+    UploadZumoCommand();
 
     /**
      * Destructor
      */
-    ~EchoDemoCommand();
+    ~UploadZumoCommand();
 
     /**
      * Implements the API service business logic
@@ -66,5 +69,30 @@ public:
      * @param[in] connectionCtx Pointer to Session class instance
      */
     void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const;
+
+    /**
+     * Implement the binary API service business logic
+     *
+     * @param[in] fwChecker Reference to the FirmwareChecker instance
+     * @param[out] response Reference to the outgoing ApiResponse
+     * @param[in] connectionCtx Pointer to Session class instance
+     */
+    void run(FirmwareChecker& fwChecker, ApiResponse& response, Session* connectionCtx);
+
+private:
+    /** Instance of the FileManager */
+    FileManager m_fileManager;
+
+    /** Specifies how many bytes of the firmware payload have been written into the file sytem */
+    uint32_t m_writtenFirmwareBytes;
+
+    /**
+     * Helper function for writing the firmware payload into the file system
+     *
+     * @param[in] dataChunk Pointer to the input buffer which contains the data to be written to the file system
+     * @param[in] chunkSize Specifies the size of the passed input buffer. Can be of 4096 bytes in size at max
+     * @param[out] response The ApiResponse instance
+     */
+    void writeFile(const uint8_t* dataChunk, const uint16_t chunkSize, ApiResponse& response);
 };
-#endif /** __ECHODEMOCOMMAND_H__ */
+#endif /** __UPLOADZUMOCOMMAND_H__ */

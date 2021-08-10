@@ -1,3 +1,6 @@
+#!/bin/bash
+
+<< LICENSE
 /*
 BSD 3-Clause License
 
@@ -29,42 +32,16 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+LICENSE
 
-/**
- * @file EchoDemoCommand.h
- * @author Luis Moser
- * @brief EchoDemoCommand header
- * @date 07/23/2021
- *
- * @{
- */
+rsa_prv_key_length_BITS="2048"
 
-#ifndef __ECHODEMOCOMMAND_H__
-#define __ECHODEMOCOMMAND_H__
+echo "[i] Generating RSA2048 private/public key pair now"
 
-#include <Command.h>
+# Generate the private RSA2048 key
+openssl genrsa -out private_sign_key.pem $rsa_prv_key_length_BITS
 
- /** Simple greeter class for demonstrating API services */
-class EchoDemoCommand : public Command
-{
-public:
-    /**
-     * Default Constructor
-     */
-    EchoDemoCommand();
+# Generate the public RSA2048 key based on private key
+openssl rsa -in private_sign_key.pem -pubout -out public_sign_key.pem
 
-    /**
-     * Destructor
-     */
-    ~EchoDemoCommand();
-
-    /**
-     * Implements the API service business logic
-     *
-     * @param[in] request Reference to the incoming ApiRequest
-     * @param[out] response Reference to the outgoing ApiResponse
-     * @param[in] connectionCtx Pointer to Session class instance
-     */
-    void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const;
-};
-#endif /** __ECHODEMOCOMMAND_H__ */
+echo "[+] Done"

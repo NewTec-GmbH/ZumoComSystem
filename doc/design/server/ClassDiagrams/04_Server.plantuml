@@ -3,6 +3,7 @@
 package SystemServices
 {
     class FileManager
+    class FirmwareChecker
 }
 
 package Data
@@ -71,14 +72,18 @@ class SessionManager
 class RequestResponseHandler
 {
     - m_echoDemoCommand: EchoDemoCommand
+    - m_uploadZumoCommand: UploadZumoCommand
     - m_sessionManager: SessionManager
+    - m_fwCheck : FirmwareChecker
     + {static} getInstance(): RequestResponseHandler&
     + makeRequest(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void
+    + makeRequest(stream: std::istream&, response: ApiResponse&, connectionCtx: Session*): void
     - RequestResponseHandler()
     - ~RequestResponseHandler()
     - getCommandOfApiRequest(request: const ApiRequest&): const Command*
 }
 RequestResponseHandler "0..*" *--> "1" SessionManager
+RequestResponseHandler "0..*" *--> "1" FirmwareChecker
 RequestResponseHandler "0..*" o--> "0..*" Command
 RequestResponseHandler ..> ApiRequest
 RequestResponseHandler ..> ApiResponse
