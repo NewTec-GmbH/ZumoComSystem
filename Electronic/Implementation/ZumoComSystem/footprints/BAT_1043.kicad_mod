@@ -1,4 +1,4 @@
-(module BAT_1043 (layer F.Cu) (tedit 60C34EB5)
+(module BAT_1043 (layer F.Cu) (tedit 61012C39)
   (fp_text reference REF** (at -35.825 -12.135) (layer F.SilkS)
     (effects (font (size 1 1) (thickness 0.015)))
   )
@@ -32,5 +32,10 @@
     (at (xyz 0 0 0))
     (scale (xyz 1 1 1))
     (rotate (xyz -90 0 0))
+  )
+  (model "${KIPRJMOD}/3D-Models/18650 Battery 01A v1 v1.step"
+    (offset (xyz 32.5 0 9.5))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 180))
   )
 )

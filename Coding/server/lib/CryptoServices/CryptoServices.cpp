@@ -50,7 +50,7 @@ CryptoServices::CryptoServices() :
     m_hashAvailable(false)
 {
     /* Initialize the random generator with seed with entropy from analog noise */
-    randomSeed(analogRead(ANALOG_NOISE_SEED_PIN));
+    randomSeed(analogRead(GPIOPins::PIN_ANALOG_NOISE_SEED));
 
     mbedtls_md_init(&m_messageDigestContext);
 

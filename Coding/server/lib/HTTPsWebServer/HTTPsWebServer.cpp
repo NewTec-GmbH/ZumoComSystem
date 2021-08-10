@@ -46,7 +46,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ResponseCode.h>
 #include <Session.h>
 
-const char* HTTPsWebServer::m_servedFileTypes[][2] = {
+const KeyValue HTTPsWebServer::m_servedFileTypes[] =
+{
     {".html", "text/html"},
     {".css", "text/css"},
     {".js", "application/javascript"},
@@ -160,9 +161,9 @@ void HTTPsWebServer::getMIMEType(const String& filePath, String& mimeType)
 
     for (uint8_t endingIdx = 0; endingIdx < arrLength; endingIdx++)
     {
-        if (true == filePath.endsWith(m_servedFileTypes[endingIdx][0]))
+        if (true == filePath.endsWith(m_servedFileTypes[endingIdx].key))
         {
-            mimeType = m_servedFileTypes[endingIdx][1];
+            mimeType = m_servedFileTypes[endingIdx].value;
             break;
         }
     }

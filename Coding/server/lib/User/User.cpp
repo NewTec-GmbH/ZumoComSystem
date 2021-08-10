@@ -90,11 +90,11 @@ User* User::getUser(const String& username)
 
 bool User::checkCredentials(const String& username, const String& password)
 {
-    xSemaphoreTake(m_usersMutex, portMAX_DELAY);
-
     bool retCode = true;
-    int8_t userIdx = getUserIdx(username);
     String computedHash;
+    
+    xSemaphoreTake(m_usersMutex, portMAX_DELAY);
+    int8_t userIdx = getUserIdx(username);
 
     if (-1 != userIdx)
     {
@@ -195,9 +195,9 @@ bool User::putUser(const String& username, const String& password, const Permiss
 
 bool User::deleteUser(const String& username)
 {
-    xSemaphoreTake(m_usersMutex, portMAX_DELAY);
-
     bool retCode = false;
+
+    xSemaphoreTake(m_usersMutex, portMAX_DELAY);
     int8_t userIdx = getUserIdx(username);
 
     if (-1 != userIdx)
@@ -213,8 +213,6 @@ bool User::deleteUser(const String& username)
 
 bool User::serialize(String& serialized) const
 {
-    xSemaphoreTake(m_usersMutex, portMAX_DELAY);
-
     bool retCode = false;
     size_t docSize = 0;
 
@@ -230,6 +228,7 @@ bool User::serialize(String& serialized) const
     JsonObject userObjects[MAX_REGISTERED_USERS];
     JsonArray userRights[MAX_REGISTERED_USERS];
 
+    xSemaphoreTake(m_usersMutex, portMAX_DELAY);
     for (uint8_t userIdx = 0; userIdx < MAX_REGISTERED_USERS; userIdx++)
     {
         if (nullptr != m_registeredUsers[userIdx])
@@ -248,6 +247,7 @@ bool User::serialize(String& serialized) const
             }
         }
     }
+    xSemaphoreGive(m_usersMutex);
 
     docSize = measureJson(jsonDocument);
     retCode = ((0 < docSize) && (docSize == serializeJson(jsonDocument, serialized)));
@@ -260,18 +260,17 @@ bool User::serialize(String& serialized) const
     {
         LOG_ERROR("Could not serialize users to JSON!");
     }
-
-    xSemaphoreGive(m_usersMutex);
     return retCode;
 }
 
 bool User::deserialize(const String& serial)
 {
-    xSemaphoreTake(m_usersMutex, portMAX_DELAY);
     bool retCode = true;
 
     /* Clean up prior deserialization */
     m_numberOfRegisteredUsers = 0;
+
+    xSemaphoreTake(m_usersMutex, portMAX_DELAY);
     for (uint8_t userIdx = 0; userIdx < MAX_REGISTERED_USERS; userIdx++)
     {
         if (nullptr != m_registeredUsers[userIdx])

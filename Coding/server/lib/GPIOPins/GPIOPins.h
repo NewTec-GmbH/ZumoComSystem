@@ -44,11 +44,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Arduino.h>
 
- /** Enumeration for specifying all used GPIOs of the ESP32 */
-enum GPIO
+ /** Namespace for specifying all used GPIOs of the ESP32 */
+namespace GPIOPins
 {
-    WIFI_AND_RESET_KEY_PIN = 0,
-    ROBOT_RESET_PIN = 2,
-    ANALOG_NOISE_SEED_PIN = 36
+    /** Pin for push button for system reset/AP mode start */
+    static const uint8_t PIN_WIFI_AND_RESET_KEY = 0;
+
+    /** Pin for resetting the attached Zumo robot */
+    static const uint8_t PIN_ROBOT_RESET = 2;
+
+    /** Unconnected pin for reading random analog data to seed PRNG */
+    static const uint8_t PIN_ANALOG_NOISE_SEED = 36;
+
 };
 #endif /** __GPIOPINS_H__ */
