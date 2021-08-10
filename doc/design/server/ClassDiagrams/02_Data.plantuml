@@ -6,6 +6,10 @@ package SystemService
     }
 }
 
+package ArduinoJson
+{
+}
+
 package httpsserver
 {
     class SSLCert
@@ -30,6 +34,7 @@ package Data
         + serialize(serial: String&): bool
         + deserialize(serial: const String&): bool
     }
+    NetworkCredentials ..> ArduinoJson : uses
 
     class KeyCert
     {
@@ -67,6 +72,8 @@ package Data
         + {static} serialize(serial: String&): bool
         + {static} deserialize(serial: const String&): bool
     }
+    FirmwareInfo "1" *--> "2" FirmwareInfo
+    FirmwareInfo ..> ArduinoJson : uses
 
     enum Permission
     {
@@ -113,6 +120,10 @@ package Data
         - {static} getUserIdx(username: const String&): int8_t
     }
     User "0..*" *--> "1" CryptoServices
+    User "0..*" *--> "1" SemaphoreHandle_t
+    User "0..*" *--> "32" Permission
+    User "1" o--> "4" User
+    User ..> ArduinoJson : uses
 
     class Session
     {
@@ -146,8 +157,13 @@ package Data
         + getPermissions(numberOfPermissions: uint8_t&): const Permission*
         + {static} handleSessionTimeout(parameter: void*): void
     }
+    Session "0..*" *--> "1" SemaphoreHandle_t
     Session "1" *--> "4" Session
     WebSocketHandler <|-down- Session : is a
+    Session "1" o--> "1" User
+    Session ..> httpsserver::WebSocketHandler : uses
+    Session ..> httpsserver::WebsocketInputStreambuf : uses
+    Session ..> Permission : includes
 
     class Store
     {

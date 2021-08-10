@@ -7,12 +7,21 @@ package Data
 package "Arduino Core"
 {
     class Preferences
-    class mbedTLS
+    class SemaphoreHandle_t
+    class mbedtls_pk_context
+    class mbedtls_md_context_t
+    class DNSServer
 }
 
 package "Crypto"
 {
     class BLAKE2b
+}
+
+
+package "HAL"
+{
+    class GPIOPins
 }
 
 package Server
@@ -73,6 +82,7 @@ package SystemServices {
         + {static} getFileSize(fileName: const String&): int32_t
         - {static} getInfo(infoString: String&): void
     }
+    FileManager "0..*" *--> "1" File
     FileManager ..> FileMode : uses
 
     class PublicSigningKey
@@ -101,9 +111,10 @@ package SystemServices {
         + verifySignature(signature: const uint8_t*, signatureSize: const uint16_t): bool
     }
     CryptoServices "0..*" *--> "1" BLAKE2b
-    CryptoServices "0..*" *--> "1" mbedTLS
-
+    CryptoServices "0..*" *--> "1" mbedtls_pk_context
+    CryptoServices "0..*" *--> "1" mbedtls_md_context_t
     CryptoServices ..> PublicSigningKey : includes
+    CryptoServices ..> GPIOPins : includes
 
     class FirmwareHeader
     {
@@ -156,7 +167,6 @@ package SystemServices {
     }
     FirmwareChecker "0..*" *--> "1" FirmwareHeader
     FirmwareChecker "0..*" *--> "1" CryptoServices
-    FirmwareChecker ..> PublicSigningKey
 
     class WiFiManager
     {
@@ -180,6 +190,7 @@ package SystemServices {
         + stopSTA(): bool
     }
     WiFiManager "0..*" *--> "1" Store
+    WiFiManager "0..*" *--> "1" DNSServer
 
     class System
     {
@@ -200,5 +211,6 @@ package SystemServices {
     System "0..*" *--> "1" WiFiManager
     System "0..*" *--> "1" Store
     System "0..*" *--> "1" WebServer
+    System "0..*" *--> "1" SemaphoreHandle_t
 }
 @enduml

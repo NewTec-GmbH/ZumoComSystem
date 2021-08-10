@@ -62,6 +62,7 @@ package "Hardware Absraction Layer (HAL)" {
     component "IO" as io
     component "Robot" as robot
     component "Key" as key
+    component "GPIOPins" as gpiopins
 
     note right of spiusbdriver : Driver which sends\ndata to USB slave by\nusing the SPI bus
     note right of zumodebugger : Driver which reads debug\nlogs from robot by using\nSPI-USB adapter
@@ -69,6 +70,7 @@ package "Hardware Absraction Layer (HAL)" {
     note left of robot : Driver for resetting the robot
     note left of key: Driver for reading the Reset/WiFi key
     note left of io : Driver for easy (unbounced) read- and write operations
+    note right of gpiopins : Pin description
 
     zumodebugger -up- Debug
     zumoflasher -up- FlashRobot
@@ -77,6 +79,9 @@ package "Hardware Absraction Layer (HAL)" {
     robot -up- RobotReset
     key -up- ReadKey
     io -up- IO
+
+    robot ..> gpiopins
+    key ..> gpiopins
 
     zumoflasher -down-(SPIUSB
     spiusbdriver -down-(SPI

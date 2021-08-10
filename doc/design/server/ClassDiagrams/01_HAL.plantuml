@@ -4,6 +4,7 @@ package HAL
     package "Arduino Core"
     {
         class "Digital I/O" as ArduinoIO
+        class SemaphoreHandle_t 
     }
 
     enum GPIOPins
@@ -26,6 +27,7 @@ package HAL
         - ~IO()
     }
     IO  ..> ArduinoIO : uses
+    IO  ..> SemaphoreHandle_t : uses
 
     class Key
     {
@@ -40,6 +42,7 @@ package HAL
         - {static} systemResetISR(): void
     }
     Key "0..*" *--> "1" IO
+    Key ..> GPIOPins : includes
 
     class Robot
     {
@@ -51,5 +54,6 @@ package HAL
         - ~Robot()
     }
     Robot "0..*" *--> "1" IO
+    Robot ..> GPIOPins : includes
 }
 @enduml

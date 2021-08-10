@@ -16,6 +16,10 @@ package httpsserver
     class HTTPSServer
 }
 
+package ArduinoJson
+{
+}
+
 enum ResponseCode
 {
     SUCCESS = 200,
@@ -38,6 +42,8 @@ class ApiRequest
     + getCommandId(): const String& {const}
     + getJsonPayload(): const String& {const}
 }
+ApiRequest ..> ArduinoJson : uses
+
 
 class ApiResponse
 {
@@ -49,6 +55,8 @@ class ApiResponse
     + setJsonPayload(jsonPayload: const String&): void
     + setstatusCode(statusCode: const ResponseCode&): void
 }
+ApiResponse ..> ArduinoJson : uses
+ApiResponse ..> ResponseCode : includes
 
 class UserCredentials
 {
@@ -60,6 +68,7 @@ class UserCredentials
     + getPassword(): const String& {const}
     + deserialize(serial: const String&): bool
 }
+UserCredentials ..> ArduinoJson : uses
 
 class SessionManager
 {
@@ -68,6 +77,11 @@ class SessionManager
     + checkSession(command: const Command*, connectionCtx: Session*): bool {const}
     + aquireSession(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void {const}
 }
+SessionManager ..> Command : includes
+SessionManager ..> Session : includes
+SessionManager ..> ApiRequest : includes
+SessionManager ..> ApiResponse : includes
+SessionManager ..> UserCredentials : uses
 
 class RequestResponseHandler
 {
@@ -86,10 +100,13 @@ class RequestResponseHandler
 RequestResponseHandler "0..*" *--> "1" SessionManager
 RequestResponseHandler "0..*" *--> "1" FirmwareChecker
 RequestResponseHandler "0..*" o--> "0..*" Command
+RequestResponseHandler "0..*" *--> "1" EchoDemoCommand
+RequestResponseHandler "0..*" *--> "1" UploadZumoCommand
 RequestResponseHandler ..> ApiRequest
 RequestResponseHandler ..> ApiResponse
 RequestResponseHandler ..> ResponseCode
 RequestResponseHandler ..> Session
+RequestResponseHandler ..> ArduinoJson : uses
 
 class KeyValue
 {
@@ -118,5 +135,10 @@ class HTTPsWebServer
 HTTPsWebServer "0..*" *--> "1" FileManager
 HTTPsWebServer "0..*" *--> "1" Store
 HTTPsWebServer "0..*" *--> "1" HTTPSServer
+HTTPsWebServer "0..*" *--> "1" HTTPRequest
+HTTPsWebServer "0..*" *--> "1" HTTPResponse
+HTTPsWebServer "0..*" *--> "1" ResourceNode
+HTTPsWebServer "0..*" *--> "1" WebSocketNode
 HTTPsWebServer "0..*" *--> "1" RequestResponseHandler
+HTTPsWebServer ..> KeyValue : uses
 @enduml

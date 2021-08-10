@@ -15,14 +15,14 @@ interface "Store" as Store
 package Commands {
     component Command
     component "EchoDemoCommand" as echodemocommand
-    component "UploadZumoFirmware" as uploadzumoservice
-    component "FlashZumoFirmware" as flashzumoservice
-    component "ConfigureNetwork" as credconfig
-    component "RebootZumo" as resetzumoservice
-    component "RebootCOM" as resetcomplatforomservice
-    component "DebugZumo" as zumodebug
-    component "UploadCOMFirmware" as uploadcomfirmware
-    component "FlashCOMFirmware" as flashcomfirmware
+    component "UploadZumoCommand" as uploadzumoservice
+    component "FlashZumoCommand" as flashzumoservice
+    component "ConfigureNetworkCommand" as credconfig
+    component "RebootZumoCommand" as resetzumoservice
+    component "RebootCOMCommand" as resetcomplatforomservice
+    component "DebugZumoCommand" as zumodebug
+    component "UploadCOMCommand" as uploadcomfirmware
+    component "FlashCOMCommand" as flashcomfirmware
 
     Command <|-- echodemocommand
     Command <|-- uploadzumoservice

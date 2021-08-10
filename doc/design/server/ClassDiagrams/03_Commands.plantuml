@@ -34,6 +34,7 @@ class UploadZumoCommand
     + ~UploadZumoCommand()
     + run(fwChecker: FirmwareChecker&, response: ApiResponse&, connectionCtx: Session*):  void {const}
 }
+Command <|-down-UploadZumoCommand
 UploadZumoCommand "0..*" *--> "1" FileManager
 
 class UploadZumoCommand
