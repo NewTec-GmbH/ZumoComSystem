@@ -45,8 +45,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Arduino.h>
 #include <SessionManager.h>
 #include <Command.h>
+#include <BinaryCommand.h>
 #include <EchoDemoCommand.h>
-#include <FirmwareChecker.h>
 #include <UploadZumoCommand.h>
 
  /** Class which handles requests and responses between the API service implementations and the webserver */
@@ -71,18 +71,16 @@ public:
     /**
      * Make a new request to the binary API
      *
-     * @param[in] stream Reference to the incoming binary istream
+     * @param[in] operation The operation to be executed in API binary mode
      * @param[out] response Reference to the outgoing ApiResponse
      * @param[in] connectionCtx Pointer to Session class instance
      */
-    void makeRequest(ApiResponse& response, Session* connectionCtx);
+    void makeRequest(const String& operation, ApiResponse& response, Session* connectionCtx);
 
     /**
-     * Clears all buffers and variables which have been used in the API BINARY mode.
-     * Call this method when you want to re-use an open session in API BINARY mode when
-     * there has been any transmissions prior.
+     * Resets the API BINARY mode for re-use of API BINARY mode
      */
-    void resetBinaryTransmission();
+    void resetBinaryMode();
 
 private:
     /**
@@ -103,6 +101,14 @@ private:
      */
     const Command* getCommandOfApiRequest(const ApiRequest& request);
 
+    /**
+     * Returns pointer to BINARY API service class which corresponds to passed service id inside request
+     *
+     * @param[in] commandId The BINARY API service id
+     * @return Returns pointer to correct service class instance. Returns nullpointer if there is no such service
+     */
+    BinaryCommand* getCommandOfBinaryApiRequest(const String& commandId);
+
     /** Instance of the EchoDemoCommand */
     EchoDemoCommand m_echoDemoCommand;
 
@@ -111,8 +117,5 @@ private:
 
     /** Instance of SessionManager */
     SessionManager m_sessionManager;
-
-    /** Instance of FirmwareChecker */
-    FirmwareChecker m_fwCheck;
 };
 #endif /** __REQUESTRESPONSEHANDLER_H__ */

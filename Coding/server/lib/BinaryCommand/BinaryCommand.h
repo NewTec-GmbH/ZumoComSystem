@@ -31,77 +31,87 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file UploadZumoCommand.h
+ * @file BinaryCommand.h
  * @author Luis Moser
- * @brief UploadZumoCommand header
- * @date 08/03/2021
+ * @brief BinaryCommand header
+ * @date 08/11/2021
  *
  * @{
  */
 
-#ifndef __UPLOADZUMOCOMMAND_H__
-#define __UPLOADZUMOCOMMAND_H__
+#ifndef __BINARYCOMMAND_H__
+#define __BINARYCOMMAND_H__
 
-#include <Command.h>
-#include <BinaryCommand.h>
-#include <FirmwareChecker.h>
-#include <ApiRequest.h>
+#include <Arduino.h>
+#include <Permission.h>
 #include <ApiResponse.h>
-#include <FileManager.h>
 
- /** Class which implements the firmare upload for the Zumo robot system */
-class UploadZumoCommand : public Command, public BinaryCommand
+class Session;
+
+/** Simple class which defines the mandatory members of any API services */
+class BinaryCommand
 {
 public:
     /**
-     * Default Constructor
+     * Constructor
+     *
+     * @param[in] serviceID The service id of the API service
+     * @param[in] reqPermission The required permission for this service
      */
-    UploadZumoCommand();
+    BinaryCommand(const String& serviceID, const Permission& reqPermission);
 
     /**
      * Destructor
      */
-    ~UploadZumoCommand();
+    virtual ~BinaryCommand();
+
+    /**
+     * Returns the mnemonic service ID of the API service
+     *
+     * @return Return the service name
+     */
+    const String& getBinaryServiceID() const;
+
+    /**
+     * Returns the permissions required for invoking the API service
+     *
+     * @return Returns const reference of Permission
+     */
+    const Permission& getBinaryReqPermission() const;
 
     /**
      * Implements the API service business logic
      *
-     * @param[in] request Reference to the incoming ApiRequest
      * @param[out] response Reference to the outgoing ApiResponse
      * @param[in] connectionCtx Pointer to Session class instance
      */
-    void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const;
+    virtual void run(ApiResponse& response, Session* connectionCtx) = 0;
 
     /**
-     * Implement the binary API service business logic
-     *
-     * @param[out] response Reference to the outgoing ApiResponse
-     * @param[in] connectionCtx Pointer to Session class instance
+     * Implements the API serive reset logic to clean up resources
      */
-    void run(ApiResponse& response, Session* connectionCtx);
-
-    /**
-     * Clears all data from previous command execution
-     */
-    void reset();
+    virtual void reset() = 0;
 
 private:
-    /** Instance of the FileManager */
-    FileManager m_fileManager;
-
-    /** Instance of FirmwareChecker for verifying header and payload */
-    FirmwareChecker m_fwChecker;
-
-    /** Specifies how many bytes of the firmware payload have been written into the file sytem */
-    uint32_t m_writtenFirmwareBytes;
+    /**
+     * Default Constructor
+     */
+    BinaryCommand();
 
     /**
-     * Helper function for writing the firmware payload into the file system
-     *
-     * @param[in] dataChunk Pointer to the input buffer which contains the data to be written to the file system
-     * @param[in] chunkSize Specifies the size of the passed input buffer. Can be of 4096 bytes in size at max
-     * @param[out] response The ApiResponse instance
+     * Copy Constructor
      */
-    bool writeFile(const uint8_t* dataChunk, const uint16_t chunkSize);
+    BinaryCommand(const BinaryCommand&);
+
+    /**
+     * Assignment operator
+     */
+    BinaryCommand& operator =(const BinaryCommand&);
+
+    /** Specifies the unique mnemonic name of the API service which is used to call the service remotely */
+    String m_binaryServiceID;
+
+    /** Specifies the permissions required to invoke the API service */
+    Permission m_BinaryReqPermission;
 };
-#endif /** __UPLOADZUMOCOMMAND_H__ */
+#endif /** __BINARYCOMMAND_H__ */

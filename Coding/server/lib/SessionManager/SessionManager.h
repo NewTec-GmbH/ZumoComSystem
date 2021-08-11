@@ -49,6 +49,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ApiRequest.h>
 #include <ApiResponse.h>
 #include <Command.h>
+#include <BinaryCommand.h>
 
  /** Simple class for managing the websocket sessions */
 class SessionManager
@@ -73,6 +74,16 @@ public:
      * @return Returns true if successful, else false
      */
     bool checkSession(const Command* const command, Session* connectionCtx) const;
+
+    /**
+     * Checks if the current session is authorized to invoke the specified API service
+     *
+     * @param[in] command Pointer to command which needs to be invoked
+     * @param[in] connectionCtx Pointer to the currently used session whose permissions should be checked
+     *
+     * @return Returns true if successful, else false
+     */
+    bool checkSession(const BinaryCommand* command, Session* connectionCtx) const;
 
     /**
      * Requests authentication for this session. Remembers user and its permissions

@@ -89,8 +89,10 @@ public:
 
     /**
      * Discards the computed hash value and starts computation from scratch
+     *
+     * @return Returns true if successful, else false
      */
-    void reset();
+    bool reset();
 
     /**
      * Checks if the magic number/ID of the firmware header is correct

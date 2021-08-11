@@ -143,6 +143,7 @@ package Data
         + m_streamByteIdx: uint32_t
         + m_expectingBytes: uint32_t
         + m_binaryBuffer: uint8_t[MAX_BUFFER_SIZE_BYTE]
+        + m_fwCheck: FirmwareCheck
         + Session()
         + ~Session()
         + {static} start(): bool

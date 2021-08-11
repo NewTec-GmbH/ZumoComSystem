@@ -50,7 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Session;
 
- /** Simple class which defines the mandatory members of any API services */
+/** Simple class which defines the mandatory members of any API services */
 class Command
 {
 public:
@@ -112,4 +112,4 @@ private:
     /** Specifies the permissions required to invoke the API service */
     Permission m_reqPermission;
 };
-#endif
+#endif /** __COMMAND_H__ */

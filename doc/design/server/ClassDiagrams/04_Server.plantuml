@@ -88,7 +88,6 @@ class RequestResponseHandler
     - m_echoDemoCommand: EchoDemoCommand
     - m_uploadZumoCommand: UploadZumoCommand
     - m_sessionManager: SessionManager
-    - m_fwCheck : FirmwareChecker
     + {static} getInstance(): RequestResponseHandler&
     + makeRequest(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void
     + makeRequest(response: ApiResponse&, connectionCtx: Session*): void

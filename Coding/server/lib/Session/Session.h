@@ -107,20 +107,19 @@ public:
 
     /**
      * Sets the current session into binary mode. The next incoming socket message
-     * will be treated as binary data stream. This mode will automatically be reset
-     * to non-binary/text mode on the next incoming socket message
+     * will be treated as binary data stream.
      *
-     * @param[in] binarySize Specifies the total size in bytes of the transmitted binary
+     *  @param[in] operation The operation to be executed
+     *  @param[in] binarySize Specifies the total size in bytes of the transmitted binary
      */
-    void expectBinary(const uint32_t binarySize);
+    void initBinaryMode(const String& operation, const uint32_t binarySize);
 
     /**
-     * Clears all buffers and variables which have been used in the API BINARY mode.
-     * Call this method when you want to re-use an open session in API BINARY mode when
-     * there has been any transmissions prior.
+     * Exits the API BINARY mode and switches back to text mode so that further commands
+     * can be sent to the API and the API BINARY mode can be restared and configured
      */
-    void resetBinaryTransmission();
-
+    void exitBinaryMode();
+    
     /**
      * Returns if this session is authenticated
      *
@@ -169,6 +168,9 @@ private:
 
     /** Stores if the API should expect next incoming requests to be binary stream */
     bool m_expectBinary;
+
+    /** Specifies the operation to be executed for the API BINARY mode */
+    String m_expectedOperation;
 
     /** Specifies if the current session is authenticated */
     bool m_sessionAuthenticated;

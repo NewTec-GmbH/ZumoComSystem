@@ -48,7 +48,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 UploadZumoCommand::UploadZumoCommand() :
     Command("uploadzumo", NONE),
+    BinaryCommand("uploadzumo", NONE),
     m_fileManager(),
+    m_fwChecker(),
     m_writtenFirmwareBytes(0)
 {
 }
@@ -72,7 +74,7 @@ void UploadZumoCommand::run(const ApiRequest& request, ApiResponse& response, Se
     if ((DeserializationError::Ok == jsonRet) && (true == jsonDocument.containsKey("fileSizeBytes")))
     {
         uint32_t firmwareFileSize = jsonDocument["fileSizeBytes"];
-        connectionCtx->expectBinary(firmwareFileSize);
+        connectionCtx->initBinaryMode(request.getCommandId(), firmwareFileSize);
         response.setStatusCode(SUCCESS);
     }
     else
@@ -83,69 +85,110 @@ void UploadZumoCommand::run(const ApiRequest& request, ApiResponse& response, Se
     }
 }
 
-void UploadZumoCommand::writeFile(const uint8_t* dataChunk, const uint16_t chunkSize, ApiResponse& response)
+void UploadZumoCommand::run(ApiResponse& response, Session* connectionCtx)
 {
-    uint16_t writtenBytes = 0;
+    const char* FIRMWARE_FILENAME = "/zumo_firmware.bin";
+    const char* TARGET_SYSTEM = "ZUMO";
+    const bool OVERWRITE_FIRMWAREINFO = true;
 
-    if (FirmwareChecker::MAX_ZUMO_FW_BLOB_SIZE_BYTE >= (m_writtenFirmwareBytes + chunkSize))
+    bool fileOpened = false;
+    bool writeSuccessful = true;
+    bool firmwareValid = false;
+
+    uint16_t chunkSize = 0;
+    uint16_t bufferStartIdx = 0;
+    uint8_t* pBinaryBuffer = nullptr;
+
+    String computedHashValue = "";
+
+    fileOpened = m_fileManager.fileOpened();
+    if (false == fileOpened)
     {
-        writtenBytes = m_fileManager.write4KBlock(dataChunk, chunkSize);
-        m_writtenFirmwareBytes += writtenBytes;
-        LOG_DEBUG(String("Wrote ") + writtenBytes + " bytes into file system");
+        LOG_DEBUG("Called");
+        fileOpened = m_fileManager.openFile(FIRMWARE_FILENAME, FILE_WRITE);
+    }
 
-        if (chunkSize != writtenBytes)
+    if (true == fileOpened)
+    {
+        /* Firmware file is still being transferred */
+        if (connectionCtx->m_streamByteIdx <= connectionCtx->m_expectingBytes)
         {
+            if (connectionCtx->m_streamByteIdx > FirmwareHeader::HEADER_SIZE_BYTE)
+            {
+                LOG_DEBUG("Deserializing payload");
+
+                /* Part of binary buffer consists of header data */
+                if (connectionCtx->m_streamByteIdx - connectionCtx->m_readBytes < FirmwareHeader::HEADER_SIZE_BYTE)
+                {
+                    chunkSize = connectionCtx->m_streamByteIdx - FirmwareHeader::HEADER_SIZE_BYTE;
+                    bufferStartIdx = connectionCtx->m_readBytes - chunkSize;
+                    pBinaryBuffer = &connectionCtx->m_binaryBuffer[bufferStartIdx];
+
+                    writeSuccessful = ((true == m_fwChecker.deserializePayload(pBinaryBuffer, chunkSize))
+                        && (true == writeFile(pBinaryBuffer, chunkSize)));
+                }
+                /* Binary buffer only consists of payload data */
+                else
+                {
+                    writeSuccessful = ((true == m_fwChecker.deserializePayload(pBinaryBuffer, chunkSize))
+                        && (true == writeFile(connectionCtx->m_binaryBuffer, connectionCtx->m_readBytes)));
+                }
+            }
+        }
+
+        if (true == writeSuccessful)
+        {
+            /* Firmware file has been fully transferred */
+            if (connectionCtx->m_streamByteIdx >= connectionCtx->m_expectingBytes)
+            {
+                /* Flush the buffer and close the firmware image file */
+                m_fileManager.closeFile();
+
+                /* Check integrity of downloaded firmware file */
+                firmwareValid = m_fwChecker.isValid(TARGET_SYSTEM);
+
+                /* Write additional meta-information/FirmwareInfo into the persistent storage */
+                if ((true == m_fwChecker.getComputedHashValue(computedHashValue)
+                    && (true == FirmwareInfo::putInfo(TARGET_SYSTEM, computedHashValue, firmwareValid, m_writtenFirmwareBytes, OVERWRITE_FIRMWAREINFO))
+                    && (true == Store::getInstance().saveFirmwareInfo())))
+                {
+                    response.setStatusCode(SUCCESS);
+                    LOG_INFO("Successfully saved ZUMO firmware image and saved FirmwareInfo in persistent storage");
+                }
+                else
+                {
+                    response.setStatusCode(ERROR);
+                    LOG_ERROR("Could not save FirmwareInfo in persistent storage!");
+                }
+
+                /* Clean up */
+                reset();
+
+                /* Exit BINARY mode and switch back to TEXT mode */
+                connectionCtx->exitBinaryMode();
+            }
+        }
+        else
+        {
+            reset();
+            /* Exit BINARY mode and switch back to TEXT mode */
+
             response.setStatusCode(ERROR);
-            m_fileManager.closeFile();
-            LOG_ERROR("Could not write firmware image into file system!");
+            LOG_ERROR("Could not deserialize payload or write firmware to file system!");
+
+            connectionCtx->exitBinaryMode();
         }
     }
     else
     {
+        /* Clean up */
+        reset();
+
+        LOG_ERROR(String("Could not open file: ") + FIRMWARE_FILENAME);
         response.setStatusCode(ERROR);
-        m_fileManager.closeFile();
-        LOG_ERROR("Received firmware image is too big! Aborting firmware write now!");
-    }
-}
 
-void UploadZumoCommand::run(FirmwareChecker& fwChecker, ApiResponse& response, Session* connectionCtx)
-{
-    String computedHashValue = "";
-    const char* FILENAME = "/zumo_firmware.bin";
-
-    if (false == m_fileManager.fileOpened())
-    {
-        if (false == m_fileManager.openFile(FILENAME, FILE_WRITE))
-        {
-            response.setStatusCode(ERROR);
-            LOG_ERROR(String("Could not open file: ") + FILENAME);
-            return;
-        }
-    }
-
-    /* Check if entire firmware file (including header) has been fully transmitted */
-    if (connectionCtx->m_streamByteIdx <= connectionCtx->m_expectingBytes)
-    {
-        if (connectionCtx->m_streamByteIdx > FirmwareHeader::HEADER_SIZE_BYTE)
-        {
-            LOG_DEBUG("Deserializing payload");
-
-            /* Part of binary buffer consists of header data */
-            if (connectionCtx->m_streamByteIdx - connectionCtx->m_readBytes < FirmwareHeader::HEADER_SIZE_BYTE)
-            {
-                uint16_t chunkSize = connectionCtx->m_streamByteIdx - FirmwareHeader::HEADER_SIZE_BYTE;
-                uint16_t bufferStartIdx = connectionCtx->m_readBytes - chunkSize;
-                uint8_t* pBinaryBuffer = &connectionCtx->m_binaryBuffer[bufferStartIdx];
-
-                fwChecker.deserializePayload(pBinaryBuffer, chunkSize);
-                writeFile(pBinaryBuffer, chunkSize, response);
-            }
-            else
-            {
-                fwChecker.deserializePayload(connectionCtx->m_binaryBuffer, connectionCtx->m_readBytes);
-                writeFile(connectionCtx->m_binaryBuffer, connectionCtx->m_readBytes, response);
-            }
-        }
+        /* Exit BINARY mode and switch back to TEXT mode */
+        connectionCtx->exitBinaryMode();
     }
 
 #ifdef ACTIVATE_LOGGING
@@ -158,32 +201,43 @@ void UploadZumoCommand::run(FirmwareChecker& fwChecker, ApiResponse& response, S
     sprintf(buffer, "Processed %d of %d bytes (%d%%)", connectionCtx->m_streamByteIdx, connectionCtx->m_expectingBytes, processedBytsPercent);
     LOG_DEBUG(String(buffer));
 #endif
+}
 
-    if (connectionCtx->m_streamByteIdx >= connectionCtx->m_expectingBytes)
+bool UploadZumoCommand::writeFile(const uint8_t* dataChunk, const uint16_t chunkSize)
+{
+    bool retCode = true;
+    uint16_t writtenBytes = 0;
+
+    if (FirmwareChecker::MAX_ZUMO_FW_BLOB_SIZE_BYTE >= (m_writtenFirmwareBytes + chunkSize))
     {
-        const bool OVERWRITE_FIRMWARE_INFO = true;
+        writtenBytes = m_fileManager.write4KBlock(dataChunk, chunkSize);
+        m_writtenFirmwareBytes += writtenBytes;
+        LOG_DEBUG(String("Wrote ") + writtenBytes + " bytes into file system");
 
-        /* Close the fimware image file and flush buffer */
-        m_fileManager.closeFile();
-
-        /* Check integrity of downloaded firmware file */
-        bool isValid = fwChecker.isValid("ZUMO");
-
-        /* Write additional meta-information/FirmwareInfo into the persistent storage */
-        if ((true == fwChecker.getComputedHashValue(computedHashValue)
-            && (true == FirmwareInfo::putInfo("ZUMO", computedHashValue, isValid, m_writtenFirmwareBytes, OVERWRITE_FIRMWARE_INFO))
-            && (true == Store::getInstance().saveFirmwareInfo())))
+        if (chunkSize != writtenBytes)
         {
-            response.setStatusCode(SUCCESS);
-            LOG_INFO("Successfully saved ZUMO firmware image and saved FirmwareInfo in persistent storage");
+            retCode = false;
+            LOG_ERROR("Could not entirely write firmware image chunk into file system!");
         }
-        else
-        {
-            response.setStatusCode(ERROR);
-            LOG_ERROR("Could not save FirmwareInfo in persistent storage!");
-        }
+    }
+    else
+    {
+        retCode = false;
+        LOG_ERROR("Received firmware image is too big! Aborting firmware write now!");
+    }
+    return retCode;
+}
 
-        /* Discard all calculated hash values, input buffers, stream indexes and headers to allow new/independent transmission from scratch */
-        connectionCtx->resetBinaryTransmission();
+void UploadZumoCommand::reset()
+{
+    m_writtenFirmwareBytes = 0;
+    m_fileManager.closeFile();
+    if (true == m_fwChecker.reset())
+    {
+        LOG_INFO("UploadZumoCommand has been successfuly reset!");
+    }
+    else
+    {
+        LOG_ERROR("Could not reset FirmwareChecker/UploadZumoCommand!");
     }
 }

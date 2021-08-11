@@ -133,6 +133,7 @@ void FileManager::closeFile()
     {
         m_fileHandle.flush();
         m_fileHandle.close();
+        LOG_INFO("File has been successfully flushed and closed!");
     }
 }
 

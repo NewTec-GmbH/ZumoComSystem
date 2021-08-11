@@ -68,18 +68,21 @@ bool FirmwareChecker::deserializePayload(const uint8_t* dataChunk, const uint16_
     return m_crypto.updateVerifySignature(dataChunk, chunkSize);
 }
 
-void FirmwareChecker::reset()
+bool FirmwareChecker::reset()
 {
+    bool retCode = false;
     m_readPayloadBytes = 0;
     m_fwHeader.reset();
     if (true == m_crypto.resetVerifySignature())
     {
+        retCode = true;
         LOG_DEBUG("Successfully cleared all data in FirmwareChecker");
     }
     else
     {
         LOG_ERROR("Could not clear all data in FirmwareChecker!");
     }
+    return retCode;
 }
 
 bool FirmwareChecker::idOK()

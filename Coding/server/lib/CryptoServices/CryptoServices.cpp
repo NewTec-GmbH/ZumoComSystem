@@ -133,7 +133,7 @@ bool CryptoServices::updateVerifySignature(const uint8_t* dataChunk, const uint1
 bool CryptoServices::resetVerifySignature()
 {
     m_hashAvailable = false;
-   // mbedtls_md_free(&m_messageDigestContext);
+   // mbedtls_md_free(&m_messageDigestContext); // TODO: Remove?
     mbedtls_pk_free(&m_publicKeyContext);
     return (0 == mbedtls_md_starts(&m_messageDigestContext));
 }

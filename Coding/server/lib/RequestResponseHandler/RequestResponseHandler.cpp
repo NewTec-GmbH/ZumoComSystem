@@ -87,46 +87,56 @@ void RequestResponseHandler::makeRequest(const ApiRequest& request, ApiResponse&
         }
         else
         {
+            LOG_ERROR(String("Service ") + request.getCommandId() + String(" is not implemented!"));
             response.setStatusCode(NOT_IMPLEMENTED);
         }
     }
 }
 
-void RequestResponseHandler::makeRequest(ApiResponse& response, Session* connectionCtx)
+void RequestResponseHandler::makeRequest(const String& commandId, ApiResponse& response, Session* connectionCtx)
 {
-    String targetSystem;
-
-    m_fwCheck.deserializeHeader(connectionCtx->m_binaryBuffer, connectionCtx->m_readBytes);
-
-    if (true == m_fwCheck.idOK())
+    BinaryCommand* apiService = getCommandOfBinaryApiRequest(commandId);
+    if (nullptr != apiService)
     {
-        m_fwCheck.getTarget(targetSystem);
-        if (targetSystem == "ZUMO")
+        if (NONE != apiService->getBinaryReqPermission())
         {
-            m_uploadZumoCommand.run(m_fwCheck, response, connectionCtx);
-        }
-        else if (targetSystem == "COM")
-        {
-            /* TODO: Implement UploadCOMCommand */
-            response.setStatusCode(NOT_IMPLEMENTED);
-            LOG_ERROR("UploadCOMCommand not implemented!");
+            if (true == m_sessionManager.checkSession(apiService, connectionCtx))
+            {
+                apiService->run(response, connectionCtx);
+            }
+            else
+            {
+                response.setStatusCode(UNAUTHORIZED);
+
+                /* Clean up */
+                resetBinaryMode();
+
+                /* Exit BINARY mode and switch back to TEXT mode */
+                connectionCtx->exitBinaryMode();
+            }
         }
         else
         {
-            response.setStatusCode(BAD_REQUEST);
-            LOG_ERROR("Invalid firmware header target!");
+            apiService->run(response, connectionCtx);
         }
     }
     else
     {
-        response.setStatusCode(BAD_REQUEST);
-        LOG_ERROR("Invalid firmware header id!");
+        LOG_ERROR(String("Service ") + commandId + String(" is not implemented!"));
+        response.setStatusCode(NOT_IMPLEMENTED);
+
+        /* Clean up */
+        resetBinaryMode();
+
+        /* Exit BINARY mode and switch back to TEXT mode */
+        connectionCtx->exitBinaryMode();
     }
 }
 
-void RequestResponseHandler::resetBinaryTransmission()
+void RequestResponseHandler::resetBinaryMode()
 {
-    m_fwCheck.reset();
+    m_uploadZumoCommand.reset();
+    LOG_INFO("API BINARY mode has been reset in RequestResponseHandler!");
 }
 
 const Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& request)
@@ -140,6 +150,16 @@ const Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& 
     else if (commandID == "echodemo")
     {
         command = &m_echoDemoCommand;
+    }
+    return command;
+}
+
+BinaryCommand* RequestResponseHandler::getCommandOfBinaryApiRequest(const String& commandId)
+{
+    BinaryCommand* command = nullptr;
+    if (commandId == "uploadzumo")
+    {
+        command = &m_uploadZumoCommand;
     }
     return command;
 }

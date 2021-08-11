@@ -54,6 +54,7 @@ Session::Session() :
     m_expectingBytes(0),
     m_binaryBuffer(),
     m_expectBinary(false),
+    m_expectedOperation(),
     m_sessionAuthenticated(false),
     m_linkedUser(nullptr),
     m_lastAccessTime(0)
@@ -146,7 +147,7 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
                 {
                     if (true == inputStream.eof() && false == inputStream.bad())
                     {
-                        LOG_WARN("Unexpected EOF in binary prior actual EOF. Resetting EOF flag and trying again...");
+                        LOG_WARN("Unexpected EOF in binary data stream prior actual EOF. Resetting EOF flag and trying again...");
                         inputStream.clear();
                     }
                     singleByteBuffer = inputStream.get();
@@ -166,18 +167,31 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
 
             if (m_readBytes == recordSize)
             {
-                RequestResponseHandler::getInstance().makeRequest(response, this);
+                /* Call the API service */
+                RequestResponseHandler::getInstance().makeRequest(m_expectedOperation, response, this);
             }
             else
             {
+                /* Clean up */
+                RequestResponseHandler::getInstance().resetBinaryMode();
+
+                /* Exit BINARY mode and switch back to TEXT mode */
+                exitBinaryMode();
+
                 response.setStatusCode(ERROR);
-                LOG_ERROR("Could not read entire websocket buffer! Request discarded!");
+                LOG_ERROR("Could not read entire websocket buffer binary stream! Request discarded!");
             }
         }
         else
         {
-            LOG_ERROR(String("Input record bigger than input buffer. Discarding data!. Please decrease record size! Max buffer size: ") + MAX_BUFFER_SIZE_BYTE);
+            /* Clean up */
+            RequestResponseHandler::getInstance().resetBinaryMode();
+
+            /* Exit BINARY mode and switch back to TEXT mode */
+            exitBinaryMode();
+
             response.setStatusCode(BAD_REQUEST);
+            LOG_ERROR(String("Input record bigger than input buffer. Discarding data!. Please decrease record size! Max buffer size: ") + MAX_BUFFER_SIZE_BYTE);
         }
     }
     else
@@ -233,10 +247,18 @@ void Session::onClose()
     {
         if (this == m_sessions[sessionIdx])
         {
+            if (true == m_expectBinary)
+            {
+                /* Clean up */
+                RequestResponseHandler::getInstance().resetBinaryMode();
+
+                /* Exit BINARY mode and switch back to TEXT mode */
+                exitBinaryMode();
+            }
+
             /* No need to delete instance, as this has already been done by HTTPConnection class */
             m_sessions[sessionIdx] = nullptr;
             m_numberOfActiveClients--;
-            RequestResponseHandler::getInstance().resetBinaryTransmission();
             break;
         }
     }
@@ -244,24 +266,26 @@ void Session::onClose()
     LOG_INFO("Session closed!");
 }
 
-void Session::expectBinary(const uint32_t binarySize)
+void Session::initBinaryMode(const String& operation, const uint32_t binarySize)
 {
+    /* Enable BINARY mode and set operation and binary stream size */
     m_expectBinary = true;
+    m_expectedOperation = operation;
     m_expectingBytes = binarySize;
-    LOG_INFO("Switching API to binary mode now!");
+
+    /* Clear all indexes and buffers used for BINARY mode */
+    m_readBytes = 0;
+    m_streamByteIdx = 0;
+    memset(m_binaryBuffer, 0, sizeof(m_binaryBuffer));
+
+    LOG_INFO("Switching API to BINARY mode now!");
     LOG_INFO(String("Expecting ") + binarySize + String(" bytes during this session"));
 }
 
-void Session::resetBinaryTransmission()
+void Session::exitBinaryMode()
 {
-    if (true == m_expectBinary)
-    {
-        m_readBytes = 0;
-        m_streamByteIdx = 0;
-        m_expectingBytes = 0;
-        memset(m_binaryBuffer, 0, sizeof(m_binaryBuffer));
-        RequestResponseHandler::getInstance().resetBinaryTransmission();
-    }
+    m_expectBinary = false;
+    LOG_INFO("Switching API back to TEXT mode now!");
 }
 
 bool Session::isAuthenticated() const
@@ -303,6 +327,16 @@ void Session::handleSessionTimeout(void* parameter)
                 if (((currentTimeStamp - currentSession->m_lastAccessTime) / MILLISECONDS) > SESSION_TIMEOUT_SECONDS)
                 {
                     currentSession->deauthenticateSession();
+
+                    /* Switch back to TEXT mode and clean up used resources */
+                    if (true == currentSession->m_expectBinary)
+                    {
+                        /* Clean up */
+                        RequestResponseHandler::getInstance().resetBinaryMode();
+
+                        /* Exit BINARY mode and switch back to TEXT mode */
+                        currentSession->exitBinaryMode();
+                    }
                 }
             }
         }
