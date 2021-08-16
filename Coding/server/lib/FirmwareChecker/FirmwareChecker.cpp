@@ -122,6 +122,12 @@ bool FirmwareChecker::isValid(const String& expectedTarget)
     if (false == validFileId)
     {
         LOG_ERROR("Invalid ID in firmware header!");
+
+#ifdef ACTIVATE_LOGGING
+        String id;
+        m_fwHeader.getID(id);
+        LOG_INFO(String("Actual firmware ID is: ") + id);
+#endif    
     }
 
     /* Check target system */
@@ -133,6 +139,7 @@ bool FirmwareChecker::isValid(const String& expectedTarget)
     else
     {
         LOG_ERROR("Unexpected target in firmware header!");
+        LOG_ERROR(String("Actual target is: ") + readTarget);
     }
 
     /* Check file version */
@@ -144,6 +151,7 @@ bool FirmwareChecker::isValid(const String& expectedTarget)
     else
     {
         LOG_ERROR("Unexpected version in firmware header!");
+        LOG_ERROR(String("Actual file version is: ") + readFileVersion);
     }
 
     /* Check used hash algorithm */
@@ -155,6 +163,7 @@ bool FirmwareChecker::isValid(const String& expectedTarget)
     else
     {
         LOG_ERROR("Unexpected hash algorithm in firmware header!");
+        LOG_ERROR(String("Actual hashing algorithm: ") + readHashAlg);
     }
 
     /* Check used sign algorithm */
@@ -166,6 +175,7 @@ bool FirmwareChecker::isValid(const String& expectedTarget)
     else
     {
         LOG_ERROR("Unexpected signing algorithm in firmware header!");
+        LOG_ERROR(String("Actual signing algorithm: ") + readSignAlg);
     }
 
     /* Check signature */
@@ -184,6 +194,7 @@ bool FirmwareChecker::isValid(const String& expectedTarget)
     {
         validPayloadSize = (m_readPayloadBytes <= MAX_ZUMO_FW_BLOB_SIZE_BYTE);
     }
+
     if (false == validPayloadSize)
     {
         LOG_ERROR("Firmware payload too big!");

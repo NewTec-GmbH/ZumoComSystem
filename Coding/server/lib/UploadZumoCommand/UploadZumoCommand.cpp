@@ -87,6 +87,8 @@ void UploadZumoCommand::run(const ApiRequest& request, ApiResponse& response, Se
 
 void UploadZumoCommand::run(ApiResponse& response, Session* connectionCtx)
 {
+    m_fwChecker.deserializeHeader(connectionCtx->m_binaryBuffer, connectionCtx->m_readBytes);
+
     const char* FIRMWARE_FILENAME = "/zumo_firmware.bin";
     const char* TARGET_SYSTEM = "ZUMO";
     const bool OVERWRITE_FIRMWAREINFO = true;
@@ -104,7 +106,6 @@ void UploadZumoCommand::run(ApiResponse& response, Session* connectionCtx)
     fileOpened = m_fileManager.fileOpened();
     if (false == fileOpened)
     {
-        LOG_DEBUG("Called");
         fileOpened = m_fileManager.openFile(FIRMWARE_FILENAME, FILE_WRITE);
     }
 
@@ -130,7 +131,7 @@ void UploadZumoCommand::run(ApiResponse& response, Session* connectionCtx)
                 /* Binary buffer only consists of payload data */
                 else
                 {
-                    writeSuccessful = ((true == m_fwChecker.deserializePayload(pBinaryBuffer, chunkSize))
+                    writeSuccessful = ((true == m_fwChecker.deserializePayload(connectionCtx->m_binaryBuffer, connectionCtx->m_readBytes))
                         && (true == writeFile(connectionCtx->m_binaryBuffer, connectionCtx->m_readBytes)));
                 }
             }
