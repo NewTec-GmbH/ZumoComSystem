@@ -127,6 +127,25 @@ bool FileManager::fileOpened()
     return (true == m_fileHandle);
 }
 
+bool FileManager::deleteFile(const String& fileName)
+{
+    bool retCode = true;
+    if (true == fileExists(fileName))
+    {
+        retCode = SPIFFS.remove(fileName);
+    }
+
+    if (true == retCode)
+    {
+        LOG_INFO(String("File ") + fileName + String(" has been successfully deleted if it has been existent!"));
+    }
+    else
+    {
+        LOG_ERROR(String("File ") + fileName + String(" could not be deleted!"));
+    }
+    return retCode;
+}
+
 void FileManager::closeFile()
 {
     if (true == m_fileHandle)

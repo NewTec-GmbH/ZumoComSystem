@@ -297,6 +297,7 @@ void Session::authenticateSession(User* user)
 {
     m_sessionAuthenticated = true;
     m_linkedUser = user;
+    LOG_INFO(String("Successfully authenticated a session for the user ") + user->getUsername());
 }
 
 void Session::deauthenticateSession()

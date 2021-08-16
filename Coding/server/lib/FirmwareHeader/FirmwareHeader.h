@@ -48,9 +48,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class FirmwareHeader
 {
 public:
-    /** Specifies the total firmware header field size in bytes */
-    static const uint16_t HEADER_SIZE_BYTE = 337;
-
     /** Specifies the file id/magic number field size in bytes */
     static const uint8_t ID_SIZE_BYTE = 16;
 
@@ -68,6 +65,10 @@ public:
 
     /** Specifies the signature field size in bytes */
     static const uint16_t SIGNATURE_SIZE_BYTE = 256;
+
+    /** Specifies the total firmware header field size in bytes */
+    static const uint16_t HEADER_SIZE_BYTE = ID_SIZE_BYTE + TARGET_SIZE_BYTE + VERSION_SIZE_BYTE +
+        HASH_ALG_SIZE_BYTE + SIGN_ALG_SIZE_BYTE + SIGNATURE_SIZE_BYTE;
 
     /**
      * Default Constructor

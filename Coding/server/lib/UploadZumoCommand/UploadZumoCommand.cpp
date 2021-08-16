@@ -46,6 +46,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ArduinoJson.h>
 #include <Log.h>
 
+const char* UploadZumoCommand::FIRMWARE_FILENAME = "/zumo_firmware.bin";
+const char* UploadZumoCommand::TARGET_SYSTEM = "ZUMO";
+const bool  UploadZumoCommand::OVERWRITE_FIRMWAREINFO = true;
+
 UploadZumoCommand::UploadZumoCommand() :
     Command("uploadzumo", NONE),
     BinaryCommand("uploadzumo", NONE),
@@ -74,8 +78,32 @@ void UploadZumoCommand::run(const ApiRequest& request, ApiResponse& response, Se
     if ((DeserializationError::Ok == jsonRet) && (true == jsonDocument.containsKey("fileSizeBytes")))
     {
         uint32_t firmwareFileSize = jsonDocument["fileSizeBytes"];
-        connectionCtx->initBinaryMode(request.getCommandId(), firmwareFileSize);
-        response.setStatusCode(SUCCESS);
+
+        /*
+        Only switch to API BINARY mode and set the API service to be executed when the firmware size does
+        not exceeds the memory limits. Additionally, when writing the firmware, the UploadZumoCommand API service
+        will keep track of the written bytes and abort writing to FS if it exceeds the maximum reserved memory capacity
+        */
+        if (FirmwareChecker::MAX_ZUMO_FW_BLOB_SIZE_BYTE >= firmwareFileSize)
+        {
+            /* Delete FirmwareInfo if existent */
+            FirmwareInfo::deleteInfo(TARGET_SYSTEM);
+            if (true == Store::getInstance().saveFirmwareInfo())
+            {
+                connectionCtx->initBinaryMode(request.getCommandId(), firmwareFileSize);
+                response.setStatusCode(SUCCESS);
+            }
+            else
+            {
+                response.setStatusCode(ERROR);
+                LOG_ERROR("Could not open API BINARY mode and set UploadZumoCommand as API service because could not clear FirmwareInfo in persistent storage!");
+            }
+        }
+        else
+        {
+            response.setStatusCode(BAD_REQUEST);
+            LOG_ERROR("Could not open API BINARY mode and set UploadZumoCommand as API service because firmware image is too large!");
+        }
     }
     else
     {
@@ -88,10 +116,6 @@ void UploadZumoCommand::run(const ApiRequest& request, ApiResponse& response, Se
 void UploadZumoCommand::run(ApiResponse& response, Session* connectionCtx)
 {
     m_fwChecker.deserializeHeader(connectionCtx->m_binaryBuffer, connectionCtx->m_readBytes);
-
-    const char* FIRMWARE_FILENAME = "/zumo_firmware.bin";
-    const char* TARGET_SYSTEM = "ZUMO";
-    const bool OVERWRITE_FIRMWAREINFO = true;
 
     bool fileOpened = false;
     bool writeSuccessful = true;
@@ -107,6 +131,20 @@ void UploadZumoCommand::run(ApiResponse& response, Session* connectionCtx)
     if (false == fileOpened)
     {
         fileOpened = m_fileManager.openFile(FIRMWARE_FILENAME, FILE_WRITE);
+
+        /* Delete the old file if it cannot be opened! */
+        if (false == fileOpened)
+        {
+            LOG_WARN(String(FIRMWARE_FILENAME) + " could not be opened. Trying to delete it now and trying again...");
+            if (true == FileManager::deleteFile(FIRMWARE_FILENAME))
+            {
+                fileOpened = m_fileManager.openFile(FIRMWARE_FILENAME, FILE_WRITE);
+            }
+            else
+            {
+                LOG_WARN(String(FIRMWARE_FILENAME) + " could not be opened. Aborting now");
+            }
+        }
     }
 
     if (true == fileOpened)
@@ -199,7 +237,7 @@ void UploadZumoCommand::run(ApiResponse& response, Session* connectionCtx)
     uint8_t processedBytsPercent = static_cast<uint8_t>((connectionCtx->m_streamByteIdx / (float)connectionCtx->m_expectingBytes) * MULTIPLICATOR);
 
     /* Print the data into the output buffer */
-    sprintf(buffer, "Processed %d of %d bytes (%d%%)", connectionCtx->m_streamByteIdx, connectionCtx->m_expectingBytes, processedBytsPercent);
+    sprintf(buffer, "Processed %d of %d total bytes (%d%%)", connectionCtx->m_streamByteIdx, connectionCtx->m_expectingBytes, processedBytsPercent);
     LOG_DEBUG(String(buffer));
 #endif
 }
@@ -218,13 +256,15 @@ bool UploadZumoCommand::writeFile(const uint8_t* dataChunk, const uint16_t chunk
         if (chunkSize != writtenBytes)
         {
             retCode = false;
-            LOG_ERROR("Could not entirely write firmware image chunk into file system!");
+            LOG_ERROR("Could not entirely write firmware image chunk into file system! Deleting file now...");
+            FileManager::deleteFile(FIRMWARE_FILENAME);
         }
     }
     else
     {
         retCode = false;
-        LOG_ERROR("Received firmware image is too big! Aborting firmware write now!");
+        LOG_ERROR("Received firmware image is too big! Aborting firmware write now! Deleting file now...");
+        FileManager::deleteFile(FIRMWARE_FILENAME);
     }
     return retCode;
 }

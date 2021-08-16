@@ -104,6 +104,18 @@ void FirmwareHeader::deserialize(const uint8_t* dataChunk, const uint16_t chunkS
 
             readIdx++;
             m_readHeaderBytes++;
+
+
+#ifdef ACTIVATE_LOGGING
+            const uint8_t PRINT_BUFFER_SIZE = 128;
+            const uint8_t MULTIPLICATOR = 100;
+            char buffer[PRINT_BUFFER_SIZE];
+            uint8_t processedBytsPercent = static_cast<uint8_t>((m_readHeaderBytes / (float)HEADER_SIZE_BYTE) * MULTIPLICATOR);
+
+            /* Print the data into the output buffer */
+            sprintf(buffer, "Processed %d of %d header bytes (%d%%)", m_readHeaderBytes, HEADER_SIZE_BYTE, processedBytsPercent);
+            LOG_DEBUG(String(buffer));
+#endif
         }
         else
         {

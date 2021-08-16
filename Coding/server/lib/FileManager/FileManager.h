@@ -82,6 +82,14 @@ public:
     bool fileOpened();
 
     /**
+     * Deletes the specified file from the file system
+     *
+     * @param[in] fileName The file to be deleted
+     * @return Returns true if the file has not been existent or the file has been existent and successfully deleted, else false
+     */
+    static bool deleteFile(const String& fileName);
+
+    /**
      * Closes a previously opened file and writes all unwritten data to file
      */
     void closeFile();

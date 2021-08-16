@@ -77,6 +77,11 @@ const Permission* User::getPermissions(uint8_t& numberOfPermissions) const
     return m_permissions;
 }
 
+String User::getUsername()
+{
+    return this->m_username;
+}
+
 User* User::getUser(const String& username)
 {
     User* retUser = nullptr;
@@ -92,7 +97,7 @@ bool User::checkCredentials(const String& username, const String& password)
 {
     bool retCode = true;
     String computedHash;
-    
+
     xSemaphoreTake(m_usersMutex, portMAX_DELAY);
     int8_t userIdx = getUserIdx(username);
 

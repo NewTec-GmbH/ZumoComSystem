@@ -92,6 +92,15 @@ private:
     /** Instance of FirmwareChecker for verifying header and payload */
     FirmwareChecker m_fwChecker;
 
+    /** Name of the firmware image file */
+    static const char* FIRMWARE_FILENAME;
+
+    /** Dedicated target of the firmware file */
+    static const char* TARGET_SYSTEM;
+
+    /** Specifies if FirmwareInfo should be overwritten or not */
+    static const bool OVERWRITE_FIRMWAREINFO;
+
     /** Specifies how many bytes of the firmware payload have been written into the file sytem */
     uint32_t m_writtenFirmwareBytes;
 

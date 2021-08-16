@@ -77,6 +77,13 @@ public:
     const Permission* getPermissions(uint8_t& numberOfPermissions) const;
 
     /**
+     * Returns the username of this User instance
+     *
+     * @return Returns the username of the User instance
+     */
+    String getUsername();
+
+    /**
      * Returns pointer to specified user
      *
      * @param[in] username The user to be fetched

@@ -78,6 +78,7 @@ void RequestResponseHandler::makeRequest(const ApiRequest& request, ApiResponse&
                 else
                 {
                     response.setStatusCode(UNAUTHORIZED);
+                    LOG_WARN(String("Unauthorized access to API TEXT mode service ") + request.getCommandId());
                 }
             }
             else
@@ -107,6 +108,7 @@ void RequestResponseHandler::makeRequest(const String& commandId, ApiResponse& r
             else
             {
                 response.setStatusCode(UNAUTHORIZED);
+                LOG_WARN(String("Unauthorized access to API BINARY mode service ") + commandId);
 
                 /* Clean up */
                 resetBinaryMode();
