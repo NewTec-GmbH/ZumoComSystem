@@ -111,6 +111,7 @@ package Data
         + ~User()
         + {static} registerAdminAccount(): bool
         + {static} getPermissions(numberOfPermissions: uint8_t&): const Permission*
+        + {static} getUsername(): String
         + {static} getUser(username: const String&): User*
         + {static} checkCredentials(username: const String&, password: const String&): bool
         + {static} putUser(username: const String&, password: const String&, permissions: const Permission*, numberOfPermissions: const uint8_t, updateUser: const bool): bool
@@ -134,6 +135,7 @@ package Data
         - {static} m_sessionMutex: SemaphoreHandle_t
         - {static} m_numberOfActiveClients: uint8_t = 0
         - m_expectBinary: bool = false
+        - m_expectedOperation: String
         - m_sessionAuthenticated: bool = false
         - m_linkedUser: User*
         - m_lastAccessTime: unsigned long = 0
@@ -150,8 +152,8 @@ package Data
         + {static} create(): httpsserver::WebSocketHandler*
         + onMessage(inputBuffer: httpsserver::WebsocketInputStreambuf*): void
         + onClose(): void
-        + expectBinary(binarySize: const uint32_t): void
-        + resetBinaryTransmission(): void
+        + initBinaryMode(operation: const String&, binarySize: const uint32_t): void
+        + exitBinaryMode(): void
         + isAuthenticated(): bool  {const}
         + authenticateSession(user: User*): void
         + deauthenticateSession(): void

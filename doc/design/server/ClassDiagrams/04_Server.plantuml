@@ -75,6 +75,7 @@ class SessionManager
     + SessionManager()
     + ~SessionManager()
     + checkSession(command: const Command*, connectionCtx: Session*): bool {const}
+    + checkSession(command: const BinaryCommand*, connectionCtx: Session*): bool {const}
     + aquireSession(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void {const}
 }
 SessionManager ..> Command : includes
@@ -90,11 +91,12 @@ class RequestResponseHandler
     - m_sessionManager: SessionManager
     + {static} getInstance(): RequestResponseHandler&
     + makeRequest(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void
-    + makeRequest(response: ApiResponse&, connectionCtx: Session*): void
-    + resetBinaryTransmission(): void
+    + makeRequest(operation: const String&, response: ApiResponse&, connectionCtx: Session*): void
+    + resetBinaryMode(): void
     - RequestResponseHandler()
     - ~RequestResponseHandler()
     - getCommandOfApiRequest(request: const ApiRequest&): const Command*
+    - getCommandOfApiBinaryRequest(commandId: const String&)
 }
 RequestResponseHandler "0..*" *--> "1" SessionManager
 RequestResponseHandler "0..*" *--> "1" FirmwareChecker

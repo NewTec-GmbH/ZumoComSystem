@@ -1,5 +1,11 @@
 @startuml
 
+
+package SystemServices
+{
+    class FirmwareChecker
+}
+
 abstract class Command
 {
     - m_serviceID: String
@@ -9,6 +15,23 @@ abstract class Command
     + getServiceID(): const String& {const}
     + getReqPermission(): const Permission& {const}
     + {abstract} run(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void {const}
+    - Command()
+    - Command(const Command&)
+    - Command& operator =(const Command&);
+}
+
+abstract class BinaryCommand
+{
+    - m_binaryServiceID: String
+    - m_BinaryReqPermission: Permission
+    + BinaryCommand(serviceId: const String&, reqPermission: const Permission&)
+    + {virtual} ~BinaryCommand()
+    + getBinaryReqPermission(): const Permission& {const}
+    + {abstract} run(response: ApiResponse&, connectionCtx: Session*): void
+    + {abstract} reset(): void
+    - BinaryCommand()
+    - BinaryCommand(const BinaryCommand&)
+    - BinaryCommand& operator =(const BinaryCommand&);
 }
 
 class EchoDemoCommand
@@ -27,15 +50,20 @@ Command <|-down-FlashZumoCommand
 
 class UploadZumoCommand
 {
-    - m_writtenFirmwareBytes: uint32_t
-    - m_fileManager: FileManager
-    - writeFile(dataChunk: const uint8_t*, chunkSize: const uint16_t, response: ApiResponse&)
     + UploadZumoCommand()
     + ~UploadZumoCommand()
-    + run(fwChecker: FirmwareChecker&, response: ApiResponse&, connectionCtx: Session*):  void {const}
+    - m_fileManager: FileManager
+    - m_fwChecker: FirmwareChecker
+    - {static} FIRMWARE_FILENAME: char* = {readonly} "/zumo_firmware.bin"
+    - {static} TARGET_SYSTEM: char* = {readonly} "ZUMO"
+    - {static} OVERWRITE_FIRMWAREINFO: bool = {readonly} true
+    - m_writtenFirmwareBytes: uint32_t
+    - writeFile(dataChunk: const uint8_t*, chunkSize: const uint16_t): bool
 }
 Command <|-down-UploadZumoCommand
+BinaryCommand <|-down-UploadZumoCommand
 UploadZumoCommand "0..*" *--> "1" FileManager
+UploadZumoCommand "0..*" *--> "1" FirmwareChecker
 
 class UploadZumoCommand
 {

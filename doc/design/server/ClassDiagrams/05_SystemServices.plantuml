@@ -73,6 +73,7 @@ package SystemServices {
         + {static} initFS(): bool
         + openFile(fileName: const String&, mode: const char*): bool
         + fileOpened(): bool
+        + {static} deleteFile(fileName: const String&): bool
         + closeFile(): void
         + resetFilePointer(): bool
         + read4KBlock(buffer: uint8_t*): int16_t
@@ -99,16 +100,18 @@ package SystemServices {
         - m_hasherInstance: BLAKE2b
         - m_hashBuffer: uint8_t[SHA256_LENGTH_BYTE]
         - m_hashAvailable: bool
+        - m_messageDigestInitialized: bool
         - m_publicKeyContext: mbedtls_pk_context
         - m_messageDigestContext: mbedtls_md_context_t
         + CryptoServices()
         + ~CryptoServices()
         + getRandomSalt(outputString: String&): bool
         + hashBlake2b(cleartext: const String&, salt: const String&, outputString: String&): bool
-        + updateVerifySignature(dataChunk: const uint8_t*, dataSize: const uint16_t): bool
-        + resetVerifySignature(): bool
-        + getComputedHashValue(outputString: String&): bool
+        + updateSHA256Hash(dataChunk: const uint8_t*, dataSize: const uint16_t): bool
+        + resetSHA256Hash(): void
+        + getSHA256String(outputString: String&): bool
         + verifySignature(signature: const uint8_t*, signatureSize: const uint16_t): bool
+        - finalizeSHA256Hash(): void
     }
     CryptoServices "0..*" *--> "1" BLAKE2b
     CryptoServices "0..*" *--> "1" mbedtls_pk_context
@@ -146,7 +149,7 @@ package SystemServices {
 
     class FirmwareChecker
     {
-        + {static} MAX_ZUMO_FW_BLOB_SIZE_BYTE: uint32_t = {readonly} 2000000
+        + {static} MAX_ZUMO_FW_BLOB_SIZE_BYTE: uint32_t = {readonly} 32000
         + {static} MAX_COM_FW_BLOB_SIZE_BYTE: uint32_t = {readonly} 1310720
         - {static} EXPECTED_ID: char* = {readonly} "CPSFW"
         - {static} EXPECTED_VERSION: uint8_t = {readonly} 1
