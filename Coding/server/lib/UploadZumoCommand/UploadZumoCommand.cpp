@@ -273,12 +273,5 @@ void UploadZumoCommand::reset()
 {
     m_writtenFirmwareBytes = 0;
     m_fileManager.closeFile();
-    if (true == m_fwChecker.reset())
-    {
-        LOG_INFO("UploadZumoCommand has been successfuly reset!");
-    }
-    else
-    {
-        LOG_ERROR("Could not reset FirmwareChecker/UploadZumoCommand!");
-    }
+    m_fwChecker.reset();
 }

@@ -80,23 +80,21 @@ public:
     bool hashBlake2b(const String& cleartext, const String& salt, String& outputString);
 
     /**
+     * Discards all previous computations/updateSHA256Hash() calls and starts verification from scratch
+     */
+    void resetSHA256Hash();
+
+    /**
      * Computes the SHA256 hash required for the signature verification based on passed binary data.
      * Needs to be called until the entire binary data stream has been read.
-     * Call resetVerifySignature() to start from scratch and discard all previous calculations.
-     * Call verifySignature() to get/finish hash computation and start verifying the RSA2048 signature
+     * Call resetSHA256Hash() to start from scratch and discard all previous calculations.
+     * Call verifySignature() or getSHA256String() to get/finish hash computation and start verifying the RSA2048 signature
      *
      * @param[in] dataChunk Pointer to the input buffer which contains the binary data to be hashed
      * @param[in] dataSize Specifies the size of the passed input buffer. Can be of 4096 bytes in size at max
      * @return Returns true if successful, else false
      */
-    bool updateVerifySignature(const uint8_t* dataChunk, const uint16_t dataSize);
-
-    /**
-     * Discards all previous computations/updateVerifySignature() calls and starts verification from scratch
-     *
-     * @return Returns true if successful, else false
-     */
-    bool resetVerifySignature();
+    bool updateSHA256Hash(const uint8_t* dataChunk, const uint16_t dataSize);
 
     /**
      * Returns the computed hash value if it is available
@@ -104,7 +102,7 @@ public:
      * @param[in] outputString The output hex string
      * @return Returns true if successful, else false
      */
-    bool getComputedHashValue(String& outputString);
+    bool getSHA256String(String& outputString);
 
     /**
      * Verifies the passed RSA2048 PKCS#1 v1.5 signature by decrypting the signature and comparing
@@ -147,10 +145,20 @@ private:
     /** Specifies if the hash has been computed */
     bool m_hashAvailable;
 
+    /** Specifies if the message digest has been initialized */
+    bool m_messageDigesetInitialized;
+
     /** Instance of the public key cryptography context */
     mbedtls_pk_context m_publicKeyContext;
 
     /** Instance of the message digest context */
     mbedtls_md_context_t m_messageDigestContext;
+
+    /**
+     * Finalizes the calculation of the SHA256 hash
+     * and provides the SHA256 hash result in the hash buffer.
+     * Sets hashAvailable flag if successful
+     */
+    void finalizeSHA256Hash();
 };
 #endif /** __CRYPTOSERVICES_H__ */

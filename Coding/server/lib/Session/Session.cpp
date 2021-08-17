@@ -165,6 +165,7 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
                 }
             }
 
+            /* All bytes of the websocket message have been successfully read */
             if (m_readBytes == recordSize)
             {
                 /* Call the API service */
@@ -295,15 +296,24 @@ bool Session::isAuthenticated() const
 
 void Session::authenticateSession(User* user)
 {
-    m_sessionAuthenticated = true;
-    m_linkedUser = user;
-    LOG_INFO(String("Successfully authenticated a session for the user ") + user->getUsername());
+    if (nullptr != user)
+    {
+        m_sessionAuthenticated = true;
+        m_linkedUser = user;
+        LOG_INFO(String("Successfully authenticated a session for the user ") + user->getUsername());
+    }
 }
 
 void Session::deauthenticateSession()
 {
-    m_sessionAuthenticated = false;
-    LOG_INFO("Session de-authenticated!");
+    if (true == m_sessionAuthenticated)
+    {
+        m_sessionAuthenticated = false;
+        if (nullptr != m_linkedUser)
+        {
+            LOG_INFO(String("Session of user ") + m_linkedUser->getUsername() + String(" has been de-authenticated!"));
+        }
+    }
 }
 
 void Session::handleSessionTimeout(void* parameter)

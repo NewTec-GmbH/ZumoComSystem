@@ -65,24 +65,14 @@ void FirmwareChecker::deserializeHeader(const uint8_t* dataChunk, const uint16_t
 bool FirmwareChecker::deserializePayload(const uint8_t* dataChunk, const uint16_t chunkSize)
 {
     m_readPayloadBytes += chunkSize;
-    return m_crypto.updateVerifySignature(dataChunk, chunkSize);
+    return m_crypto.updateSHA256Hash(dataChunk, chunkSize);
 }
 
-bool FirmwareChecker::reset()
+void FirmwareChecker::reset()
 {
-    bool retCode = false;
     m_readPayloadBytes = 0;
     m_fwHeader.reset();
-    if (true == m_crypto.resetVerifySignature())
-    {
-        retCode = true;
-        LOG_DEBUG("Successfully cleared all data in FirmwareChecker");
-    }
-    else
-    {
-        LOG_ERROR("Could not clear all data in FirmwareChecker!");
-    }
-    return retCode;
+    m_crypto.resetSHA256Hash();
 }
 
 bool FirmwareChecker::idOK()
@@ -99,7 +89,7 @@ void FirmwareChecker::getTarget(String& target) const
 
 bool FirmwareChecker::getComputedHashValue(String& outputString)
 {
-    return m_crypto.getComputedHashValue(outputString);
+    return m_crypto.getSHA256String(outputString);
 }
 
 bool FirmwareChecker::isValid(const String& expectedTarget)
