@@ -44,7 +44,6 @@ class ApiRequest
 }
 ApiRequest ..> ArduinoJson : uses
 
-
 class ApiResponse
 {
     - m_statusCode: ResponseCode
@@ -88,6 +87,8 @@ class RequestResponseHandler
 {
     - m_echoDemoCommand: EchoDemoCommand
     - m_uploadZumoCommand: UploadZumoCommand
+    - m_uploadCOMCommand: UploadCOMCommand
+    - m_flashCOMCommand: FlashCOMCommand
     - m_sessionManager: SessionManager
     + {static} getInstance(): RequestResponseHandler&
     + makeRequest(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void

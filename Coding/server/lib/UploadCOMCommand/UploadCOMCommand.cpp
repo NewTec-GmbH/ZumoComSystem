@@ -299,8 +299,10 @@ void UploadCOMCommand::run(ApiResponse& response, Session* connectionCtx)
 void UploadCOMCommand::reset()
 {
     esp_ota_end(m_otaHandle);
-    m_writtenFirmwareBytes = 0;
     m_fwChecker.reset();
+    m_writtenFirmwareBytes = 0;
+    m_isInitialized = false;
+    m_writePartitionSize = 0;
 }
 
 esp_err_t UploadCOMCommand::writePartition(const uint8_t* dataChunk, const uint16_t chunkSize)

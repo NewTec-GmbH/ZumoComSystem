@@ -71,6 +71,9 @@ package Data
         + {static} deleteInfo(targetSystem: const String&): bool
         + {static} serialize(serial: String&): bool
         + {static} deserialize(serial: const String&): bool
+        + getTargetSystem(): const String& {const}
+        + getPayloadHashValue(): const String& {const}
+        + isValid(): bool
     }
     FirmwareInfo "1" *--> "2" FirmwareInfo
     FirmwareInfo ..> ArduinoJson : uses

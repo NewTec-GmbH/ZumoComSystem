@@ -7,6 +7,11 @@ package SystemServices
     class FileManager
 }
 
+package "Arduino Core"
+{
+    class esp_ota
+}
+
 abstract class Command
 {
     - m_serviceID: String
@@ -42,13 +47,6 @@ class EchoDemoCommand
 }
 Command <|-down-EchoDemoCommand
 
-class FlashZumoCommand
-{
-    + FlashZumoCommand()
-    + ~FlashZumoCommand()
-}
-Command <|-down-FlashZumoCommand
-
 class UploadZumoCommand
 {
     - {static} FIRMWARE_FILENAME: char* = {readonly} "/zumo_firmware.bin"
@@ -66,21 +64,35 @@ BinaryCommand <|-down-UploadZumoCommand
 UploadZumoCommand "0..*" *--> "1" FileManager
 UploadZumoCommand "0..*" *--> "1" FirmwareChecker
 
+class FlashZumoCommand
+{
+    + FlashZumoCommand()
+    + ~FlashZumoCommand()
+}
+Command <|-down-FlashZumoCommand
+
+
 class UploadCOMCommand
 {
     - {static} TARGET_SYSTEM: char* = {readonly} "COM"
     - {static} OVERWRITE_FIRMWAREINFO: bool = {readonly} true
     - m_fwChecker: FirmwareChecker
     - m_writtenFirmwareBytes: uint32_t
+    - m_isInitialized: bool
+    - m_otaHandle: esp_ota_handle_t
+    - m_writePartitionSize: uint32_t
     + UploadCOMCommand()
     + ~UploadCOMCommand()
+    - writePartition(dataChunk: const uint8_t*, chunkSize: const uint16_t): esp_err_t
 }
 Command <|-down-UploadCOMCommand
 BinaryCommand <|-down-UploadCOMCommand
 UploadCOMCommand "0..*" *--> "1" FirmwareChecker
+UploadCOMCommand "0..*" *--> "1" esp_ota
 
 class FlashCOMCommand
 {
+    - {static} TARGET_SYSTEM: char* = {readonly} "COM"
     + FlashCOMCommand()
     + ~FlashCOMCommand()
 }
