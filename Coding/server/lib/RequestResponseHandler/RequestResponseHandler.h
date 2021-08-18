@@ -48,7 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <BinaryCommand.h>
 #include <EchoDemoCommand.h>
 #include <UploadZumoCommand.h>
-#include <UploadComCommand.h>
+#include <UploadCOMCommand.h>
 #include <FlashCOMCommand.h>
 
  /** Class which handles requests and responses between the API service implementations and the webserver */
