@@ -101,6 +101,27 @@ public:
      */
     static bool deserialize(const String& serial);
 
+    /**
+     * Returns the target system of this FirmwareInfo instance
+     *
+     * @return Returns the target system string
+     */
+    const String& getTargetSystem() const;
+
+    /**
+     * Returns the payload hash value of this FirmwareInfo instance
+     *
+     * @return Returns the hash value of the firmware payload
+     */
+    const String& getPayloadHashValue() const;
+
+    /**
+     * Returns if this FirmwareInfo instance firmware is valid
+     *
+     * @return Returns true if valid, else false
+     */
+    bool isValid() const;
+
 private:
     /** Specifies the max number of saved FirmwareInfo instances */
     static const uint8_t NUMBER_OF_SAVED_FIRMWARES = 2;

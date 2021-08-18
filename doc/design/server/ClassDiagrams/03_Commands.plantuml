@@ -4,6 +4,7 @@
 package SystemServices
 {
     class FirmwareChecker
+    class FileManager
 }
 
 abstract class Command
@@ -50,14 +51,14 @@ Command <|-down-FlashZumoCommand
 
 class UploadZumoCommand
 {
-    + UploadZumoCommand()
-    + ~UploadZumoCommand()
-    - m_fileManager: FileManager
-    - m_fwChecker: FirmwareChecker
     - {static} FIRMWARE_FILENAME: char* = {readonly} "/zumo_firmware.bin"
     - {static} TARGET_SYSTEM: char* = {readonly} "ZUMO"
     - {static} OVERWRITE_FIRMWAREINFO: bool = {readonly} true
     - m_writtenFirmwareBytes: uint32_t
+    - m_fileManager: FileManager
+    - m_fwChecker: FirmwareChecker
+    + UploadZumoCommand()
+    + ~UploadZumoCommand()
     - writeFile(dataChunk: const uint8_t*, chunkSize: const uint16_t): bool
 }
 Command <|-down-UploadZumoCommand
@@ -65,12 +66,25 @@ BinaryCommand <|-down-UploadZumoCommand
 UploadZumoCommand "0..*" *--> "1" FileManager
 UploadZumoCommand "0..*" *--> "1" FirmwareChecker
 
-class UploadZumoCommand
+class UploadCOMCommand
 {
-    + UploadZumoCommand()
-    + ~UploadZumoCommand()
+    - {static} TARGET_SYSTEM: char* = {readonly} "COM"
+    - {static} OVERWRITE_FIRMWAREINFO: bool = {readonly} true
+    - m_fwChecker: FirmwareChecker
+    - m_writtenFirmwareBytes: uint32_t
+    + UploadCOMCommand()
+    + ~UploadCOMCommand()
 }
-Command <|-down-FlashZumoCommand
+Command <|-down-UploadCOMCommand
+BinaryCommand <|-down-UploadCOMCommand
+UploadCOMCommand "0..*" *--> "1" FirmwareChecker
+
+class FlashCOMCommand
+{
+    + FlashCOMCommand()
+    + ~FlashCOMCommand()
+}
+Command <|-down-FlashCOMCommand
 
 class RebootZumoCommand
 {
@@ -100,19 +114,5 @@ class DebugZumoCommand
     + ~DebugZumoCommand()
 }
 Command <|-down-DebugZumoCommand
-
-class FlashCOMCommand
-{
-    + FlashCOMCommand()
-    + ~FlashCOMCommand()
-}
-Command <|-down-FlashCOMCommand
-
-class UploadCOMCommand
-{
-    + UploadCOMCommand()
-    + ~UploadCOMCommand()
-}
-Command <|-down-UploadCOMCommand
 
 @enduml

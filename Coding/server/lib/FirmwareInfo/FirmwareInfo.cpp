@@ -210,3 +210,18 @@ bool FirmwareInfo::deserialize(const String& serial)
     }
     return retCode;
 }
+
+const String& FirmwareInfo::getTargetSystem() const
+{
+    return m_targetSystem;
+}
+
+const String& FirmwareInfo::getPayloadHashValue() const 
+{
+    return m_payloadHashValue;
+}
+
+bool FirmwareInfo::isValid() const
+{
+    return m_isValid;
+}

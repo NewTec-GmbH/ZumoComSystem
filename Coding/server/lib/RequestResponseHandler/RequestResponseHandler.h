@@ -48,6 +48,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <BinaryCommand.h>
 #include <EchoDemoCommand.h>
 #include <UploadZumoCommand.h>
+#include <UploadComCommand.h>
+#include <FlashCOMCommand.h>
 
  /** Class which handles requests and responses between the API service implementations and the webserver */
 class RequestResponseHandler
@@ -114,6 +116,12 @@ private:
 
     /** Instance of UploadZumoCommand */
     UploadZumoCommand m_uploadZumoCommand;
+
+    /** Instance of UploadCOMCommand */
+    UploadCOMCommand m_uploadCOMCommand;
+
+    /** Instance of FlashCOMCommand */
+    FlashCOMCommand m_flashCOMCommand;
 
     /** Instance of SessionManager */
     SessionManager m_sessionManager;

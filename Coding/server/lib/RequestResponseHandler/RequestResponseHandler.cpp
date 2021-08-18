@@ -149,6 +149,14 @@ const Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& 
     {
         command = &m_uploadZumoCommand;
     }
+    else if (commandID == "uploadcom")
+    {
+        command = &m_uploadCOMCommand;
+    }
+    else if(commandID == "flashcom")
+    {
+        command = &m_flashCOMCommand;
+    }
     else if (commandID == "echodemo")
     {
         command = &m_echoDemoCommand;
@@ -162,6 +170,10 @@ BinaryCommand* RequestResponseHandler::getCommandOfBinaryApiRequest(const String
     if (commandId == "uploadzumo")
     {
         command = &m_uploadZumoCommand;
+    }
+    else if (commandId == "uploadcom")
+    {
+        command = &m_uploadCOMCommand;
     }
     return command;
 }
