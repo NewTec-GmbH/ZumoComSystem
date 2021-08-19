@@ -71,6 +71,7 @@ private:
     /** Dedicated target of the firmware file */
     static const char* TARGET_SYSTEM;
 
+    /** Specifies how many milliseconds the ComPlatform should wait until it reboots itself */
     static const uint16_t REBOOT_DELAY_MS;;
 };
 #endif /** __FLASHCOMCOMMAND_H__ */

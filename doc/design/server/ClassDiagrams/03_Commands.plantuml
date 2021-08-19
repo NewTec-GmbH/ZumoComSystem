@@ -5,6 +5,7 @@ package SystemServices
 {
     class FirmwareChecker
     class FileManager
+    class System
 }
 
 package "Arduino Core"
@@ -71,7 +72,6 @@ class FlashZumoCommand
 }
 Command <|-down-FlashZumoCommand
 
-
 class UploadCOMCommand
 {
     - {static} TARGET_SYSTEM: char* = {readonly} "COM"
@@ -93,6 +93,7 @@ UploadCOMCommand "0..*" *--> "1" esp_ota
 class FlashCOMCommand
 {
     - {static} TARGET_SYSTEM: char* = {readonly} "COM"
+    - {static} REBOOT_DELAY_MS: uint16_t = {readonly} 5000
     + FlashCOMCommand()
     + ~FlashCOMCommand()
 }
@@ -102,9 +103,9 @@ class RebootZumoCommand
 {
     + RebootZumoCommand()
     + ~RebootZumoCommand()
-
 }
 Command <|-down-RebootZumoCommand
+RebootZumoCommand "0..*" *--> "1" System
 
 class ConfigureNetworkCommand
 {

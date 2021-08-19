@@ -198,8 +198,8 @@ package SystemServices {
     class System
     {
         - m_store: Store&
-        - m_wifiManager: WiFiManager
-        - m_webServer: WebServer
+        - m_wifiManager: WiFiManager*
+        - m_webServer: WebServer*
         - {static} m_genKeyCertSemaphore: SemaphoreHandle_t
         - SERVICE_HANDLING_SLEEP_TIME_MS {readonly} = 1
         + {static} getInstance(): System&

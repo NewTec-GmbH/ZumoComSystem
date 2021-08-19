@@ -89,6 +89,7 @@ class RequestResponseHandler
     - m_uploadZumoCommand: UploadZumoCommand
     - m_uploadCOMCommand: UploadCOMCommand
     - m_flashCOMCommand: FlashCOMCommand
+    - m_rebootCOMCommand: RebootCOMCommand
     - m_sessionManager: SessionManager
     + {static} getInstance(): RequestResponseHandler&
     + makeRequest(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void
