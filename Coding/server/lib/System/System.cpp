@@ -44,18 +44,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Key.h>
 #include <Log.h>
 #include <Session.h>
+#include <Store.h>
+#include <WiFiManager.h>
+#include <HTTPsWebServer.h>
 
 SemaphoreHandle_t System::m_genKeyCertSemaphore = {0};
 
 System::System() :
     m_store(Store::getInstance()),
-    m_wifimgr(),
-    m_webServer()
+    m_wifimgr(new WiFiManager()),
+    m_webServer(new HTTPsWebServer())
 {
 }
 
 System::~System()
 {
+    if(nullptr != m_wifimgr)
+    {
+        delete m_wifimgr;
+    }
+
+    if(nullptr != m_webServer)
+    {
+        delete m_webServer;
+    }
 }
 
 void System::init()
@@ -95,19 +107,19 @@ void System::init()
     /* Read WiFi key if AP should be spawned */
     if (true == Key::getInstance().readKey())
     {
-        m_wifimgr.startAP();
+        m_wifimgr->startAP();
     }
     else
     {
         /* Load NetworkCredentials from persistent storage */
         if (true == m_store.loadSTACredentials())
         {
-            m_wifimgr.startSTA();
+            m_wifimgr->startSTA();
         }
         else
         {
             LOG_ERROR("No NetworkCredentials available");
-            m_wifimgr.startAP();
+            m_wifimgr->startAP();
             LOG_INFO("AP spwaned because there are no network credentials available");
         }
     }
@@ -148,7 +160,7 @@ void System::init()
         LOG_DEBUG("Successfully started websocket API timeout service");
 
         /* Init HTTPs and WSS servers */
-        if (true == m_webServer.startServer())
+        if (true == m_webServer->startServer())
         {
             LOG_DEBUG("HTTPs and WSS servers successfully started");
         }
@@ -169,22 +181,23 @@ void System::reset()
     LOG_INFO("ComPlatform will be restarted now...");
 
     /* Shut down DNS servers and WiFi module */
-    m_wifimgr.stopAP();
-    m_wifimgr.stopSTA();
+    m_wifimgr->stopAP();
+    m_wifimgr->stopSTA();
 
     /* Close NVS and store */
     m_store.closeStore();
 
     /* Shut down HTTPS/WSS servers */
-    m_webServer.stopServer();
+    m_webServer->stopServer();
 
+    /* Reboot the ComPlatform now */
     ESP.restart();
 }
 
 void System::handleServices()
 {
-    m_wifimgr.handleAP_DNS();
-    m_webServer.handleServer();
+    m_wifimgr->handleAP_DNS();
+    m_webServer->handleServer();
 
     static const uint8_t SLEEP_TIME_MS = 1;
     delay(SLEEP_TIME_MS);

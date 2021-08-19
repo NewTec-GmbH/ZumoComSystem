@@ -31,46 +31,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file FlashCOMCommand.h
+ * @file RebootCOMCommand.cpp
  * @author Luis Moser
- * @brief FlashCOMCommand.h header
+ * @brief RebootCOMCommand class
  * @date 08/18/2021
  *
  * @{
  */
 
-#ifndef __FLASHCOMCOMMAND_H__
-#define __FLASHCOMCOMMAND_H__
+#include <System.h>
+#include <RebootCOMCommand.h>
+#include <Permission.h>
+#include <Log.h>
 
-#include <Command.h>
-
- /** Class which implements the firmare flash for the COM system */
-class FlashCOMCommand : public Command
+RebootCOMCommand::RebootCOMCommand() :
+    Command("rebootcom", REBOOT_COM)
 {
-public:
-    /**
-     * Default Constructor
-     */
-    FlashCOMCommand();
+}
 
-    /**
-     * Destructor
-     */
-    ~FlashCOMCommand();
+RebootCOMCommand::~RebootCOMCommand()
+{
+}
 
-    /**
-     * Implements the API service business logic
-     *
-     * @param[in] request Reference to the incoming ApiRequest
-     * @param[out] response Reference to the outgoing ApiResponse
-     * @param[in] connectionCtx Pointer to Session class instance
-     */
-    void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const;
-
-private:
-    /** Dedicated target of the firmware file */
-    static const char* TARGET_SYSTEM;
-
-    static const uint16_t REBOOT_DELAY_MS;;
-};
-#endif /** __FLASHCOMCOMMAND_H__ */
+void RebootCOMCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const
+{
+    LOG_WARN("Rebooting the ComPlatform now!");
+    System::getInstance().reset();
+}

@@ -45,8 +45,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <FirmwareInfo.h>
 #include <Log.h>
 #include <esp_ota_ops.h>
+#include <System.h>
 
 const char* FlashCOMCommand::TARGET_SYSTEM = "COM";
+const uint16_t FlashCOMCommand::REBOOT_DELAY_MS = 5000;
 
 FlashCOMCommand::FlashCOMCommand() :
     Command("flashcom", FLASH_COM)
@@ -60,7 +62,7 @@ FlashCOMCommand::~FlashCOMCommand()
 void FlashCOMCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const
 {
     esp_err_t flashRetCode = ESP_FAIL;
-    const uint16_t REBOOT_DELAY_MS = 5000;
+
     const FirmwareInfo* fwInfo = nullptr;
     Store& store = Store::getInstance();
 
@@ -83,10 +85,12 @@ void FlashCOMCommand::run(const ApiRequest& request, ApiResponse& response, Sess
                     {
                         response.setStatusCode(SUCCESS);
                         LOG_INFO("Successfully flashed the firmware image to the COM system");
-                        LOG_WARN("Rebooting in 5 seconds...");
+                        LOG_WARN(String("Rebooting in ") + REBOOT_DELAY_MS + String(" milliseconds!"));
 
                         delay(REBOOT_DELAY_MS);
-                        ESP.restart();
+
+                        /* Shut down all system services and reboot the ComPlatform */
+                        System::getInstance().reset();
                     }
                     else
                     {

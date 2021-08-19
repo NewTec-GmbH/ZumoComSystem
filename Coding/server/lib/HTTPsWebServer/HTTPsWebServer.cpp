@@ -45,6 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <HTTPResponse.hpp>
 #include <ResponseCode.h>
 #include <Session.h>
+#include <Store.h>
 
 const KeyValue HTTPsWebServer::m_servedFileTypes[] =
 {

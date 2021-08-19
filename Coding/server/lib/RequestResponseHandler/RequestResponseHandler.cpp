@@ -157,6 +157,10 @@ const Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& 
     {
         command = &m_flashCOMCommand;
     }
+    else if(commandID == "rebootcom")
+    {
+        command = &m_rebootCOMCommand;
+    }
     else if (commandID == "echodemo")
     {
         command = &m_echoDemoCommand;

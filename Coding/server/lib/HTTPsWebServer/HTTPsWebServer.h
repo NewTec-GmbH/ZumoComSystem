@@ -43,11 +43,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __HTTPSWEBSERVER_H__
 
 #include <Arduino.h>
-#include <Store.h>
 #include <HTTPSServer.hpp>
 #include <FileManager.h>
 #include <Session.h>
 #include <KeyValue.h>
+
+class Store;
 
 class HTTPsWebServer
 {

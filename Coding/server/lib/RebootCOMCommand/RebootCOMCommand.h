@@ -31,46 +31,40 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file FlashCOMCommand.h
+ * @file RebootCOMCommand.h
  * @author Luis Moser
- * @brief FlashCOMCommand.h header
+ * @brief RebootCOMCommand header
  * @date 08/18/2021
  *
  * @{
  */
 
-#ifndef __FLASHCOMCOMMAND_H__
-#define __FLASHCOMCOMMAND_H__
+#ifndef __REBOOTCOMCOMMAND_H__
+#define __REBOOTCOMCOMMAND_H__
 
 #include <Command.h>
 
- /** Class which implements the firmare flash for the COM system */
-class FlashCOMCommand : public Command
+ /** Class which implements the reboot of the COM system */
+class RebootCOMCommand : public Command
 {
 public:
     /**
      * Default Constructor
      */
-    FlashCOMCommand();
+    RebootCOMCommand();
 
     /**
      * Destructor
      */
-    ~FlashCOMCommand();
+    ~RebootCOMCommand();
 
     /**
-     * Implements the API service business logic
+     * Make a new request to the API
      *
      * @param[in] request Reference to the incoming ApiRequest
      * @param[out] response Reference to the outgoing ApiResponse
      * @param[in] connectionCtx Pointer to Session class instance
      */
     void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const;
-
-private:
-    /** Dedicated target of the firmware file */
-    static const char* TARGET_SYSTEM;
-
-    static const uint16_t REBOOT_DELAY_MS;;
 };
-#endif /** __FLASHCOMCOMMAND_H__ */
+#endif /** __REBOOTCOMCOMMAND_H__ */

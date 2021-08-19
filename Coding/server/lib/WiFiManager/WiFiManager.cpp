@@ -53,7 +53,6 @@ WiFiManager::WiFiManager() :
     m_dnsRetCode(false),
     m_apActive(false),
     m_staActive(false)
-
 {
 }
 

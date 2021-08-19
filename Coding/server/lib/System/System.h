@@ -42,9 +42,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __SYSTEM_H__
 #define __SYSTEM_H__
 
-#include <WiFiManager.h>
-#include <HTTPsWebServer.h>
-#include <Store.h>
+class Store;
+class WiFiManager;
+class HTTPsWebServer;
+
+#include <Arduino.h>
 
  /** Class responsible for initializing the ComPlatform, starting, handling and stopping all running services */
 class System
@@ -107,10 +109,10 @@ private:
     Store& m_store;
 
     /** Instance of WiFiManager */
-    WiFiManager m_wifimgr;
+    WiFiManager* m_wifimgr;
 
     /** Instance of HTTPsWebServer */
-    HTTPsWebServer m_webServer;
+    HTTPsWebServer* m_webServer;
 
     /** The binary semaphore for synchronizing init task and KeyCert generation task */
     static SemaphoreHandle_t m_genKeyCertSemaphore;
