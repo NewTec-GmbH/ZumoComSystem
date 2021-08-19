@@ -31,36 +31,31 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file Robot.cpp
+ * @file RebootZumoCommand.cpp
  * @author Luis Moser
- * @brief Robot class
- * @date 06/25/2021
+ * @brief RebootZumoCommand class
+ * @date 08/19/2021
  *
  * @{
  */
 
+#include <RebootZumoCommand.h>
+#include <Permission.h>
 #include <Robot.h>
 #include <Log.h>
-#include <GPIOPins.h>
 
-Robot::Robot() :
-    m_io(IO::getInstance())
+RebootZumoCommand::RebootZumoCommand() :
+    Command("rebootzumo", REBOOT_ZUMO)
 {
 }
 
-Robot::~Robot()
+RebootZumoCommand::~RebootZumoCommand()
 {
 }
 
-void Robot::resetRobotNow()
+void RebootZumoCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const
 {
-    /* Set GPIO as output pin */
-    m_io.setPinMode(GPIOPins::PIN_ROBOT_RESET, OUTPUT);
-
-    /* Pull down RESET line for ROBOT_RESET_TIME */
-    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
-    delay(ROBOT_RESET_TIME_MS);
-    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
-
-    LOG_WARN("Robot will be restarted now!");
+    LOG_WARN("Rebooting Zumo robot now!");
+    Robot::getInstance().resetRobotNow();
+    response.setStatusCode(SUCCESS);
 }

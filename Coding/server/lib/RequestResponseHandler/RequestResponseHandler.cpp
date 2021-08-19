@@ -153,13 +153,17 @@ const Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& 
     {
         command = &m_uploadCOMCommand;
     }
-    else if(commandID == "flashcom")
+    else if (commandID == "flashcom")
     {
         command = &m_flashCOMCommand;
     }
-    else if(commandID == "rebootcom")
+    else if (commandID == "rebootcom")
     {
         command = &m_rebootCOMCommand;
+    }
+    else if (commandID == "rebootzumo")
+    {
+        command = &m_rebootZumoCommand;
     }
     else if (commandID == "echodemo")
     {

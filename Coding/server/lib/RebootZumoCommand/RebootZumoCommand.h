@@ -31,36 +31,44 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file Robot.cpp
+ * @file RebootZumoCommand.h
  * @author Luis Moser
- * @brief Robot class
- * @date 06/25/2021
+ * @brief RebootZumoCommand header
+ * @date 08/19/2021
  *
  * @{
  */
 
-#include <Robot.h>
-#include <Log.h>
-#include <GPIOPins.h>
+#ifndef __REBOOTZUMOCOMMAND_H__
+#define __REBOOTZUMOCOMMAND_H__
 
-Robot::Robot() :
-    m_io(IO::getInstance())
+#include <Command.h>
+#include <ApiRequest.h>
+#include <ApiResponse.h>
+
+class Session;
+
+ /** Class which implements the reboot of the Zumo system */
+class RebootZumoCommand: public Command
 {
-}
+public:
+    /**
+     * Default Constructor
+     */
+    RebootZumoCommand();
 
-Robot::~Robot()
-{
-}
+    /**
+     * Destructor
+     */
+    ~RebootZumoCommand();
 
-void Robot::resetRobotNow()
-{
-    /* Set GPIO as output pin */
-    m_io.setPinMode(GPIOPins::PIN_ROBOT_RESET, OUTPUT);
-
-    /* Pull down RESET line for ROBOT_RESET_TIME */
-    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
-    delay(ROBOT_RESET_TIME_MS);
-    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
-
-    LOG_WARN("Robot will be restarted now!");
-}
+    /**
+     * Make a new request to the API
+     *
+     * @param[in] request Reference to the incoming ApiRequest
+     * @param[out] response Reference to the outgoing ApiResponse
+     * @param[in] connectionCtx Pointer to Session class instance
+     */
+    void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const;
+};
+#endif /** __REBOOTZUMOCOMMAND_H__ */

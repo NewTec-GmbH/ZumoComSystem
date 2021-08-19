@@ -90,6 +90,7 @@ class RequestResponseHandler
     - m_uploadCOMCommand: UploadCOMCommand
     - m_flashCOMCommand: FlashCOMCommand
     - m_rebootCOMCommand: RebootCOMCommand
+    - m_rebootZumoCommand: RebootZumoCommand
     - m_sessionManager: SessionManager
     + {static} getInstance(): RequestResponseHandler&
     + makeRequest(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void
@@ -105,6 +106,10 @@ RequestResponseHandler "0..*" *--> "1" FirmwareChecker
 RequestResponseHandler "0..*" o--> "0..*" Command
 RequestResponseHandler "0..*" *--> "1" EchoDemoCommand
 RequestResponseHandler "0..*" *--> "1" UploadZumoCommand
+RequestResponseHandler "0..*" *--> "1" UploadCOMCommand
+RequestResponseHandler "0..*" *--> "1" FlashCOMCommand
+RequestResponseHandler "0..*" *--> "1" RebootCOMCommand
+RequestResponseHandler "0..*" *--> "1" RebootZumoCommand
 RequestResponseHandler ..> ApiRequest
 RequestResponseHandler ..> ApiResponse
 RequestResponseHandler ..> ResponseCode

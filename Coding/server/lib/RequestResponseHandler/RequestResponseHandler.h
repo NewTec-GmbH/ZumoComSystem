@@ -51,6 +51,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <UploadCOMCommand.h>
 #include <FlashCOMCommand.h>
 #include <RebootCOMCommand.h>
+#include <RebootZumoCommand.h>
 
  /** Class which handles requests and responses between the API service implementations and the webserver */
 class RequestResponseHandler
@@ -126,6 +127,9 @@ private:
 
     /** Instance of RebootCOMCommand */
     RebootCOMCommand m_rebootCOMCommand;
+
+    /** Instance of RebootZumoCommand */
+    RebootZumoCommand m_rebootZumoCommand;
 
     /** Instance of SessionManager */
     SessionManager m_sessionManager;
