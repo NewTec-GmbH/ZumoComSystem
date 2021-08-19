@@ -52,6 +52,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <FlashCOMCommand.h>
 #include <RebootCOMCommand.h>
 #include <RebootZumoCommand.h>
+#include <SetSTACredentialsCommand.h>
 
  /** Class which handles requests and responses between the API service implementations and the webserver */
 class RequestResponseHandler
@@ -130,6 +131,9 @@ private:
 
     /** Instance of RebootZumoCommand */
     RebootZumoCommand m_rebootZumoCommand;
+
+    /** Instance of SetSTACredentialsCommand */
+    SetSTACredentialsCommand m_setSTACredentialsCommand;
 
     /** Instance of SessionManager */
     SessionManager m_sessionManager;

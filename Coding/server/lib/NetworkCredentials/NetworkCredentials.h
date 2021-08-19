@@ -96,12 +96,14 @@ public:
     bool serialize(String& serial) const;
 
     /**
-     * Re-creates object from serialized JSON string
+     * Re-creates object from serialized JSON string.
+     * Checks validity of SSID and passphrase and only deserializes them when they are valid
      *
      * @param serial The serialized JSON string
-     * @return Returns false in case of failure, true in case of success
+     * @param staCredentials Specifies if the passed credentials are used for STA mode
+     * @return Returns true if SSID and passphrase are well-formed and the deserialization was successful, else false
      */
-    bool deserialize(const String& serial);
+    bool deserialize(const String& serial, const bool staCredentials);
 
 private:
     /** Maximum number of printable chars (excluding null terminator) for SSIDs according to IEEE 802.11 */

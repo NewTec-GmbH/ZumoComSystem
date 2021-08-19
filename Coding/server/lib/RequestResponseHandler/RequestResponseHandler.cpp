@@ -165,6 +165,10 @@ const Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& 
     {
         command = &m_rebootZumoCommand;
     }
+    else if (commandID == "setstacredentials")
+    {
+        command = &m_setSTACredentialsCommand;
+    }
     else if (commandID == "echodemo")
     {
         command = &m_echoDemoCommand;

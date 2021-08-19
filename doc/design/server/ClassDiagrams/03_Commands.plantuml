@@ -107,12 +107,12 @@ class RebootZumoCommand
 Command <|-down-RebootZumoCommand
 RebootZumoCommand "0..*" *--> "1" System
 
-class ConfigureNetworkCommand
+class SetSTACredentialsCommand
 {
-    + ConfigureNetworkCommand()
-    + ~ConfigureNetworkCommand()
+    + SetSTACredentialsCommand()
+    + ~SetSTACredentialsCommand()
 }
-Command <|-down-ConfigureNetworkCommand
+Command <|-down-SetSTACredentialsCommand
 
 class RebootCOMCommand
 {

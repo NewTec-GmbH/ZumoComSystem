@@ -82,14 +82,21 @@ bool Store::saveSTACredentials()
 
 bool Store::loadSTACredentials()
 {
+    const bool ARE_STA_CREDENTIALS = true;
     String json;
+
     m_nvsmgr.readEntry("netCredentials", json);
-    bool retCode = ((String("null") != json) && (true == m_staCredentials.deserialize(json)));
+    bool retCode = ((json != "null") && (true == m_staCredentials.deserialize(json, ARE_STA_CREDENTIALS)));
     if (false == retCode)
     {
         LOG_ERROR("Could not load NetworkCredentials from persistent storage");
     }
     return retCode;
+}
+
+bool Store::deleteSTACredentials()
+{
+    return m_nvsmgr.deleteEntry("netCredentials");
 }
 
 KeyCert& Store::getKeyCert()

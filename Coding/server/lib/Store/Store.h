@@ -92,6 +92,11 @@ public:
     bool loadSTACredentials();
 
     /**
+     * Deletes the STA credentials from persistent storage
+     */
+    bool deleteSTACredentials();
+
+    /**
     * Get the private RSA key and the public certificate
     *
     * @return Returns the KeyCert instance

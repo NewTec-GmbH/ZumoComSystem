@@ -91,6 +91,7 @@ class RequestResponseHandler
     - m_flashCOMCommand: FlashCOMCommand
     - m_rebootCOMCommand: RebootCOMCommand
     - m_rebootZumoCommand: RebootZumoCommand
+    - m_setSTACredentialsCommand: SetSTACredentialsCommand
     - m_sessionManager: SessionManager
     + {static} getInstance(): RequestResponseHandler&
     + makeRequest(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void
