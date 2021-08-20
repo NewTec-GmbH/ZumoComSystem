@@ -3,9 +3,9 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 7 7
+Sheet 6 7
 Title "Zumo Communication System"
-Date "2021-07-30"
+Date "2021-08-20"
 Rev "V1.0"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -337,18 +337,18 @@ RTS
 $Comp
 L Device:R R?
 U 1 1 61051A41
-P 5650 1600
-F 0 "R?" V 5600 1450 50  0000 C CNN
-F 1 "100" V 5650 1600 50  0000 C CNN
-F 2 "" V 5580 1600 50  0001 C CNN
-F 3 "~" H 5650 1600 50  0001 C CNN
-	1    5650 1600
-	0    1    1    0   
+P 5450 1400
+F 0 "R?" H 5350 1400 50  0000 C CNN
+F 1 "100" V 5450 1400 50  0000 C CNN
+F 2 "" V 5380 1400 50  0001 C CNN
+F 3 "~" H 5450 1400 50  0001 C CNN
+	1    5450 1400
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5450 1600 5450 1200
+	5450 1600 5450 1550
 Wire Wire Line
-	5450 1600 5500 1600
+	5450 1600 5900 1600
 $Comp
 L power:+3.3V #PWR?
 U 1 1 610533D4
@@ -360,8 +360,6 @@ F 3 "" H 5450 1200 50  0001 C CNN
 	1    5450 1200
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	5800 1600 5900 1600
 $Comp
 L Device:R R?
 U 1 1 61055F77
@@ -390,7 +388,6 @@ Wire Wire Line
 	750  2350 1200 2350
 Wire Wire Line
 	3450 2050 4250 2050
-NoConn ~ 7100 2000
 NoConn ~ 7100 1800
 NoConn ~ 7100 1600
 Wire Wire Line
@@ -410,4 +407,63 @@ F 3 "https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_
 	1    6500 2800
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	8600 2700 8600 2600
+$Comp
+L Switch:SW_Push SW?
+U 1 1 61212612
+P 8600 2400
+AR Path="/60C50401/61212612" Ref="SW?"  Part="1" 
+AR Path="/60C4E4D0/61212612" Ref="SW?"  Part="1" 
+F 0 "SW?" V 8600 2750 50  0000 C CNN
+F 1 "RESET_AP-Mode" V 8500 2850 50  0000 C CNN
+F 2 "Button_Switch_SMD:SW_SPST_TL3342" H 8600 2600 50  0001 C CNN
+F 3 "~" H 8600 2600 50  0001 C CNN
+	1    8600 2400
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 61213BA1
+P 8600 2700
+F 0 "#PWR?" H 8600 2450 50  0001 C CNN
+F 1 "GND" H 8605 2527 50  0000 C CNN
+F 2 "" H 8600 2700 50  0001 C CNN
+F 3 "" H 8600 2700 50  0001 C CNN
+	1    8600 2700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5450 1250 5450 1200
+$Comp
+L Device:R R?
+U 1 1 6121D064
+P 8600 1550
+F 0 "R?" H 8450 1600 50  0000 C CNN
+F 1 "10k" H 8450 1500 50  0000 C CNN
+F 2 "" V 8530 1550 50  0001 C CNN
+F 3 "~" H 8600 1550 50  0001 C CNN
+	1    8600 1550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8600 2200 8600 2000
+$Comp
+L power:+3.3V #PWR?
+U 1 1 6121D06C
+P 8600 1200
+F 0 "#PWR?" H 8600 1050 50  0001 C CNN
+F 1 "+3.3V" H 8615 1373 50  0000 C CNN
+F 2 "" H 8600 1200 50  0001 C CNN
+F 3 "" H 8600 1200 50  0001 C CNN
+	1    8600 1200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8600 1400 8600 1200
+Wire Wire Line
+	7100 2000 8600 2000
+Connection ~ 8600 2000
+Wire Wire Line
+	8600 2000 8600 1700
 $EndSCHEMATC
