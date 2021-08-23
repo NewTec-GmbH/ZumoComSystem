@@ -8,9 +8,19 @@ package SystemServices
     class System
 }
 
+package Data 
+{
+    class Store 
+}
+
 package "Arduino Core"
 {
     class esp_ota
+}
+
+package "HAL"
+{
+    class Zumo32U4
 }
 
 abstract class Command
@@ -64,6 +74,7 @@ Command <|-down-UploadZumoCommand
 BinaryCommand <|-down-UploadZumoCommand
 UploadZumoCommand "0..*" *--> "1" FileManager
 UploadZumoCommand "0..*" *--> "1" FirmwareChecker
+UploadZumoCommand ..> Store : uses
 
 class FlashZumoCommand
 {
@@ -71,6 +82,10 @@ class FlashZumoCommand
     + ~FlashZumoCommand()
 }
 Command <|-down-FlashZumoCommand
+FlashZumoCommand ..> Store : uses
+FlashZumoCommand "0..*" *--> "1" Zumo32U4
+FlashZumoCommand "0..*" *--> "1" FirmwareChecker
+FlashZumoCommand "0..*" *--> "1" File
 
 class UploadCOMCommand
 {
@@ -89,6 +104,7 @@ Command <|-down-UploadCOMCommand
 BinaryCommand <|-down-UploadCOMCommand
 UploadCOMCommand "0..*" *--> "1" FirmwareChecker
 UploadCOMCommand "0..*" *--> "1" esp_ota
+UploadCOMCommand ..> Store : uses
 
 class FlashCOMCommand
 {
@@ -98,6 +114,7 @@ class FlashCOMCommand
     + ~FlashCOMCommand()
 }
 Command <|-down-FlashCOMCommand
+FlashCOMCommand ..> Store : uses
 
 class RebootZumoCommand
 {
@@ -105,7 +122,7 @@ class RebootZumoCommand
     + ~RebootZumoCommand()
 }
 Command <|-down-RebootZumoCommand
-RebootZumoCommand "0..*" *--> "1" System
+RebootZumoCommand "0..*" *--> "1" Zumo32U4
 
 class SetSTACredentialsCommand
 {
@@ -113,6 +130,7 @@ class SetSTACredentialsCommand
     + ~SetSTACredentialsCommand()
 }
 Command <|-down-SetSTACredentialsCommand
+SetSTACredentialsCommand ..> Store : uses
 
 class RebootCOMCommand
 {
@@ -127,5 +145,6 @@ class DebugZumoCommand
     + ~DebugZumoCommand()
 }
 Command <|-down-DebugZumoCommand
+DebugZumoCommand "0..*" *--> "1" Zumo32U4
 
 @enduml

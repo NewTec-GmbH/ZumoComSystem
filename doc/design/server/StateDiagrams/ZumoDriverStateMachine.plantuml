@@ -1,0 +1,32 @@
+@startuml
+State CLOSED
+State OPENED
+State FLASHING
+State READING_SERIAL
+State WRITING_SERIAL
+
+CLOSED --> OPENED : open()
+
+OPENED --> CLOSED : close()
+OPENED --> CLOSED : restart()
+
+OPENED --> OPENED : open()
+OPENED --> READING_SERIAL : readSerial()
+OPENED --> WRITING_SERIAL : writeSerial()
+OPENED --> FLASHING : beginWriteFirmware()
+
+READING_SERIAL --> READING_SERIAL : readSerial()
+READING_SERIAL --> CLOSED : close()
+READING_SERIAL --> CLOSED : restart()
+READING_SERIAL --> FLASHING : beginWriteFirmware()
+READING_SERIAL --> WRITING_SERIAL : writeSerial()
+
+WRITING_SERIAL --> WRITING_SERIAL : writeSerial()
+WRITING_SERIAL --> READING_SERIAL : readSerial()
+WRITING_SERIAL --> FLASHING : beginWriteFirmware()
+WRITING_SERIAL --> CLOSED : close()
+WRITING_SERIAL --> CLOSED : restart()
+
+FLASHING --> FLASHING : writeFirmwareChunk()
+FLASHING --> CLOSED : finalizeWriteFirmware()
+@enduml

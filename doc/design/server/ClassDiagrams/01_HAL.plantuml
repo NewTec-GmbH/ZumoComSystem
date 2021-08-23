@@ -4,7 +4,16 @@ package HAL
     package "Arduino Core"
     {
         class "Digital I/O" as ArduinoIO
-        class SemaphoreHandle_t 
+        class SemaphoreHandle_t
+    }
+
+    package "USB_Host_Shield_2.0" as shieldpackage
+    {
+    }
+
+    package "SystemServices"
+    {
+        class CryptoServices
     }
 
     enum GPIOPins
@@ -44,16 +53,110 @@ package HAL
     Key "0..*" *--> "1" IO
     Key ..> GPIOPins : includes
 
-    class Robot
+    ' class Robot
+    ' {
+    '         - m_io : IO&
+    '         {static} - ROBOT_RESET_TIME_MS: uint32_t {readonly} = 500
+    '         {static} + getInstance(): Robot&
+    '         + resetRobotNow(): void
+    '         - Robot()
+    '         - ~Robot()
+        
+    ' }
+    ' Robot "0..*" *--> "1" IO
+    ' Robot ..> GPIOPins : includes
+
+    enum ZumoStates
     {
-        - m_io : IO&
-        {static} - ROBOT_RESET_TIME_MS: uint32_t {readonly} = 500
-        {static} + getInstance(): Robot&
-        + resetRobotNow(): void
-        - Robot()
-        - ~Robot()
+        CLOSED
+        OPENED
+        FLASHING
+        READING_SERIAL
+        WRITING_SERIAL
     }
-    Robot "0..*" *--> "1" IO
-    Robot ..> GPIOPins : includes
+
+    class ZumoStateMachine
+    {
+        - m_currentState: ZumoStates
+        + ZumoStateMachine()
+        + ~ZumoStateMachine()
+        + setState(state: ZumoStates): bool
+        + getState(): ZumoStates
+    }
+    ZumoStateMachine ..> ZumoStates
+
+    class Zumo32U4Specification
+    {
+        + {static} TRANSFER_BLOCK_SIZE_BYTES: uint8_t {readonly} = 128
+
+        + {static} READ_SW_ID: uint8_t {readonly} = 0x53
+        + {static} READ_SW_VERSION: uint8_t {readonly} = 0x56
+        + {static} READ_HW_VERSION: uint8_t {readonly} = 0x76
+        + {static} READ_PROGRAMMER_TYPE: uint8_t {readonly} = 0x53
+        + {static} READ_SUPPORTED_DEVICE_CODE: uint8_t {readonly} = 0x74
+        + {static} READ_SIGNATURE: uint8_t {readonly} = 0x73
+        + {static} READ_LSB_FUSE: uint8_t {readonly} = 0x46
+        + {static} READ_MSB_FUSE: uint8_t {readonly} = 0x4E
+        + {static} READ_EXTENDED_FUSE: uint8_t {readonly} = 0x51
+        + {static} CHECK_BLOCK_SUPPORT: uint8_t {readonly} = 0x62
+
+        + {static} SET_DEVICE_TYPE: uint8_t[] {readonly} = {0x64, 0x44}
+        + {static} SET_MEMORY_ADDR: uint8_t {readonly} = 0x41
+        + {static} ENABLE_AUTO_INCR_MEMORY_WRITE_ADDR: uint8_t {readonly} = 0x61
+
+        + {static} ENTER_PROGRAMMING_MODE: uint8_t {readonly} = 0x50
+        + {static} EXIT_PROGRAMMING_MODE: uint8_t {readonly} = 0x4C
+        + {static} EXIT_BOOTLOADER_MODE: uint8_t {readonly} = 0x45
+
+        + {static} WRITE_MEMORY: uint8_t[] {readonly} = {0x42, 0x00, 0x80, 0x46}
+        + {static} READ_MEMORY: uint8_t[] {readonly} = {0x67, 0x00, 0x80, 0x46}
+
+        + {static} RET_OK: uint8_t {readonly} = 0x0D
+        + {static} EXPECTED_PROGRAMMER_ID: uint8_t[] {readonly} = "CATERIN"
+        + {static} EXPECTED_SW_VERSION: uint8_t[] {readonly} = {0x31, 0x30}
+        + {static} EXPECTED_HW_VERSION: uint8_t {readonly} = 0x3F
+        + {static} EXPECTED_DEVICE_CODE: uint8_t {readonly} = 0x44
+        + {static} EXPECTED_AUTO_INCR_ADDR_BUF_SIZE: uint8_t {readonly} = 0x59
+        + {static} EXPECTED_BLOCK_BUFFER_SIZE: uint8_t[] {readonly} = {0x59, 0x00, 0x80}
+        + {static} EXPECTED_LSB_FUSE_VALUE: uint8_t {readonly} = 0xFF
+        + {static} EXPECTED_MSB_FUSE_VALUE: uint8_t {readonly} = 0xD0
+        + {static} EXPECTED_EXTENDED_FUSE_VALUE: uint8_t {readonly} = 0xC8
+        + {static} EXPECTED_SIGNATURE: uint8_t[] {readonly} = {0x87, 0x95, 0x1E}
+    }
+
+    class Zumo32U4
+    {
+        - m_stateMachine: ZumoStates
+        + Zumo32U4()
+        + ~Zumo32U4()
+        + open(): bool
+        + close(): bool
+        + getState(): ZumoStateMachine
+        + restart(): bool
+        + readSerial(dataBuffer: const uint8_t*, chunkSize: const uint16_t): bool
+        + writeSerial(dataBuffer: const uint8_t*, chunkSize: const uint16_t): bool
+        + beginWriteFirmware(firmwareSize: uint16_t, expectedHash: const String&): bool
+        + writeFirmwareChunk(dataChunk: const uint8_t*, chunkSize: const uint16_t)
+        + finalizeWriteFirmware(): bool
+        - sendCommand(commandCode: const uint8_t*, retDataSize: const uint8_t): const uint8_t*
+        - enterBootloaderMode(): bool
+        - exitBootloaderMode(): bool
+        - enterProgrammerMode(): bool
+        - exitProgrammermode(): bool
+        - checkPlatform(): bool
+        - verifyFuses(): bool
+        - configurePlatform(): bool
+        - readMemory(dataChunk: const uint8_t*, chunkSize: const uint16_t)
+        - resetReadAddress(): bool
+        - writeMemory(dataChunk: const uint8_t*, chunkSize: const uint16_t)
+        - resetWriteAddress(): bool
+        - verifyWrittenFirmware(expectedHash: const String&): bool
+    }
+    Zumo32U4 "0..*" *--> "1" ZumoStateMachine
+    Zumo32U4 "0..*" *--> "1" Zumo32U4Specification
+    Zumo32U4 "0..*" *--> "1" IO
+    Zumo32U4 "0..*" *--> "1" shieldpackage
+    Zumo32U4 "0..*" *--> "1" CryptoServices
+    Zumo32U4 ..> GPIOPins : includes
 }
 @enduml
