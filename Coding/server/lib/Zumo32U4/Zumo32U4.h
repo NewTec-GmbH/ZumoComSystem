@@ -79,23 +79,23 @@ public:
 
     bool restart();
 
-    bool readSerial(const uint8_t* dataBuffer, const uint16_t chunkSize);
+    bool readSerialBuffer(uint8_t* dataBuffer, uint32_t& chunkSize);
 
-    bool writeSerial(const uint8_t* dataBuffer, const uint16_t chunkSize);
+    bool writeSerialBuffer(uint8_t* dataBuffer, const uint16_t chunkSize);
 
     bool beginWriteFirmware(uint16_t firmwareSize, const String& expectedHash);
 
-    bool writeFirmwareChunk(const uint8_t* dataChunk, const uint16_t chunkSize);
+    bool writeFirmwareChunk(uint8_t* dataChunk, const uint16_t chunkSize);
 
     bool finalizeWriteFirmware();
 
     void handleUSBDriver();
 
-public:
     Zumo32U4();
 
     ~Zumo32U4();
 
+private:
     static USB m_usb;
 
     static ACMAsyncOper m_asyncOper;
@@ -111,6 +111,8 @@ public:
     static const uint8_t USB_RETRY_DELAY_MS;
 
     static const uint8_t USB_MAX_PACKET_READ_BYTES;
+
+    static const uint16_t USB_MAX_PACKET_WRITE_BYTES;
 
     static const uint16_t PAGE_SIZE_BYTES;
 
@@ -162,7 +164,7 @@ public:
 
     void reset();
 
-    bool verifyWrittenFirmware(const String& expectedHash);
+    bool verifyWrittenFirmware();
 };
 #define __ZUMO32U4_H__
 #endif

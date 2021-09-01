@@ -55,6 +55,7 @@ const uint8_t Zumo32U4::NEXT_SERIAL_SEND_DELAY_MS = 10;
 const uint16_t Zumo32U4::USB_TIMEOUT_MS = 10000;
 const uint8_t Zumo32U4::USB_RETRY_DELAY_MS = 10;
 const uint8_t Zumo32U4::USB_MAX_PACKET_READ_BYTES = 64;
+const uint16_t Zumo32U4::USB_MAX_PACKET_WRITE_BYTES = 64;
 const uint16_t Zumo32U4::PAGE_SIZE_BYTES = 128;
 const uint16_t Zumo32U4::MAX_FIRMWARE_BUFFER_BYTES;
 
@@ -265,7 +266,7 @@ bool Zumo32U4::restart()
     bool retCode = false;
     const uint16_t HIGH_TIME_MS = 500;
 
-    if ((FLASHING != m_stateMachine.getState()) && (true == m_stateMachine.setState(CLOSED)))
+    if (true == m_stateMachine.setState(CLOSED))
     {
         /* Set control GPIO as OUTPUT */
         m_io.setPinMode(GPIOPins::PIN_ROBOT_RESET, OUTPUT);
@@ -540,13 +541,13 @@ bool Zumo32U4::checkPlatform()
     }
 #endif
 
-    return validSwID
+    return (validSwID
         && validSwVersion
         && validHwVersion
         && validProgrType
         && supportsAutoInc
         && supportsBlockFlash
-        && supportsDeviceCodes;
+        && supportsDeviceCodes);
 }
 
 bool Zumo32U4::verifyFuses()
@@ -616,7 +617,7 @@ bool Zumo32U4::verifyFuses()
     {
         LOG_ERROR("Could not read extended fuse!");
     }
-    return lsbFuseValid && msbFuseValid && extFuseValid;
+    return (lsbFuseValid && msbFuseValid && extFuseValid);
 }
 
 bool Zumo32U4::verifySignature()
@@ -681,6 +682,8 @@ bool Zumo32U4::configurePlatform()
 
 bool Zumo32U4::flashPages(uint8_t* dataChunk, const uint16_t chunkSize)
 {
+    bool retCode = false;
+
     /* Temporary buffer for response data */
     const uint8_t READ_BUFFER_SIZE_BYTES = 64;
     uint8_t readBuffer[READ_BUFFER_SIZE_BYTES];
@@ -690,15 +693,14 @@ bool Zumo32U4::flashPages(uint8_t* dataChunk, const uint16_t chunkSize)
     const uint16_t ADDR_BUFFER_SIZE_BYTES = 2;
     uint8_t addrBuffer[ADDR_BUFFER_SIZE_BYTES];
 
-    bool retCode = false;
+    uint8_t* pWriteBuffer = nullptr;
     uint16_t arrSize = 0;
     const uint8_t FILLER_VALUE = 0xFF;
-    uint8_t* pWriteBuffer = nullptr;
-    uint16_t numberOfPages = 0;
 
+    uint16_t numberOfPages = 0;
     uint16_t fillBytes = 0;
 
-    /* Check if one block is not full. Only write fully packaged pages. Perform byte stuffing with 0xFF as filler value */
+    /* Check if one block is not full. Only write fully packaged pages. Perform byte stuffing with '0xFF' as filler value */
     if (0 != (chunkSize % PAGE_SIZE_BYTES))
     {
         fillBytes = PAGE_SIZE_BYTES - (chunkSize % PAGE_SIZE_BYTES);
@@ -825,13 +827,360 @@ bool Zumo32U4::readMemoryPage(uint8_t* dataChunk, uint16_t& chunkSize)
     }
     else
     {
-        LOG_ERROR("Already read entire data!");
+        LOG_ERROR("Already read entire data! Call reset() if all pages should be read from beginning again");
+    }
+    return retCode;
+}
+
+bool Zumo32U4::readSerialBuffer(uint8_t* dataBuffer, uint32_t& chunkSize)
+{
+    bool retCode = false;
+    uint8_t resCode = 1;
+
+    uint16_t readBytes = 0;
+    uint32_t totalReadBytes = 0;
+    uint8_t* pReadBuffer = nullptr;
+
+    unsigned long startInitTime = 0L;
+
+    if (true == m_stateMachine.setState(READING_SERIAL))
+    {
+        /* Await ACM initialization */
+        startInitTime = millis();
+        while ((false == m_acm.isReady()) && (USB_TIMEOUT_MS >= (millis() - startInitTime)))
+        {
+            LOG_WARN("Trying to initialize the ACM instance!");
+            delay(USB_RETRY_DELAY_MS);
+            handleUSBDriver();
+        }
+
+        if (true == m_acm.isReady())
+        {
+            /* Wait for buffer to fill. Wait here until at least one byte arrives in serial buffer */
+            do
+            {
+                readBytes = PAGE_SIZE_BYTES;
+                pReadBuffer = &dataBuffer[totalReadBytes];
+
+                resCode = m_acm.RcvData(&readBytes, pReadBuffer);
+                if (resCode && resCode != hrNAK)
+                {
+                    retCode = false;
+                    ErrorMessage<uint8_t>(PSTR("Ret"), resCode);
+                    LOG_ERROR("Could not receive data from Zumo robot!");
+                }
+                totalReadBytes += readBytes;
+            } while (readBytes == 0);
+
+            /* Read all data in serial buffer until buffer is empty */
+            do
+            {
+                readBytes = PAGE_SIZE_BYTES;
+                pReadBuffer = &dataBuffer[totalReadBytes];
+
+                resCode = m_acm.RcvData(&readBytes, pReadBuffer);
+                if (resCode && resCode != hrNAK)
+                {
+                    retCode = false;
+                    ErrorMessage<uint8_t>(PSTR("Ret"), resCode);
+                    LOG_ERROR("Could not receive data from Zumo robot!");
+                    break;
+                }
+                totalReadBytes += readBytes;
+            } while (readBytes != 0);
+
+            chunkSize = totalReadBytes;
+            retCode = true;
+            LOG_DEBUG(String("Successfully read entire serial buffer. Read ") + totalReadBytes + String(" bytes"));
+        }
+        else
+        {
+            LOG_ERROR("Aborting because ACM could not be initialized!");
+        }
+    }
+    else
+    {
+        LOG_ERROR("Could not read serial port of Zumo robot because driver is in invalid state!");
+    }
+    return retCode;
+}
+
+bool Zumo32U4::writeSerialBuffer(uint8_t* dataBuffer, const uint16_t chunkSize)
+{
+    uint8_t resCode = 1;
+    unsigned long startInitTime = 0L;
+
+    if (true == m_stateMachine.setState(WRITING_SERIAL))
+    {
+        /* Await ACM initialization */
+        startInitTime = millis();
+        while ((false == m_acm.isReady()) && (USB_TIMEOUT_MS >= (millis() - startInitTime)))
+        {
+            LOG_WARN("Trying to initialize the ACM instance!");
+            delay(USB_RETRY_DELAY_MS);
+            handleUSBDriver();
+        }
+
+        if (true == m_acm.isReady())
+        {
+            /* Send the entire buffer data to serial output.
+            USB driver automatically splits buffer into
+            multiple data packets
+            */
+            resCode = m_acm.SndData(chunkSize, const_cast<uint8_t*>(dataBuffer));
+            if (0 == resCode)
+            {
+                LOG_DEBUG(String("Successfully wrote buffer with ") + chunkSize + String(" bytes to serial output!"));
+            }
+            else
+            {
+                ErrorMessage<uint8_t>(PSTR("SndData"), resCode);
+                LOG_ERROR("Could not write buffer to serial output. Aborting now");
+            }
+
+            /* Wait until next serial send */
+            delay(NEXT_SERIAL_SEND_DELAY_MS);
+        }
+        else
+        {
+            LOG_ERROR("Aborting because ACM could not be initialized!");
+        }
+    }
+    else
+    {
+        LOG_ERROR("Could not write to serial port of Zumo robot because driver is in invalid state!");
+    }
+    return (0 == resCode);
+}
+
+bool Zumo32U4::beginWriteFirmware(uint16_t firmwareSize, const String& expectedHash)
+{
+    bool retCode = false;
+    bool validPlatform = false;
+    bool validSignature = false;
+    bool validFuses = false;
+
+    if (true == m_stateMachine.setState(FLASHING))
+    {
+        if ((0 < firmwareSize) && (false == expectedHash.isEmpty()))
+        {
+            if (true == m_stateMachine.setState(OPENED))
+            {
+                if (true == m_stateMachine.setState(FLASHING))
+                {
+                    /* Switch/reboot into bootloader mode */
+                    enterBootloaderMode();
+
+                    m_expectedFirmwareSize = firmwareSize;
+                    m_expectedHashValue = expectedHash;
+
+                    validPlatform = checkPlatform();
+
+                    if (true == configurePlatform())
+                    {
+                        if (true == enterProgrammerMode())
+                        {
+                            validSignature = verifySignature();
+                            validFuses = verifyFuses();
+
+                            retCode = (validPlatform && validSignature && validFuses);
+                            if (true == retCode)
+                            {
+                                LOG_INFO("All checks for writing Zumo firmware have been passed!");
+                            }
+                            else
+                            {
+                                LOG_ERROR("At least one Zumo platform check failed. Could not start firmware flashing!");
+                            }
+                        }
+                        else
+                        {
+                            LOG_ERROR("Could not start firmware flashing because Zumo robot could not be switched into bootloader mode!");
+                        }
+                    }
+                    else
+                    {
+                        LOG_ERROR("Could not start firmware flashing because Zumo robot could not be configured!");
+                    }
+                }
+                else
+                {
+                    LOG_ERROR("Could not start firmware flashing because driver is in invalid state!");
+                }
+            }
+            else
+            {
+                LOG_ERROR("Could not open the Zumo robot because the driver is in invalid state!");
+            }
+        }
+        else
+        {
+            LOG_ERROR("Either expected firmware size is 0 byte or passed hash value is empty!");
+        }
+    }
+    else
+    {
+        LOG_ERROR("Could not begin flashing of Zumo robot because driver is in invalid state!");
+    }
+    return retCode;
+}
+
+bool Zumo32U4::writeFirmwareChunk(uint8_t* dataChunk, const uint16_t chunkSize)
+{
+    uint32_t expectedPages = m_expectedFirmwareSize / PAGE_SIZE_BYTES;
+    uint32_t writtenPages = m_writtenFirmwareBytes / PAGE_SIZE_BYTES;
+    bool retCode = false;
+    bool isLastPage = (writtenPages >= expectedPages);
+
+    if (true == m_stateMachine.setState(FLASHING))
+    {
+        if ((nullptr != dataChunk) && (0 < chunkSize))
+        {
+            if (FirmwareChecker::MAX_ZUMO_FW_BLOB_SIZE_BYTE >= (m_writtenFirmwareBytes + chunkSize))
+            {
+                /* Check if the data chunk, which is not the last page, fills the page buffer(s) entirely,
+                if not, this would cause byte stuffing in the middle of the firmware payload, which
+                is not wanted.
+                */
+                if ((false == isLastPage) && (0 != chunkSize % PAGE_SIZE_BYTES))
+                {
+                    LOG_ERROR("The current data chunk is too small! It should fully fill one or more pages with PAGE_SIZE_BYTES!. Did not write the page!");
+                }
+                else
+                {
+                    retCode = flashPages(dataChunk, chunkSize);
+                    m_writtenFirmwareBytes += chunkSize;
+                    LOG_DEBUG("Successfully flashed passed data chunk into Zumo robot memory");
+                }
+            }
+            else
+            {
+                LOG_ERROR("Passed data chunk is too big to be flashed onto the Zumo robot!");
+            }
+        }
+        else
+        {
+            LOG_ERROR("Passed buffer pointer is nullptr or size of array is 0 bytes!");
+        }
+    }
+    else
+    {
+        LOG_ERROR("Could not flash Zumo robot because driver is in invalid state!");
+    }
+    return retCode;
+}
+
+bool Zumo32U4::verifyWrittenFirmware()
+{
+    bool retCode = true;
+    uint8_t pageBuffer[PAGE_SIZE_BYTES];
+    uint16_t readBytes = 0;
+
+    String actualHashValue = "";
+
+    uint32_t expectedPages = m_expectedFirmwareSize / PAGE_SIZE_BYTES;
+    uint32_t remainingBytes = m_expectedFirmwareSize % PAGE_SIZE_BYTES;
+
+    /* Hash all fully packed pages */
+    for (uint32_t pageNo = 0; pageNo < expectedPages; pageNo++)
+    {
+        if (true == readMemoryPage(pageBuffer, readBytes))
+        {
+            if (false == m_crypto.updateSHA256Hash(pageBuffer, readBytes))
+            {
+                retCode = false;
+                LOG_ERROR("Could not hash firmware data. Aborting now");
+                break;
+            }
+        }
+        else
+        {
+            retCode = false;
+            LOG_ERROR("Could not read the memory page. Aborting now");
+            break;
+        }
+    }
+
+    /* Hash the last page which is (not) fully packed */
+    if ((true == retCode) && (true == readMemoryPage(pageBuffer, readBytes)))
+    {
+        if (remainingBytes <= readBytes)
+        {
+            if (true == m_crypto.updateSHA256Hash(pageBuffer, remainingBytes))
+            {
+                if (true == m_crypto.getSHA256String(actualHashValue))
+                {
+                    retCode = (actualHashValue == m_expectedHashValue);
+                }
+                else
+                {
+                    retCode = false;
+                }
+            }
+            else
+            {
+                retCode = false;
+                LOG_ERROR("Could not hash firmware data. Aborting now");
+            }
+        }
+        else
+        {
+            retCode = false;
+            LOG_ERROR("Could not read the memory page. Aborting now");
+        }
+    }
+    else
+    {
+        retCode = false;
+        LOG_ERROR("Could not read the memory page. Aborting now");
+    }
+    return retCode;
+}
+
+bool Zumo32U4::finalizeWriteFirmware()
+{
+    bool retCode = false;
+    bool validFirmware = false;
+    bool validFuses = false;
+
+    if (true == m_stateMachine.setState(CLOSED))
+    {
+        validFirmware = verifyWrittenFirmware();
+        validFuses = verifyFuses();
+
+        if (true == exitProgrammerMode())
+        {
+            if (true == exitBootloaderMode())
+            {
+                if (true == restart())
+                {
+                    retCode = (validFirmware && validFuses);
+                }
+                else
+                {
+                    LOG_ERROR("Could not restart Zumo robot!");
+                }
+            }
+            else
+            {
+                LOG_ERROR("Could not exit bootloader mode!");
+            }
+        }
+        else
+        {
+            LOG_ERROR("Could not exit programmer mode!");
+        }
+    }
+    else
+    {
+        LOG_ERROR("Could not finish flashing of Zumo robot because driver is in invalid state!");
     }
     return retCode;
 }
 
 void Zumo32U4::reset()
 {
+    /* Rest the crypto lib and the calculated hash */
     m_crypto.resetSHA256Hash();
 
     m_currWriteMemAddr = 0;
@@ -841,41 +1190,8 @@ void Zumo32U4::reset()
     m_expectedFirmwareSize = 0;
     m_expectedHashValue = "";
 
-    LOG_DEBUG("Successfully cleared all Zumo32U4 driver data!");
-}
+    /* Reset the state machine to start state */
+    m_stateMachine.setState(CLOSED);
 
-bool Zumo32U4::readSerial(const uint8_t* dataBuffer, const uint16_t chunkSize)
-{
-    /* TODO: Implement */
-    return false;
-}
-
-bool Zumo32U4::writeSerial(const uint8_t* dataBuffer, const uint16_t chunkSize)
-{
-    /* TODO: Implement */
-    return false;
-}
-
-bool Zumo32U4::beginWriteFirmware(uint16_t firmwareSize, const String& expectedHash)
-{
-    /* TODO: Implement */
-    return false;
-}
-
-bool Zumo32U4::writeFirmwareChunk(const uint8_t* dataChunk, const uint16_t chunkSize)
-{
-    /* TODO: Implement */
-    return false;
-}
-
-bool Zumo32U4::finalizeWriteFirmware()
-{
-    /* TODO: Implement */
-    return false;
-}
-
-bool Zumo32U4::verifyWrittenFirmware(const String& expectedHash)
-{
-    /* TODO: Implement */
-    return false;
+    LOG_DEBUG("Successfully cleared all Zumo32U4 driver data and re-set the driver!");
 }

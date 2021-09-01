@@ -105,7 +105,7 @@ namespace Zumo32U4Specification
 
     static const struct ZumoData<1> RET_OK = {{0x0D}, 1};
 
-    static const struct ZumoData<8> EXPECTED_SOFTWARE_ID = {{'C', 'A', 'T', 'E', 'R', 'I', 'N'}, 7};
+    static const struct ZumoData<7> EXPECTED_SOFTWARE_ID = {{'C', 'A', 'T', 'E', 'R', 'I', 'N'}, 7};
 
     static const struct ZumoData<2> EXPECTED_SW_VERSION = {{0x31, 0x30}, 2};
 
@@ -117,7 +117,7 @@ namespace Zumo32U4Specification
 
     static const struct ZumoData<1> EXPECTED_SUPPORTS_AUTO_MEM_ADDR_INC = {{0x59}, 1};
 
-    static const struct ZumoData<3> EXPECTED_BLOCK_BUFFER_SIZE = {{0x59}, 1}; // TODO: Check
+    static const struct ZumoData<1> EXPECTED_BLOCK_BUFFER_SIZE = {{0x59}, 1};
 
     static const struct ZumoData<1> EXPECTED_LSB_FUSE_VALUE = {{0xFF}, 1};
 

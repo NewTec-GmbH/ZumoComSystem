@@ -65,9 +65,9 @@ bool ZumoDriverStateMachine::setState(ZumoStates state)
         }
         break;
     }
-    case OPENED: /* Fall through */
-    case WRITING_SERIAL: /* Fall through */
-    case READING_SERIAL: /* Fall through */
+    case OPENED: /* Intentional fall through */
+    case WRITING_SERIAL: /* Intentional fall through */
+    case READING_SERIAL: /* Intentional fall through */
     {
         if ((WRITING_SERIAL == state)
             || (READING_SERIAL == state)

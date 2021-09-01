@@ -55,5 +55,4 @@ void FlashZumoCommand::run(const ApiRequest& request, ApiResponse& response, Ses
 {
     const uint8_t* buffer = nullptr;
     const uint16_t size = 0;
-    m_zumoDriver.readSerial(buffer, size);
 }
