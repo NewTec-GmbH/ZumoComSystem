@@ -48,7 +48,7 @@ class HTTPsWebServer;
 
 #include <Arduino.h>
 
- /** Class responsible for initializing the ComPlatform, starting, handling and stopping all running services */
+/** Class responsible for initializing the ComPlatform, starting, handling and stopping all running services */
 class System
 {
 public:
@@ -79,7 +79,6 @@ public:
     void reset();
 
 private:
-
     /**
      * Default Constructor
      */

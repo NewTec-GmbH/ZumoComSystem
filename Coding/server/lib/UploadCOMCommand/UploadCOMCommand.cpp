@@ -64,7 +64,7 @@ UploadCOMCommand::~UploadCOMCommand()
 {
 }
 
-void UploadCOMCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const
+void UploadCOMCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx)
 {
     /*
     Reserve memory on stack for JSON structure which consists of two key-value pairs.

@@ -88,7 +88,7 @@ public:
      * @param[out] response Reference to the outgoing ApiResponse
      * @param[in] connectionCtx Pointer to Session class instance
      */
-    virtual void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const = 0;
+    virtual void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) = 0;
 
 private:
     /**

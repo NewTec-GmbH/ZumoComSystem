@@ -51,7 +51,7 @@ namespace GPIOPins
     static const uint8_t PIN_WIFI_AND_RESET_KEY = 0;
 
     /** Pin for resetting the attached Zumo robot */
-    static const uint8_t PIN_ROBOT_RESET = 2;
+    static const uint8_t PIN_ROBOT_RESET = 27;
 
     /** Unconnected pin for reading random analog data to seed PRNG */
     static const uint8_t PIN_ANALOG_NOISE_SEED = 36;

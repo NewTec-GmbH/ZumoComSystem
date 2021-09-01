@@ -41,6 +41,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Arduino.h>
 
+#ifndef __IO_H__
+#define __IO_H__
+
  /** Provides abstraction for IO functionality for ComPlatform */
 class IO
 {
@@ -108,3 +111,4 @@ private:
     /** The timespan between two two level transitions in which level changes are ignored */
     static const uint8_t DEBOUNCE_DELAY_TIME_MS = 50;
 };
+#endif /** __IO_H__ */

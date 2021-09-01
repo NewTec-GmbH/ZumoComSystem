@@ -54,7 +54,7 @@ SetSTACredentialsCommand::~SetSTACredentialsCommand()
 {
 }
 
-void SetSTACredentialsCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const
+void SetSTACredentialsCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx)
 {
     const bool ARE_STA_CREDENTIALS = true;
     NetworkCredentials staCredentials;

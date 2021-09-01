@@ -53,7 +53,7 @@ RebootZumoCommand::~RebootZumoCommand()
 {
 }
 
-void RebootZumoCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const
+void RebootZumoCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx)
 {
     LOG_WARN("Rebooting Zumo robot now!");
     Robot::getInstance().resetRobotNow();

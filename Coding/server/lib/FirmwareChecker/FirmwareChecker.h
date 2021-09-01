@@ -51,7 +51,7 @@ class FirmwareChecker
 {
 public:
     /** Specifies the maximum firmware payload size in bytes when the firmware is uploaded for the Zumo robot platform */
-    static const uint32_t MAX_ZUMO_FW_BLOB_SIZE_BYTE = 32000;
+    static const uint32_t MAX_ZUMO_FW_BLOB_SIZE_BYTE = 28672;
 
     /** Specifies the maximum firmware payload size in bytes when the firmware is uploaded for the ComPlatform */
     static const uint32_t MAX_COM_FW_BLOB_SIZE_BYTE = 1310720;

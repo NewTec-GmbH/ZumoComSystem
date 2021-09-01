@@ -29,6 +29,7 @@ partition "System Initialization" {
     endif
 
     --> "Initialize file system"
+    --> "Initialize USB Driver"
     --> "Load Users and their Permissions from disk"
 
     if "User 'admin' existing" then

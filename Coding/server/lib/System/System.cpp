@@ -47,6 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Store.h>
 #include <WiFiManager.h>
 #include <HTTPsWebServer.h>
+#include <Zumo32U4.h>
 
 SemaphoreHandle_t System::m_genKeyCertSemaphore = {0};
 
@@ -59,12 +60,12 @@ System::System() :
 
 System::~System()
 {
-    if(nullptr != m_wifimgr)
+    if (nullptr != m_wifimgr)
     {
         delete m_wifimgr;
     }
 
-    if(nullptr != m_webServer)
+    if (nullptr != m_webServer)
     {
         delete m_webServer;
     }
@@ -196,11 +197,15 @@ void System::reset()
 
 void System::handleServices()
 {
-    m_wifimgr->handleAP_DNS();
-    m_webServer->handleServer();
+    /* Handle the USB driver, if active, for endpoint init/enumeration and cleanup */
+    Zumo32U4::getInstance().handleUSBDriver();
 
-    static const uint8_t SLEEP_TIME_MS = 1;
-    delay(SLEEP_TIME_MS);
+    /* Handle the HTTPs and WebSocket servers */
+   // m_webServer->handleServer();
+   // m_wifimgr->handleAP_DNS();
+
+    /* Enter delay so that other tasks get CPU time */
+    // delay(SERVICE_HANDLING_SLEEP_TIME_MS);
 }
 
 void System::genKeyCertTask(void* parameter)

@@ -59,7 +59,7 @@ FlashCOMCommand::~FlashCOMCommand()
 {
 }
 
-void FlashCOMCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const
+void FlashCOMCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx)
 {
     esp_err_t flashRetCode = ESP_FAIL;
 

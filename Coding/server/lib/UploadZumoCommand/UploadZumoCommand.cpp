@@ -63,7 +63,7 @@ UploadZumoCommand::~UploadZumoCommand()
 {
 }
 
-void UploadZumoCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const
+void UploadZumoCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx)
 {
     /*
     Reserve memory on stack for JSON structure which consists of two key-value pairs.

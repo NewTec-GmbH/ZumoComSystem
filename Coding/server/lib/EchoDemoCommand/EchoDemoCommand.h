@@ -65,6 +65,6 @@ public:
      * @param[out] response Reference to the outgoing ApiResponse
      * @param[in] connectionCtx Pointer to Session class instance
      */
-    void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const;
+    void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx);
 };
 #endif /** __ECHODEMOCOMMAND_H__ */

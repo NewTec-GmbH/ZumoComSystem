@@ -53,6 +53,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <RebootCOMCommand.h>
 #include <RebootZumoCommand.h>
 #include <SetSTACredentialsCommand.h>
+#include <FlashZumoCommand.h>
 
  /** Class which handles requests and responses between the API service implementations and the webserver */
 class RequestResponseHandler
@@ -104,7 +105,7 @@ private:
      * @param[in] request The API request to be checked for its service id
      * @return Returns pointer to correct service class instance. Returns nullpointer if there is no such service
      */
-    const Command* getCommandOfApiRequest(const ApiRequest& request);
+    Command* getCommandOfApiRequest(const ApiRequest& request);
 
     /**
      * Returns pointer to BINARY API service class which corresponds to passed service id inside request
@@ -134,6 +135,9 @@ private:
 
     /** Instance of SetSTACredentialsCommand */
     SetSTACredentialsCommand m_setSTACredentialsCommand;
+
+    /** Instance of FlashZumoCommand */
+    FlashZumoCommand m_flashZumoCommand;
 
     /** Instance of SessionManager */
     SessionManager m_sessionManager;

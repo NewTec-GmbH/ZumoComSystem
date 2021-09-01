@@ -66,7 +66,7 @@ void RequestResponseHandler::makeRequest(const ApiRequest& request, ApiResponse&
     }
     else
     {
-        const Command* apiService = getCommandOfApiRequest(request);
+        Command* apiService = getCommandOfApiRequest(request);
         if (nullptr != apiService)
         {
             if (NONE != apiService->getReqPermission())
@@ -141,9 +141,9 @@ void RequestResponseHandler::resetBinaryMode()
     LOG_INFO("API BINARY mode has been reset in RequestResponseHandler!");
 }
 
-const Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& request)
+Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& request)
 {
-    const Command* command = nullptr;
+    Command* command = nullptr;
     const String commandID = request.getCommandId();
     if (commandID == "uploadzumo")
     {
@@ -168,6 +168,10 @@ const Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& 
     else if (commandID == "setstacredentials")
     {
         command = &m_setSTACredentialsCommand;
+    }
+    else if (commandID == "flashzumo")
+    {
+        command = &m_flashZumoCommand;
     }
     else if (commandID == "echodemo")
     {

@@ -53,7 +53,7 @@ RebootCOMCommand::~RebootCOMCommand()
 {
 }
 
-void RebootCOMCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const
+void RebootCOMCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx)
 {
     LOG_WARN("Rebooting the ComPlatform now!");
     System::getInstance().reset();
