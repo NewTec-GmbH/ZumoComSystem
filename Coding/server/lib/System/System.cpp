@@ -201,11 +201,11 @@ void System::handleServices()
     Zumo32U4::getInstance().handleUSBDriver();
 
     /* Handle the HTTPs and WebSocket servers */
-   // m_webServer->handleServer();
-   // m_wifimgr->handleAP_DNS();
+    m_webServer->handleServer();
+    m_wifimgr->handleAP_DNS();
 
     /* Enter delay so that other tasks get CPU time */
-    // delay(SERVICE_HANDLING_SLEEP_TIME_MS);
+    delay(SERVICE_HANDLING_SLEEP_TIME_MS);
 }
 
 void System::genKeyCertTask(void* parameter)

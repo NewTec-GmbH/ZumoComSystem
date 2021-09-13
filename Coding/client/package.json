@@ -10,6 +10,9 @@
     },
     "dependencies": {
         "core-js": "^3.6.5",
+        "jsrsasign": "^10.4.0",
+        "primeicons": "^4.1.0",
+        "primevue": "^3.7.0",
         "vue": "^3.0.0",
         "vue-class-component": "^8.0.0-0",
         "vue-router": "^4.0.0-0",
@@ -23,7 +26,7 @@
         "@vue/cli-plugin-router": "~4.5.0",
         "@vue/cli-plugin-typescript": "~4.5.0",
         "@vue/cli-plugin-vuex": "~4.5.0",
-        "@vue/cli-service": "~4.5.0",
+        "@vue/cli-service": "^4.5.13",
         "@vue/compiler-sfc": "^3.0.0",
         "@vue/eslint-config-prettier": "^6.0.0",
         "@vue/eslint-config-typescript": "^7.0.0",
