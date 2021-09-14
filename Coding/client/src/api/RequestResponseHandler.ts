@@ -46,65 +46,69 @@ import { ApiRequest } from "@/models/ApiRequest";
 
 /** Class for accessing the backend WebSocket API and calling the API services */
 export default class RequestResponseHandler {
-    /** WebSocketClient instance */
-    private m_wsClient: WebSocketClient;
+  /** WebSocketClient instance */
+  private m_wsClient: WebSocketClient;
 
-    /** RequestResponseHandler singleton instance */
-    private static m_reqResHandler = new RequestResponseHandler();
+  /** RequestResponseHandler singleton instance */
+  private static m_reqResHandler = new RequestResponseHandler();
 
-    /**
-     * Default Constructor
-     */
-    private constructor() {
-        this.m_wsClient = WebSocketClient.getInstance();
+  /**
+   * Default Constructor
+   */
+  private constructor() {
+    this.m_wsClient = WebSocketClient.getInstance();
+  }
+
+  /**
+   * Returns the singleton instance
+   *
+   * @returns Returns the RequestResponseHandler instance
+   */
+  public static getInstance(): RequestResponseHandler {
+    return this.m_reqResHandler;
+  }
+
+  /**
+   * Makes a new request to the WebSocket backend API
+   *
+   * @param request The ApiRequest to be invoked
+   * @return Returns true if successful, else false
+   */
+  public makeRequest(request: ApiRequest): boolean {
+    const json = JSON.stringify(request);
+    const retCode = this.m_wsClient.send(json);
+
+    if (false === retCode) {
+      Log.error(
+        "Could not send request because WebSocketClient is not opened!"
+      );
     }
+    return retCode;
+  }
 
-    /**
-     * Returns the singleton instance
-     * 
-     * @returns Returns the RequestResponseHandler instance
-     */
-    public static getInstance(): RequestResponseHandler {
-        return this.m_reqResHandler;
+  /**
+   * Sends a binary data buffer to the WebSocket endpoint
+   *
+   * @param dataChunk The binary data to be sent to the WebSocket endpoint
+   * @return Returns true if successful, else false
+   */
+  public sendBinary(dataChunk: Uint8Array): boolean {
+    const retCode = this.m_wsClient.send(dataChunk);
+
+    if (false === retCode) {
+      Log.error(
+        "Could not send request because WebSocketClient is not opened!"
+      );
     }
+    return retCode;
+  }
 
-    /**
-     * Makes a new request to the WebSocket backend API
-     * 
-     * @param request The ApiRequest to be invoked
-     * @return Returns true if successful, else false
-     */
-    public makeRequest(request: ApiRequest): boolean {
-        const json = JSON.stringify(request);
-        const retCode = this.m_wsClient.send(json);
-
-        if (false === retCode) {
-            Log.error("Could not send request because WebSocketClient is not opened!");
-        }
-        return retCode;
-    }
-
-    /**
-     * Sends a binary data buffer to the WebSocket endpoint
-     * 
-     * @param dataChunk The binary data to be sent to the WebSocket endpoint
-     * @return Returns true if successful, else false
-     */
-    public sendBinary(dataChunk: Uint8Array): boolean {
-        const retCode = this.m_wsClient.send(dataChunk);
-
-        if (false === retCode) {
-            Log.error("Could not send request because WebSocketClient is not opened!");
-        }
-        return retCode;
-    }
-
-    /**
-     * Registers a new callback function when the WebSocket client receives a new response
-     * 
-     * @param fnPtr The function to be registered for callback
-     */
-    public onResponse(fnPtr: any): void {
-        this.m_wsClient.onMessage(fnPtr);
-    }
+  /**
+   * Registers a new callback function when the WebSocket client receives a new response
+   *
+   * @param fnPtr The function to be registered for callback
+   */
+  public onResponse(fnPtr: any): void {
+    this.m_wsClient.onMessage(fnPtr);
+  }
 }

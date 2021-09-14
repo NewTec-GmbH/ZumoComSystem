@@ -56,7 +56,7 @@ export default defineComponent({
     };
   },
   components: {
-   LoginDialog,
+    LoginDialog,
   },
 
   computed: {
@@ -88,9 +88,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@header-color: #ffa500;
-
-@hover-color: #754c00;
+@import "~@/styles/global.less";
 
 .header {
   display: flex;
@@ -98,9 +96,9 @@ export default defineComponent({
   width: 100%;
   flex-direction: row;
 
-  background: @header-color;
+  background: @view_background_color;
   overflow: hidden;
-  border-bottom: 5px solid #ffc55c;
+  border-bottom: 5px solid @ui_border_color;
 
   .header-ui {
     display: flex;

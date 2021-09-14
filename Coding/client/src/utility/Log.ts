@@ -40,49 +40,46 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /** Enumeration to specify granularity of events */
-enum LogLevel {
-    LEVEL_INVALID = 4,
-    LEVEL_DEBUG = 3,
-    LEVEL_INFO = 2,
-    LEVEL_WARN = 1,
-    LEVEL_ERROR = 0
-};
+export enum LogLevel {
+  LEVEL_INVALID = 4,
+  LEVEL_DEBUG = 3,
+  LEVEL_INFO = 2,
+  LEVEL_WARN = 1,
+  LEVEL_ERROR = 0,
+}
 
 /** Logging class */
 export default class Log {
+  /** The log level which is used to determine what to print */
+  private static m_logLevel = LogLevel.LEVEL_DEBUG;
 
-    /** The log level which is used to determine what to print */
-    private static m_logLevel = LogLevel.LEVEL_DEBUG;
+  public static setLogLevel(level: LogLevel): void {
+    this.m_logLevel = level;
+  }
 
-    public static setLogLevel(level: LogLevel): void {
-        this.m_logLevel = level;
+  public static getLogLevel(level: LogLevel): LogLevel {
+    return this.m_logLevel;
+  }
+
+  public static debug(msg: string): void {
+    Log.writeLog(LogLevel.LEVEL_DEBUG, "[+]\t" + msg);
+  }
+
+  public static info(msg: string): void {
+    Log.writeLog(LogLevel.LEVEL_INFO, "[i]\t" + msg);
+  }
+
+  public static warn(msg: string): void {
+    Log.writeLog(LogLevel.LEVEL_WARN, "[!]\t" + msg);
+  }
+
+  public static error(msg: string): void {
+    Log.writeLog(LogLevel.LEVEL_ERROR, "[-]\t" + msg);
+  }
+
+  private static writeLog(level: LogLevel, msg: string): void {
+    if (level <= this.m_logLevel && 0 < msg.length) {
+      console.log(msg);
     }
-
-    public static getLogLevel(level: LogLevel): LogLevel {
-        return this.m_logLevel;
-    }
-
-    public static debug(msg: string): void {
-        Log.writeLog(LogLevel.LEVEL_DEBUG, "[+]\t" + msg);
-    }
-
-    public static info(msg: string): void {
-        Log.writeLog(LogLevel.LEVEL_INFO, "[i]\t" + msg);
-    }
-
-
-    public static warn(msg: string): void {
-        Log.writeLog(LogLevel.LEVEL_WARN, "[!]\t" + msg);
-    }
-
-
-    public static error(msg: string): void {
-        Log.writeLog(LogLevel.LEVEL_ERROR, "[-]\t" + msg);
-    }
-
-    private static writeLog(level: LogLevel, msg: string): void {
-        if ((level <= this.m_logLevel) && (0 < msg.length)) {
-            console.log(msg);
-        }
-    }
+  }
 }

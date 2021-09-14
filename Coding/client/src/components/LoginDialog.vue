@@ -1,49 +1,55 @@
 <template>
-  <div v-show="showLoginDialog === true" class="login-dialog">
-    <p class="header-label">Please enter your user credentials!</p>
-    <div class="form">
-      <span class="p-float-label p-input-icon-left">
-        <i class="pi pi-user"></i>
-        <InputText id="username" type="text" v-model="username" />
-        <label for="username">Username</label>
-      </span>
+  <teleport to="body">
+    <div v-show="showLoginDialog" class="dialog-background">
+      <div v-show="showLoginDialog === true" class="login-dialog">
+        <p class="header-label">Please enter your user credentials!</p>
+        <div class="form">
+          <span class="p-float-label p-input-icon-left">
+            <i class="pi pi-user"></i>
+            <InputText id="username" type="text" v-model="username" />
+            <label for="username">Username</label>
+          </span>
 
-      <span class="p-float-label p-input-icon-left">
-        <i class="pi pi-key"></i>
-        <InputText id="password" type="password" v-model="password" />
-        <label for="password">Password</label>
-      </span>
+          <span class="p-float-label p-input-icon-left">
+            <i class="pi pi-key"></i>
+            <InputText id="password" type="password" v-model="password" />
+            <label for="password">Password</label>
+          </span>
+        </div>
+
+        <div v-if="loginSuccess === false" class="error-container">
+          <img src="@/assets/icons/red/error.svg" class="error-icon" />
+          <p class="error-label">
+            Could not sign in with provided credentials!
+          </p>
+        </div>
+
+        <ProgressBar
+          v-if="spinnerVisible === true"
+          class="progress-bar"
+          mode="indeterminate"
+        />
+
+        <div class="buttons">
+          <Button
+            label="Cancel"
+            icon="pi pi-times"
+            iconPos="right"
+            class="p-button-rounded p-button-danger"
+            @click="cancelClick()"
+          />
+
+          <Button
+            label="Login"
+            icon="pi pi-sign-in"
+            iconPos="right"
+            class="p-button-rounded"
+            @click="signInClick()"
+          />
+        </div>
+      </div>
     </div>
-
-    <div v-if="loginSuccess === false" class="error-container">
-      <img src="@/assets/icons/red/error.svg" class="error-icon" />
-      <p class="error-label">Could not sign in with provided credentials!</p>
-    </div>
-
-    <ProgressBar
-      v-if="spinnerVisible === true"
-      class="progress-bar"
-      mode="indeterminate"
-    />
-
-    <div class="buttons">
-      <Button
-        label="Cancel"
-        icon="pi pi-times"
-        iconPos="right"
-        class="p-button-rounded p-button-danger"
-        @click="cancelClick()"
-      />
-
-      <Button
-        label="Login"
-        icon="pi pi-sign-in"
-        iconPos="right"
-        class="p-button-rounded"
-        @click="signInClick()"
-      />
-    </div>
-  </div>
+  </teleport>
 </template>
 
 <script lang="ts">
@@ -131,74 +137,89 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+@import "~@/styles/global.less";
+
 @dialog-color: rgba(255, 165, 0, 0.5);
 @view-color: #f7f7f7;
 
-.login-dialog {
-  display: flex;
-  flex-direction: column;
-
-  width: 500px;
-  height: 500px;
-  border: solid;
-  border-color: @dialog-color;
-  background: @view-color;
-  overflow: hidden;
-
+.dialog-background {
   position: absolute;
   z-index: 1000;
-  width: 40vw;
-  height: 50vh;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: @dialog_backdrop_color;
 
-  .buttons {
-    margin-top: 0px;
-    margin-left: auto;
-    Button {
-      margin: 40px 40px 40px 40px;
-      margin-left: auto;
-    }
-  }
-
-  .header-label {
-    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-      "Lucida Sans", Arial, sans-serif;
-    font-size: 16pt;
-  }
-
-  .p-float-label {
-    margin: 40px 40px 40px 40px;
+  .login-dialog {
     display: flex;
     flex-direction: column;
-  }
 
-  .error-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    margin: 0px 40px 40px 40px;
+    width: 500px;
+    height: 500px;
+    border: solid;
+    border-color: @ui_border_color;
+    background: @view-color;
+    overflow: hidden;
 
-    .error-label {
+    position: absolute;
+    z-index: 1000;
+    width: 40vw;
+    height: 50vh;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+
+    .buttons {
+      margin-top: 0px;
+      margin-left: auto;
+      Button {
+        margin: 40px 40px 40px 40px;
+        margin-left: auto;
+      }
+    }
+
+    .header-label {
       font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
         "Lucida Sans", Arial, sans-serif;
-      font-size: 12pt;
-      color: darkred;
+      font-size: 16pt;
     }
 
-    .error-icon {
-      width: 40px;
-      height: 40px;
-      margin-right: 40px;
+    .p-float-label {
+      margin: 40px 40px 40px 40px;
+      display: flex;
+      flex-direction: column;
     }
-  }
 
-  .progress-bar {
-    height: 5px;
-    margin: 0px 40px 0px 40px;
+    .error-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      margin: 0px 40px 40px 40px;
+
+      .error-label {
+        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+          "Lucida Sans", Arial, sans-serif;
+        font-size: 12pt;
+        color: darkred;
+      }
+
+      .error-icon {
+        width: 40px;
+        height: 40px;
+        margin-right: 40px;
+      }
+    }
+
+    .progress-bar {
+      height: 5px;
+      margin: 0px 40px 0px 40px;
+    }
   }
 }
 </style>

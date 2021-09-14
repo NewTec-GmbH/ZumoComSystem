@@ -43,10 +43,9 @@ import { ResponseCode } from "@/models/ResponseCode";
 
 /** Data model for WebSocket API responses from the backend */
 export class ApiResponse {
+  /** The status code of the operation */
+  public statusCode: ResponseCode = ResponseCode.ERROR;
 
-    /** The status code of the operation */
-    public statusCode: ResponseCode = ResponseCode.ERROR;
-
-    /** The returned JSON payload */
-    public jsonPayload = "";
+  /** The returned JSON payload */
+  public jsonPayload = "";
 }

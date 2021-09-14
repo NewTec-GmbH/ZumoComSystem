@@ -112,7 +112,9 @@ import Log from "@/utility/Log";
 export default class Home extends Vue {}
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
+@import "~@/styles/global.less";
+
 .home {
   display: flex;
   flex-direction: row;

@@ -53,8 +53,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@dialog-color: rgba(255, 165, 0, 0.5);
-@view-color: #f7f7f7;
+@import "~@/styles/global.less";
 
 .dialog-background {
   position: absolute;
@@ -66,7 +65,7 @@ export default defineComponent({
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  background: @dialog_backdrop_color;
 
   .dialog-container {
     display: flex;
@@ -76,8 +75,8 @@ export default defineComponent({
     width: 700px;
     height: 500px;
     border: solid;
-    border-color: @dialog-color;
-    background: @view-color;
+    border-color: @ui_border_color;
+    background: @ui_background_color;
     overflow: hidden;
 
     position: absolute;

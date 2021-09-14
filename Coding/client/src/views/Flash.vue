@@ -1,7 +1,7 @@
 <template>
   <div class="flash">
     <!-- <h1>This is the FLASH page</h1> -->
-    <LoginDialog/>
+    <LoginDialog />
   </div>
 </template>
 

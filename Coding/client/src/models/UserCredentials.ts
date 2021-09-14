@@ -41,9 +41,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /** Data model for WebSocket API authentication */
 export class UserCredentials {
-    /** The username string */
-    public username = ""
+  /** The username string */
+  public username = "";
 
-    /** The cleartext password string */
-    public password = ""
+  /** The cleartext password string */
+  public password = "";
 }

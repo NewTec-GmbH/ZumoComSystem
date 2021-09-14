@@ -19,6 +19,7 @@ import Sidebar from "@/components/Sidebar.vue";
 import Header from "@/components/Header.vue";
 import TextDialog from "@/components/TextDialog.vue";
 import WebSocketClient from "@/api/WebSocketClient";
+import Log from "@/utility/Log";
 
 export default defineComponent({
   name: "App",
@@ -41,6 +42,7 @@ export default defineComponent({
     /* Set default values on start */
     this.$store.commit("setDevice", { name: "Zumo32U4 Robot" });
     this.$store.commit("setUser", "null");
+    this.$store.commit("setLoginDialogVisibility", false);
   },
 
   mounted() {
@@ -50,25 +52,28 @@ export default defineComponent({
     /* Hide the info dialog when connected */
     WebSocketClient.getInstance().onOpen(() => {
       this.infoDialogVisible = false;
+      Log.debug("New WebSocket connection opened!");
     });
 
     /* Hide the info dialog when connected */
     WebSocketClient.getInstance().onClose(() => {
       this.infoDialogVisible = true;
       this.$store.commit("setUser", "null");
+      Log.debug("WebSocket connection closed!");
     });
 
     /* Hide the info dialog when connected */
     WebSocketClient.getInstance().onError(() => {
       this.infoDialogVisible = true;
       this.$store.commit("setUser", "null");
+      Log.debug("Fatal WebSocket error occured!");
     });
   },
 });
 </script>
 
 <style lang="less">
-@view-color: #f7f7f7;
+@import "~@/styles/global.less";
 
 .complatform {
   display: flex;
@@ -79,7 +84,7 @@ export default defineComponent({
   display: flex;
   width: 100%;
   flex-direction: column;
-  background-color: @view-color;
+  background-color: @ui_background_color;
 }
 
 .sidebar {
@@ -98,7 +103,7 @@ export default defineComponent({
   height: 100vh;
   flex: 1 1 auto;
   margin: 10px 10px 10px 10px;
-  background-color: @view-color;
+  background-color: @ui_background_color;
 }
 
 #app {

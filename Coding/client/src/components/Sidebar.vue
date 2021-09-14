@@ -41,9 +41,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@sidebar-color: #FFA500;
-
-@hover-color: #754C00;
+@import "~@/styles/global.less";
 
 .sidebar {
   display: flex;
@@ -51,9 +49,9 @@ export default defineComponent({
 
   width: 10vh;
   height: 100vh;
-  background: @sidebar-color;
+  background: @view_background_color;
   overflow: hidden;
-  border-right: 5px solid #FFC55C;
+  border-right: 5px solid @ui_border_color;
 
   .top-nav {
     display: flex;
@@ -68,13 +66,13 @@ export default defineComponent({
     }
 
     a:hover {
-      background: @hover-color;
+      background: @ui_hover_color;
     }
 
     .isSelected {
-      background: @hover-color;
+      background: @ui_hover_color;
       &:hover {
-        background: @hover-color;
+        background: @ui_hover_color;
       }
     }
   }
@@ -94,13 +92,13 @@ export default defineComponent({
     }
 
     a:hover {
-      background: @hover-color;
+      background: @ui_hover_color;
     }
 
     .isSelected {
-      background: @hover-color;
+      background: @ui_hover_color;
       &:hover {
-        background: @hover-color;
+        background: @ui_hover_color;
       }
     }
   }

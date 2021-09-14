@@ -1,4 +1,4 @@
-import { createStore } from 'vuex'
+import { createStore } from "vuex";
 
 const store = createStore({
   state: {
@@ -18,23 +18,23 @@ const store = createStore({
 
     setLoginDialogVisibility(state, visible) {
       state.showLoginDialg = visible;
-    }
+    },
   },
   actions: {},
   modules: {},
   getters: {
-    currentUser: state => {
+    currentUser: (state) => {
       return state.currentUser;
     },
 
-    selectedDevice: state => {
+    selectedDevice: (state) => {
       return state.seletedDevice;
     },
 
-    loginDialogVisible: state => {
+    loginDialogVisible: (state) => {
       return state.showLoginDialg;
-    }
-  }
+    },
+  },
 });
 
-export default store
+export default store;

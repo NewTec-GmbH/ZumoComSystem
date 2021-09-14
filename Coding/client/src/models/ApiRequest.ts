@@ -41,7 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /** Data model for WebSocket API responses from the backend */
 export class ApiRequest {
-    public commandId = "";
+  public commandId = "";
 
-    public jsonPayload = "";
+  public jsonPayload = "";
 }

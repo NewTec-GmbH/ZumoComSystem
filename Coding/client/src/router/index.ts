@@ -1,10 +1,10 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
-import Reset from "../views/Reset.vue"
-import Debug from "../views/Debug.vue"
-import Flash from "../views/Flash.vue"
-import Upload from "../views/Upload.vue"
-import Settings from "../views/Settings.vue"
+import Reset from "../views/Reset.vue";
+import Debug from "../views/Debug.vue";
+import Flash from "../views/Flash.vue";
+import Upload from "../views/Upload.vue";
+import Settings from "../views/Settings.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
