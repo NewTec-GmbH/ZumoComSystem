@@ -183,6 +183,8 @@ export default defineComponent({
         width: @icon_height_width;
         height: @icon_height_width;
         margin-left: 15px;
+
+        cursor: pointer;
       }
     }
 

@@ -67,6 +67,14 @@ public:
      */
     static bool registerAdminAccount();
 
+    
+    /**
+     * Creates a less priviliged default account with default credentials if it not existent
+     *
+     * @return Returns true if user has been created, else false
+     */
+    static bool registerDefaultUser();
+
     /**
      * Returns the permissions and the number of permissions of the specified user
      *
@@ -167,6 +175,12 @@ private:
 
     /** Specifies the default admin password */
     static const char* DEFAULT_ADMIN_PASSWORD;
+
+    /** Specifies the default user username */
+    static const char* DEFAULT_USER_USERNAME;
+
+    /** Specifies the default user password */
+    static const char* DEFAULT_USER_PASSWORD;
 
     /** Stores how many users are currently registered */
     static uint8_t m_numberOfRegisteredUsers;

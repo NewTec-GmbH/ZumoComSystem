@@ -49,6 +49,8 @@ uint8_t User::m_numberOfRegisteredUsers = 0;
 CryptoServices User::m_crypto;
 const char* User::DEFAULT_ADMIN_USERNAME = "admin";
 const char* User::DEFAULT_ADMIN_PASSWORD = "21091986";
+const char* User::DEFAULT_USER_USERNAME = "student";
+const char* User::DEFAULT_USER_PASSWORD = "nt2021nt";
 
 User::User() :
     m_username(),
@@ -69,6 +71,14 @@ bool User::registerAdminAccount()
     Permission permission = ANY;
 
     return putUser(DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_PASSWORD, &permission, NUMBER_OF_PERMISSIONS, false);
+}
+
+bool User::registerDefaultUser()
+{
+    const uint8_t NUMBER_OF_PERMISSIONS = 1;
+    Permission permission = DEBUG_ZUMO;
+
+    return putUser(DEFAULT_USER_USERNAME, DEFAULT_USER_PASSWORD, &permission, NUMBER_OF_PERMISSIONS, false);
 }
 
 const Permission* User::getPermissions(uint8_t& numberOfPermissions) const

@@ -151,6 +151,12 @@ void System::init()
         LOG_INFO("User 'admin' has been created and saved!");
     }
 
+    /* Create and save default account with default credentials and partial priviliges if it is missing */
+    if (true == User::registerDefaultUser() && (true == m_store.saveUsers()))
+    {
+        LOG_INFO("User 'student' has been created and saved!");
+    }
+
     /* Await KeyCert generation task execution */
     xSemaphoreTake(m_genKeyCertSemaphore, portMAX_DELAY);
     xSemaphoreGive(m_genKeyCertSemaphore);
