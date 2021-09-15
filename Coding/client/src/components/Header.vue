@@ -45,13 +45,13 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapGetters } from "vuex";
 import LoginDialog from "@/components/LoginDialog.vue";
 
 export default defineComponent({
   name: "Header",
   data() {
     return {
+      /** The available devices in the contet menu */
       devices: [{ name: "Zumo32U4 Robot" }, { name: "ComPlatform" }],
     };
   },
@@ -91,56 +91,44 @@ export default defineComponent({
 @import "~@/styles/global.less";
 
 .header {
-  display: flex;
   height: 10vh;
   width: 100%;
-  flex-direction: row;
-
-  background: @view_background_color;
-  overflow: hidden;
+  background: @ui_background_color;
   border-bottom: 5px solid @ui_border_color;
 
   .header-ui {
     display: flex;
     height: 100%;
-    align-self: flex-end;
     margin-left: auto;
     margin-right: 40px;
 
     .user-selection {
       display: flex;
-      flex-direction: row;
       align-items: center;
       margin-left: 20px;
       margin-right: 20px;
 
       .username-label {
-        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-          "Lucida Sans", Arial, sans-serif;
-        font-size: 16pt;
-        color: white;
+        font-family: @text_font;
+        font-size: @text_secondary_size;
+        color: @text_color_bright_ui;
       }
 
       .username-icon {
-        width: 40px;
-        height: 40px;
+        width: @icon_height_width;
+        height: @icon_height_width;
         margin-left: 15px;
-      }
-
-      .p-button-rounded {
-        margin-left: 30px;
       }
     }
 
     .device-selection {
       display: flex;
       align-items: center;
-      margin-left: 20px;
-      margin-right: 20px;
+      margin-right: 40px;
 
       .device-icon {
-        width: 40px;
-        height: 40px;
+        width: @icon_height_width;
+        height: @icon_height_width;
         margin-left: 15px;
       }
     }

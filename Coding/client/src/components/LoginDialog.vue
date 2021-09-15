@@ -1,18 +1,27 @@
 <template>
   <teleport to="body">
     <div v-show="showLoginDialog" class="dialog-background">
-      <div v-show="showLoginDialog === true" class="login-dialog">
-        <p class="header-label">Please enter your user credentials!</p>
+      <div class="login-dialog">
+        <h1>Please enter your user credentials!</h1>
+
         <div class="form">
           <span class="p-float-label p-input-icon-left">
             <i class="pi pi-user"></i>
-            <InputText id="username" type="text" v-model="username" />
+            <InputText
+              id="username"
+              type="text"
+              v-model="usercredentials.username"
+            />
             <label for="username">Username</label>
           </span>
 
           <span class="p-float-label p-input-icon-left">
             <i class="pi pi-key"></i>
-            <InputText id="password" type="password" v-model="password" />
+            <InputText
+              id="password"
+              type="password"
+              v-model="usercredentials.password"
+            />
             <label for="password">Password</label>
           </span>
         </div>
@@ -20,7 +29,7 @@
         <div v-if="loginSuccess === false" class="error-container">
           <img src="@/assets/icons/red/error.svg" class="error-icon" />
           <p class="error-label">
-            Could not sign in with provided credentials!
+            Could not sign in with provided user credentials!
           </p>
         </div>
 
@@ -76,9 +85,7 @@ export default defineComponent({
 
   data() {
     return {
-      username: "",
-      password: "",
-
+      usercredentials: new UserCredentials(),
       spinnerVisible: false,
       loginSuccess: true,
     };
@@ -88,8 +95,6 @@ export default defineComponent({
     reset() {
       this.showLoginDialog = false;
       this.spinnerVisible = false;
-      this.username = "";
-      this.password = "";
       this.loginSuccess = true;
     },
 
@@ -100,13 +105,10 @@ export default defineComponent({
     signInClick() {
       this.spinnerVisible = true;
 
-      let credentials = new UserCredentials();
-      credentials.username = this.username;
-      credentials.password = this.password;
-
+      /* Prepare the API command */
       let request = new ApiRequest();
       request.commandId = "authenticate";
-      request.jsonPayload = JSON.stringify(credentials);
+      request.jsonPayload = JSON.stringify(this.usercredentials);
 
       /* Send the request */
       if (true === RequestResponseHandler.getInstance().makeRequest(request)) {
@@ -114,14 +116,24 @@ export default defineComponent({
         RequestResponseHandler.getInstance().onResponse((event: any) => {
           /* Parse the response data */
           const response: ApiResponse = JSON.parse(event.data);
+
           if (response.statusCode == ResponseCode.SUCCESS) {
-            this.$store.commit("setUser", this.username);
+            this.$store.commit("setUser", this.usercredentials.username);
             this.reset();
+
+            this.$toast.add({
+              severity: "success",
+              summary: "Logged in",
+              detail: "Successfully logged in!",
+              life: 3000,
+            });
+
             Log.debug("Successfully logged in!");
           } else {
             this.$store.commit("setUser", "null");
             this.loginSuccess = false;
             this.spinnerVisible = false;
+
             Log.debug("Could not log in!");
           }
         });
@@ -129,6 +141,14 @@ export default defineComponent({
         this.$store.commit("setUser", "null");
         this.loginSuccess = false;
         this.spinnerVisible = false;
+
+        this.$toast.add({
+          severity: "error",
+          summary: "Fatal Server Error",
+          detail: "A fatal error occured when communicating with the server!",
+          life: 3000,
+        });
+
         Log.debug("Could not send login request!");
       }
     },
@@ -139,86 +159,87 @@ export default defineComponent({
 <style lang="less" scoped>
 @import "~@/styles/global.less";
 
-@dialog-color: rgba(255, 165, 0, 0.5);
-@view-color: #f7f7f7;
-
 .dialog-background {
   position: absolute;
   z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  top: 0;
-  left: 0;
+
   width: 100vw;
   height: 100vh;
+  top: 0;
+  left: 0;
+
   background: @dialog_backdrop_color;
 
   .login-dialog {
-    display: flex;
-    flex-direction: column;
-
     width: 500px;
     height: 500px;
-    border: solid;
-    border-color: @ui_border_color;
-    background: @view-color;
-    overflow: hidden;
 
     position: absolute;
     z-index: 1000;
-    width: 40vw;
-    height: 50vh;
+
     left: 50%;
     top: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    background: @view_background_color;
+    border: solid @ui_border_color;
+
+    h1 {
+      text-align: center;
+    }
+
     .buttons {
-      margin-top: 0px;
       margin-left: auto;
+      margin-right: 40px;
+      margin-top: 20px;
+
       Button {
-        margin: 40px 40px 40px 40px;
-        margin-left: auto;
+        margin-left: 20px;
       }
     }
 
-    .header-label {
-      font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-        "Lucida Sans", Arial, sans-serif;
-      font-size: 16pt;
-    }
+    .form {
+      margin-left: 40px;
+      margin-right: 40px;
 
-    .p-float-label {
-      margin: 40px 40px 40px 40px;
-      display: flex;
-      flex-direction: column;
+      .p-float-label {
+        display: flex;
+        flex-direction: column;
+
+        margin-top: 40px;
+        margin-bottom: 40px;
+      }
     }
 
     .error-container {
       display: flex;
-      flex-direction: row;
       align-items: center;
       justify-content: flex-start;
-      margin: 0px 40px 40px 40px;
+
+      margin-left: 40px;
+      margin-right: 40px;
 
       .error-label {
-        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-          "Lucida Sans", Arial, sans-serif;
-        font-size: 12pt;
-        color: darkred;
+        font-family: @text_font;
+        font-size: @text_secondary_size;
+        color: @text_color_warning;
       }
 
       .error-icon {
-        width: 40px;
-        height: 40px;
-        margin-right: 40px;
+        width: @icon_height_width;
+        height: @icon_height_width;
+        margin-right: 20px;
       }
     }
 
     .progress-bar {
-      height: 5px;
-      margin: 0px 40px 0px 40px;
+      height: 4px;
+      margin: 40px 40px 40px 40px;
     }
   }
 }

@@ -1,20 +1,13 @@
 <template>
   <div class="flash">
-    <!-- <h1>This is the FLASH page</h1> -->
-    <LoginDialog />
+    <h1>This is the FLASH page</h1>
   </div>
 </template>
 
 <script lang="ts">
-import LoginDialog from "@/components/LoginDialog.vue";
 import { Options, Vue } from "vue-class-component";
 
-@Options({
-  components: { LoginDialog },
-  props: {
-    msg: String,
-  },
-})
+@Options({})
 export default class Flash extends Vue {
   msg!: string;
 }

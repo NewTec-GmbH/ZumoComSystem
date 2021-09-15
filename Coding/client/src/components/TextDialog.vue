@@ -1,7 +1,7 @@
 <template>
   <teleport to="body">
     <div v-show="showTextDialog" class="dialog-background">
-      <div v-show="showTextDialog" class="dialog-container">
+      <div class="dialog-container">
         <div v-if="type === 'info'">
           <img src="@/assets/icons/black/info.svg" />
           <p class="text-block">{{ text }}</p>
@@ -56,37 +56,39 @@ export default defineComponent({
 @import "~@/styles/global.less";
 
 .dialog-background {
+  width: 100vw;
+  height: 100vh;
+
   position: absolute;
   z-index: 1000;
+
+  left: 0;
+  top: 0;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+
   background: @dialog_backdrop_color;
 
   .dialog-container {
     display: flex;
-    flex-direction: row;
     justify-content: center;
 
     width: 700px;
     height: 500px;
-    border: solid;
-    border-color: @ui_border_color;
-    background: @ui_background_color;
-    overflow: hidden;
 
     position: absolute;
     z-index: 1000;
-    width: 40vw;
-    height: 35vh;
+
     left: 50%;
     top: 50%;
+
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+
+    border: solid @ui_border_color;
+    background: @view_background_color;
 
     div {
       display: flex;
@@ -96,15 +98,15 @@ export default defineComponent({
       img {
         width: 80px;
         height: 80px;
+
         margin-bottom: 20px;
         margin-left: auto;
         margin-right: auto;
       }
 
       .text-block {
-        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-          "Lucida Sans", Arial, sans-serif;
-        font-size: 14pt;
+        font-family: @text_font;
+        font-size: @text_secondary_size;
         text-align: center;
       }
 

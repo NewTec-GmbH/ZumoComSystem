@@ -1,5 +1,6 @@
 <template>
   <div class="complatform">
+    <Toast position="bottom-center" />
     <Sidebar class="sidebar" />
     <div class="header-view-container">
       <Header class="header" />
@@ -52,6 +53,14 @@ export default defineComponent({
     /* Hide the info dialog when connected */
     WebSocketClient.getInstance().onOpen(() => {
       this.infoDialogVisible = false;
+
+      this.$toast.add({
+        severity: "success",
+        summary: "Connected",
+        detail: "Successfully connected to server!",
+        life: 3000,
+      });
+
       Log.debug("New WebSocket connection opened!");
     });
 
@@ -59,6 +68,7 @@ export default defineComponent({
     WebSocketClient.getInstance().onClose(() => {
       this.infoDialogVisible = true;
       this.$store.commit("setUser", "null");
+
       Log.debug("WebSocket connection closed!");
     });
 
@@ -66,6 +76,14 @@ export default defineComponent({
     WebSocketClient.getInstance().onError(() => {
       this.infoDialogVisible = true;
       this.$store.commit("setUser", "null");
+
+      this.$toast.add({
+        severity: "error",
+        summary: "Server Connection Error",
+        detail: "A fatal connection error occured!",
+        life: 3000,
+      });
+
       Log.debug("Fatal WebSocket error occured!");
     });
   },
@@ -78,13 +96,16 @@ export default defineComponent({
 .complatform {
   display: flex;
   flex-direction: row;
+  height: 100vh;
 }
 
 .header-view-container {
   display: flex;
   width: 100%;
+  height: 100vh;
+
   flex-direction: column;
-  background-color: @ui_background_color;
+  background-color: @view_background_color;
 }
 
 .sidebar {
@@ -102,12 +123,12 @@ export default defineComponent({
   display: flex;
   height: 100vh;
   flex: 1 1 auto;
-  margin: 10px 10px 10px 10px;
-  background-color: @ui_background_color;
+  margin: 20px 20px 20px 20px;
+  background-color: @view_background_color;
 }
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: @text_font;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

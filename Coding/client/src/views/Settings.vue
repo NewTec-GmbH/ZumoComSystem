@@ -7,11 +7,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 
-@Options({
-  props: {
-    msg: String,
-  },
-})
+@Options({})
 export default class Settings extends Vue {
   msg!: string;
 }

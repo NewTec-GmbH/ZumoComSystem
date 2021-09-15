@@ -1,40 +1,42 @@
 import { createStore } from "vuex";
 
 const store = createStore({
-  state: {
-    currentUser: String,
-    seletedDevice: String,
-    showLoginDialg: Boolean,
-  },
-  mutations: {
-    setUser(state, username) {
-      state.currentUser = username;
-    },
+    state: {
+        /** The currently logged in user/username */
+        currentUser: String,
 
-    setDevice(state, device) {
-      state.seletedDevice = device;
-      console.log(device);
-    },
+        /** The global device selection */
+        seletedDevice: String,
 
-    setLoginDialogVisibility(state, visible) {
-      state.showLoginDialg = visible;
+        /** Specifies if login dialog should be showed */
+        showLoginDialg: Boolean,
     },
-  },
-  actions: {},
-  modules: {},
-  getters: {
-    currentUser: (state) => {
-      return state.currentUser;
-    },
+    mutations: {
+        setUser(state, username) {
+            state.currentUser = username;
+        },
 
-    selectedDevice: (state) => {
-      return state.seletedDevice;
-    },
+        setDevice(state, device) {
+            state.seletedDevice = device;
+            console.log(device);
+        },
 
-    loginDialogVisible: (state) => {
-      return state.showLoginDialg;
+        setLoginDialogVisibility(state, visible) {
+            state.showLoginDialg = visible;
+        },
     },
-  },
+    getters: {
+        currentUser: (state) => {
+            return state.currentUser;
+        },
+
+        selectedDevice: (state) => {
+            return state.seletedDevice;
+        },
+
+        loginDialogVisible: (state) => {
+            return state.showLoginDialg;
+        },
+    },
 });
-
 export default store;

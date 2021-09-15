@@ -34,9 +34,6 @@
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "Sidebar",
-  data() {
-    return {};
-  },
 });
 </script>
 
@@ -44,19 +41,17 @@ export default defineComponent({
 @import "~@/styles/global.less";
 
 .sidebar {
+  width: 10vh;
+
   display: flex;
   flex-direction: column;
 
-  width: 10vh;
-  height: 100vh;
-  background: @view_background_color;
-  overflow: hidden;
+  background: @ui_background_color;
   border-right: 5px solid @ui_border_color;
 
   .top-nav {
     display: flex;
     flex-direction: column;
-    align-content: space-between;
     align-items: center;
 
     a {
@@ -80,8 +75,9 @@ export default defineComponent({
   .bottom-nav {
     display: flex;
     flex-direction: column;
-    align-content: space-between;
+
     align-items: center;
+
     margin-top: auto;
     margin-bottom: 10px;
 
@@ -105,7 +101,7 @@ export default defineComponent({
 }
 
 .icon {
-  width: 40px;
-  height: 40px;
+  width: @icon_height_width;
+  height: @icon_height_width;
 }
 </style>
