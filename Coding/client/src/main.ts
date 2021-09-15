@@ -13,6 +13,7 @@ import InputText from "primevue/inputtext";
 import ProgressBar from "primevue/progressbar";
 import ProgressSpinner from "primevue/progressspinner";
 import Menu from 'primevue/menu';
+import Checkbox from 'primevue/checkbox';
 
 import "primevue/resources/themes/saga-blue/theme.css";
 import "primevue/resources/primevue.min.css";
@@ -33,5 +34,6 @@ app.component("ProgressBar", ProgressBar);
 app.component("ProgressSpinner", ProgressSpinner);
 app.component("Toast", Toast);
 app.component("Menu", Menu);
+app.component("Checkbox", Checkbox);
 
 app.mount("#app");

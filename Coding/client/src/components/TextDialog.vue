@@ -11,7 +11,6 @@
         <div v-else-if="type === 'confirm'">
           <img src="@/assets/icons/black/question.svg" />
           <p class="text-block">{{ text }}</p>
-          <ProgressSpinner />
           <div class="button-container">
             <Button
               class="p-button-rounded p-button-success"
@@ -24,18 +23,17 @@
         <div v-else-if="type === 'no-yes'">
           <img src="@/assets/icons/black/question.svg" />
           <p class="text-block">{{ text }}</p>
-          <ProgressSpinner />
           <div class="button-container">
             <Button
+              label="Abort"
               class="p-button-rounded p-button-danger"
               @click="$emit('declined')"
-              >No</Button
-            >
+            />
             <Button
+              label="Accept"
               class="p-button-rounded p-button-success"
               @click="$emit('accepted')"
-              >Yes</Button
-            >
+            />
           </div>
         </div>
       </div>
@@ -110,18 +108,15 @@ export default defineComponent({
         text-align: center;
       }
 
-      Button {
-        margin-left: 20px;
-        margin-right: 20px;
-      }
-
-      ProgressSpinner {
-        margin-top: 20px;
-      }
-
       .button-container {
-        justify-content: flex-end;
+        display: flex;
+        flex-direction: row;
         margin-top: 20px;
+
+        Button {
+          margin: 20px 20px 20px 20px;
+          width: 100px;
+        }
       }
     }
   }
