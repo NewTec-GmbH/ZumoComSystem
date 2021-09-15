@@ -137,7 +137,6 @@ export default defineComponent({
   display: flex;
   height: 100vh;
   flex: 1 1 auto;
-  margin: 20px 20px 20px 20px;
   background-color: @view_background_color;
 }
 
