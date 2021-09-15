@@ -314,6 +314,13 @@ void Session::deauthenticateSession()
             LOG_INFO(String("Session of user ") + m_linkedUser->getUsername() + String(" has been de-authenticated!"));
         }
     }
+    else
+    {
+        if (nullptr != m_linkedUser)
+        {
+            LOG_WARN(String("Session of user ") + m_linkedUser->getUsername() + String(" is (already) not authenticated!"));
+        }
+    }
 }
 
 void Session::handleSessionTimeout(void* parameter)

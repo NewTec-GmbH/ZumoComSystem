@@ -46,46 +46,60 @@ export default defineComponent({
     this.$store.commit("setLoginDialogVisibility", false);
   },
 
+  methods: {
+    registerWSEvents() {
+      /* Hide the info dialog when connected */
+      WebSocketClient.getInstance().onOpen(() => {
+        this.infoDialogVisible = false;
+
+        this.$toast.add({
+          severity: "success",
+          summary: "Connected",
+          detail: "Successfully connected to server!",
+          life: 3000,
+        });
+
+        Log.debug("New WebSocket connection opened!");
+      });
+
+      /* Hide the info dialog when connected */
+      WebSocketClient.getInstance().onClose(() => {
+        this.infoDialogVisible = true;
+        this.$store.commit("setUser", "null");
+
+        Log.debug("WebSocket connection closed!");
+      });
+
+      /* Hide the info dialog when connected */
+      WebSocketClient.getInstance().onError(() => {
+        this.infoDialogVisible = true;
+        this.$store.commit("setUser", "null");
+
+        this.$toast.add({
+          severity: "error",
+          summary: "Server Connection Error",
+          detail:
+            "A fatal connection error occured! Reconnecting in two seconds!",
+          life: 3000,
+        });
+
+        Log.debug(
+          "Fatal WebSocket error occured! Reconnecting in two seconds!"
+        );
+
+        /* Reload the page afer two seconds to reconnect */
+        setTimeout(() => {
+          this.$router.go(0);
+        }, 2000);
+      });
+    },
+  },
+
   mounted() {
     /* Show info dialog as long as WebSocket client is not connected */
     this.infoDialogVisible = true;
 
-    /* Hide the info dialog when connected */
-    WebSocketClient.getInstance().onOpen(() => {
-      this.infoDialogVisible = false;
-
-      this.$toast.add({
-        severity: "success",
-        summary: "Connected",
-        detail: "Successfully connected to server!",
-        life: 3000,
-      });
-
-      Log.debug("New WebSocket connection opened!");
-    });
-
-    /* Hide the info dialog when connected */
-    WebSocketClient.getInstance().onClose(() => {
-      this.infoDialogVisible = true;
-      this.$store.commit("setUser", "null");
-
-      Log.debug("WebSocket connection closed!");
-    });
-
-    /* Hide the info dialog when connected */
-    WebSocketClient.getInstance().onError(() => {
-      this.infoDialogVisible = true;
-      this.$store.commit("setUser", "null");
-
-      this.$toast.add({
-        severity: "error",
-        summary: "Server Connection Error",
-        detail: "A fatal connection error occured!",
-        life: 3000,
-      });
-
-      Log.debug("Fatal WebSocket error occured!");
-    });
+    this.registerWSEvents();
   },
 });
 </script>

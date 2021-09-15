@@ -43,94 +43,94 @@ import Log from "@/utility/Log";
 
 /** Class for connecting to WebSocket servers */
 export default class WebSocketClient {
-  /** Specifies the host endpoint URL */
-  private readonly m_host = "wss://complatform.local/api";
+    /** Specifies the host endpoint URL */
+    private readonly m_host = "wss://complatform.local/api";
 
-  /** WebSocket instance */
-  private m_socketClient: WebSocket;
+    /** WebSocket instance */
+    private m_socketClient: WebSocket;
 
-  /** Singleton instance of this class */
-  private static m_instance: WebSocketClient;
+    /** Singleton instance of this class */
+    private static m_instance: WebSocketClient;
 
-  /**
-   * Default Constructor
-   */
-  private constructor() {
-    /* Connect with specified endpoint */
-    this.m_socketClient = new WebSocket(this.m_host);
-    Log.debug("Trying to connect to WebSocket host at " + this.m_host);
-  }
-
-  public onOpen(fnPtr: any): void {
-    this.m_socketClient.onopen = fnPtr;
-  }
-
-  public onClose(fnPtr: any): void {
-    this.m_socketClient.onclose = fnPtr;
-  }
-
-  public onError(fnPtr: any): void {
-    this.m_socketClient.onerror = fnPtr;
-  }
-
-  /**
-   * Closes the opened WebSocket connection
-   */
-  public disconnect(): void {
-    Log.debug("Trying to close WebSocket connection!");
-    this.m_socketClient.close();
-  }
-
-  /**
-   * Returns the instance of WebSocketClient
-   * @returns Returns the singleton
-   */
-  public static getInstance(): WebSocketClient {
-    if (!this.m_instance) {
-      this.m_instance = new WebSocketClient();
-      Log.debug("New WebSocketClient instance created!");
-    }
-    return this.m_instance;
-  }
-
-  /**
-   * Returns the WebSocketClient state
-   *
-   * @returns Returns the current state of the WebSocket connection
-   */
-  public getState(): number {
-    return this.m_socketClient.readyState;
-  }
-
-  /**
-   * Sends either a string or a byte buffer to the WebSocket endpoint
-   *
-   * @param payload The data to be transmitted
-   * @return Returns true if successful, else false
-   */
-  public send(payload: string | Uint8Array): boolean {
-    let retCode = false;
-
-    if (WebSocket.OPEN == this.getState()) {
-      this.m_socketClient.send(payload);
-      retCode = true;
+    /**
+     * Default Constructor
+     */
+    private constructor() {
+        /* Connect with specified endpoint */
+        this.m_socketClient = new WebSocket(this.m_host);
+        Log.debug("Trying to connect to WebSocket host at " + this.m_host);
     }
 
-    if (false === retCode) {
-      Log.error(
-        "Could not send WebSocket data because connection is not opened!"
-      );
+    public onOpen(fnPtr: any): void {
+        this.m_socketClient.onopen = fnPtr;
     }
-    return retCode;
-  }
 
-  /**
-   * Registers a new callback which calls the specified function when the WebSocket client
-   * receives a new message
-   *
-   * @param fnPtr The function to be called on incoming messages
-   */
-  public onMessage(fnPtr: any): void {
-    this.m_socketClient.onmessage = fnPtr;
-  }
+    public onClose(fnPtr: any): void {
+        this.m_socketClient.onclose = fnPtr;
+    }
+
+    public onError(fnPtr: any): void {
+        this.m_socketClient.onerror = fnPtr;
+    }
+
+    /**
+     * Closes the opened WebSocket connection
+     */
+    public disconnect(): void {
+        Log.debug("Trying to close WebSocket connection!");
+        this.m_socketClient.close();
+    }
+
+    /**
+     * Returns the instance of WebSocketClient
+     * @returns Returns the singleton
+     */
+    public static getInstance(): WebSocketClient {
+        if (!this.m_instance) {
+            this.m_instance = new WebSocketClient();
+            Log.debug("New WebSocketClient instance created!");
+        }
+        return this.m_instance;
+    }
+
+    /**
+     * Returns the WebSocketClient state
+     *
+     * @returns Returns the current state of the WebSocket connection
+     */
+    public getState(): number {
+        return this.m_socketClient.readyState;
+    }
+
+    /**
+     * Sends either a string or a byte buffer to the WebSocket endpoint
+     *
+     * @param payload The data to be transmitted
+     * @return Returns true if successful, else false
+     */
+    public send(payload: string | Uint8Array): boolean {
+        let retCode = false;
+
+        if (WebSocket.OPEN == this.getState()) {
+            this.m_socketClient.send(payload);
+            retCode = true;
+        }
+
+        if (false === retCode) {
+            Log.error(
+                "Could not send WebSocket data because connection is not opened!"
+            );
+        }
+        return retCode;
+    }
+
+    /**
+     * Registers a new callback which calls the specified function when the WebSocket client
+     * receives a new message
+     *
+     * @param fnPtr The function to be called on incoming messages
+     */
+    public onMessage(fnPtr: any): void {
+        this.m_socketClient.onmessage = fnPtr;
+    }
 }

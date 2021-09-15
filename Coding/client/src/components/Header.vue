@@ -2,6 +2,7 @@
   <div class="header">
     <div class="header-ui">
       <div class="device-selection">
+        <Menu ref="menu" :model="menuEntries" :popup="true" />
         <Dropdown
           v-model="selectedDevice"
           :options="devices"
@@ -28,6 +29,7 @@
           v-if="currentUser != 'null'"
           src="@/assets/icons/white/user.svg"
           class="username-icon"
+          @click="userIconClick"
         />
         <Button
           v-else
@@ -35,7 +37,7 @@
           icon="pi pi-user"
           iconPos="right"
           class="p-button-rounded"
-          @click="signIn()"
+          @click="signIn"
         />
       </div>
     </div>
@@ -46,6 +48,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import LoginDialog from "@/components/LoginDialog.vue";
+import Menu from "primevue/menu";
+import { ApiRequest } from "@/models/ApiRequest";
+import { ApiResponse } from "@/models/ApiResponse";
+import { ResponseCode } from "@/models/ResponseCode";
+import RequestResponseHandler from "@/api/RequestResponseHandler";
+import Log from "@/utility/Log";
 
 export default defineComponent({
   name: "Header",
@@ -53,6 +61,59 @@ export default defineComponent({
     return {
       /** The available devices in the contet menu */
       devices: [{ name: "Zumo32U4 Robot" }, { name: "ComPlatform" }],
+
+      menuEntries: [
+        {
+          label: "Sign out",
+          icon: "pi pi-sign-out",
+          command: () => {
+            /* De-authenticate the WebSocket session! */
+            let request = new ApiRequest();
+            request.commandId = "deauthenticate";
+
+            /* Send the request */
+            if (
+              true === RequestResponseHandler.getInstance().makeRequest(request)
+            ) {
+              /* Register the event handler for incoming response message */
+              RequestResponseHandler.getInstance().onResponse((event: any) => {
+                /* Parse the response data */
+                const response: ApiResponse = JSON.parse(event.data);
+
+                if (response.statusCode == ResponseCode.SUCCESS) {
+                  this.$store.commit("setUser", "null");
+
+                  this.$toast.add({
+                    severity: "success",
+                    summary: "Signed out",
+                    detail: "Successfully signed out!",
+                    life: 3000,
+                  });
+
+                  Log.debug("Successfully signed out!");
+                } else {
+                  this.$toast.add({
+                    severity: "error",
+                    summary: "Error Signing out",
+                    detail: "Could not sign out!",
+                    life: 3000,
+                  });
+
+                  Log.debug("Could not sign out!");
+                }
+              });
+            } else {
+              this.$toast.add({
+                severity: "error",
+                summary: "Fatal Server Error",
+                detail:
+                  "A fatal error occured when communicating with the server!",
+                life: 3000,
+              });
+            }
+          },
+        },
+      ],
     };
   },
   components: {
@@ -82,6 +143,10 @@ export default defineComponent({
   methods: {
     signIn(): void {
       this.$store.commit("setLoginDialogVisibility", true);
+    },
+
+    userIconClick(event: any): void {
+      (this.$refs.menu as Menu).toggle(event);
     },
   },
 });

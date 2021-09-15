@@ -115,3 +115,10 @@ void SessionManager::aquireSession(const ApiRequest& request, ApiResponse& respo
         response.setStatusCode(ERROR);
     }
 }
+
+void SessionManager::invalidateSession(ApiResponse& response, Session* connectionCtx)
+{
+    /* De-authenticate the session instance */
+    connectionCtx->deauthenticateSession();
+    response.setStatusCode(SUCCESS);
+}

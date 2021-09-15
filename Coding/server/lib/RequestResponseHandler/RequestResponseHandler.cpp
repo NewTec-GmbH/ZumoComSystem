@@ -64,6 +64,10 @@ void RequestResponseHandler::makeRequest(const ApiRequest& request, ApiResponse&
     {
         m_sessionManager.aquireSession(request, response, connectionCtx);
     }
+    else if (request.getCommandId() == "deauthenticate")
+    {
+        m_sessionManager.invalidateSession(response, connectionCtx);
+    }
     else
     {
         Command* apiService = getCommandOfApiRequest(request);

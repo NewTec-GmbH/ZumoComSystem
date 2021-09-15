@@ -93,5 +93,13 @@ public:
      * @param[in] connectionCtx Pointer to the currently used session which should get authenticated
      */
     void aquireSession(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const;
+
+    /**
+     * Request for invalidation for this session
+     *
+     * @param[out] response Reference to the ApiResponse
+     * @param[in] connectionCtx Pointer to the currently used session which should get authenticated
+     */
+    void invalidateSession(ApiResponse& response, Session* connectionCtx);
 };
 #endif /** __SESSIONMANAGER_H__ */
