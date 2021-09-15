@@ -54,7 +54,11 @@ const KeyValue HTTPsWebServer::m_servedFileTypes[] =
     {".js", "application/javascript"},
     {".jpg", "image/jpeg"},
     {".png", "image/png"},
-    {".ico", "image/vnd.microsoft.icon"}
+    {".ico", "image/vnd.microsoft.icon"},
+    {".svg", "image/svg+xml"},
+    {".ttf", "font/ttf"},
+    {".woff", "font/woff"},
+    {".eot", "font/eot"},
 };
 
 FileManager HTTPsWebServer::m_fileManager;
