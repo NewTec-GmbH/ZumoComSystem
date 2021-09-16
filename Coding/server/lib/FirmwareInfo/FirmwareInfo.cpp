@@ -171,6 +171,40 @@ bool FirmwareInfo::serialize(String& serial)
     return retCode;
 }
 
+bool FirmwareInfo::serializeInstance(String& serial) const
+{
+    bool retCode = false;
+    size_t docSize = 0;
+
+    /*
+    Reserve memory on stack for JSON structure which consists of four key-value pairs.
+    */
+    const size_t DOC_SIZE = 192;
+    StaticJsonDocument<DOC_SIZE> jsonDocument;
+
+    /*
+    Pass the const/non-volatile char* pointers to ArduinoJson so that ArduinoJson
+    will not copy/duplicate the string values
+    */
+    jsonDocument["targetSystem"] = m_targetSystem.c_str();
+    jsonDocument["sizeBytes"] = m_sizeBytes;
+    jsonDocument["payloadHash"] = m_payloadHashValue.c_str();
+    jsonDocument["isValid"] = m_isValid;
+
+    docSize = measureJson(jsonDocument);
+    retCode = ((0 < docSize) && (docSize == serializeJson(jsonDocument, serial)));
+    if (true == retCode)
+    {
+        LOG_DEBUG("Network credentials successfully serialized to JSON");
+        LOG_DEBUG(serial);
+    }
+    else
+    {
+        LOG_ERROR("Could not serialize network credentials!");
+    }
+    return retCode;
+}
+
 bool FirmwareInfo::deserialize(const String& serial)
 {
     bool retCode = true;
@@ -216,7 +250,7 @@ const String& FirmwareInfo::getTargetSystem() const
     return m_targetSystem;
 }
 
-const String& FirmwareInfo::getPayloadHashValue() const 
+const String& FirmwareInfo::getPayloadHashValue() const
 {
     return m_payloadHashValue;
 }

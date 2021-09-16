@@ -145,6 +145,16 @@ void System::init()
         LOG_ERROR("Could not load users from persistent storage");
     }
 
+    /* Load FirmwareInfo */
+    if (true == m_store.loadFirmwareInfo())
+    {
+        LOG_DEBUG("Successfully loaded FirmwareInfo from persistent storage");
+    }
+    else
+    {
+        LOG_ERROR("Could not load FirmwareInfo from persistent storage");
+    }
+
     /* Create and save admin account with default credentials and full priviliges if it is missing */
     if (true == User::registerAdminAccount() && (true == m_store.saveUsers()))
     {

@@ -94,6 +94,14 @@ public:
     static bool serialize(String& serial);
 
     /**
+     * Serializes the current instance
+     *
+     * @param[out] serial The serialized JSON string
+     * @return Returns true if successful, else false
+     */
+    bool serializeInstance(String& serial) const;
+
+    /**
      * Deserializes the passed JSON string and re-creates the data structure
      *
      * @param[in] serial The serialized JSON string

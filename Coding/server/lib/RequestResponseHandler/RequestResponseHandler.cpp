@@ -44,6 +44,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 RequestResponseHandler::RequestResponseHandler() :
     m_echoDemoCommand(),
+    m_uploadZumoCommand(),
+    m_uploadCOMCommand(),
+    m_flashCOMCommand(),
+    m_rebootCOMCommand(),
+    m_rebootZumoCommand(),
+    m_setSTACredentialsCommand(),
+    m_flashZumoCommand(),
+    m_getFirmwareInfoCommand(),
     m_sessionManager()
 {
 }
@@ -176,6 +184,10 @@ Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& reques
     else if (commandID == "flashzumo")
     {
         command = &m_flashZumoCommand;
+    }
+    else if (commandID == "getfirmwareinfo")
+    {
+        command = &m_getFirmwareInfoCommand;
     }
     else if (commandID == "echodemo")
     {

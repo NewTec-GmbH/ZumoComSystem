@@ -235,7 +235,8 @@ void UploadCOMCommand::run(ApiResponse& response, Session* connectionCtx)
                     firmwareValid = m_fwChecker.isValid(TARGET_SYSTEM);
 
                     /* Write additional meta-information/FirmwareInfo into the persistent storage */
-                    if ((true == FirmwareInfo::putInfo(TARGET_SYSTEM, computedHashValue, firmwareValid, m_writtenFirmwareBytes, OVERWRITE_FIRMWAREINFO))
+                    if ((true == m_fwChecker.getComputedHashValue(computedHashValue))
+                        && (true == FirmwareInfo::putInfo(TARGET_SYSTEM, computedHashValue, firmwareValid, m_writtenFirmwareBytes, OVERWRITE_FIRMWAREINFO))
                         && (true == Store::getInstance().saveFirmwareInfo()))
                     {
                         response.setStatusCode(SUCCESS);
