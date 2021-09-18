@@ -43,6 +43,7 @@ import WebSocketClient from "@/api/WebSocketClient";
 import Log from "@/utility/Log";
 import { ApiResponse } from "@/models/ApiResponse";
 import { ApiRequest } from "@/models/ApiRequest";
+import { ResponseCode } from "@/models/ResponseCode";
 
 /** Class for accessing the backend WebSocket API and calling the API services */
 export default class RequestResponseHandler {
@@ -72,19 +73,71 @@ export default class RequestResponseHandler {
      * Makes a new request to the WebSocket backend API
      *
      * @param request The ApiRequest to be invoked
-     * @return Returns true if successful, else false
+     * @param context The current context (this)
+     * @return Returns ApiResponse promise
      */
-    public makeRequest(request: ApiRequest): boolean {
-        const json = JSON.stringify(request);
-        const retCode = this.m_wsClient.send(json);
+    public async makeRequest(request: ApiRequest, context: any): Promise<ApiResponse> {
+        return new Promise<ApiResponse>((resolve) => {
+            let apiResponse = new ApiResponse();
 
-        if (false === retCode) {
-            Log.error(
-                "Could not send request because WebSocketClient is not opened!"
-            );
-        }
-        return retCode;
+            /* Send the ApiRequest JSON to the API server */
+            if (true === this.m_wsClient.send(JSON.stringify(request))) {
+                /* Await the server ApiResponse response */
+                this.m_wsClient.onMessage((event: any) => {
+                    apiResponse = JSON.parse(event.data);
+                    resolve(apiResponse);
+
+                    /* Evalutate the return code */
+                    if (ResponseCode.SUCCESS === apiResponse.statusCode) {
+                        Log.debug("Successfully executed ApiRequest command " + request.commandId);
+                        resolve(apiResponse);
+                    }
+                    else if (ResponseCode.UNAUTHORIZED === apiResponse.statusCode) {
+                        Log.debug("Unauthorized access to ApiRequest command " + request.commandId);
+
+                        context.$toast.add({
+                            severity: "warn",
+                            summary: "Missing Permission",
+                            detail:
+                                "You do not have the required permission to execute the command " + request.commandId,
+                            life: 5000,
+                        });
+
+                        if ("null" == context.$store.getters.currentUser) {
+                            context.$store.commit("setLoginDialogVisibility", true);
+                        }
+                        resolve(apiResponse);
+                    }
+                    else {
+                        context.$toast.add({
+                            severity: "error",
+                            summary: "API Service error",
+                            detail: "Could not execute command "
+                                + request.commandId + "!\nRepsonse Code: "
+                                + ResponseCode[apiResponse.statusCode],
+                            life: 5000,
+                        });
+                        resolve(apiResponse);
+                    }
+                });
+            }
+            else {
+                Log.debug("Fatal server error occured while sending ApiRequest command " + request.commandId);
+                apiResponse.statusCode = ResponseCode.ERROR;
+
+                context.$toast.add({
+                    severity: "error",
+                    summary: "Fatal Server Error",
+                    detail: "A fatal server communication error occured!",
+                    life: 5000,
+                });
+                resolve(apiResponse);
+            }
+        });
     }
+
+
+    // TODO: Refactor
 
     /**
      * Sends a binary data buffer to the WebSocket endpoint
@@ -92,22 +145,31 @@ export default class RequestResponseHandler {
      * @param dataChunk The binary data to be sent to the WebSocket endpoint
      * @return Returns true if successful, else false
      */
-    public sendBinary(dataChunk: Uint8Array): boolean {
-        const retCode = this.m_wsClient.send(dataChunk);
-        if (false === retCode) {
-            Log.error(
-                "Could not send request because WebSocketClient is not opened!"
-            );
-        }
-        return retCode;
-    }
+    public async sendBinary(dataChunk: Uint8Array): Promise<ApiResponse> {
+        return new Promise<ApiResponse>((resolve) => {
+            let apiResponse = new ApiResponse();
 
-    /**
-     * Registers a new callback function when the WebSocket client receives a new response
-     *
-     * @param fnPtr The function to be registered for callback
-     */
-    public onResponse(fnPtr: any): void {
-        this.m_wsClient.onMessage(fnPtr);
+            /* Send the ApiRequest JSON to the API server */
+            if (true === this.m_wsClient.send(dataChunk)) {
+                /* Await the server ApiResponse response */
+                this.m_wsClient.onMessage((event: any) => {
+                    apiResponse = JSON.parse(event.data);
+
+                    /* Evalutate the return code */
+                    if (ResponseCode.SUCCESS === apiResponse.statusCode) {
+                        Log.debug("Successfully sent binary chunk with " + dataChunk.length + " bytes");
+                    }
+                    else if (ResponseCode.UNAUTHORIZED === apiResponse.statusCode) {
+                        Log.warn("Unauthorized to send binary chunk!");
+                    }
+                    resolve(apiResponse);
+                });
+            }
+            else {
+                Log.error("Fatal server error occured while sending binary data");
+                apiResponse.statusCode = ResponseCode.ERROR;
+                resolve(apiResponse);
+            }
+        });
     }
 }

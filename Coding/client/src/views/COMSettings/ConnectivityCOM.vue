@@ -94,58 +94,13 @@ export default defineComponent({
       }
 
       /* Send the request */
-      if (true === RequestResponseHandler.getInstance().makeRequest(request)) {
-        /* Register the event handler for incoming response message */
-        RequestResponseHandler.getInstance().onResponse((event: any) => {
-          /* Parse the response data */
-          const response: ApiResponse = JSON.parse(event.data);
-
-          if (response.statusCode == ResponseCode.UNAUTHORIZED) {
-            this.$toast.add({
-              severity: "warn",
-              summary: "Missing Permission",
-              detail:
-                "You do not have the required permission to set the STA-Mode Network Credentials!",
-              life: 3000,
-            });
-
-            if ("null" == this.$store.getters.currentUser) {
-              this.$store.commit("setLoginDialogVisibility", true);
-            }
-
-            Log.warn(
-              "Missing permission for setting the STA network credentials"
-            );
-          } else if (response.statusCode == ResponseCode.SUCCESS) {
-            this.$toast.add({
-              severity: "success",
-              summary: "Network Credentials set",
-              detail: "Successfully set the Network Credentials for STA-Mode!",
-              life: 3000,
-            });
-
+      RequestResponseHandler.getInstance()
+        .makeRequest(request, this)
+        .then((response: ApiResponse) => {
+          if (response.statusCode == ResponseCode.SUCCESS) {
             this.confirmDialogVisible = true;
-          } else {
-            this.$toast.add({
-              severity: "error",
-              summary: "Error setting Network Credentials",
-              detail: "Could not set the Network Credentials for STA-Mode!",
-              life: 3000,
-            });
-
-            Log.error("Could not set STA-Mode Network Credentials!");
           }
         });
-      } else {
-        this.$toast.add({
-          severity: "error",
-          summary: "Fatal Server Error",
-          detail: "A fatal error occured when communicating with the server!",
-          life: 3000,
-        });
-
-        Log.error("Fatal server error occured!");
-      }
     },
 
     declineClick() {
@@ -160,62 +115,16 @@ export default defineComponent({
       request.commandId = "rebootcom";
 
       /* Send the request */
-      if (true === RequestResponseHandler.getInstance().makeRequest(request)) {
-        /* Register the event handler for incoming response message */
-        RequestResponseHandler.getInstance().onResponse((event: any) => {
-          /* Parse the response data */
-          const response: ApiResponse = JSON.parse(event.data);
-
-          if (response.statusCode == ResponseCode.UNAUTHORIZED) {
-            this.$toast.add({
-              severity: "warn",
-              summary: "Missing Permission",
-              detail:
-                "You do not have the required permission to reboot the ComPlatform!",
-              life: 3000,
-            });
-
-            if ("null" == this.$store.getters.currentUser) {
-              this.$store.commit("setLoginDialogVisibility", true);
-            }
-
-            Log.warn("Missing permission for rebooting ComPlatform");
-          } else if (response.statusCode == ResponseCode.SUCCESS) {
-            this.$toast.add({
-              severity: "success",
-              summary: "Rebooted",
-              detail:
-                "ComPlatform successfully rebooted! Reloading this page in two seconds!",
-              life: 3000,
-            });
-
+      RequestResponseHandler.getInstance()
+        .makeRequest(request, this)
+        .then((response: ApiResponse) => {
+          if (response.statusCode == ResponseCode.SUCCESS) {
             /* Reload the page afer two seconds to reconnect */
             setTimeout(() => {
               this.$router.go(0);
             }, 2000);
-
-            Log.debug("Successfully rebooted ComPlatform");
-          } else {
-            this.$toast.add({
-              severity: "error",
-              summary: "Error Rebooting",
-              detail: "Could not reboot ComPlatform!",
-              life: 3000,
-            });
-
-            Log.debug("Could not reboot ComPlatform!");
           }
         });
-      } else {
-        this.$toast.add({
-          severity: "error",
-          summary: "Fatal Server Error",
-          detail: "A fatal error occured when communicating with the server!",
-          life: 3000,
-        });
-
-        Log.error("Fatal server error occured!");
-      }
     },
   },
 });

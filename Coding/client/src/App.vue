@@ -56,7 +56,7 @@ export default defineComponent({
           severity: "success",
           summary: "Connected",
           detail: "Successfully connected to server!",
-          life: 3000,
+          life: 5000,
         });
 
         Log.debug("New WebSocket connection opened!");
@@ -80,7 +80,7 @@ export default defineComponent({
           summary: "Server Connection Error",
           detail:
             "A fatal connection error occured! Reconnecting in two seconds!",
-          life: 3000,
+          life: 5000,
         });
 
         Log.debug(

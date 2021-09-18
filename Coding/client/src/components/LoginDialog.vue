@@ -102,7 +102,7 @@ export default defineComponent({
       this.reset();
     },
 
-    signInClick() {
+    async signInClick() {
       this.spinnerVisible = true;
 
       /* Prepare the API command */
@@ -111,22 +111,12 @@ export default defineComponent({
       request.jsonPayload = JSON.stringify(this.usercredentials);
 
       /* Send the request */
-      if (true === RequestResponseHandler.getInstance().makeRequest(request)) {
-        /* Register the event handler for incoming response message */
-        RequestResponseHandler.getInstance().onResponse((event: any) => {
-          /* Parse the response data */
-          const response: ApiResponse = JSON.parse(event.data);
-
+      RequestResponseHandler.getInstance()
+        .makeRequest(request, this)
+        .then((response: ApiResponse) => {
           if (response.statusCode == ResponseCode.SUCCESS) {
             this.$store.commit("setUser", this.usercredentials.username);
             this.reset();
-
-            this.$toast.add({
-              severity: "success",
-              summary: "Logged in",
-              detail: "Successfully logged in!",
-              life: 3000,
-            });
 
             Log.debug("Successfully logged in!");
           } else {
@@ -137,20 +127,6 @@ export default defineComponent({
             Log.debug("Could not log in!");
           }
         });
-      } else {
-        this.$store.commit("setUser", "null");
-        this.loginSuccess = false;
-        this.spinnerVisible = false;
-
-        this.$toast.add({
-          severity: "error",
-          summary: "Fatal Server Error",
-          detail: "A fatal error occured when communicating with the server!",
-          life: 3000,
-        });
-
-        Log.debug("Could not send login request!");
-      }
     },
   },
 });

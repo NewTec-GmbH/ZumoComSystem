@@ -30,10 +30,6 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "SettingsMenu",
-  data() {
-    return {};
-  },
-  methods: {},
 });
 </script>
 

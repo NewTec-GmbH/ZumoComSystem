@@ -64,7 +64,6 @@ export default defineComponent({
   watch: {
     "$store.state.seletedDevice.name": function (newValue, oldValue) {
       let targetSystem = "";
-
       if ("Zumo32U4 Robot" === newValue) {
         targetSystem = "ZUMO";
       } else if ("ComPlatform" === newValue) {
@@ -77,50 +76,17 @@ export default defineComponent({
       request.jsonPayload = JSON.stringify({ target: targetSystem });
 
       /* Send the request */
-      if (true === RequestResponseHandler.getInstance().makeRequest(request)) {
-        /* Register the event handler for incoming response message */
-        RequestResponseHandler.getInstance().onResponse((event: any) => {
-          /* Parse the response data */
-          const response: ApiResponse = JSON.parse(event.data);
-
-          if (response.statusCode == ResponseCode.UNAUTHORIZED) {
-            this.firmwareAvailable = false;
-
-            this.$toast.add({
-              severity: "warn",
-              summary: "Missing Permission",
-              detail:
-                "You do not have the required permission to fetch the FirmwareInfo",
-              life: 3000,
-            });
-
-            if ("null" == this.$store.getters.currentUser) {
-              this.$store.commit("setLoginDialogVisibility", true);
-            }
-
-            Log.warn("Missing permission for fetching FirmwareInfo!");
-          } else if (response.statusCode == ResponseCode.SUCCESS) {
+      RequestResponseHandler.getInstance()
+        .makeRequest(request, this)
+        .then((response: ApiResponse) => {
+          if (response.statusCode == ResponseCode.SUCCESS) {
             /* Set the new FirmwareInfo data */
             this.firmwareAvailable = true;
             this.fwInfo = JSON.parse(response.jsonPayload);
-
-            Log.debug("Successfully fetched FirmwareInfo!");
           } else {
             this.firmwareAvailable = false;
           }
         });
-      } else {
-        this.firmwareAvailable = false;
-
-        this.$toast.add({
-          severity: "error",
-          summary: "Fatal Server Error",
-          detail: "A fatal error occured when communicating with the server!",
-          life: 3000,
-        });
-
-        Log.error("Fatal server error occured!");
-      }
     },
   },
   components: {
@@ -151,74 +117,104 @@ export default defineComponent({
   },
 
   methods: {
-    uploadPackets(firmware: Firmware): void {
-      let retCode = true;
+    async uploadPackets(firmware: Firmware): Promise<boolean> {
+      return new Promise<boolean>(() => {
+        let retCode = true;
 
-      const firmwareBinary = firmware.serialize();
+        /* Binary which inclues header and payload */
+        const firmwareBinary = firmware.serialize();
 
-      const uploadBlockSizeBytes = 2048;
-      const uploadChunks = Math.floor(
-        firmwareBinary.length / uploadBlockSizeBytes
-      );
-      const remainingBytes = firmwareBinary.length % uploadBlockSizeBytes;
+        const uploadBlockSizeBytes = 2048;
+        const uploadChunks = Math.floor(
+          firmwareBinary.length / uploadBlockSizeBytes
+        );
+        const remainingBytes = firmwareBinary.length % uploadBlockSizeBytes;
 
-      let byteOffset = 0;
-      let chunkBuffer = new Uint8Array(uploadBlockSizeBytes);
-      let remainBuffer = new Uint8Array(remainingBytes);
+        let byteOffset = 0;
+        let chunkBuffer = new Uint8Array(uploadBlockSizeBytes);
+        let remainBuffer = new Uint8Array(remainingBytes);
 
-      let uploadRequest = new ApiRequest();
+        let uploadRequest = new ApiRequest();
 
-      let flashRequest = new ApiRequest();
+        /* Set the target system */
+        if ("ComPlatform" === this.$store.getters.selectedDevice.name) {
+          uploadRequest.commandId = "uploadcom";
+        } else if (
+          "Zumo32U4 Robot" === this.$store.getters.selectedDevice.name
+        ) {
+          uploadRequest.commandId = "uploadzumo";
+        }
 
-      /* Set the target system */
-      if ("ComPlatform" === this.$store.getters.selectedDevice.name) {
-        uploadRequest.commandId = "uploadcom";
-      } else if ("Zumo32U4 Robot" === this.$store.getters.selectedDevice.name) {
-        uploadRequest.commandId = "uploadzumo";
-      }
+        /* Set the payload size */
+        uploadRequest.jsonPayload = JSON.stringify({
+          fileSizeBytes: firmwareBinary.length,
+        });
 
-      /* Set the payload size */
-      uploadRequest.jsonPayload = JSON.stringify({
-        fileSizeBytes: firmwareBinary.length,
-      });
-
-      /* Switch API into BINARY mode */
-      if (
-        true === RequestResponseHandler.getInstance().makeRequest(uploadRequest)
-      ) {
-        /* Register the event handler for incoming response message */
-        RequestResponseHandler.getInstance().onResponse((event: any) => {
-          /* Parse the response data */
-          const response: ApiResponse = JSON.parse(event.data);
-          retCode = response.statusCode == ResponseCode.SUCCESS;
-
-          if (true === retCode) {
+        /* Switch API into BINARY mode */
+        RequestResponseHandler.getInstance()
+          .makeRequest(uploadRequest, this)
+          .then((response: ApiResponse) => {
             /* Send the chunks */
-            for (let chunkNo = 0; chunkNo < uploadChunks; chunkNo++) {
-              byteOffset = chunkNo * uploadBlockSizeBytes;
+            if (ResponseCode.SUCCESS === response.statusCode) {
+              for (let chunkNo = 0; chunkNo < uploadChunks; chunkNo++) {
+                byteOffset = chunkNo * uploadBlockSizeBytes;
 
-              for (let byteIdx = 0; byteIdx < uploadBlockSizeBytes; byteIdx++) {
-                chunkBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
+                /* Assemble current package */
+                for (
+                  let byteIdx = 0;
+                  byteIdx < uploadBlockSizeBytes;
+                  byteIdx++
+                ) {
+                  chunkBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
+                }
+
+                /* Send the current chunk/package */
+                RequestResponseHandler.getInstance()
+                  .sendBinary(chunkBuffer)
+                  .then((response: ApiResponse) => {
+                    /* Abort if any upload failed */
+                    if (ResponseCode.SUCCESS != response.statusCode) {
+                      Log.error(
+                        "Could not upload data chunk! Aborting upload now!"
+                      );
+
+                      retCode = false;
+                    }
+                  });
               }
 
-              RequestResponseHandler.getInstance().sendBinary(chunkBuffer);
-            }
+              if (true === retCode) {
+                byteOffset = uploadChunks * uploadBlockSizeBytes;
 
-            byteOffset = uploadChunks * uploadBlockSizeBytes;
+                /* Assemble last package */
+                for (let byteIdx = 0; byteIdx < remainingBytes; byteIdx++) {
+                  remainBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
+                }
 
-            /* Send the remaining bytes */
-            for (let byteIdx = 0; byteIdx < remainingBytes; byteIdx++) {
-              remainBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
+                /* Send the remaining bytes */
+                RequestResponseHandler.getInstance()
+                  .sendBinary(remainBuffer)
+                  .then((response: ApiResponse) => {
+                    if (ResponseCode.SUCCESS != response.statusCode) {
+                      Log.error("Could not upload last data chunk!");
+                      retCode = false;
+                    }
+                  });
+              }
+            } else {
+              retCode = false;
             }
-            RequestResponseHandler.getInstance().sendBinary(remainBuffer);
-          }
-        });
-      }
+            return retCode;
+          });
+      });
     },
-    uploadFirmware(data: any) {
+
+    async uploadFirmware(data: any) {
       let files: Array<File> = data.files;
       let fileReader = new FileReader();
+
       let binaryFirmware = new Uint8Array();
+
       let firmwareHeader = new FirmwareHeader();
       let firmware = new Firmware();
 
@@ -251,11 +247,7 @@ export default defineComponent({
 
           /* Called when RSA2048 key has been read */
           fileReader.onload = (event: any) => {
-            const binarySignature = FirmwareSigner.sign(
-              fileReader.result as string,
-              binaryFirmware
-            );
-
+            /* Sign the firmware payload */
             const binSig = FirmwareSigner.sign(
               fileReader.result as string,
               binaryFirmware

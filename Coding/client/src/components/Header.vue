@@ -72,45 +72,14 @@ export default defineComponent({
             request.commandId = "deauthenticate";
 
             /* Send the request */
-            if (
-              true === RequestResponseHandler.getInstance().makeRequest(request)
-            ) {
-              /* Register the event handler for incoming response message */
-              RequestResponseHandler.getInstance().onResponse((event: any) => {
-                /* Parse the response data */
-                const response: ApiResponse = JSON.parse(event.data);
-
+            RequestResponseHandler.getInstance()
+              .makeRequest(request, this)
+              .then((response: ApiResponse) => {
                 if (response.statusCode == ResponseCode.SUCCESS) {
                   this.$store.commit("setUser", "null");
-
-                  this.$toast.add({
-                    severity: "success",
-                    summary: "Signed out",
-                    detail: "Successfully signed out!",
-                    life: 3000,
-                  });
-
-                  Log.debug("Successfully signed out!");
-                } else {
-                  this.$toast.add({
-                    severity: "error",
-                    summary: "Error Signing out",
-                    detail: "Could not sign out!",
-                    life: 3000,
-                  });
-
-                  Log.debug("Could not sign out!");
+                  Log.info("Successfully signed out!");
                 }
               });
-            } else {
-              this.$toast.add({
-                severity: "error",
-                summary: "Fatal Server Error",
-                detail:
-                  "A fatal error occured when communicating with the server!",
-                life: 3000,
-              });
-            }
           },
         },
       ],

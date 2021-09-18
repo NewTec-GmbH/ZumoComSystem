@@ -19,21 +19,12 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
 import SettingsMenu from "@/components/SettingsMenu.vue";
 import ConnectivityCOM from "@/views/COMSettings/ConnectivityCOM.vue";
 import { defineComponent } from "vue";
-import LoginDialog from "@/components/LoginDialog.vue";
-import Menu from "primevue/menu";
-import { ApiRequest } from "@/models/ApiRequest";
-import { ApiResponse } from "@/models/ApiResponse";
-import { ResponseCode } from "@/models/ResponseCode";
-import RequestResponseHandler from "@/api/RequestResponseHandler";
-import Log from "@/utility/Log";
 
 export default defineComponent({
   name: "Settings",
-
   data() {
     return {
       selectedMenuEntry: "null",
