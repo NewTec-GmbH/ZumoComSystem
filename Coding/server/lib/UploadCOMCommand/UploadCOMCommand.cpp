@@ -85,6 +85,8 @@ void UploadCOMCommand::run(const ApiRequest& request, ApiResponse& response, Ses
         not exceeds the memory limits. Additionally, when writing the firmware, the UploadCOMCommand API service
         will keep track of the written bytes and abort writing to FS if it exceeds the maximum reserved memory capacity
         */
+
+        // TODO: Fix: Remove header size from total size
         if (FirmwareChecker::MAX_COM_FW_BLOB_SIZE_BYTE >= firmwareFileSize)
         {
             /* Delete FirmwareInfo if existent */
