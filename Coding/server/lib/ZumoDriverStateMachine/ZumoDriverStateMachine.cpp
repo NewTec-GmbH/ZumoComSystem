@@ -58,7 +58,9 @@ bool ZumoDriverStateMachine::setState(ZumoStates state)
     {
     case CLOSED:
     {
-        if (OPENED == state)
+        if ((OPENED == state)
+            || (FLASHING == state)
+            || (CLOSED == state))
         {
             m_currentState = state;
             retCode = true;

@@ -33,7 +33,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-  ],
+, "file-saver.d.ts"  ],
   "exclude": [
     "node_modules"
   ]

@@ -136,6 +136,7 @@ export default class Home extends Vue {}
   display: flex;
   flex-direction: column;
   text-align: left;
+  margin-left: 20px;
 
   h1 {
     width: 300px;

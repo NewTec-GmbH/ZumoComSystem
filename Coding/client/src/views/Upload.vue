@@ -1,14 +1,17 @@
 <template>
   <div class="upload">
-    <FirmwareCard
-      :firmwareAvailable="firmwareAvailable"
-      :targetSystem="fwInfo.targetSystem"
-      :sizeBytes="fwInfo.sizeBytes"
-      :payloadHash="fwInfo.payloadHash"
-      :isValid="fwInfo.isValid"
+    <TextDialog
+      :type="type"
+      :showTextDialog="infoDialogVisible"
+      :text="infoText"
+      @declined="infoDialogVisible = false"
+      @accepted="fnPtr"
     />
 
+    <FirmwareCard :update="update" />
+
     <Dropdown
+      class="dropdown"
       v-model="uploadOption"
       :options="options"
       optionLabel="name"
@@ -43,54 +46,34 @@
         </p>
       </template>
     </FileUpload>
+
+    <ProgressBar
+      class="progressbar"
+      v-if="uploadActive === true"
+      :value="uploadProgressPercent"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import FirmwareCard from "@/components/FirmwareCard.vue";
+import TextDialog from "@/components/TextDialog.vue";
 import RequestResponseHandler from "@/api/RequestResponseHandler";
 import Log from "@/utility/Log";
 import { ApiResponse } from "@/models/ApiResponse";
 import { ApiRequest } from "@/models/ApiRequest";
 import { ResponseCode } from "@/models/ResponseCode";
-import { FirmwareInfo } from "@/models/FirmwareInfo";
 import { Firmware } from "@/models/Firmware";
 import { FirmwareHeader } from "@/models/FirmwareHeader";
 import { FirmwareSigner } from "@/utility/FirmwareSigner";
+import FileSaver from "file-saver";
 
 export default defineComponent({
   name: "Upload",
-  watch: {
-    "$store.state.seletedDevice.name": function (newValue, oldValue) {
-      let targetSystem = "";
-      if ("Zumo32U4 Robot" === newValue) {
-        targetSystem = "ZUMO";
-      } else if ("ComPlatform" === newValue) {
-        targetSystem = "COM";
-      }
-
-      /* Prepare the API command */
-      let request = new ApiRequest();
-      request.commandId = "getfirmwareinfo";
-      request.jsonPayload = JSON.stringify({ target: targetSystem });
-
-      /* Send the request */
-      RequestResponseHandler.getInstance()
-        .makeRequest(request, this)
-        .then((response: ApiResponse) => {
-          if (response.statusCode == ResponseCode.SUCCESS) {
-            /* Set the new FirmwareInfo data */
-            this.firmwareAvailable = true;
-            this.fwInfo = JSON.parse(response.jsonPayload);
-          } else {
-            this.firmwareAvailable = false;
-          }
-        });
-    },
-  },
   components: {
     FirmwareCard,
+    TextDialog,
   },
 
   data() {
@@ -111,157 +94,286 @@ export default defineComponent({
         key: "cpsfw",
       },
 
-      firmwareAvailable: false,
-      fwInfo: new FirmwareInfo(),
+      uploadProgressPercent: 0,
+      uploadActive: false,
+
+      update: false,
+
+      type: "no-yes",
+      infoDialogVisible: false,
+      infoText: "",
+      fnPtr: () => {
+        console.log("empty");
+      },
     };
   },
 
   methods: {
-    async uploadPackets(firmware: Firmware): Promise<boolean> {
-      return new Promise<boolean>(() => {
-        let retCode = true;
+    async uploadPackets(firmwareBinary: Uint8Array): Promise<boolean> {
+      this.uploadActive = true;
+      this.uploadProgressPercent = 0;
 
-        /* Binary which inclues header and payload */
-        const firmwareBinary = firmware.serialize();
+      const uploadBlockSizeBytes = 2048;
+      const uploadChunks = Math.floor(
+        firmwareBinary.length / uploadBlockSizeBytes
+      );
+      const remainingBytes = firmwareBinary.length % uploadBlockSizeBytes;
 
-        const uploadBlockSizeBytes = 2048;
-        const uploadChunks = Math.floor(
-          firmwareBinary.length / uploadBlockSizeBytes
-        );
-        const remainingBytes = firmwareBinary.length % uploadBlockSizeBytes;
+      let byteOffset = 0;
+      let chunkBuffer = new Uint8Array(uploadBlockSizeBytes);
+      let remainBuffer = new Uint8Array(remainingBytes);
 
-        let byteOffset = 0;
-        let chunkBuffer = new Uint8Array(uploadBlockSizeBytes);
-        let remainBuffer = new Uint8Array(remainingBytes);
+      let uploadRequest = new ApiRequest();
 
-        let uploadRequest = new ApiRequest();
+      let retCode = true;
 
-        /* Set the target system */
-        if ("ComPlatform" === this.$store.getters.selectedDevice.name) {
-          uploadRequest.commandId = "uploadcom";
-        } else if (
-          "Zumo32U4 Robot" === this.$store.getters.selectedDevice.name
-        ) {
-          uploadRequest.commandId = "uploadzumo";
+      /* Set the target system */
+      if ("ComPlatform" === this.$store.getters.selectedDevice.name) {
+        uploadRequest.commandId = "uploadcom";
+      } else if ("Zumo32U4 Robot" === this.$store.getters.selectedDevice.name) {
+        uploadRequest.commandId = "uploadzumo";
+      }
+
+      /* Set the payload size */
+      uploadRequest.jsonPayload = JSON.stringify({
+        fileSizeBytes: firmwareBinary.length,
+      });
+
+      /* Switch API into BINARY mode */
+      let response = await RequestResponseHandler.getInstance().makeRequest(
+        uploadRequest,
+        this
+      );
+
+      /* Send the chunks */
+      if (ResponseCode.SUCCESS === response.statusCode) {
+        Log.debug("Successfully switched API into BINARY mode!");
+
+        for (let chunkNo = 0; chunkNo < uploadChunks; chunkNo++) {
+          byteOffset = chunkNo * uploadBlockSizeBytes;
+
+          /* Assemble current package */
+          for (let byteIdx = 0; byteIdx < uploadBlockSizeBytes; byteIdx++) {
+            chunkBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
+          }
+
+          /* Send the current chunk/package */
+          response = await RequestResponseHandler.getInstance().sendBinary(
+            chunkBuffer,
+            this
+          );
+
+          /* Abort if any upload failed */
+          if (ResponseCode.SUCCESS != response.statusCode) {
+            Log.error("Could not upload data chunk! Aborting upload now!");
+            retCode = false;
+            break;
+          } else {
+            this.uploadProgressPercent = Math.round(
+              (chunkNo / uploadChunks) * 100
+            );
+          }
         }
 
-        /* Set the payload size */
-        uploadRequest.jsonPayload = JSON.stringify({
-          fileSizeBytes: firmwareBinary.length,
-        });
+        if (true === retCode) {
+          byteOffset = uploadChunks * uploadBlockSizeBytes;
 
-        /* Switch API into BINARY mode */
-        RequestResponseHandler.getInstance()
-          .makeRequest(uploadRequest, this)
-          .then((response: ApiResponse) => {
-            /* Send the chunks */
-            if (ResponseCode.SUCCESS === response.statusCode) {
-              for (let chunkNo = 0; chunkNo < uploadChunks; chunkNo++) {
-                byteOffset = chunkNo * uploadBlockSizeBytes;
+          /* Assemble last package */
+          for (let byteIdx = 0; byteIdx < remainingBytes; byteIdx++) {
+            remainBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
+          }
 
-                /* Assemble current package */
-                for (
-                  let byteIdx = 0;
-                  byteIdx < uploadBlockSizeBytes;
-                  byteIdx++
-                ) {
-                  chunkBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
-                }
+          /* Send the remaining bytes */
+          response = await RequestResponseHandler.getInstance().sendBinary(
+            remainBuffer,
+            this
+          );
 
-                /* Send the current chunk/package */
-                RequestResponseHandler.getInstance()
-                  .sendBinary(chunkBuffer)
-                  .then((response: ApiResponse) => {
-                    /* Abort if any upload failed */
-                    if (ResponseCode.SUCCESS != response.statusCode) {
-                      Log.error(
-                        "Could not upload data chunk! Aborting upload now!"
-                      );
+          if (ResponseCode.SUCCESS != response.statusCode) {
+            Log.error("Could not upload last data chunk!");
+            retCode = false;
+          } else {
+            this.uploadProgressPercent = 100;
+          }
+        } else {
+          Log.error(
+            "Not sending remaining bytes because previous packet could not be sent!"
+          );
+        }
+      } else {
+        Log.error("Could not switch API into binary mode!");
+      }
 
-                      retCode = false;
-                    }
-                  });
-              }
+      this.uploadActive = false;
 
-              if (true === retCode) {
-                byteOffset = uploadChunks * uploadBlockSizeBytes;
-
-                /* Assemble last package */
-                for (let byteIdx = 0; byteIdx < remainingBytes; byteIdx++) {
-                  remainBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
-                }
-
-                /* Send the remaining bytes */
-                RequestResponseHandler.getInstance()
-                  .sendBinary(remainBuffer)
-                  .then((response: ApiResponse) => {
-                    if (ResponseCode.SUCCESS != response.statusCode) {
-                      Log.error("Could not upload last data chunk!");
-                      retCode = false;
-                    }
-                  });
-              }
-            } else {
-              retCode = false;
-            }
-            return retCode;
-          });
+      return new Promise<boolean>((resolve) => {
+        resolve(retCode);
       });
+    },
+
+    upload(firmwareBinary: Uint8Array) {
+      /* Upload the CPSFW file */
+      this.uploadPackets(firmwareBinary).then((result: boolean) => {
+        /* Force the FirmwareCard to update itself */
+        this.update = !this.update;
+
+        if (true === result) {
+          this.$toast.add({
+            severity: "success",
+            summary: "Upload Success",
+            detail: "Successfully uploaded the firmware!",
+            life: 5000,
+          });
+        } else {
+          this.$toast.add({
+            severity: "error",
+            summary: "Upload Error",
+            detail: "Could not upload the firmware!",
+            life: 5000,
+          });
+        }
+
+        /* Ask if firmware should be flashed now */
+        this.infoDialogVisible = true;
+        this.infoText = "Do you want to flash the uploaded firmware now?";
+        this.fnPtr = () => {
+          this.infoDialogVisible = false;
+
+          /* Go to flash page */
+          this.$router.push({
+            name: "Flash",
+            query: { autoFlash: "true" },
+          });
+        };
+      });
+    },
+
+    save(firmwareBinary: Uint8Array, firmwareHeader: FirmwareHeader) {
+      /* Ask if CPSFW file should be saved */
+      this.infoDialogVisible = true;
+      this.infoText = "Do you want to download the generated CPSFW file?";
+      this.fnPtr = () => {
+        this.infoDialogVisible = false;
+
+        FileSaver.saveAs(
+          new Blob([firmwareBinary.buffer]),
+          firmwareHeader.getTarget() + "_firmware_signed.cpsfw"
+        );
+      };
     },
 
     async uploadFirmware(data: any) {
       let files: Array<File> = data.files;
       let fileReader = new FileReader();
 
-      let binaryFirmware = new Uint8Array();
-
+      let binaryRead = new Uint8Array();
       let firmwareHeader = new FirmwareHeader();
       let firmware = new Firmware();
+      let firmwareBinary: Uint8Array;
 
-      if ("ComPlatform" === this.$store.getters.selectedDevice.name) {
-        firmwareHeader.setTarget("COM");
-      } else if ("Zumo32U4 Robot" === this.$store.getters.selectedDevice.name) {
-        firmwareHeader.setTarget("ZUMO");
-      }
+      let binFiles = files.filter(function (file: File) {
+        return file.name.endsWith(".bin");
+      });
 
-      let binFile: File = files.filter(function (file: File) {
-        return file.name.endsWith(".bin")!;
-      })[0];
-
-      let sigFile: File = files.filter(function (file: File) {
+      let sigFiles = files.filter(function (file: File) {
         return file.name.endsWith(".pem");
-      })[0];
+      });
+
+      let cpsfwFiles = files.filter(function (file: File) {
+        return file.name.endsWith(".cpsfw");
+      });
 
       if ("bin" === this.uploadOption.key) {
-        /* Read the unsigned firmware binary */
-        fileReader.readAsArrayBuffer(binFile);
+        /* Make sure user submitted exactly one .pem and one .bin file */
+        if (1 === binFiles.length && 1 === sigFiles.length) {
+          if ("ComPlatform" === this.$store.getters.selectedDevice.name) {
+            firmwareHeader.setTarget("COM");
+          } else if (
+            "Zumo32U4 Robot" === this.$store.getters.selectedDevice.name
+          ) {
+            firmwareHeader.setTarget("ZUMO");
+          }
 
-        /* Called when firmware has been read */
-        fileReader.onload = (event: any) => {
-          /* Read the firmware */
-          binaryFirmware = new Uint8Array(fileReader.result as ArrayBuffer);
-          firmware.setFirmware(binaryFirmware);
+          /* Read the unsigned firmware binary */
+          fileReader.readAsArrayBuffer(binFiles[0]);
 
-          /* Read the private RSA2048 key string when firmware has been read */
-          fileReader.readAsText(sigFile);
-
-          /* Called when RSA2048 key has been read */
+          /* Called when firmware has been read */
           fileReader.onload = (event: any) => {
-            /* Sign the firmware payload */
-            const binSig = FirmwareSigner.sign(
-              fileReader.result as string,
-              binaryFirmware
-            );
-            firmwareHeader.setSignature(binSig);
-            firmware.setHeader(firmwareHeader);
+            /* Read the firmware */
+            binaryRead = new Uint8Array(fileReader.result as ArrayBuffer);
+            firmware.setFirmware(binaryRead);
 
-            /* Upload the CPSFW file */
-            this.uploadPackets(firmware);
+            /* Read the private RSA2048 key string when firmware has been read */
+            fileReader.readAsText(sigFiles[0]);
+
+            /* Called when RSA2048 key has been read */
+            fileReader.onload = (event: any) => {
+              /* Sign the firmware payload */
+              const binSig = FirmwareSigner.sign(
+                fileReader.result as string,
+                binaryRead
+              );
+              firmwareHeader.setSignature(binSig);
+              firmware.setHeader(firmwareHeader);
+              firmwareBinary = firmware.serialize();
+
+              /* Upload the CPSFW file */
+              this.upload(firmwareBinary);
+
+              /* Ask if CPSFW file should be saved */
+              this.save(firmwareBinary, firmwareHeader);
+            };
           };
-        };
+        } else {
+          this.$toast.add({
+            severity: "error",
+            summary: "Selection Error",
+            detail: "Please select exactly one *.bin and one *.pem file!",
+            life: 5000,
+          });
+        }
       } else if ("cpsfw" === this.uploadOption.key) {
-        // TODO: Implement
+        if (1 === cpsfwFiles.length) {
+          /* Read the signed CPSFW binary */
+          fileReader.readAsArrayBuffer(cpsfwFiles[0]);
+
+          /* Called when firmware has been read */
+          fileReader.onload = (event: any) => {
+            /* Read the CPSFW file */
+            binaryRead = new Uint8Array(fileReader.result as ArrayBuffer);
+
+            firmware = new Firmware();
+            if (true === firmware.deserialize(binaryRead)) {
+              // TODO: Show deserialization result
+              console.log(firmware);
+
+              /* Upload the CPSFW file */
+              this.upload(binaryRead);
+            } else {
+              this.$toast.add({
+                severity: "error",
+                summary: "Deserialization Error",
+                detail: "Could not deserialize the provided CPSFW file!",
+                life: 5000,
+              });
+            }
+          };
+        } else {
+          this.$toast.add({
+            severity: "error",
+            summary: "Selection Error",
+            detail: "Please select exactly one *.cpsfw file!",
+            life: 5000,
+          });
+        }
       }
+    },
+
+    flashFirmware() {
+      this.infoDialogVisible = false;
+
+      /* Go to flash page */
+      this.$router.push({ name: "Flash", query: { autoFlash: "true" } });
     },
   },
 });
@@ -273,9 +385,26 @@ export default defineComponent({
 .upload {
   display: flex;
   flex-direction: column;
+  align-items: center;
 
-  .progress-bar {
-    width: 60%;
+  .firmware-card {
+    width: 80%;
+    margin-bottom: 20px;
+  }
+
+  .dropdown {
+    width: 80%;
+    margin-bottom: 20px;
+  }
+
+  .p-fileupload {
+    width: 80%;
+    margin-bottom: 20px;
+  }
+
+  .progressbar {
+    width: 80%;
+    margin-bottom: 20px;
   }
 }
 </style>

@@ -86,8 +86,7 @@ void UploadCOMCommand::run(const ApiRequest& request, ApiResponse& response, Ses
         will keep track of the written bytes and abort writing to FS if it exceeds the maximum reserved memory capacity
         */
 
-        // TODO: Fix: Remove header size from total size
-        if (FirmwareChecker::MAX_COM_FW_BLOB_SIZE_BYTE >= firmwareFileSize)
+        if (FirmwareChecker::MAX_COM_FW_BLOB_SIZE_BYTE >= (firmwareFileSize - FirmwareHeader::HEADER_SIZE_BYTE))
         {
             /* Delete FirmwareInfo if existent */
             FirmwareInfo::deleteInfo(TARGET_SYSTEM);
@@ -141,9 +140,9 @@ void UploadCOMCommand::run(ApiResponse& response, Session* connectionCtx)
         {
             m_writePartitionSize = writePartition->size;
 
-            if (connectionCtx->m_expectingBytes <= m_writePartitionSize)
+            if ((connectionCtx->m_expectingBytes-FirmwareHeader::HEADER_SIZE_BYTE) <= m_writePartitionSize)
             {
-                esp_err_t retCode = esp_ota_begin(writePartition, connectionCtx->m_expectingBytes, &m_otaHandle);
+                esp_err_t retCode = esp_ota_begin(writePartition, (connectionCtx->m_expectingBytes - FirmwareHeader::HEADER_SIZE_BYTE), &m_otaHandle);
                 if (ESP_OK != retCode)
                 {
                     LOG_ERROR("Could not begin the OTA process. Aborting now...");
@@ -262,6 +261,12 @@ void UploadCOMCommand::run(ApiResponse& response, Session* connectionCtx)
 
                 /* Exit BINARY mode and switch back to TEXT mode */
                 connectionCtx->exitBinaryMode();
+            }
+            else
+            {
+                /* Successfully wrote chunk */
+                LOG_DEBUG("Successfully wrote data chunk into OTA partition!");
+                response.setStatusCode(SUCCESS);
             }
         }
         else

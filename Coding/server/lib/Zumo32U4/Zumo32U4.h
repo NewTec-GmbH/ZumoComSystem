@@ -55,7 +55,7 @@ public:
     uint8_t OnInit(ACM* pacm);
 
 private:
-    static const uint16_t BAUD_RATE = 9800;
+    static const uint16_t BAUD_RATE = 57600;
 
     static const uint8_t CHAR_FORMAT = 0;
 

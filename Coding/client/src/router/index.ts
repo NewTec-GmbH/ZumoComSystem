@@ -6,36 +6,36 @@ import Flash from "../views/Flash.vue";
 import Upload from "../views/Upload.vue";
 
 const routes: Array<RouteRecordRaw> = [
-    {
-        path: "/",
-        name: "Home",
-        component: Home,
-    },
-    {
-        path: "/debug",
-        name: "Debug",
-        component: Debug,
-    },
-    {
-        path: "/flash",
-        name: "Flash",
-        component: Flash,
-    },
-    {
-        path: "/upload",
-        name: "Upload",
-        component: Upload,
-    },
-    {
-        path: "/settings",
-        name: "Settings",
-        component: Settings,
-    },
+  {
+    path: "/",
+    name: "Home",
+    component: Home,
+  },
+  {
+    path: "/debug",
+    name: "Debug",
+    component: Debug,
+  },
+  {
+    path: "/flash",
+    name: "Flash",
+    component: Flash,
+  },
+  {
+    path: "/upload",
+    name: "Upload",
+    component: Upload,
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: Settings,
+  },
 ];
 
 const router = createRouter({
-    history: createWebHashHistory(),
-    routes,
+  history: createWebHashHistory(),
+  routes,
 });
 
 export default router;

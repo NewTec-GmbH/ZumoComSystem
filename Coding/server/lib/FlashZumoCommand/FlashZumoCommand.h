@@ -43,7 +43,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __FLASHZUMOCOMMAND_H__
 
 #include <Command.h>
-#include <Zumo32U4.h>
+#include <FirmwareInfo.h>
+
+class Zumo32U4;
 
  /** Class which implements the firmare flash for the Zumo system */
 class FlashZumoCommand : public Command
@@ -69,6 +71,12 @@ public:
     void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx);
 
 private:
-    Zumo32U4 m_zumoDriver;
+    Zumo32U4& m_zumoDriver;
+
+    static const char* TARGET_SYSTEM;
+
+    static const char* FIRMWARE_FILENAME;
+
+    bool checkFirmwareIntegrity(const FirmwareInfo& info);
 };
 #endif /** __FLASHZUMOCOMMAND_H__ */

@@ -18,10 +18,17 @@
 
         <template v-if="firmwareAvailable === true" #content>
           <div class="card-content">
-            <h2><b>Target:</b> {{ targetSystem }}</h2>
-            <h2><b>SHA256:</b> {{ payloadHash }}</h2>
-            <h2><b>Valid:</b> {{ isValid }}</h2>
-            <h2><b>Bytes:</b> {{ sizeBytes }}</h2>
+            <h2><b>Target:</b> {{ fwInfo.targetSystem }}</h2>
+            <h2><b>SHA256:</b> {{ fwInfo.payloadHash }}</h2>
+            <h2><b>Valid:</b> {{ fwInfo.isValid }}</h2>
+            <h2><b>Bytes:</b> {{ fwInfo.sizeBytes }}</h2>
+          </div>
+
+          <div v-if="fwInfo.isValid === false" class="error-container">
+            <img src="@/assets/icons/red/error.svg" class="error-icon" />
+            <p class="error-label">
+              Invalid firmware! You cannot flash this image!
+            </p>
           </div>
         </template>
       </Card>
@@ -31,16 +38,80 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { FirmwareInfo } from "@/models/FirmwareInfo";
+import RequestResponseHandler from "@/api/RequestResponseHandler";
+import Log from "@/utility/Log";
+import { ApiResponse } from "@/models/ApiResponse";
+import { ApiRequest } from "@/models/ApiRequest";
+import { ResponseCode } from "@/models/ResponseCode";
 
 export default defineComponent({
   name: "FirmwareCard",
-  props: [
-    "firmwareAvailable",
-    "targetSystem",
-    "sizeBytes",
-    "payloadHash",
-    "isValid",
-  ],
+  props: ["update"],
+
+  computed: {
+    selectedDevice: function (): string {
+      return this.$store.getters.selectedDevice.name;
+    },
+  },
+
+  data() {
+    return {
+      firmwareAvailable: false,
+      fwInfo: new FirmwareInfo(),
+    };
+  },
+
+  mounted() {
+    this.updateFirmwareCard();
+  },
+
+  watch: {
+    update: function (newValue, oldValue) {
+      if (newValue != oldValue) {
+        /* Update FirmwareCard when store variable is set */
+        this.updateFirmwareCard();
+      }
+    },
+
+    selectedDevice: function (newValue, oldValue) {
+      if (newValue != oldValue) {
+        /* Update FirmwareCard when dropdown selection is changed */
+        this.updateFirmwareCard();
+      }
+    },
+  },
+
+  methods: {
+    updateFirmwareCard() {
+      let targetSystem = "";
+      if ("Zumo32U4 Robot" === this.$store.getters.selectedDevice.name) {
+        targetSystem = "ZUMO";
+      } else if ("ComPlatform" === this.$store.getters.selectedDevice.name) {
+        targetSystem = "COM";
+      }
+
+      /* Prepare the API command */
+      let request = new ApiRequest();
+      request.commandId = "getfirmwareinfo";
+      request.jsonPayload = JSON.stringify({ target: targetSystem });
+
+      /* Send the request */
+      RequestResponseHandler.getInstance()
+        .makeRequest(request, this, true)
+        .then((response: ApiResponse) => {
+          Log.debug("Got FirmwareInfo response");
+
+          if (response.statusCode == ResponseCode.SUCCESS) {
+            /* Set the new FirmwareInfo data */
+            this.firmwareAvailable = true;
+            this.fwInfo = JSON.parse(response.jsonPayload);
+          } else {
+            this.firmwareAvailable = false;
+          }
+        });
+    },
+  },
 });
 </script>
 
@@ -60,10 +131,29 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
 
-
     h2 {
       margin: 10px 10px 10px 10px;
       text-align: left;
+    }
+  }
+
+  .error-container {
+    display: flex;
+    align-items: center;
+
+    margin-left: 10px;
+    margin-top: 10px;
+
+    .error-label {
+      font-family: @text_font;
+      font-size: @text_secondary_size;
+      color: @text_color_warning;
+    }
+
+    .error-icon {
+      width: @icon_height_width;
+      height: @icon_height_width;
+      margin-right: 20px;
     }
   }
 }

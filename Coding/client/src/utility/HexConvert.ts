@@ -41,26 +41,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /** HexConvert class */
 export class HexConvert {
-    public static binaryToHexString(binary: Uint8Array): string {
-        let hexString = "";
-        for (let byteIdx = 0; byteIdx < binary.length; byteIdx++) {
-            let hex = (+binary[byteIdx]).toString(16);
-            if (hex.length < 2) {
-                hex = "0" + hex;
-            }
-            hexString += hex;
-        }
-        return hexString;
+  public static binaryToHexString(binary: Uint8Array): string {
+    let hexString = "";
+    for (let byteIdx = 0; byteIdx < binary.length; byteIdx++) {
+      let hex = (+binary[byteIdx]).toString(16);
+      if (hex.length < 2) {
+        hex = "0" + hex;
+      }
+      hexString += hex;
     }
+    return hexString;
+  }
 
-    public static hexStringToBinary(hexString: string): Uint8Array {
-        let byteIdx = 0;
-        const binaryBuffer = new Uint8Array(hexString.length / 2);
+  public static hexStringToBinary(hexString: string): Uint8Array {
+    let byteIdx = 0;
+    const binaryBuffer = new Uint8Array(hexString.length / 2);
 
-        for (let charIdx = 0; charIdx < hexString.length; charIdx += 2) {
-            binaryBuffer[byteIdx] = parseInt((hexString[charIdx] + hexString[charIdx + 1]), 16);
-            byteIdx++;
-        }
-        return binaryBuffer;
+    for (let charIdx = 0; charIdx < hexString.length; charIdx += 2) {
+      binaryBuffer[byteIdx] = parseInt(
+        hexString[charIdx] + hexString[charIdx + 1],
+        16
+      );
+      byteIdx++;
     }
+    return binaryBuffer;
+  }
 }

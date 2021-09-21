@@ -84,7 +84,7 @@ void UploadZumoCommand::run(const ApiRequest& request, ApiResponse& response, Se
         not exceeds the memory limits. Additionally, when writing the firmware, the UploadZumoCommand API service
         will keep track of the written bytes and abort writing to FS if it exceeds the maximum reserved memory capacity
         */
-        if (FirmwareChecker::MAX_ZUMO_FW_BLOB_SIZE_BYTE >= firmwareFileSize)
+        if (FirmwareChecker::MAX_ZUMO_FW_BLOB_SIZE_BYTE >= (firmwareFileSize - FirmwareHeader::HEADER_SIZE_BYTE))
         {
             /* Delete FirmwareInfo if existent */
             FirmwareInfo::deleteInfo(TARGET_SYSTEM);
@@ -205,6 +205,12 @@ void UploadZumoCommand::run(ApiResponse& response, Session* connectionCtx)
 
                 /* Exit BINARY mode and switch back to TEXT mode */
                 connectionCtx->exitBinaryMode();
+            }
+            else
+            {
+                /* Successfully wrote chunk */
+                LOG_DEBUG("Successfully wrote data chunk into file system!");
+                response.setStatusCode(SUCCESS);
             }
         }
         else

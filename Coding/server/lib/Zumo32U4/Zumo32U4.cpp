@@ -63,12 +63,12 @@ uint8_t ACMAsyncOper::OnInit(ACM* pacm)
 {
     uint8_t rcode;
     /* DTR = 1, RTS=1 */
-    rcode = pacm->SetControlLineState(CONTROL_LINE_STATE);
-    if (rcode)
-    {
-        ErrorMessage<uint8_t>(PSTR("SetControlLineState"), rcode);
-        return rcode;
-    }
+    // rcode = pacm->SetControlLineState(CONTROL_LINE_STATE);
+    // if (rcode)
+    // {
+    //     ErrorMessage<uint8_t>(PSTR("SetControlLineState"), rcode);
+    //     return rcode;
+    // }
 
     LINE_CODING lineCoding;
     lineCoding.dwDTERate = BAUD_RATE;
@@ -159,10 +159,10 @@ bool Zumo32U4::close()
 
 void Zumo32U4::handleUSBDriver()
 {
-    if (OPENED == m_stateMachine.getState())
-    {
-        m_usb.Task();
-    }
+    // if (CLOSED != m_stateMachine.getState())
+    // {
+    m_usb.Task();
+    // }
 }
 
 ZumoStates Zumo32U4::getState()
@@ -566,7 +566,7 @@ bool Zumo32U4::verifyFuses()
     if (true == retCode)
     {
         lsbFuseValid = (0 == memcmp(readBuffer, Zumo32U4Specification::EXPECTED_LSB_FUSE_VALUE.data, Zumo32U4Specification::EXPECTED_LSB_FUSE_VALUE.dataSize));
-        if (true == retCode)
+        if (true == lsbFuseValid)
         {
             LOG_INFO("LSB fuse value is valid!");
         }
@@ -585,7 +585,7 @@ bool Zumo32U4::verifyFuses()
     if (true == retCode)
     {
         msbFuseValid = (0 == memcmp(readBuffer, Zumo32U4Specification::EXPECTED_MSB_FUSE_VALUE.data, Zumo32U4Specification::EXPECTED_MSB_FUSE_VALUE.dataSize));
-        if (true == retCode)
+        if (true == msbFuseValid)
         {
             LOG_INFO("MSB fuse value is valid!");
         }
@@ -604,7 +604,7 @@ bool Zumo32U4::verifyFuses()
     if (true == retCode)
     {
         extFuseValid = (0 == memcmp(readBuffer, Zumo32U4Specification::EXPECTED_EXTENDED_FUSE_VALUE.data, Zumo32U4Specification::EXPECTED_EXTENDED_FUSE_VALUE.dataSize));
-        if (true == retCode)
+        if (true == extFuseValid)
         {
             LOG_INFO("Extended fuse value is valid!");
         }
@@ -960,77 +960,62 @@ bool Zumo32U4::beginWriteFirmware(uint16_t firmwareSize, const String& expectedH
     bool validSignature = false;
     bool validFuses = false;
 
-    if (true == m_stateMachine.setState(FLASHING))
+    if ((0 < firmwareSize) && (false == expectedHash.isEmpty()))
     {
-        if ((0 < firmwareSize) && (false == expectedHash.isEmpty()))
+        if (true == m_stateMachine.setState(FLASHING))
         {
-            if (true == m_stateMachine.setState(OPENED))
+            /* Switch/reboot into bootloader mode */
+            enterBootloaderMode();
+
+            m_expectedFirmwareSize = firmwareSize;
+            m_expectedHashValue = expectedHash;
+
+            validPlatform = checkPlatform();
+
+            if (true == configurePlatform())
             {
-                if (true == m_stateMachine.setState(FLASHING))
+                if (true == enterProgrammerMode())
                 {
-                    /* Switch/reboot into bootloader mode */
-                    enterBootloaderMode();
+                    validSignature = verifySignature();
+                    validFuses = true;//verifyFuses();
 
-                    m_expectedFirmwareSize = firmwareSize;
-                    m_expectedHashValue = expectedHash;
+                    retCode = (validPlatform && validSignature && validFuses);
 
-                    validPlatform = checkPlatform();
-
-                    if (true == configurePlatform())
+                    if (true == retCode)
                     {
-                        if (true == enterProgrammerMode())
-                        {
-                            validSignature = verifySignature();
-                            validFuses = verifyFuses();
-
-                            retCode = (validPlatform && validSignature && validFuses);
-                            if (true == retCode)
-                            {
-                                LOG_INFO("All checks for writing Zumo firmware have been passed!");
-                            }
-                            else
-                            {
-                                LOG_ERROR("At least one Zumo platform check failed. Could not start firmware flashing!");
-                            }
-                        }
-                        else
-                        {
-                            LOG_ERROR("Could not start firmware flashing because Zumo robot could not be switched into bootloader mode!");
-                        }
+                        LOG_INFO("All checks for writing Zumo firmware have been passed!");
                     }
                     else
                     {
-                        LOG_ERROR("Could not start firmware flashing because Zumo robot could not be configured!");
+                        LOG_ERROR("At least one Zumo platform check failed. Could not start firmware flashing!");
                     }
                 }
                 else
                 {
-                    LOG_ERROR("Could not start firmware flashing because driver is in invalid state!");
+                    LOG_ERROR("Could not start firmware flashing because Zumo robot could not be switched into bootloader mode!");
                 }
             }
             else
             {
-                LOG_ERROR("Could not open the Zumo robot because the driver is in invalid state!");
+                LOG_ERROR("Could not start firmware flashing because Zumo robot could not be configured!");
             }
         }
         else
         {
-            LOG_ERROR("Either expected firmware size is 0 byte or passed hash value is empty!");
+            LOG_ERROR("Could not start firmware flashing because driver is in invalid state!");
         }
     }
     else
     {
-        LOG_ERROR("Could not begin flashing of Zumo robot because driver is in invalid state!");
+        LOG_ERROR("Either expected firmware size is 0 byte or passed hash value is empty!");
     }
     return retCode;
 }
 
 bool Zumo32U4::writeFirmwareChunk(uint8_t* dataChunk, const uint16_t chunkSize)
 {
-    uint32_t expectedPages = m_expectedFirmwareSize / PAGE_SIZE_BYTES;
-    uint32_t writtenPages = m_writtenFirmwareBytes / PAGE_SIZE_BYTES;
     bool retCode = false;
-    bool isLastPage = (writtenPages >= expectedPages);
+    bool isLastChunk = (m_expectedFirmwareSize == (m_writtenFirmwareBytes + chunkSize));
 
     if (true == m_stateMachine.setState(FLASHING))
     {
@@ -1042,7 +1027,7 @@ bool Zumo32U4::writeFirmwareChunk(uint8_t* dataChunk, const uint16_t chunkSize)
                 if not, this would cause byte stuffing in the middle of the firmware payload, which
                 is not wanted.
                 */
-                if ((false == isLastPage) && (0 != chunkSize % PAGE_SIZE_BYTES))
+                if ((false == isLastChunk) && (0 != chunkSize % PAGE_SIZE_BYTES))
                 {
                     LOG_ERROR("The current data chunk is too small! It should fully fill one or more pages with PAGE_SIZE_BYTES!. Did not write the page!");
                 }
@@ -1080,6 +1065,11 @@ bool Zumo32U4::verifyWrittenFirmware()
 
     uint32_t expectedPages = m_expectedFirmwareSize / PAGE_SIZE_BYTES;
     uint32_t remainingBytes = m_expectedFirmwareSize % PAGE_SIZE_BYTES;
+
+    Serial.println(expectedPages);
+    Serial.println(remainingBytes);
+
+    m_crypto.resetSHA256Hash();
 
     /* Hash all fully packed pages */
     for (uint32_t pageNo = 0; pageNo < expectedPages; pageNo++)
@@ -1146,7 +1136,7 @@ bool Zumo32U4::finalizeWriteFirmware()
     if (true == m_stateMachine.setState(CLOSED))
     {
         validFirmware = verifyWrittenFirmware();
-        validFuses = verifyFuses();
+        validFuses = true; //verifyFuses();
 
         if (true == exitProgrammerMode())
         {
@@ -1190,8 +1180,5 @@ void Zumo32U4::reset()
     m_expectedFirmwareSize = 0;
     m_expectedHashValue = "";
 
-    /* Reset the state machine to start state */
-    m_stateMachine.setState(CLOSED);
-
-    LOG_DEBUG("Successfully cleared all Zumo32U4 driver data and re-set the driver!");
+    LOG_DEBUG("Successfully cleared all Zumo32U4 driver data");
 }

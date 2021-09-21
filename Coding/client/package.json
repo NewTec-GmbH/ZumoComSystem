@@ -10,6 +10,7 @@
     },
     "dependencies": {
         "core-js": "^3.6.5",
+        "file-saver": "^2.0.5",
         "jsrsasign": "^10.4.0",
         "primeicons": "^4.1.0",
         "primevue": "^3.7.1",
@@ -19,6 +20,7 @@
         "vuex": "^4.0.0-0"
     },
     "devDependencies": {
+        "@types/file-saver": "^2.0.3",
         "@types/jsrsasign": "^8.0.13",
         "@typescript-eslint/eslint-plugin": "^4.18.0",
         "@typescript-eslint/parser": "^4.18.0",

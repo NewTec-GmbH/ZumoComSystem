@@ -44,16 +44,16 @@ import { HexConvert } from "./HexConvert";
 
 /** FirmwareSigner class */
 export class FirmwareSigner {
-    public static sign(rsakey: string, firmware: Uint8Array): Uint8Array {
-        const jsRSA = new KJUR.crypto.Signature({ alg: "SHA256withRSA" });
+  public static sign(rsakey: string, firmware: Uint8Array): Uint8Array {
+    const jsRSA = new KJUR.crypto.Signature({ alg: "SHA256withRSA" });
 
-        /* Set the private RSA2048 key */
-        jsRSA.init(rsakey);
+    /* Set the private RSA2048 key */
+    jsRSA.init(rsakey);
 
-        /* Set the firmware payload for signing */
-        jsRSA.updateHex(HexConvert.binaryToHexString(firmware));
+    /* Set the firmware payload for signing */
+    jsRSA.updateHex(HexConvert.binaryToHexString(firmware));
 
-        /* Get the signature result */
-        return HexConvert.hexStringToBinary(jsRSA.sign());
-    }
+    /* Get the signature result */
+    return HexConvert.hexStringToBinary(jsRSA.sign());
+  }
 }

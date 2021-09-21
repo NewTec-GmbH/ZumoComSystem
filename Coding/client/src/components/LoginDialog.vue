@@ -118,6 +118,13 @@ export default defineComponent({
             this.$store.commit("setUser", this.usercredentials.username);
             this.reset();
 
+            this.$toast.add({
+              severity: "success",
+              summary: "Login Success",
+              detail: "Successfully signed in!",
+              life: 5000,
+            });
+
             Log.debug("Successfully logged in!");
           } else {
             this.$store.commit("setUser", "null");
