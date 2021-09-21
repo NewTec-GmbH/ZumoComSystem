@@ -60,6 +60,12 @@ public:
     }
 
     /**
+     * Initializes all GPIOs. Sets direction and initial value.
+     * Should be called on system boot!
+     */
+    void initGPIOs();
+
+    /**
      * Specifies the GPIO pin direction
      *
      * @param[in] gpio The GPIO pin to be set

@@ -41,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <IO.h>
 #include <Log.h>
+#include <GPIOPins.h>
 
 IO::IO() :
     m_ioMutex(xSemaphoreCreateMutex())
@@ -53,6 +54,27 @@ IO::IO() :
 
 IO::~IO()
 {
+}
+
+void IO::initGPIOs()
+{
+    /* Set GPIO direction */
+    setPinMode(GPIOPins::PIN_WIFI_AND_RESET_KEY, INPUT_PULLUP);
+    setPinMode(GPIOPins::PIN_ROBOT_RESET, OUTPUT);
+    setPinMode(GPIOPins::PIN_ROBOT_ON_OFF, OUTPUT);
+    setPinMode(GPIOPins::PIN_ANALOG_NOISE_SEED, INPUT);
+    setPinMode(GPIOPins::INFO_LED_R, OUTPUT);
+    setPinMode(GPIOPins::INFO_LED_G, OUTPUT);
+    setPinMode(GPIOPins::INFO_LED_B, OUTPUT);
+
+    /* Set initial values */
+    writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
+    writeGPIO(GPIOPins::PIN_ROBOT_ON_OFF, HIGH);
+    writeGPIO(GPIOPins::INFO_LED_R, HIGH);
+    writeGPIO(GPIOPins::INFO_LED_G, HIGH);
+    writeGPIO(GPIOPins::INFO_LED_B, HIGH);
+
+    LOG_DEBUG("Initialized GPIOs");
 }
 
 void IO::setPinMode(const uint8_t gpio, const uint8_t mode)

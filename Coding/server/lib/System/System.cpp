@@ -48,6 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <WiFiManager.h>
 #include <HTTPsWebServer.h>
 #include <Zumo32U4.h>
+#include <FileManager.h>
 
 SemaphoreHandle_t System::m_genKeyCertSemaphore = {0};
 
@@ -75,6 +76,9 @@ void System::init()
 {
     bool certGenRetCode = false;
     NetworkCredentials apCredentials;
+
+    /* Initialize the GPIOs */
+    IO::getInstance().initGPIOs();
 
     /* Register an ISR for ComPlatform reset on Reset key push */
     Key::getInstance().registerSystemReset();
@@ -167,9 +171,8 @@ void System::init()
         LOG_INFO("User 'student' has been created and saved!");
     }
 
-    /* Open the USB driver */
+    /* Open the Zumo driver */
     Zumo32U4::getInstance().open();
-    delay(2000);
 
     /* Await KeyCert generation task execution */
     xSemaphoreTake(m_genKeyCertSemaphore, portMAX_DELAY);
@@ -211,6 +214,12 @@ void System::reset()
     /* Shut down HTTPS/WSS servers */
     m_webServer->stopServer();
 
+    /* Unmount the SPIFFS file system */
+    FileManager::closeFS();
+
+    /* Close the Zumo driver */
+    Zumo32U4::getInstance().close();
+
     /* Reboot the ComPlatform now */
     ESP.restart();
 }
@@ -219,12 +228,10 @@ void System::handleServices()
 {
     /* Handle the USB driver, if active, for endpoint init/enumeration and cleanup */
     //Zumo32U4::getInstance().handleUSBDriver();
-    
+
     /* Handle the HTTPs and WebSocket servers */
     m_webServer->handleServer();
     m_wifimgr->handleAP_DNS();
-
-    
 
     /* Enter delay so that other tasks get CPU time */
     delay(SERVICE_HANDLING_SLEEP_TIME_MS);

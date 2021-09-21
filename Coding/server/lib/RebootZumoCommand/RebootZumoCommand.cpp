@@ -41,7 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <RebootZumoCommand.h>
 #include <Permission.h>
-#include <Robot.h>
+#include <Zumo32U4.h>
 #include <Log.h>
 
 RebootZumoCommand::RebootZumoCommand() :
@@ -56,6 +56,6 @@ RebootZumoCommand::~RebootZumoCommand()
 void RebootZumoCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx)
 {
     LOG_WARN("Rebooting Zumo robot now!");
-    Robot::getInstance().resetRobotNow();
+    Zumo32U4::getInstance().restart();
     response.setStatusCode(SUCCESS);
 }

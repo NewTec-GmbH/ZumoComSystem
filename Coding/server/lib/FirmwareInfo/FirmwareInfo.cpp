@@ -64,7 +64,7 @@ bool FirmwareInfo::putInfo(const String& targetSystem, const String& payloadHash
     bool retCode = false;
 
     /* Fully re-create FirmwareInfo if it needs to be updated */
-    if (true == updateInfo)
+    if ((true == updateInfo) && (nullptr != getInfo(targetSystem)))
     {
         deleteInfo(targetSystem);
     }
@@ -131,6 +131,8 @@ void FirmwareInfo::deleteInfo(const String& targetSystem)
             {
                 info.m_available = false;
                 m_savedFirmwares--;
+
+                LOG_INFO(String("Successfully deleted FirmwareInfo for target system ") + targetSystem);
                 break;
             }
         }

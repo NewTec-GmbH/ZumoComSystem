@@ -127,11 +127,11 @@ void FirmwareHeader::reset()
 {
     m_readHeaderBytes = 0;
     memset(m_idBuffer, 0, sizeof(m_idBuffer));
-    memset(m_targetBuffer, 0, sizeof(m_idBuffer));
-    memset(m_versionBuffer, 0, sizeof(m_idBuffer));
-    memset(m_hashAlgBuffer, 0, sizeof(m_idBuffer));
-    memset(m_signAlgBuffer, 0, sizeof(m_idBuffer));
-    memset(m_signatureBuffer, 0, sizeof(m_idBuffer));
+    memset(m_targetBuffer, 0, sizeof(m_targetBuffer));
+    memset(m_versionBuffer, 0, sizeof(m_versionBuffer));
+    memset(m_hashAlgBuffer, 0, sizeof(m_hashAlgBuffer));
+    memset(m_signAlgBuffer, 0, sizeof(m_signAlgBuffer));
+    memset(m_signatureBuffer, 0, sizeof(m_signatureBuffer));
     LOG_DEBUG("Successfully cleared all data in FirmwareHeader");
 }
 void FirmwareHeader::getID(String& id) const

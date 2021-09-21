@@ -46,7 +46,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Key::Key() :
     m_io(IO::getInstance())
 {
-    IO::getInstance().setPinMode(GPIOPins::PIN_WIFI_AND_RESET_KEY, INPUT_PULLUP);
 }
 
 Key::~Key()

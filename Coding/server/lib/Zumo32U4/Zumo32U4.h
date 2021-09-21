@@ -77,7 +77,7 @@ public:
 
     ZumoStates getState();
 
-    bool restart();
+    void restart();
 
     bool readSerialBuffer(uint8_t* dataBuffer, uint32_t& chunkSize);
 
@@ -163,6 +163,8 @@ private:
     bool flashPages(uint8_t* dataChunk, const uint16_t chunkSize);
 
     void reset();
+
+    bool resetUSBDriver();
 
     bool verifyWrittenFirmware();
 };

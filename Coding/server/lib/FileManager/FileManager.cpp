@@ -51,9 +51,6 @@ FileManager::FileManager() :
 FileManager::~FileManager()
 {
     closeFile();
-    SPIFFS.end();
-
-    LOG_DEBUG("SPIFFS file system unmounted");
 }
 
 bool FileManager::initFS()
@@ -69,7 +66,7 @@ bool FileManager::initFS()
 
             if (true == SPIFFS.begin(false))
             {
-                LOG_DEBUG("SPIFFS file system successfully mounted");
+                LOG_INFO("SPIFFS file system successfully mounted");
                 retCode = true;
             }
             else
@@ -95,6 +92,13 @@ bool FileManager::initFS()
 #endif
 
     return retCode;
+}
+
+void FileManager::closeFS()
+{
+    /* Unmount the FS */
+    SPIFFS.end();
+    LOG_INFO("SPIFFS FS successfully unmounted!");
 }
 
 bool FileManager::openFile(const String& fileName, const char* mode)

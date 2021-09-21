@@ -66,6 +66,12 @@ public:
     static bool initFS();
 
     /**
+     * Unmounts the SPIFFS file system.
+     * This method should be called before system shutdown!
+     */
+    static void closeFS();
+
+    /**
      * Opens a new file for further access.
      *
      * @param[in] fileName The file to be accessed. Needs to start with '/'

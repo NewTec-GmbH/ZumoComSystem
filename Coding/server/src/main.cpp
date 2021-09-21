@@ -41,14 +41,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Arduino.h>
 #include <System.h>
-#include <GPIOPins.h>
 
  /**
   * Setup function which initializes the ComPlatform
   */
-void setup() {
-    pinMode(GPIOPins::PIN_ROBOT_RESET, OUTPUT);
-    digitalWrite(GPIOPins::PIN_ROBOT_RESET, LOW);
+void setup()
+{
     Serial.begin(115200);
     System::getInstance().init();
 }

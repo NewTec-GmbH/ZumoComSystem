@@ -113,28 +113,9 @@ bool Zumo32U4::open()
     bool retCode = false;
     if (true == m_stateMachine.setState(OPENED))
     {
-        /* Clear all remaining Zumo32U4 driver instance data and start from scratch again */
+        /* Clear all driver data and reset USB driver */
         reset();
-
-        /* Restart the USB Host Shield µC to begin from a clean and defined state */
-        LOG_DEBUG("Resetting USB Host Shield now!");
-        m_usb.reset();
-
-        /* Unregister CDC device instance */
-        LOG_DEBUG("De-Registering ACM/CDC device instance now!");
-        m_acm.Release();
-
-        LOG_DEBUG("Fully re-set the USB HOST Shield and cleared ACM!");
-
-        if (0 == m_usb.Init())
-        {
-            LOG_DEBUG("USB driver has been successfully initialized!");
-            retCode = true;
-        }
-        else
-        {
-            LOG_ERROR("Could not initialize USB driver!");
-        }
+        retCode = resetUSBDriver();
     }
     else
     {
@@ -159,10 +140,7 @@ bool Zumo32U4::close()
 
 void Zumo32U4::handleUSBDriver()
 {
-    // if (CLOSED != m_stateMachine.getState())
-    // {
     m_usb.Task();
-    // }
 }
 
 ZumoStates Zumo32U4::getState()
@@ -261,48 +239,34 @@ bool Zumo32U4::sendCommand(const ZumoCommand<size>& command, uint8_t* retData, u
     return sendCommand(command, nullptr, 0, retData, retDataSize);
 }
 
-bool Zumo32U4::restart()
+void Zumo32U4::restart()
 {
-    bool retCode = false;
     const uint16_t HIGH_TIME_MS = 500;
 
-    if (true == m_stateMachine.setState(CLOSED))
-    {
-        /* Set control GPIO as OUTPUT */
-        m_io.setPinMode(GPIOPins::PIN_ROBOT_RESET, OUTPUT);
-
-        /* Pull down RESET to GND once to restart in normal mode */
-        m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
-        delay(HIGH_TIME_MS);
-        m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
-
-        retCode = true;
-    }
-    else
-    {
-        LOG_ERROR("Could not restart Zumo robot because driver is in invalid state!");
-    }
-    return retCode;
+    /* Pull down RESET to GND once to restart in normal mode */
+    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
+    delay(HIGH_TIME_MS);
+    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
 }
 
 void Zumo32U4::enterBootloaderMode()
 {
-    const uint8_t HIGH_TIME_MS = 50;
+    const uint8_t LOW_TIME_MS = 50;
     const uint8_t WAIT_TIME_MS = 100;
 
     /* Set control GPIO as output */
     m_io.setPinMode(GPIOPins::PIN_ROBOT_RESET, OUTPUT);
 
     /* Pull down RESET to GND twice in under 750ms to enter bootloader mode */
-    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
-    delay(HIGH_TIME_MS);
     m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
+    delay(LOW_TIME_MS);
+    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
 
     delay(WAIT_TIME_MS);
 
-    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
-    delay(HIGH_TIME_MS);
     m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
+    delay(LOW_TIME_MS);
+    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
 }
 
 bool Zumo32U4::exitBootloaderMode()
@@ -958,46 +922,54 @@ bool Zumo32U4::beginWriteFirmware(uint16_t firmwareSize, const String& expectedH
     bool retCode = false;
     bool validPlatform = false;
     bool validSignature = false;
-    bool validFuses = false;
 
     if ((0 < firmwareSize) && (false == expectedHash.isEmpty()))
     {
         if (true == m_stateMachine.setState(FLASHING))
         {
-            /* Switch/reboot into bootloader mode */
-            enterBootloaderMode();
+            /* Clean up driver and data */
+            reset();
 
-            m_expectedFirmwareSize = firmwareSize;
-            m_expectedHashValue = expectedHash;
-
-            validPlatform = checkPlatform();
-
-            if (true == configurePlatform())
+            if (true == resetUSBDriver())
             {
-                if (true == enterProgrammerMode())
+                /* Switch/reboot into bootloader mode */
+                enterBootloaderMode();
+
+                m_expectedFirmwareSize = firmwareSize;
+                m_expectedHashValue = expectedHash;
+
+                validPlatform = checkPlatform();
+
+                if (true == configurePlatform())
                 {
-                    validSignature = verifySignature();
-                    validFuses = true;//verifyFuses();
-
-                    retCode = (validPlatform && validSignature && validFuses);
-
-                    if (true == retCode)
+                    if (true == enterProgrammerMode())
                     {
-                        LOG_INFO("All checks for writing Zumo firmware have been passed!");
+                        validSignature = verifySignature();
+                        verifyFuses();
+
+                        retCode = (validPlatform && validSignature);
+                        if (true == retCode)
+                        {
+                            LOG_INFO("All checks for writing Zumo firmware have been passed!");
+                        }
+                        else
+                        {
+                            LOG_ERROR("At least one Zumo platform check failed. Could not start firmware flashing!");
+                        }
                     }
                     else
                     {
-                        LOG_ERROR("At least one Zumo platform check failed. Could not start firmware flashing!");
+                        LOG_ERROR("Could not start firmware flashing because Zumo robot could not be switched into bootloader mode!");
                     }
                 }
                 else
                 {
-                    LOG_ERROR("Could not start firmware flashing because Zumo robot could not be switched into bootloader mode!");
+                    LOG_ERROR("Could not start firmware flashing because Zumo robot could not be configured!");
                 }
             }
             else
             {
-                LOG_ERROR("Could not start firmware flashing because Zumo robot could not be configured!");
+                LOG_ERROR("Could not reset USB driver!");
             }
         }
         else
@@ -1066,9 +1038,6 @@ bool Zumo32U4::verifyWrittenFirmware()
     uint32_t expectedPages = m_expectedFirmwareSize / PAGE_SIZE_BYTES;
     uint32_t remainingBytes = m_expectedFirmwareSize % PAGE_SIZE_BYTES;
 
-    Serial.println(expectedPages);
-    Serial.println(remainingBytes);
-
     m_crypto.resetSHA256Hash();
 
     /* Hash all fully packed pages */
@@ -1130,26 +1099,18 @@ bool Zumo32U4::verifyWrittenFirmware()
 bool Zumo32U4::finalizeWriteFirmware()
 {
     bool retCode = false;
-    bool validFirmware = false;
-    bool validFuses = false;
 
     if (true == m_stateMachine.setState(CLOSED))
     {
-        validFirmware = verifyWrittenFirmware();
-        validFuses = true; //verifyFuses();
+        retCode = verifyWrittenFirmware();
+        verifyFuses();
 
         if (true == exitProgrammerMode())
         {
             if (true == exitBootloaderMode())
             {
-                if (true == restart())
-                {
-                    retCode = (validFirmware && validFuses);
-                }
-                else
-                {
-                    LOG_ERROR("Could not restart Zumo robot!");
-                }
+                /* Restart the Zumo robot */
+                restart();
             }
             else
             {
@@ -1181,4 +1142,30 @@ void Zumo32U4::reset()
     m_expectedHashValue = "";
 
     LOG_DEBUG("Successfully cleared all Zumo32U4 driver data");
+}
+
+bool Zumo32U4::resetUSBDriver()
+{
+    bool retCode = false;
+
+    /* Restart the USB Host Shield µC to begin from a clean and defined state */
+    LOG_DEBUG("Resetting USB Host Shield now!");
+    m_usb.reset();
+
+    /* Unregister CDC device instance */
+    LOG_DEBUG("De-Registering ACM/CDC device instance now!");
+    m_acm.Release();
+
+    LOG_DEBUG("Fully re-set the USB HOST Shield and cleared ACM!");
+
+    if (0 == m_usb.Init())
+    {
+        LOG_DEBUG("USB driver has been successfully initialized!");
+        retCode = true;
+    }
+    else
+    {
+        LOG_ERROR("Could not initialize USB driver!");
+    }
+    return retCode;
 }
