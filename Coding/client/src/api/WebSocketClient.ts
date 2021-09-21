@@ -30,8 +30,6 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Log from "@/utility/Log";
-
 /**
  * @file WebSocketClient.ts
  * @author Luis Moser
@@ -40,6 +38,8 @@ import Log from "@/utility/Log";
  *
  * @{
  */
+
+import Log from "@/utility/Log";
 
 /** Class for connecting to WebSocket servers */
 export default class WebSocketClient {
