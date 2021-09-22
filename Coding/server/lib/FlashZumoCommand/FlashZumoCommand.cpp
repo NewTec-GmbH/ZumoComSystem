@@ -59,105 +59,118 @@ FlashZumoCommand::~FlashZumoCommand()
 {
 }
 
-bool FlashZumoCommand::checkFirmwareIntegrity(const FirmwareInfo& info)
-{
-    const uint16_t BUFFER_SIZE_BYTES = 4096;
-    uint8_t readBuffer[BUFFER_SIZE_BYTES];
-    uint16_t readBytes = 0;
-
-    /* Read header */
-
-    // TODO: Check integrity
-    // do
-    // {
-    //     readBytes = fileManager.read4KBlock(readBuffer);
-    // } while (0 != readBytes);
-
-    // TODO
-    return true;
-}
-
 void FlashZumoCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx)
 {
     const FirmwareInfo* fwInfo = nullptr;
     Store& store = Store::getInstance();
 
     FileManager fileManager;
+    CryptoServices crypto;
 
     const uint16_t BUFFER_SIZE_BYTES = 4096;
-    uint8_t readBuffer[BUFFER_SIZE_BYTES];
+    uint8_t* readBuffer = new uint8_t[BUFFER_SIZE_BYTES];
     uint16_t readBytes = 0;
 
+    String actualHash = "";
+    bool firmwareValid = false;
     bool writeSuccess = true;
 
-    if (true == store.loadFirmwareInfo())
+    if (nullptr != readBuffer)
     {
-        if (true == fileManager.openFile(FIRMWARE_FILENAME, FILE_READ))
+        if (true == store.loadFirmwareInfo())
         {
-            fwInfo = FirmwareInfo::getInfo(TARGET_SYSTEM);
-            if ((nullptr != fwInfo)
-                && (true == fwInfo->isValid())
-                && (fwInfo->getTargetSystem() == TARGET_SYSTEM))
+            if (true == fileManager.openFile(FIRMWARE_FILENAME, FILE_READ))
             {
-                if (true == checkFirmwareIntegrity(*fwInfo))
+                /* Check if firmware is valid and suited for Zumo robot */
+                fwInfo = FirmwareInfo::getInfo(TARGET_SYSTEM);
+                if ((nullptr != fwInfo)
+                    && (true == fwInfo->isValid())
+                    && (fwInfo->getTargetSystem() == TARGET_SYSTEM))
                 {
-                    uint16_t firmwareSize = fileManager.getFileSize();
-                    m_zumoDriver.beginWriteFirmware(firmwareSize, fwInfo->getPayloadHashValue());
-
+                    /* Check firmware integrity */
                     do
                     {
                         readBytes = fileManager.read4KBlock(readBuffer);
-                        if (0 < readBytes) {
-                            writeSuccess = m_zumoDriver.writeFirmwareChunk(readBuffer, readBytes);
-                            if (false == writeSuccess)
-                            {
-                                break;
-                            }
+                        if (false == crypto.updateSHA256Hash(readBuffer, readBytes))
+                        {
+                            LOG_ERROR("Could not hash data chunk. Aborting now!");
+                            break;
                         }
-
                     } while (0 != readBytes);
 
-                    if (true == writeSuccess)
+                    firmwareValid = ((true == crypto.getSHA256String(actualHash)) && (actualHash == fwInfo->getPayloadHashValue()));
+                    readBytes = 0;
+                    fileManager.resetFilePointer();
+
+                    if (true == firmwareValid)
                     {
-                        if (true == m_zumoDriver.finalizeWriteFirmware())
+                        LOG_INFO("Firmware file for Zumo robot successfully validated!");
+
+                        m_zumoDriver.beginWriteFirmware(fileManager.getFileSize(), fwInfo->getPayloadHashValue());
+
+                        /* Flash the firmware to the Zumo robot */
+                        do
                         {
-                            response.setStatusCode(SUCCESS);
-                            LOG_INFO("Successfully flashed the firmware to ZUMO!");
+                            readBytes = fileManager.read4KBlock(readBuffer);
+                            if (0 < readBytes)
+                            {
+                                writeSuccess = m_zumoDriver.writeFirmwareChunk(readBuffer, readBytes);
+                                if (false == writeSuccess)
+                                {
+                                    break;
+                                }
+                            }
+                        } while (0 != readBytes);
+
+                        if (true == writeSuccess)
+                        {
+                            if (true == m_zumoDriver.finalizeWriteFirmware())
+                            {
+                                response.setStatusCode(SUCCESS);
+                                LOG_INFO("Successfully flashed the firmware to ZUMO!");
+                            }
+                            else
+                            {
+                                LOG_ERROR("Could not validate the written firmware image!");
+                            }
                         }
                         else
                         {
-                            LOG_ERROR("Could not validate the written firmware image!");
+                            response.setStatusCode(ERROR);
+                            LOG_ERROR("Could not write firmware into ZUMO!");
                         }
                     }
                     else
                     {
                         response.setStatusCode(ERROR);
-                        LOG_ERROR("Could not write firmware into ZUMO!");
+                        LOG_ERROR("Could not flash the firmware image to ZUMO system because firmware file is corrupted!");
                     }
                 }
                 else
                 {
                     response.setStatusCode(ERROR);
-                    LOG_ERROR("Could not flash the firmware image to ZUMO system because firmware integrity is corrupted!");
+                    LOG_ERROR("Could not flash the firmware image to ZUMO system because firmware is invalid!");
                 }
+
+                fileManager.closeFile();
             }
             else
             {
                 response.setStatusCode(ERROR);
-                LOG_ERROR("Could not flash the firmware image to ZUMO system because firmware is invalid!");
+                LOG_ERROR("Could not open the firmware file for ZUMO system");
             }
-
-            fileManager.closeFile();
         }
         else
         {
             response.setStatusCode(ERROR);
-            LOG_ERROR("Could not open the firmware file for ZUMO system");
+            LOG_ERROR("Could not fetch FirmwareInfo for ZUMO system from persistent storage!");
         }
+
+        delete[] readBuffer;
     }
     else
     {
         response.setStatusCode(ERROR);
-        LOG_ERROR("Could not fetch FirmwareInfo for ZUMO system from persistent storage!");
+        LOG_ERROR("Could not allocate memory for read buffer. OUT OF MEMORY!");
     }
 }

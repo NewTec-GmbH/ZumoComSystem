@@ -46,6 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <FirmwareInfo.h>
 
 class Zumo32U4;
+class FileManager;
 
 /** Class which implements the firmare flash for the Zumo system */
 class FlashZumoCommand : public Command
@@ -79,8 +80,5 @@ private:
 
     /** The filename string used for storing and loading the firmware in the FS */
     static const char* FIRMWARE_FILENAME;
-
-    /** Checks if the firmware loaded from the FS matches the existing FirmwareInfo of that firmware */
-    bool checkFirmwareIntegrity(const FirmwareInfo& info);
 };
 #endif /** __FLASHZUMOCOMMAND_H__ */
