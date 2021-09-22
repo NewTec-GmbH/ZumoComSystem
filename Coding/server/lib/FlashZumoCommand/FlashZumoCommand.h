@@ -47,7 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Zumo32U4;
 
- /** Class which implements the firmare flash for the Zumo system */
+/** Class which implements the firmare flash for the Zumo system */
 class FlashZumoCommand : public Command
 {
 public:
@@ -71,12 +71,16 @@ public:
     void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx);
 
 private:
+    /** Reference to instance of Zumo robot driver used for flashing */
     Zumo32U4& m_zumoDriver;
 
+    /** The firmware target system string */
     static const char* TARGET_SYSTEM;
 
+    /** The filename string used for storing and loading the firmware in the FS */
     static const char* FIRMWARE_FILENAME;
 
+    /** Checks if the firmware loaded from the FS matches the existing FirmwareInfo of that firmware */
     bool checkFirmwareIntegrity(const FirmwareInfo& info);
 };
 #endif /** __FLASHZUMOCOMMAND_H__ */

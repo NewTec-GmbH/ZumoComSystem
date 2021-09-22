@@ -67,7 +67,6 @@ public:
      */
     static bool registerAdminAccount();
 
-    
     /**
      * Creates a less priviliged default account with default credentials if it not existent
      *

@@ -50,6 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Store;
 
+/** Wrapper class for managing the HTTPS/WSS servers */
 class HTTPsWebServer
 {
 public:

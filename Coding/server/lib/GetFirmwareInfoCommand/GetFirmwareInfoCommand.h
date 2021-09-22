@@ -44,6 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Command.h>
 
+ /** API service for fetching FirmwareInfo object for specified target system */
 class GetFirmwareInfoCommand : public Command
 {
 public:

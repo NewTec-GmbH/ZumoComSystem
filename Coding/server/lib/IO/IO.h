@@ -108,10 +108,7 @@ private:
      */
     ~IO();
 
-    /**
-     * Mutex which is used to avoid that two or more concurrent tasks,
-     * which use the IO class, can have write access to the GPIOs at once
-     */
+    /** Mutex which is used to avoid that two or more concurrent tasks, which use the IO class, can have write access to the GPIOs at once */
     SemaphoreHandle_t m_ioMutex;
 
     /** The timespan between two two level transitions in which level changes are ignored */
