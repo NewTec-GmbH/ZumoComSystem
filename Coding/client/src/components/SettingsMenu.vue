@@ -49,7 +49,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         class="menu-entry"
         @click="$emit('entry-click', $event, 'connectivity-com')"
       >
-        <img class="entry-icon" src="@/assets/icons/black/wifi.svg" />
+        <svg class="entry-icon">
+          <use
+            :xlink:href="require('@/assets/icons/icons.svg') + '#wifi-black'"
+          />
+        </svg>
         <h1 class="entry-text">Connectivity</h1>
       </div>
     </div>
@@ -59,7 +63,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       class="zumo-settings"
     >
       <div class="info-pane">
-        <img src="@/assets/icons/black/info.svg" class="info-image" />
+        <svg class="info-image">
+          <use
+            :xlink:href="require('@/assets/icons/icons.svg') + '#info-black'"
+          />
+        </svg>
         <h1 class="info-text">No Settings available</h1>
       </div>
     </div>

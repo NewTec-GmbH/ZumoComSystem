@@ -68,7 +68,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </div>
 
         <div v-if="loginSuccess === false" class="error-container">
-          <img src="@/assets/icons/red/error.svg" class="error-icon" />
+          <svg class="error-icon">
+            <use xlink:href="@/assets/icons/icons.svg#error-red" />
+          </svg>
+
           <p class="error-label">
             Could not sign in with provided user credentials!
           </p>

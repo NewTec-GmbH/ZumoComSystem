@@ -40,8 +40,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <Zumo32U4.h>
-#include <System.h>
-#include <CryptoServices.h>
 #include <FirmwareChecker.h>
 #include <Log.h>
 #include <GPIOPins.h>
@@ -62,13 +60,6 @@ const uint16_t Zumo32U4::MAX_FIRMWARE_BUFFER_BYTES;
 uint8_t ACMAsyncOper::OnInit(ACM* pacm)
 {
     uint8_t rcode;
-    /* DTR = 1, RTS=1 */
-    // rcode = pacm->SetControlLineState(CONTROL_LINE_STATE);
-    // if (rcode)
-    // {
-    //     ErrorMessage<uint8_t>(PSTR("SetControlLineState"), rcode);
-    //     return rcode;
-    // }
 
     LINE_CODING lineCoding;
     lineCoding.dwDTERate = BAUD_RATE;
@@ -113,9 +104,9 @@ bool Zumo32U4::open()
     bool retCode = false;
     if (true == m_stateMachine.setState(OPENED))
     {
-        /* Clear all driver data and reset USB driver */
+        /* Clear all driver data*/
         reset();
-        retCode = resetUSBDriver();
+        retCode = true;
     }
     else
     {

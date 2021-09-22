@@ -50,30 +50,40 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           optionLabel="name"
           placeholder="Select a Device"
         />
-        <img
-          v-if="selectedDevice.name === 'ComPlatform'"
-          src="@/assets/icons/white/complatform.svg"
-          class="device-icon"
-        />
-        <img
+        <svg v-if="selectedDevice.name === 'ComPlatform'" class="device-icon">
+          <use
+            :xlink:href="
+              require('@/assets/icons/icons.svg') + '#complatform-white'
+            "
+          />
+        </svg>
+
+        <svg
           v-else-if="selectedDevice.name === 'Zumo32U4 Robot'"
-          src="@/assets/icons/white/zumorobot.svg"
           class="device-icon"
-        />
+        >
+          <use
+            :xlink:href="
+              require('@/assets/icons/icons.svg') + '#zumorobot-white'
+            "
+          />
+        </svg>
       </div>
 
       <div class="user-selection">
         <p v-if="currentUser != 'null'" class="username-label">
           {{ currentUser }}
         </p>
-        <img
-          v-if="currentUser != 'null'"
-          src="@/assets/icons/white/user.svg"
-          class="username-icon"
-          @click="userIconClick"
-        />
+        <div @click="userIconClick">
+          <svg v-if="currentUser != 'null'" class="username-icon">
+            <use
+              :xlink:href="require('@/assets/icons/icons.svg') + '#user-white'"
+            />
+          </svg>
+        </div>
+
         <Button
-          v-else
+          v-if="currentUser == 'null'"
           label="Sign in"
           icon="pi pi-user"
           iconPos="right"

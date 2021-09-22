@@ -52,7 +52,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     <div v-else class="settings-view">
       <div class="info-pane">
-        <img src="@/assets/icons/black/info.svg" class="info-image" />
+        <svg class="info-image">
+          <use xlink:href="@/assets/icons/icons.svg#info-black" />
+        </svg>
         <h1 class="info-text">No menu entry selected</h1>
       </div>
     </div>

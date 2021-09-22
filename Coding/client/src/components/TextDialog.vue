@@ -44,13 +44,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <div v-show="showTextDialog" class="dialog-background">
       <div class="dialog-container">
         <div v-if="type === 'info'">
-          <img src="@/assets/icons/black/info.svg" />
+          <svg>
+            <use
+              :xlink:href="require('@/assets/icons/icons.svg') + '#info-black'"
+            />
+          </svg>
+
           <p class="text-block">{{ text }}</p>
           <ProgressSpinner />
         </div>
 
         <div v-else-if="type === 'confirm'">
-          <img src="@/assets/icons/black/question.svg" />
+          <svg>
+            <use
+              :xlink:href="
+                require('@/assets/icons/icons.svg') + '#question-black'
+              "
+            />
+          </svg>
+
           <p class="text-block">{{ text }}</p>
           <div class="button-container">
             <Button
@@ -62,7 +74,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </div>
 
         <div v-else-if="type === 'no-yes'">
-          <img src="@/assets/icons/black/question.svg" />
+          <svg>
+            <use
+              :xlink:href="
+                require('@/assets/icons/icons.svg') + '#question-black'
+              "
+            />
+          </svg>
+
           <p class="text-block">{{ text }}</p>
           <div class="button-container">
             <Button

@@ -226,9 +226,6 @@ void System::reset()
 
 void System::handleServices()
 {
-    /* Handle the USB driver, if active, for endpoint init/enumeration and cleanup */
-    //Zumo32U4::getInstance().handleUSBDriver();
-
     /* Handle the HTTPs and WebSocket servers */
     m_webServer->handleServer();
     m_wifimgr->handleAP_DNS();

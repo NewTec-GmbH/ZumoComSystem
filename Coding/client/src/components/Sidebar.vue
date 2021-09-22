@@ -56,31 +56,55 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     <nav class="top-nav">
       <router-link to="/" class="Home">
-        <img class="icon" src="@/assets/icons/white/home.svg" />
+        <svg class="icon">
+          <use
+            :xlink:href="require('@/assets/icons/icons.svg') + '#home-white'"
+          />
+        </svg>
       </router-link>
 
       <router-link to="/upload" class="Upload">
-        <img class="icon" src="@/assets/icons/white//upload.svg" />
+        <svg class="icon">
+          <use
+            :xlink:href="require('@/assets/icons/icons.svg') + '#upload-white'"
+          />
+        </svg>
       </router-link>
 
       <router-link to="/flash" class="Flash">
-        <img class="icon" src="@/assets/icons/white/flash.svg" />
+        <svg class="icon">
+          <use
+            :xlink:href="require('@/assets/icons/icons.svg') + '#flash-white'"
+          />
+        </svg>
       </router-link>
 
       <router-link to="/debug" class="Debug">
-        <img class="icon" src="@/assets/icons/white/debug.svg" />
+        <svg class="icon">
+          <use
+            :xlink:href="require('@/assets/icons/icons.svg') + '#debug-white'"
+          />
+        </svg>
       </router-link>
     </nav>
 
     <nav class="bottom-nav">
-      <img
-        class="icon"
-        src="@/assets/icons/white/reset.svg"
-        @click="resetClick"
-      />
+      <div @click="resetClick">
+        <svg class="icon">
+          <use
+            :xlink:href="require('@/assets/icons/icons.svg') + '#reset-white'"
+          />
+        </svg>
+      </div>
 
       <router-link to="/settings" class="Settings">
-        <img class="icon" src="@/assets/icons/white/settings.svg" />
+        <svg class="icon">
+          <use
+            :xlink:href="
+              require('@/assets/icons/icons.svg') + '#settings-white'
+            "
+          />
+        </svg>
       </router-link>
     </nav>
   </div>

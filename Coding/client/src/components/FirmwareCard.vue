@@ -49,12 +49,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <template v-else #title>No Firmware available!</template>
 
         <template #header>
-          <img
-            v-if="firmwareAvailable === true"
-            class="card-icon"
-            src="@/assets/icons/black/success.svg"
-          />
-          <img v-else class="card-icon" src="@/assets/icons/black/error.svg" />
+          <svg v-if="firmwareAvailable === true" class="card-icon">
+            <use
+              :xlink:href="
+                require('@/assets/icons/icons.svg') + '#success-black'
+              "
+            />
+          </svg>
+
+          <svg v-else class="card-icon">
+            <use
+              :xlink:href="require('@/assets/icons/icons.svg') + '#error-black'"
+            />
+          </svg>
         </template>
 
         <template v-if="firmwareAvailable === true" #content>
@@ -66,7 +73,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           </div>
 
           <div v-if="fwInfo.isValid === false" class="error-container">
-            <img src="@/assets/icons/red/error.svg" class="error-icon" />
+            <svg class="error-icon">
+              <use
+                :xlink:href="require('@/assets/icons/icons.svg') + '#error-red'"
+              />
+            </svg>
+
             <p class="error-label">
               Invalid firmware! You cannot flash this image!
             </p>

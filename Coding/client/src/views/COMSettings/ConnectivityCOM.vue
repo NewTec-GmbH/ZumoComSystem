@@ -52,7 +52,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <Card class="settings-card">
       <template #title>STA-Mode Network Credentials</template>
       <template #header>
-        <img class="card-icon" src="@/assets/icons/black/lock.svg" />
+        <svg class="card-icon">
+          <use
+            :xlink:href="require('@/assets/icons/icons.svg') + '#block-black'"
+          />
+        </svg>
       </template>
       <template #content>
         <div>

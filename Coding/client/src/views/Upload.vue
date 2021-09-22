@@ -131,8 +131,8 @@ export default defineComponent({
       ],
 
       uploadOption: {
-        name: "Upload signed firmware (.cpsfw)",
-        key: "cpsfw",
+        name: "Upload unsigned firmware (.bin) and RSA2048 signing key (.pem)",
+        key: "bin",
       },
 
       uploadProgressPercent: 0,

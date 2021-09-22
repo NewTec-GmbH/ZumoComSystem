@@ -54,7 +54,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <Card class="info-card">
         <template #title>Configuration made easy!</template>
         <template #header>
-          <img class="card-icon" src="@/assets/icons/black/settings.svg" />
+          <svg class="card-icon">
+            <use
+              :xlink:href="
+                require('@/assets/icons/icons.svg') + '#settings-black'
+              "
+            />
+          </svg>
         </template>
         <template #content>
           The ComPlatform system allows you to enable or disable the WiFi
@@ -67,7 +73,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <Card class="info-card">
         <template #title>Intuitive Power Management!</template>
         <template #header>
-          <img class="card-icon" src="@/assets/icons/black/reset.svg" />
+          <svg class="card-icon">
+            <use
+              :xlink:href="require('@/assets/icons/icons.svg') + '#reset-black'"
+            />
+          </svg>
         </template>
         <template #content>
           The firmware you wrote and flashed halts your system? No worries! The
@@ -81,7 +91,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           Debugging your Code? Nothing easier than that!
         </template>
         <template #header>
-          <img class="card-icon" src="@/assets/icons/black/debug.svg" />
+          <svg class="card-icon">
+            <use
+              :xlink:href="require('@/assets/icons/icons.svg') + '#debug-black'"
+            />
+          </svg>
         </template>
         <template #content>
           Imagine a world without buggy software. With the help of the
@@ -95,7 +109,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <Card class="info-card">
         <template #title>Upload & Flash your Firmware? Done.</template>
         <template #header>
-          <img class="card-icon" src="@/assets/icons/black/flash.svg" />
+          <svg class="card-icon">
+            <use
+              :xlink:href="require('@/assets/icons/icons.svg') + '#flash-black'"
+            />
+          </svg>
         </template>
         <template #content>
           Cable spaghetti, annoying USB cables and the need to catch the robot
@@ -112,7 +130,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <Card class="info-card">
         <template #title>Powerful User Management & Easy to extend</template>
         <template #header>
-          <img class="card-icon" src="@/assets/icons/black/user.svg" />
+          <svg class="card-icon">
+            <use
+              :xlink:href="require('@/assets/icons/icons.svg') + '#user-black'"
+            />
+          </svg>
         </template>
         <template #content>
           The ComPlatform offers a powerful user management system where each
@@ -127,7 +149,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <Card class="info-card">
         <template #title>A Hacker's Nightmare!</template>
         <template #header>
-          <img class="card-icon" src="@/assets/icons/black/security.svg" />
+          <svg class="card-icon">
+            <use
+              :xlink:href="
+                require('@/assets/icons/icons.svg') + '#security-black'
+              "
+            />
+          </svg>
         </template>
         <template #content>
           The ComPlatform project focuses on information security! Specified API
