@@ -42,11 +42,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __ZUMODRIVERSTATEMACHINE_H__
 #define __ZUMODRIVERSTATEMACHINE_H__
 
+#include <Arduino.h>
+
  /** Enum describing the Zumo32U4 driver states. Used by ZumoDriverStateMachine class */
 enum ZumoStates
 {
     CLOSED,
     OPENED,
+    INIT,
     FLASHING,
     READING_SERIAL,
     WRITING_SERIAL
@@ -70,9 +73,10 @@ public:
      * Sets the next new state of this state machine if it is an allowed transition.
      *
      * @param[in] state The next state to be in
+     * @param[in] forceSet Forces the state to be set, even if now allowed
      * @return Returns true if state has been set successfully, else false
      */
-    bool setState(ZumoStates state);
+    bool setState(ZumoStates state, bool forceSet = false);
 
     /**
      * Returns the current state of this state machine
@@ -82,6 +86,15 @@ public:
     ZumoStates getState();
 
 private:
+
+    /**
+     * Debugging method used for getting the mnemonic enum name from the enum code
+     *
+     * @param[in] state The state to be translated
+     * @return Returns the mnemonic of the passed state code
+     */
+    static String getEnumName(ZumoStates state);
+
     /** Specifies the current state of the state machine */
     ZumoStates m_currentState;
 };

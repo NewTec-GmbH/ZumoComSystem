@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <ZumoDriverStateMachine.h>
+#include <Log.h>
 
 ZumoDriverStateMachine::ZumoDriverStateMachine() :
     m_currentState(CLOSED)
@@ -50,52 +51,83 @@ ZumoDriverStateMachine::~ZumoDriverStateMachine()
 {
 }
 
-bool ZumoDriverStateMachine::setState(ZumoStates state)
+bool ZumoDriverStateMachine::setState(ZumoStates state, bool forceSet)
 {
+    ZumoStates oldState = m_currentState;
+
     bool retCode = false;
 
-    switch (m_currentState)
+    if (false == forceSet)
     {
-    case CLOSED:
-    {
-        if ((OPENED == state)
-            || (FLASHING == state)
-            || (CLOSED == state))
+        switch (m_currentState)
         {
-            m_currentState = state;
-            retCode = true;
-        }
-        break;
-    }
-    case OPENED: /* Intentional fall through */
-    case WRITING_SERIAL: /* Intentional fall through */
-    case READING_SERIAL: /* Intentional fall through */
-    {
-        if ((WRITING_SERIAL == state)
-            || (READING_SERIAL == state)
-            || (CLOSED == state)
-            || (FLASHING == state))
+        case CLOSED:
         {
-            m_currentState = state;
-            retCode = true;
+            if ((OPENED == state) || (CLOSED == state))
+            {
+                m_currentState = state;
+                retCode = true;
+            }
+            break;
         }
-        break;
-    }
-    case FLASHING:
-    {
-        if ((FLASHING == state)
-            || (CLOSED == state))
+        case OPENED: /* Intentional fall through */
         {
-            m_currentState = state;
-            retCode = true;
+            if ((OPENED == state) || (WRITING_SERIAL == state) || (READING_SERIAL == state) || (CLOSED == state) | (INIT == state))
+            {
+                m_currentState = state;
+                retCode = true;
+            }
+            break;
         }
-        break;
+        case READING_SERIAL: /* Intentional fall through */
+        case WRITING_SERIAL: /* Intentional fall through */
+        {
+            if ((WRITING_SERIAL == state) || (READING_SERIAL == state) || (CLOSED == state) | (INIT == state))
+            {
+                m_currentState = state;
+                retCode = true;
+            }
+            break;
+        }
+        case INIT:
+        {
+            if ((FLASHING == state) || (CLOSED == state))
+            {
+                m_currentState = state;
+                retCode = true;
+            }
+            break;
+        }
+        case FLASHING:
+        {
+            if (FLASHING == state)
+            {
+                m_currentState = state;
+                retCode = true;
+            }
+            break;
+        }
+        default:
+        {
+            retCode = false;
+            break;
+        }
+        }
     }
-    default:
+    else
     {
-        retCode = false;
-        break;
+        m_currentState = state;
+        retCode = true;
     }
+
+    if (Log::LogLevel::LEVEL_DEBUG == Log::getInstance().getLogLevel())
+    {
+        LOG_DEBUG(String("New state Zumo driver state set:\nOld state:")
+            + ZumoDriverStateMachine::getEnumName(oldState)
+            + String("\nSet state: ")
+            + ZumoDriverStateMachine::getEnumName(state)
+            + String("\nActual new state: ")
+            + ZumoDriverStateMachine::getEnumName(m_currentState));
     }
     return retCode;
 }
@@ -103,4 +135,44 @@ bool ZumoDriverStateMachine::setState(ZumoStates state)
 ZumoStates ZumoDriverStateMachine::getState()
 {
     return m_currentState;
+}
+
+String ZumoDriverStateMachine::getEnumName(ZumoStates state)
+{
+    String name = "";
+
+    switch (state)
+    {
+    case CLOSED:
+    {
+        name = "CLOSED";
+        break;
+    }
+    case OPENED:
+    {
+        name = "OPENED";
+        break;
+    }
+    case INIT:
+    {
+        name = "INIT";
+        break;
+    }
+    case FLASHING:
+    {
+        name = "FLASHING";
+        break;
+    }
+    case READING_SERIAL:
+    {
+        name = "READING_SERIAL";
+        break;
+    }
+    case WRITING_SERIAL:
+    {
+        name = "WRITING_SERIAL";
+        break;
+    }
+    }
+    return name;
 }

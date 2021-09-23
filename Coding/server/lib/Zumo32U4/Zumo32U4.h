@@ -112,8 +112,11 @@ public:
 
     /**
      * Reboots the Zumo robot with the GPIO reset line
+     *
+     * @param[in] forceRestart Set to true if restart should be forced, even if not allowed in current state
+     * @return Returns true if successful, else false
      */
-    void restart();
+    bool restart(bool forceRestart = false);
 
     /**
      * Blocking read of the serial output of the Zumo robot.
@@ -171,21 +174,6 @@ public:
      * @return Returns true if the read back firmware image is valid and the Zumo robot has been successfully rebooted, else false
      */
     bool finalizeWriteFirmware();
-
-    /**
-     * Call this method periodically in the main loop to perform USB device enumration and cleanup tasks
-     */
-    void handleUSBDriver();
-
-    /**
-     * Default Constructor
-     */
-    Zumo32U4();
-
-    /**
-     * Destructor
-     */
-    ~Zumo32U4();
 
 private:
     /* USB core driver instance for USB Host Shield */
@@ -247,6 +235,21 @@ private:
 
     /** Specifies the expected SHA256 hash string of the firmware to be flashed */
     String m_expectedHashValue;
+
+    /**
+    * Default Constructor
+    */
+    Zumo32U4();
+
+    /**
+     * Destructor
+     */
+    ~Zumo32U4();
+
+    /**
+     * Call this method periodically in the main loop to perform USB device enumration and cleanup tasks
+     */
+    void handleUSBDriver();
 
     /**
      * Sends a Zumo robot bootloader command with additional payload to the robot and returns the response from the robot
@@ -348,7 +351,7 @@ private:
     /**
      * Resets/clears the driver data
      */
-    void reset();
+    void resetZumoDriver();
 
     /**
      * Resets the USB Host Shield driver and re-initializes it

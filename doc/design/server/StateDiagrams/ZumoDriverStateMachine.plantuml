@@ -4,27 +4,34 @@ State OPENED
 State FLASHING
 State READING_SERIAL
 State WRITING_SERIAL
+State INIT
 
 CLOSED --> OPENED : open()
+CLOSED --> CLOSED : restart()
+CLOSED --> CLOSED : close()
 
+OPENED --> READING_SERIAL : readSerialBuffer()
+OPENED --> WRITING_SERIAL : writeSerialBuffer()
+OPENED --> INIT : beginWriteFirmware()
 OPENED --> CLOSED : close()
 OPENED --> CLOSED : restart()
 
-OPENED --> READING_SERIAL : readSerial()
-OPENED --> WRITING_SERIAL : writeSerial()
-OPENED --> FLASHING : beginWriteFirmware()
-
-READING_SERIAL --> READING_SERIAL : readSerial()
+READING_SERIAL --> WRITING_SERIAL : writeSerialBuffer()
+READING_SERIAL --> READING_SERIAL : readSerialBuffer()
+READING_SERIAL --> INIT : beginWriteFirmware()
 READING_SERIAL --> CLOSED : close()
 READING_SERIAL --> CLOSED : restart()
-READING_SERIAL --> FLASHING : beginWriteFirmware()
-READING_SERIAL --> WRITING_SERIAL : writeSerial()
 
-WRITING_SERIAL --> WRITING_SERIAL : writeSerial()
-WRITING_SERIAL --> READING_SERIAL : readSerial()
-WRITING_SERIAL --> FLASHING : beginWriteFirmware()
+WRITING_SERIAL --> WRITING_SERIAL : writeSerialBuffer()
+WRITING_SERIAL --> READING_SERIAL : readSerialBuffer()
+WRITING_SERIAL --> INIT : beginWriteFirmware()
 WRITING_SERIAL --> CLOSED : close()
 WRITING_SERIAL --> CLOSED : restart()
+
+' Zumo robot in bootloader mode when in INIT state --> Unable to r/w serial interface
+INIT --> FLASHING : writeFirmwareChunk()
+INIT --> CLOSED : close()
+INIT --> CLOSED : restart()
 
 FLASHING --> FLASHING : writeFirmwareChunk()
 FLASHING --> CLOSED : finalizeWriteFirmware()

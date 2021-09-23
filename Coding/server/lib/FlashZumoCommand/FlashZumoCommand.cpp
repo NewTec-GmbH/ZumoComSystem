@@ -106,38 +106,44 @@ void FlashZumoCommand::run(const ApiRequest& request, ApiResponse& response, Ses
                     {
                         LOG_INFO("Firmware file for Zumo robot successfully validated!");
 
-                        m_zumoDriver.beginWriteFirmware(fileManager.getFileSize(), fwInfo->getPayloadHashValue());
-
-                        /* Flash the firmware to the Zumo robot */
-                        do
+                        if (true == m_zumoDriver.beginWriteFirmware(fileManager.getFileSize(), fwInfo->getPayloadHashValue()))
                         {
-                            readBytes = fileManager.read4KBlock(readBuffer);
-                            if (0 < readBytes)
+                            /* Flash the firmware to the Zumo robot */
+                            do
                             {
-                                writeSuccess = m_zumoDriver.writeFirmwareChunk(readBuffer, readBytes);
-                                if (false == writeSuccess)
+                                readBytes = fileManager.read4KBlock(readBuffer);
+                                if (0 < readBytes)
                                 {
-                                    break;
+                                    writeSuccess = m_zumoDriver.writeFirmwareChunk(readBuffer, readBytes);
+                                    if (false == writeSuccess)
+                                    {
+                                        break;
+                                    }
                                 }
-                            }
-                        } while ((0 != readBytes) && (-1 != readBytes));
+                            } while ((0 != readBytes) && (-1 != readBytes));
 
-                        if (true == writeSuccess)
-                        {
-                            if (true == m_zumoDriver.finalizeWriteFirmware())
+                            if (true == writeSuccess)
                             {
-                                response.setStatusCode(SUCCESS);
-                                LOG_INFO("Successfully flashed the firmware to ZUMO!");
+                                if (true == m_zumoDriver.finalizeWriteFirmware())
+                                {
+                                    response.setStatusCode(SUCCESS);
+                                    LOG_INFO("Successfully flashed the firmware to ZUMO!");
+                                }
+                                else
+                                {
+                                    LOG_ERROR("Could not validate the written firmware image!");
+                                }
                             }
                             else
                             {
-                                LOG_ERROR("Could not validate the written firmware image!");
+                                response.setStatusCode(ERROR);
+                                LOG_ERROR("Could not write firmware into ZUMO!");
                             }
                         }
                         else
                         {
                             response.setStatusCode(ERROR);
-                            LOG_ERROR("Could not write firmware into ZUMO!");
+                            LOG_ERROR("Could not check and initialize Zumo robot for flashing!");
                         }
                     }
                     else
