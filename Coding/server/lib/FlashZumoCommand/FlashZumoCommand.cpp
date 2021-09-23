@@ -40,11 +40,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <FlashZumoCommand.h>
-#include <Permission.h>
 #include <FileManager.h>
 #include <Store.h>
 #include <Log.h>
 #include <Zumo32U4.h>
+#include <FirmwareInfo.h>
 
 const char* FlashZumoCommand::FIRMWARE_FILENAME = "/zumo_firmware.bin";
 const char* FlashZumoCommand::TARGET_SYSTEM = "ZUMO";
@@ -69,7 +69,7 @@ void FlashZumoCommand::run(const ApiRequest& request, ApiResponse& response, Ses
 
     const uint16_t BUFFER_SIZE_BYTES = 4096;
     uint8_t* readBuffer = new uint8_t[BUFFER_SIZE_BYTES];
-    uint16_t readBytes = 0;
+    int16_t readBytes = 0;
 
     String actualHash = "";
     bool firmwareValid = false;
@@ -96,7 +96,7 @@ void FlashZumoCommand::run(const ApiRequest& request, ApiResponse& response, Ses
                             LOG_ERROR("Could not hash data chunk. Aborting now!");
                             break;
                         }
-                    } while (0 != readBytes);
+                    } while ((0 != readBytes) && (-1 != readBytes));
 
                     firmwareValid = ((true == crypto.getSHA256String(actualHash)) && (actualHash == fwInfo->getPayloadHashValue()));
                     readBytes = 0;
@@ -120,7 +120,7 @@ void FlashZumoCommand::run(const ApiRequest& request, ApiResponse& response, Ses
                                     break;
                                 }
                             }
-                        } while (0 != readBytes);
+                        } while ((0 != readBytes) && (-1 != readBytes));
 
                         if (true == writeSuccess)
                         {

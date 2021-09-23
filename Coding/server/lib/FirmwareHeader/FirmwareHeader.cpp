@@ -85,7 +85,7 @@ void FirmwareHeader::deserialize(const uint8_t* dataChunk, const uint16_t chunkS
             {
                 m_targetBuffer[(byteIdx - idEndIdx)] = byteBuffer;
             }
-            else if (byteIdx == 32)
+            else if (targetEndIdx == byteIdx)
             {
                 m_versionBuffer[0] = byteBuffer;
             }

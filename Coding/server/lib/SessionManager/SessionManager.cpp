@@ -87,7 +87,7 @@ bool SessionManager::checkSession(const BinaryCommand* command, Session* connect
         for (uint8_t permIdx = 0; permIdx < numberOfPermissions; permIdx++)
         {
             /* Check if linked user has required permission or has full priviliges */
-            if ((permissions[permIdx] == ANY) || (command->getBinaryReqPermission() == permissions[permIdx]))
+            if ((ANY == permissions[permIdx]) || (permissions[permIdx] == command->getBinaryReqPermission()))
             {
                 permissionAvailable = true;
                 break;

@@ -45,8 +45,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Command.h>
 #include <BinaryCommand.h>
 #include <FirmwareChecker.h>
-#include <ApiRequest.h>
-#include <ApiResponse.h>
 #include <esp_ota_ops.h>
 
  /** Class which implements the firmare upload for the COM system */

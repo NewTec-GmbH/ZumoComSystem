@@ -43,10 +43,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __FLASHZUMOCOMMAND_H__
 
 #include <Command.h>
-#include <FirmwareInfo.h>
 
 class Zumo32U4;
-class FileManager;
 
 /** Class which implements the firmare flash for the Zumo system */
 class FlashZumoCommand : public Command

@@ -251,15 +251,17 @@ void UploadZumoCommand::run(ApiResponse& response, Session* connectionCtx)
 bool UploadZumoCommand::writeFile(const uint8_t* dataChunk, const uint16_t chunkSize)
 {
     bool retCode = true;
-    uint16_t writtenBytes = 0;
+    int16_t writtenBytes = 0;
 
     if (FirmwareChecker::MAX_ZUMO_FW_BLOB_SIZE_BYTE >= (m_writtenFirmwareBytes + chunkSize))
     {
         writtenBytes = m_fileManager.write4KBlock(dataChunk, chunkSize);
-        m_writtenFirmwareBytes += writtenBytes;
-        LOG_DEBUG(String("Wrote ") + writtenBytes + " bytes into file system");
-
-        if (chunkSize != writtenBytes)
+        if (chunkSize == writtenBytes)
+        {
+            m_writtenFirmwareBytes += writtenBytes;
+            LOG_DEBUG(String("Wrote ") + writtenBytes + " bytes into file system");
+        }
+        else
         {
             retCode = false;
             LOG_ERROR("Could not entirely write firmware image chunk into file system! Deleting file now...");

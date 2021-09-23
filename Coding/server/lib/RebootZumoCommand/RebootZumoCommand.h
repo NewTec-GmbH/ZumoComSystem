@@ -43,13 +43,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __REBOOTZUMOCOMMAND_H__
 
 #include <Command.h>
-#include <ApiRequest.h>
-#include <ApiResponse.h>
 
 class Session;
 
- /** Class which implements the reboot of the Zumo system */
-class RebootZumoCommand: public Command
+/** Class which implements the reboot of the Zumo system */
+class RebootZumoCommand : public Command
 {
 public:
     /**

@@ -110,7 +110,7 @@ const FirmwareInfo* FirmwareInfo::getInfo(const String& targetSystem)
         for (uint8_t fwIdx = 0; fwIdx < NUMBER_OF_SAVED_FIRMWARES; fwIdx++)
         {
             FirmwareInfo& info = m_fwInfos[fwIdx];
-            if ((info.m_targetSystem == targetSystem) && (info.m_available == true))
+            if ((info.m_targetSystem == targetSystem) && (true == info.m_available))
             {
                 fwInfo = &info;
                 break;
@@ -127,7 +127,7 @@ void FirmwareInfo::deleteInfo(const String& targetSystem)
         for (uint8_t fwIdx = 0; fwIdx < NUMBER_OF_SAVED_FIRMWARES; fwIdx++)
         {
             FirmwareInfo& info = m_fwInfos[fwIdx];
-            if ((info.m_targetSystem == targetSystem) && (info.m_available == true))
+            if ((info.m_targetSystem == targetSystem) && (true == info.m_available))
             {
                 info.m_available = false;
                 m_savedFirmwares--;

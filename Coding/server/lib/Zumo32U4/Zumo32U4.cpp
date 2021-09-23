@@ -203,7 +203,7 @@ bool Zumo32U4::sendCommand(const ZumoCommand<size>& command, const uint8_t* comm
                     break;
                 }
                 totalReadBytes += readBytes;
-            } while (readBytes != 0);
+            } while (0 != readBytes);
 
             *retDataSize = totalReadBytes;
         }
