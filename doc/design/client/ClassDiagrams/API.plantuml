@@ -1,0 +1,24 @@
+@startuml
+class RequestResponseHandler
+{
+    - m_wsClient: WebSocketClient
+    - RequestResponseHandler()
+    + {static} getInstance(): RequestResponseHandler
+    + makeRequest(request: ApiRequest): ApiResponse
+    + makeRequest(operation: String): ApiResponse
+    + sendBinary(dataChunk: Uint8Array): void
+}
+RequestResponseHandler ..> WebSocketClient : uses
+
+class WebSocketClient
+{
+    - {static} m_host: string {readonly} = "complatform.local"
+    - m_socketClient: WebSocket
+    - WebSocketClient()
+    + {static} getInstance(): WebSocketClient
+    + disconnect(): void
+    + sendString(payload: string): boolean
+    + sendBinary(payload: Uint8Array): boolean
+    + onMessage(fnPtr: any): void
+}
+@enduml

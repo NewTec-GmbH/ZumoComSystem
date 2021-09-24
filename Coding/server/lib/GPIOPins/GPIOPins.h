@@ -47,14 +47,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  /** Namespace for specifying all used GPIOs of the ESP32 */
 namespace GPIOPins
 {
-    /** Pin for push button for system reset/AP mode start */
+    /** Pin for push button for system reset/AP mode start (ACTIVE LOW) */
     static const uint8_t PIN_WIFI_AND_RESET_KEY = 0;
 
-    /** Pin for resetting the attached Zumo robot */
-    static const uint8_t PIN_ROBOT_RESET = 2;
+    /** Pin for resetting the attached Zumo robot (ACTIVE LOW) */
+    static const uint8_t PIN_ROBOT_RESET = 27;
+
+    /** Pin for (dis-)connecting power from Zumo robot (ACTIVE LOW) */
+    static const uint8_t PIN_ROBOT_ON_OFF = 15;
 
     /** Unconnected pin for reading random analog data to seed PRNG */
     static const uint8_t PIN_ANALOG_NOISE_SEED = 36;
 
+    /** Pin for info LED RGB channel RED (ACTIVE LOW) */
+    static const uint8_t INFO_LED_R = 16;
+
+    /** Pin for info LED RGB channel GREEN (ACTIVE LOW) */
+    static const uint8_t INFO_LED_G = 22;
+
+    /** Pin for info LED RGB channel BLUE (ACTIVE LOW) */
+    static const uint8_t INFO_LED_B = 21;
 };
 #endif /** __GPIOPINS_H__ */

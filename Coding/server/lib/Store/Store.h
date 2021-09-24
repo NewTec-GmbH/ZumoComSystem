@@ -46,6 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <NetworkCredentials.h>
 #include <KeyCert.h>
 #include <User.h>
+#include <FirmwareInfo.h>
 
  /** Manages, buffers, loads and saves all required data structures for the ComPlatform */
 class Store
@@ -89,6 +90,11 @@ public:
      * @return Returns true if succesful, false if error occured
      */
     bool loadSTACredentials();
+
+    /**
+     * Deletes the STA credentials from persistent storage
+     */
+    bool deleteSTACredentials();
 
     /**
     * Get the private RSA key and the public certificate
@@ -143,6 +149,20 @@ public:
      * @return Returns true if successful, else false
      */
     bool loadUsers();
+
+    /**
+     * Saves all FirmwareInfo entries to persistent storage
+     *
+     * @return Returns true if successful, else false
+     */
+    bool saveFirmwareInfo();
+
+    /**
+     * Loads all FirmwareInfo entries from persistent storage
+     *
+     * @return Returns true if successful, else false
+     */
+    bool loadFirmwareInfo();
 
     /**
      * Get the network credentials for AP mode

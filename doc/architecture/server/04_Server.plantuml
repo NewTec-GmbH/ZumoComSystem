@@ -6,7 +6,7 @@ interface "File" as File
 interface "Store" as Store
 
 package Server {
-    component "WebServer" as webserver
+    component "HTTPsWebServer" as webserver
 
     note left of webserver : Serves the HTML/JS/CSS\nfiles for web interface\nand provides access to\nall endpoint services
 

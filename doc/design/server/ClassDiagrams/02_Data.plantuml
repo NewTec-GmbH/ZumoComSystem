@@ -6,6 +6,10 @@ package SystemService
     }
 }
 
+package ArduinoJson
+{
+}
+
 package httpsserver
 {
     class SSLCert
@@ -28,8 +32,9 @@ package Data
         + getPassphrase(): const String& {const}
         + setPassphrase(passphrase: const String&): bool
         + serialize(serial: String&): bool
-        + deserialize(serial: const String&): bool
+        + deserialize(serial: const String&, staCredentials: const bool): bool
     }
+    NetworkCredentials ..> ArduinoJson : uses
 
     class KeyCert
     {
@@ -48,6 +53,30 @@ package Data
         - freeSSLMemory(): void
     }
     KeyCert "0..*" *--> "1" SSLCert
+
+    class FirmwareInfo
+    {
+        - {static} NUMBER_OF_SAVED_FIRMWARES: uint8_t {readonly} = 2
+        - {static} m_savedFirmwares:uint8_t = 0
+        - {static} m_fwInfos: FirmwareInfo[NUMBER_OF_FIRMWARES]
+        - m_available: bool
+        - m_targetSystem: String
+        - m_payloadHashValue: String
+        - m_isValid: bool
+        - m_sizeBytes: uint32_t
+        + FirmwareInfo()
+        + ~FirmwareInfo()
+        + {static} putInfo(targetSystem: const String&, payloadHashValue: const String&, isValid: const bool, sizeBytes: const uin32_t, updateInfo: const bool): bool
+        + {static} getInfo(targetSystem: const String&): const FirmwareInfo*
+        + {static} deleteInfo(targetSystem: const String&): bool
+        + {static} serialize(serial: String&): bool
+        + {static} deserialize(serial: const String&): bool
+        + getTargetSystem(): const String& {const}
+        + getPayloadHashValue(): const String& {const}
+        + isValid(): bool
+    }
+    FirmwareInfo "1" *--> "2" FirmwareInfo
+    FirmwareInfo ..> ArduinoJson : uses
 
     enum Permission
     {
@@ -85,6 +114,7 @@ package Data
         + ~User()
         + {static} registerAdminAccount(): bool
         + {static} getPermissions(numberOfPermissions: uint8_t&): const Permission*
+        + {static} getUsername(): String
         + {static} getUser(username: const String&): User*
         + {static} checkCredentials(username: const String&, password: const String&): bool
         + {static} putUser(username: const String&, password: const String&, permissions: const Permission*, numberOfPermissions: const uint8_t, updateUser: const bool): bool
@@ -94,31 +124,52 @@ package Data
         - {static} getUserIdx(username: const String&): int8_t
     }
     User "0..*" *--> "1" CryptoServices
+    User "0..*" *--> "1" SemaphoreHandle_t
+    User "0..*" *--> "32" Permission
+    User "1" o--> "4" User
+    User ..> ArduinoJson : uses
 
     class Session
     {
         - {static} MAX_CLIENTS: uint8_t {readonly} = 4
+        - {static} MAX_TEXT_REQUEST_SIZE_BYTE: uint16_t {readonly} = 512
         - {static} SESSION_TIMEOUT_SECONDS {readonly} = 900;
         - {static} m_sessions: Session*[MAX_CLIENTS];
         - {static} m_sessionMutex: SemaphoreHandle_t
         - {static} m_numberOfActiveClients: uint8_t = 0
+        - m_expectBinary: bool = false
+        - m_expectedOperation: String
         - m_sessionAuthenticated: bool = false
         - m_linkedUser: User*
         - m_lastAccessTime: unsigned long = 0
+        + {static} MAX_BUFFER_SIZE_BYTE: uin16_t = {readonly} 2048
+        + {static} API_TIMEOUT_MS: uin16_t = {readonly} 15000
+        + m_readBytes: uint32_t
+        + m_streamByteIdx: uint32_t
+        + m_expectingBytes: uint32_t
+        + m_binaryBuffer: uint8_t[MAX_BUFFER_SIZE_BYTE]
+        + m_fwCheck: FirmwareCheck
         + Session()
         + ~Session()
         + {static} start(): bool
         + {static} create(): httpsserver::WebSocketHandler*
         + onMessage(inputBuffer: httpsserver::WebsocketInputStreambuf*): void
         + onClose(): void
+        + initBinaryMode(operation: const String&, binarySize: const uint32_t): void
+        + exitBinaryMode(): void
         + isAuthenticated(): bool  {const}
         + authenticateSession(user: User*): void
         + deauthenticateSession(): void
         + getPermissions(numberOfPermissions: uint8_t&): const Permission*
         + {static} handleSessionTimeout(parameter: void*): void
     }
+    Session "0..*" *--> "1" SemaphoreHandle_t
     Session "1" *--> "4" Session
     WebSocketHandler <|-down- Session : is a
+    Session "1" o--> "1" User
+    Session ..> httpsserver::WebSocketHandler : uses
+    Session ..> httpsserver::WebsocketInputStreambuf : uses
+    Session ..> Permission : includes
 
     class Store
     {
@@ -127,11 +178,13 @@ package Data
         - m_apCredentials: NetworkCredentials
         - m_keyCert: KeyCert
         - m_users: User
+        - m_firmwareInfo: FirmwareInfo
         {static} + getInstance(): Store&
         + getSTACredentials(): const NetworkCredentials& {const}
         + setSTACredentials(credentials: const NetworkCredentials&): void
         + saveSTACredentials(): bool
         + loadSTACredentials(): bool
+        + deleteSTACredentials(): bool
         + getKeyCert(): KeyCert&
         + setKeyCert(keycert: const KeyCert&): void
         + saveKeyCert(): bool
@@ -140,6 +193,10 @@ package Data
         + setUsers(users: const User&): void
         + saveUsers(): bool
         + loadUsers(): bool
+        + getFirmwareInfo(): const FirmwareInfo& {const}
+        + setFirmwareInfo(info: const FirmwareInfo&): void
+        + saveFirmwareInfo(): bool
+        + loadFirmwareInfo(): bool
         + getAPCredentials(): const NetworkCredentials& {const}
         + setAPCredentials(credentials: const NetworkCredentials&): void
         + closeStore(): void
@@ -150,5 +207,6 @@ package Data
     Store "0..*" *--> "2" NetworkCredentials
     Store "0..*" *--> "1" KeyCert
     Store "0..*" *--> "1" User
+    Store "0..*" *--> "1" FirmwareInfo
 }
 @enduml

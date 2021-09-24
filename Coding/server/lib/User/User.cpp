@@ -49,6 +49,8 @@ uint8_t User::m_numberOfRegisteredUsers = 0;
 CryptoServices User::m_crypto;
 const char* User::DEFAULT_ADMIN_USERNAME = "admin";
 const char* User::DEFAULT_ADMIN_PASSWORD = "21091986";
+const char* User::DEFAULT_USER_USERNAME = "student";
+const char* User::DEFAULT_USER_PASSWORD = "nt2021nt";
 
 User::User() :
     m_username(),
@@ -71,10 +73,23 @@ bool User::registerAdminAccount()
     return putUser(DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_PASSWORD, &permission, NUMBER_OF_PERMISSIONS, false);
 }
 
+bool User::registerDefaultUser()
+{
+    const uint8_t NUMBER_OF_PERMISSIONS = 1;
+    Permission permission = DEBUG_ZUMO;
+
+    return putUser(DEFAULT_USER_USERNAME, DEFAULT_USER_PASSWORD, &permission, NUMBER_OF_PERMISSIONS, false);
+}
+
 const Permission* User::getPermissions(uint8_t& numberOfPermissions) const
 {
     numberOfPermissions = m_numberOfPermissions;
     return m_permissions;
+}
+
+String User::getUsername()
+{
+    return this->m_username;
 }
 
 User* User::getUser(const String& username)
@@ -92,7 +107,7 @@ bool User::checkCredentials(const String& username, const String& password)
 {
     bool retCode = true;
     String computedHash;
-    
+
     xSemaphoreTake(m_usersMutex, portMAX_DELAY);
     int8_t userIdx = getUserIdx(username);
 
@@ -254,6 +269,7 @@ bool User::serialize(String& serialized) const
     if (true == retCode)
     {
         LOG_DEBUG("Users successfully serialized to JSON");
+        LOG_DEBUG(serialized);
     }
     else
     {

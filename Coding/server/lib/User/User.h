@@ -68,6 +68,13 @@ public:
     static bool registerAdminAccount();
 
     /**
+     * Creates a less priviliged default account with default credentials if it not existent
+     *
+     * @return Returns true if user has been created, else false
+     */
+    static bool registerDefaultUser();
+
+    /**
      * Returns the permissions and the number of permissions of the specified user
      *
      * @param[out] numberOfPermissions Contains the number of permissions this user has
@@ -75,6 +82,13 @@ public:
      * @return Returns pointer to array of users permissions
      */
     const Permission* getPermissions(uint8_t& numberOfPermissions) const;
+
+    /**
+     * Returns the username of this User instance
+     *
+     * @return Returns the username of the User instance
+     */
+    String getUsername();
 
     /**
      * Returns pointer to specified user
@@ -160,6 +174,12 @@ private:
 
     /** Specifies the default admin password */
     static const char* DEFAULT_ADMIN_PASSWORD;
+
+    /** Specifies the default user username */
+    static const char* DEFAULT_USER_USERNAME;
+
+    /** Specifies the default user password */
+    static const char* DEFAULT_USER_PASSWORD;
 
     /** Stores how many users are currently registered */
     static uint8_t m_numberOfRegisteredUsers;

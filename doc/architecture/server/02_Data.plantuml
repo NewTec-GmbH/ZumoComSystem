@@ -14,6 +14,7 @@ package Data {
     component "NetworkCredentials" as netcredentials
     component "Session" as session
     component "KeyCert" as keycert
+    component "FirmwareInfo" as fwinfo
 
     note right of store : Manages, (un-)loads, buffers,\nupdates and saves\nspecified data structures to disk
     note right of netcredentials : Stores SSID and passphrase\nfor external WiFi network
@@ -25,12 +26,15 @@ package Data {
     store -up- Store
 
     store "0..*" *--> "1" keycert
-    store "0..*" *--> "1" netcredentials
+    store "0..*" *--> "1" fwinfo
+    store "0..*" *--> "2" netcredentials
     store "1" *-- "1" user
-    user "0-*" o--> "0..*" user
-    user "0..*" *--> "0..*" persmission
+    user "1" o--> "4" user
+    fwinfo "1" o--> "2" fwinfo
+    user "0..*" *--> "32" persmission
 
     session "0..*" *--> "1" wshandler
+    session "1" *--> "1" user
 
     store -down-(nvshalinterface
 }

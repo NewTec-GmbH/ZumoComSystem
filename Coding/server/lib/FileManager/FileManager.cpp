@@ -51,9 +51,6 @@ FileManager::FileManager() :
 FileManager::~FileManager()
 {
     closeFile();
-    SPIFFS.end();
-
-    LOG_DEBUG("SPIFFS file system unmounted");
 }
 
 bool FileManager::initFS()
@@ -69,7 +66,7 @@ bool FileManager::initFS()
 
             if (true == SPIFFS.begin(false))
             {
-                LOG_DEBUG("SPIFFS file system successfully mounted");
+                LOG_INFO("SPIFFS file system successfully mounted");
                 retCode = true;
             }
             else
@@ -88,8 +85,20 @@ bool FileManager::initFS()
         retCode = true;
     }
 
-    LOG_INFO(getInfo());
+#ifdef ACTIVATE_LOGGING
+    String outputString = "";
+    getInfo(outputString);
+    LOG_INFO(outputString);
+#endif
+
     return retCode;
+}
+
+void FileManager::closeFS()
+{
+    /* Unmount the FS */
+    SPIFFS.end();
+    LOG_INFO("SPIFFS FS successfully unmounted!");
 }
 
 bool FileManager::openFile(const String& fileName, const char* mode)
@@ -117,12 +126,37 @@ bool FileManager::openFile(const String& fileName, const char* mode)
     return retCode;
 }
 
+bool FileManager::fileOpened()
+{
+    return (true == m_fileHandle);
+}
+
+bool FileManager::deleteFile(const String& fileName)
+{
+    bool retCode = true;
+    if (true == fileExists(fileName))
+    {
+        retCode = SPIFFS.remove(fileName);
+    }
+
+    if (true == retCode)
+    {
+        LOG_INFO(String("File ") + fileName + String(" has been successfully deleted if it has been existent!"));
+    }
+    else
+    {
+        LOG_ERROR(String("File ") + fileName + String(" could not be deleted!"));
+    }
+    return retCode;
+}
+
 void FileManager::closeFile()
 {
     if (true == m_fileHandle)
     {
         m_fileHandle.flush();
         m_fileHandle.close();
+        LOG_INFO("File has been successfully flushed and closed!");
     }
 }
 
@@ -150,7 +184,7 @@ int16_t FileManager::read4KBlock(uint8_t* buffer)
     return readBytes;
 }
 
-int16_t FileManager::write4KBlock(uint8_t* buffer, const uint16_t& size)
+int16_t FileManager::write4KBlock(const uint8_t* buffer, const uint16_t& size)
 {
     const uint16_t BUFFER_SIZE_BYTES = 4096;
     int16_t writtenBytes = -1;
@@ -176,7 +210,7 @@ int32_t FileManager::getFileSize(const String& fileName)
 {
     File fileHandle;
     int32_t fileSize = -1;
-    
+
     SPIFFS.begin(false);
     fileHandle = SPIFFS.open(fileName, "r");
 
@@ -190,36 +224,40 @@ int32_t FileManager::getFileSize(const String& fileName)
     return fileSize;
 }
 
-std::vector<String> FileManager::listFiles()
+void FileManager::getInfo(String& infoString)
 {
-    std::vector<String> existingFiles;
-    SPIFFS.begin(false);
-
-    File rootDir = SPIFFS.open("/", "r");
-    File currentFile = rootDir.openNextFile();
-
-    while (true == currentFile)
-    {
-        existingFiles.push_back(currentFile.name());
-        currentFile = rootDir.openNextFile();
-    }
-
-    currentFile.close();
-    rootDir.close();
-    SPIFFS.end();
-
-    return existingFiles;
-}
-
-String FileManager::getInfo()
-{
-    size_t capacity = SPIFFS.totalBytes();
-    size_t usedBytes = SPIFFS.usedBytes();
-    uint8_t usedBytesPercent = static_cast<uint8_t>((usedBytes / (float)capacity) * 100);
-
+    uint8_t usedBytesPercent;
     const uint8_t PRINT_BUFFER_SIZE = 128;
     char buffer[PRINT_BUFFER_SIZE];
 
+    File rootDir;
+    File currentFile;
+
+    size_t capacity = SPIFFS.totalBytes();
+    size_t usedBytes = SPIFFS.usedBytes();
+
+    /* Clear output buffer string */
+    infoString = "";
+
+    usedBytesPercent = static_cast<uint8_t>((usedBytes / (float)capacity) * 100);
+
+    /* Print the data into the output buffer */
     sprintf(buffer, "Data partition size in bytes: %d, Used bytes: %d (%d%%)", capacity, usedBytes, usedBytesPercent);
-    return String(buffer);
+    infoString += String(buffer) + "\nAvailable files on the SPIFFS partition:\n";
+
+    if (true == SPIFFS.begin(false))
+    {
+        rootDir = SPIFFS.open("/", "r");
+        if (true == rootDir)
+        {
+            File currentFile = rootDir.openNextFile();
+            while (true == currentFile)
+            {
+                infoString += currentFile.name() + String("\t(") + String(currentFile.size()) + String(" bytes)\n");
+                currentFile.close();
+                currentFile = rootDir.openNextFile();
+            }
+            rootDir.close();
+        }
+    }
 }

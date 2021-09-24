@@ -66,6 +66,12 @@ public:
     static bool initFS();
 
     /**
+     * Unmounts the SPIFFS file system.
+     * This method should be called before system shutdown!
+     */
+    static void closeFS();
+
+    /**
      * Opens a new file for further access.
      *
      * @param[in] fileName The file to be accessed. Needs to start with '/'
@@ -73,6 +79,21 @@ public:
      * @return Returns true if successful, else false
      */
     bool openFile(const String& fileName, const char* mode);
+
+    /**
+     * Checks if the current instance has an opened file available
+     *
+     * @return Returns true if file is opened, else false
+     */
+    bool fileOpened();
+
+    /**
+     * Deletes the specified file from the file system
+     *
+     * @param[in] fileName The file to be deleted
+     * @return Returns true if the file has not been existent or the file has been existent and successfully deleted, else false
+     */
+    static bool deleteFile(const String& fileName);
 
     /**
      * Closes a previously opened file and writes all unwritten data to file
@@ -106,7 +127,7 @@ public:
      * @param[in] size The number of bytes to be written from the buffer into the file
      * @return Returns the number of written bytes. Returns -1 in case of error
      */
-    int16_t write4KBlock(uint8_t* buffer, const uint16_t& size);
+    int16_t write4KBlock(const uint8_t* buffer, const uint16_t& size);
 
     /**
      * Checks if the specified file exists
@@ -130,22 +151,15 @@ public:
      */
     static int32_t getFileSize(const String& fileName);
 
-    /**
-     * Lists all existing files in which are located in root directory.
-     *
-     * @return Returns string array which contains the file names of all existing files
-     */
-    static std::vector<String> listFiles();
-
 private:
+    /** Handle to the currently opened filed */
+    File m_fileHandle;
+
     /**
      * Prints information about the current state of the FS
      *
-     * @return Returns the string containing the FS informations
+     * @param[out] infoString string reference containing the FS information
      */
-    static String getInfo();
-
-    /** Handle to the currently opened filed */
-    File m_fileHandle;
+    static void getInfo(String& infoString);
 };
 #endif /** __FILEMANAGER_H__ */

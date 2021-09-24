@@ -42,12 +42,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Session.h>
 #include <RequestResponseHandler.h>
 #include <Log.h>
+#include <iostream>
 
 Session* Session::m_sessions[MAX_CLIENTS] = {nullptr};
 uint8_t Session::m_numberOfActiveClients = 0;
 SemaphoreHandle_t Session::m_sessionMutex = xSemaphoreCreateMutex();
 
 Session::Session() :
+    m_readBytes(0),
+    m_streamByteIdx(0),
+    m_expectingBytes(0),
+    m_binaryBuffer(),
+    m_expectBinary(false),
+    m_expectedOperation(),
     m_sessionAuthenticated(false),
     m_linkedUser(nullptr),
     m_lastAccessTime(0)
@@ -114,36 +121,122 @@ httpsserver::WebsocketHandler* Session::create()
 void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
 {
     ApiResponse response;
-    ApiRequest request;
-    std::ostringstream stringStream;
-    std::string inputString;
     String serialResponse;
+    uint32_t messageSizeBytes = inputBuffer->getRecordSize();
+    unsigned long readBufferStartTime = 0;
+    char singleByteBuffer;
 
-    LOG_DEBUG("New session message received!");
+    LOG_INFO("New session message received!");
+    LOG_INFO(String("API-Mode: ") + (true == m_expectBinary ? "BINARY_STREAM" : "TEXT"));
 
     /* Update timestamp */
     m_lastAccessTime = millis();
 
-    /* Get the request payload text */
-    stringStream << inputBuffer;
-    inputString = stringStream.str();
-    LOG_DEBUG(String("Incoming request data:\n") + inputString.c_str());
-
-    String serial = inputString.c_str();
-    if (true == request.deserialize(serial))
+    if (true == m_expectBinary)
     {
-        /* Invoke the API call and send back response */
-        RequestResponseHandler::getInstance().makeRequest(request, response, this);
+        m_readBytes = 0;
+
+        uint32_t recordSize = inputBuffer->getRecordSize();
+        if (MAX_BUFFER_SIZE_BYTE >= recordSize)
+        {
+            std::istream inputStream{inputBuffer};
+            while (m_readBytes < recordSize)
+            {
+                readBufferStartTime = millis();
+                do
+                {
+                    if (true == inputStream.eof() && false == inputStream.bad())
+                    {
+                        LOG_WARN("Unexpected EOF in binary data stream prior actual EOF. Resetting EOF flag and trying again...");
+                        inputStream.clear();
+                    }
+                    singleByteBuffer = inputStream.get();
+                } while ((true == inputStream.eof()) && ((millis() - readBufferStartTime) < API_TIMEOUT_MS));
+
+                if (false == inputStream.eof())
+                {
+                    m_binaryBuffer[m_readBytes] = singleByteBuffer;
+                    m_readBytes++;
+                    m_streamByteIdx++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            /* All bytes of the websocket message have been successfully read */
+            if (m_readBytes == recordSize)
+            {
+                /* Call the API service */
+                RequestResponseHandler::getInstance().makeRequest(m_expectedOperation, response, this);
+            }
+            else
+            {
+                /* Clean up */
+                RequestResponseHandler::getInstance().resetBinaryMode();
+
+                /* Exit BINARY mode and switch back to TEXT mode */
+                exitBinaryMode();
+
+                response.setStatusCode(ERROR);
+                LOG_ERROR("Could not read entire websocket buffer binary stream! Request discarded!");
+            }
+        }
+        else
+        {
+            /* Clean up */
+            RequestResponseHandler::getInstance().resetBinaryMode();
+
+            /* Exit BINARY mode and switch back to TEXT mode */
+            exitBinaryMode();
+
+            response.setStatusCode(BAD_REQUEST);
+            LOG_ERROR(String("Input record bigger than input buffer. Discarding data!. Please decrease record size! Max buffer size: ") + MAX_BUFFER_SIZE_BYTE);
+        }
     }
     else
     {
-        response.setStatusCode(BAD_REQUEST);
+        ApiRequest request;
+        std::ostringstream stringStream;
+        std::string inputString;
+
+        if (messageSizeBytes <= MAX_TEXT_REQUEST_SIZE_BYTE)
+        {
+            /* Read entire buffer. Get the request payload text */
+            stringStream << inputBuffer;
+            inputString = stringStream.str();
+            LOG_DEBUG(String("Incoming request data:\n") + inputString.c_str());
+
+            String serial = inputString.c_str();
+            if (true == request.deserialize(serial))
+            {
+                /* Invoke the API call and send back response */
+                RequestResponseHandler::getInstance().makeRequest(request, response, this);
+            }
+            else
+            {
+                LOG_ERROR("Could not deserialize the incoming ApiResponse!");
+                response.setStatusCode(BAD_REQUEST);
+            }
+        }
+        else
+        {
+            LOG_ERROR("Exceeded MAX_TEXT_REQUEST_SIZE_BYTE for API TEXT mode!");
+            response.setStatusCode(BAD_REQUEST);
+        }
     }
+
+    /* Clear the input buffer */
+    inputBuffer->discard();
 
     if (false == response.serialize(serialResponse))
     {
         serialResponse = "{\\\"statusCode\\\":" + String(ERROR) + "}";
+        LOG_ERROR("Could not serialize the outgoing ApiResponse!");
     }
+
+    /* Always send the ApiResponse */
     send(serialResponse.c_str(), SEND_TYPE_TEXT);
 }
 
@@ -155,6 +248,15 @@ void Session::onClose()
     {
         if (this == m_sessions[sessionIdx])
         {
+            if (true == m_expectBinary)
+            {
+                /* Clean up */
+                RequestResponseHandler::getInstance().resetBinaryMode();
+
+                /* Exit BINARY mode and switch back to TEXT mode */
+                exitBinaryMode();
+            }
+
             /* No need to delete instance, as this has already been done by HTTPConnection class */
             m_sessions[sessionIdx] = nullptr;
             m_numberOfActiveClients--;
@@ -165,6 +267,28 @@ void Session::onClose()
     LOG_INFO("Session closed!");
 }
 
+void Session::initBinaryMode(const String& operation, const uint32_t binarySize)
+{
+    /* Enable BINARY mode and set operation and binary stream size */
+    m_expectBinary = true;
+    m_expectedOperation = operation;
+    m_expectingBytes = binarySize;
+
+    /* Clear all indexes and buffers used for BINARY mode */
+    m_readBytes = 0;
+    m_streamByteIdx = 0;
+    memset(m_binaryBuffer, 0, sizeof(m_binaryBuffer));
+
+    LOG_INFO("Switching API to BINARY mode now!");
+    LOG_INFO(String("Expecting ") + binarySize + String(" bytes during this session"));
+}
+
+void Session::exitBinaryMode()
+{
+    m_expectBinary = false;
+    LOG_INFO("Switching API back to TEXT mode now!");
+}
+
 bool Session::isAuthenticated() const
 {
     return m_sessionAuthenticated;
@@ -172,13 +296,31 @@ bool Session::isAuthenticated() const
 
 void Session::authenticateSession(User* user)
 {
-    m_sessionAuthenticated = true;
-    m_linkedUser = user;
+    if (nullptr != user)
+    {
+        m_sessionAuthenticated = true;
+        m_linkedUser = user;
+        LOG_INFO(String("Successfully authenticated a session for the user ") + user->getUsername());
+    }
 }
 
 void Session::deauthenticateSession()
 {
-    m_sessionAuthenticated = false;
+    if (true == m_sessionAuthenticated)
+    {
+        m_sessionAuthenticated = false;
+        if (nullptr != m_linkedUser)
+        {
+            LOG_INFO(String("Session of user ") + m_linkedUser->getUsername() + String(" has been de-authenticated!"));
+        }
+    }
+    else
+    {
+        if (nullptr != m_linkedUser)
+        {
+            LOG_WARN(String("Session of user ") + m_linkedUser->getUsername() + String(" is (already) not authenticated!"));
+        }
+    }
 }
 
 void Session::handleSessionTimeout(void* parameter)
@@ -203,6 +345,16 @@ void Session::handleSessionTimeout(void* parameter)
                 if (((currentTimeStamp - currentSession->m_lastAccessTime) / MILLISECONDS) > SESSION_TIMEOUT_SECONDS)
                 {
                     currentSession->deauthenticateSession();
+
+                    /* Switch back to TEXT mode and clean up used resources */
+                    if (true == currentSession->m_expectBinary)
+                    {
+                        /* Clean up */
+                        RequestResponseHandler::getInstance().resetBinaryMode();
+
+                        /* Exit BINARY mode and switch back to TEXT mode */
+                        currentSession->exitBinaryMode();
+                    }
                 }
             }
         }

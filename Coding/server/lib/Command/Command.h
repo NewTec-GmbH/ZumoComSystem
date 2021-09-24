@@ -48,7 +48,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ApiResponse.h>
 #include <ResponseCode.h>
 
- /** Simple class which defines the mandatory members of any API services */
+class Session;
+
+/** Simple class which defines the mandatory members of any API services */
 class Command
 {
 public:
@@ -75,7 +77,7 @@ public:
     /**
      * Returns the permissions required for invoking the API service
      *
-     * @return Returns the required permission
+     * @return Returns const reference of Permission
      */
     const Permission& getReqPermission() const;
 
@@ -84,8 +86,9 @@ public:
      *
      * @param[in] request Reference to the incoming ApiRequest
      * @param[out] response Reference to the outgoing ApiResponse
+     * @param[in] connectionCtx Pointer to Session class instance
      */
-    virtual void run(const ApiRequest& request, ApiResponse& response) const = 0;
+    virtual void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) = 0;
 
 private:
     /**
@@ -109,4 +112,4 @@ private:
     /** Specifies the permissions required to invoke the API service */
     Permission m_reqPermission;
 };
-#endif
+#endif /** __COMMAND_H__ */

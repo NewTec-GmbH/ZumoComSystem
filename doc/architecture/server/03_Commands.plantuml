@@ -3,26 +3,24 @@ package Server {
     component "RequestResponseHandler" as RequestResponseHandler
 }
 
-interface "COMReset" as comreset
-interface "RobotReset" as robotreset
-interface "Debug" as debug
-interface "OTA" as ota
-interface "FlashRobot" as flashrobot
-interface "FWCheck" as FWCheck
-interface "File" as File
-interface "Store" as Store
-
 package Commands {
+    interface "OTA" as ota
+    interface "FWCheck" as FWCheck
+    interface "File" as File
+    interface "Store" as Store
+    interface "Zumo32U4" as Zumo32U4
+    interface "System" as System
+
     component Command
     component "EchoDemoCommand" as echodemocommand
-    component "UploadZumoFirmware" as uploadzumoservice
-    component "FlashZumoFirmware" as flashzumoservice
-    component "ConfigureNetwork" as credconfig
-    component "RebootZumo" as resetzumoservice
-    component "RebootCOM" as resetcomplatforomservice
-    component "DebugZumo" as zumodebug
-    component "UploadCOMFirmware" as uploadcomfirmware
-    component "FlashCOMFirmware" as flashcomfirmware
+    component "UploadZumoCommand" as uploadzumoservice
+    component "FlashZumoCommand" as flashzumoservice
+    component "SetSTACredentialsCommand" as credconfig
+    component "RebootZumoCommand" as resetzumoservice
+    component "RebootCOMCommand" as resetcomplatforomservice
+    component "DebugZumoCommand" as zumodebug
+    component "UploadCOMCommand" as uploadcomfirmware
+    component "FlashCOMCommand" as flashcomfirmware
 
     Command <|-- echodemocommand
     Command <|-- uploadzumoservice
@@ -36,15 +34,21 @@ package Commands {
     RequestResponseHandler *--> Command
 
     uploadzumoservice -down-(File
+    uploadzumoservice -down-(Store
+    uploadzumoservice -down-(FWCheck
     uploadcomfirmware -down-(ota
+    uploadcomfirmware -down-(Store
+    uploadcomfirmware -down-(FWCheck
     flashcomfirmware -down-(ota
+    flashcomfirmware -down-(Store
+    flashcomfirmware -down-(System
     credconfig -down-(Store
     flashzumoservice -down-(FWCheck
     flashzumoservice -down-(File
-    flashzumoservice -down-(flashrobot
-    flashzumoservice -down-(robotreset
-    resetcomplatforomservice -down-(comreset
-    resetzumoservice -down-(robotreset
-    zumodebug -down-(debug
+    flashzumoservice -down-(Store
+    flashzumoservice -down-(Zumo32U4
+    resetzumoservice -down-(Zumo32U4
+    resetcomplatforomservice -down-(System
+    zumodebug -down-(Zumo32U4
 }
 @enduml

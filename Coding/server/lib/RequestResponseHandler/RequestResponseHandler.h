@@ -45,10 +45,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Arduino.h>
 #include <SessionManager.h>
 #include <Command.h>
-#include <Session.h>
+#include <BinaryCommand.h>
 #include <EchoDemoCommand.h>
+#include <UploadZumoCommand.h>
+#include <UploadCOMCommand.h>
+#include <FlashCOMCommand.h>
+#include <RebootCOMCommand.h>
+#include <RebootZumoCommand.h>
+#include <SetSTACredentialsCommand.h>
+#include <FlashZumoCommand.h>
+#include <GetFirmwareInfoCommand.h>
 
- /** Simple class which handles requests and responses between the API service implementations and the webserver */
+ /** Class which handles requests and responses between the API service implementations and the webserver */
 class RequestResponseHandler
 {
 public:
@@ -67,6 +75,20 @@ public:
      */
     void makeRequest(const ApiRequest& request, ApiResponse& response, Session* connectionCtx);
 
+    /**
+     * Make a new request to the binary API
+     *
+     * @param[in] operation The operation to be executed in API binary mode
+     * @param[out] response Reference to the outgoing ApiResponse
+     * @param[in] connectionCtx Pointer to Session class instance
+     */
+    void makeRequest(const String& operation, ApiResponse& response, Session* connectionCtx);
+
+    /**
+     * Resets the API BINARY mode for re-use of API BINARY mode
+     */
+    void resetBinaryMode();
+
 private:
     /**
      * Default Constructor
@@ -84,10 +106,42 @@ private:
      * @param[in] request The API request to be checked for its service id
      * @return Returns pointer to correct service class instance. Returns nullpointer if there is no such service
      */
-    const Command* getCommandOfApiRequest(const ApiRequest& request);
+    Command* getCommandOfApiRequest(const ApiRequest& request);
+
+    /**
+     * Returns pointer to BINARY API service class which corresponds to passed service id inside request
+     *
+     * @param[in] commandId The BINARY API service id
+     * @return Returns pointer to correct service class instance. Returns nullpointer if there is no such service
+     */
+    BinaryCommand* getCommandOfBinaryApiRequest(const String& commandId);
 
     /** Instance of the EchoDemoCommand */
     EchoDemoCommand m_echoDemoCommand;
+
+    /** Instance of UploadZumoCommand */
+    UploadZumoCommand m_uploadZumoCommand;
+
+    /** Instance of UploadCOMCommand */
+    UploadCOMCommand m_uploadCOMCommand;
+
+    /** Instance of FlashCOMCommand */
+    FlashCOMCommand m_flashCOMCommand;
+
+    /** Instance of RebootCOMCommand */
+    RebootCOMCommand m_rebootCOMCommand;
+
+    /** Instance of RebootZumoCommand */
+    RebootZumoCommand m_rebootZumoCommand;
+
+    /** Instance of SetSTACredentialsCommand */
+    SetSTACredentialsCommand m_setSTACredentialsCommand;
+
+    /** Instance of FlashZumoCommand */
+    FlashZumoCommand m_flashZumoCommand;
+
+    /** Instance of GetFirmwareInfoCommand */
+    GetFirmwareInfoCommand m_getFirmwareInfoCommand;
 
     /** Instance of SessionManager */
     SessionManager m_sessionManager;

@@ -40,9 +40,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <RequestResponseHandler.h>
+#include <Log.h>
 
 RequestResponseHandler::RequestResponseHandler() :
     m_echoDemoCommand(),
+    m_uploadZumoCommand(),
+    m_uploadCOMCommand(),
+    m_flashCOMCommand(),
+    m_rebootCOMCommand(),
+    m_rebootZumoCommand(),
+    m_setSTACredentialsCommand(),
+    m_flashZumoCommand(),
+    m_getFirmwareInfoCommand(),
     m_sessionManager()
 {
 }
@@ -63,40 +72,140 @@ void RequestResponseHandler::makeRequest(const ApiRequest& request, ApiResponse&
     {
         m_sessionManager.aquireSession(request, response, connectionCtx);
     }
+    else if (request.getCommandId() == "deauthenticate")
+    {
+        m_sessionManager.invalidateSession(response, connectionCtx);
+    }
     else
     {
-        const Command* apiService = getCommandOfApiRequest(request);
+        Command* apiService = getCommandOfApiRequest(request);
         if (nullptr != apiService)
         {
             if (NONE != apiService->getReqPermission())
             {
                 if (true == m_sessionManager.checkSession(apiService, connectionCtx))
                 {
-                    apiService->run(request, response);
+                    apiService->run(request, response, connectionCtx);
                 }
                 else
                 {
                     response.setStatusCode(UNAUTHORIZED);
+                    LOG_WARN(String("Unauthorized access to API TEXT mode service ") + request.getCommandId());
                 }
             }
             else
             {
-                apiService->run(request, response);
+                apiService->run(request, response, connectionCtx);
             }
         }
         else
         {
+            LOG_ERROR(String("Service ") + request.getCommandId() + String(" is not implemented!"));
             response.setStatusCode(NOT_IMPLEMENTED);
         }
     }
 }
 
-const Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& request)
+void RequestResponseHandler::makeRequest(const String& commandId, ApiResponse& response, Session* connectionCtx)
 {
-    const Command* command = nullptr;
-    if (request.getCommandId() == "echodemo")
+    BinaryCommand* apiService = getCommandOfBinaryApiRequest(commandId);
+    if (nullptr != apiService)
+    {
+        if (NONE != apiService->getBinaryReqPermission())
+        {
+            if (true == m_sessionManager.checkSession(apiService, connectionCtx))
+            {
+                apiService->run(response, connectionCtx);
+            }
+            else
+            {
+                response.setStatusCode(UNAUTHORIZED);
+                LOG_WARN(String("Unauthorized access to API BINARY mode service ") + commandId);
+
+                /* Clean up */
+                resetBinaryMode();
+
+                /* Exit BINARY mode and switch back to TEXT mode */
+                connectionCtx->exitBinaryMode();
+            }
+        }
+        else
+        {
+            apiService->run(response, connectionCtx);
+        }
+    }
+    else
+    {
+        LOG_ERROR(String("Service ") + commandId + String(" is not implemented!"));
+        response.setStatusCode(NOT_IMPLEMENTED);
+
+        /* Clean up */
+        resetBinaryMode();
+
+        /* Exit BINARY mode and switch back to TEXT mode */
+        connectionCtx->exitBinaryMode();
+    }
+}
+
+void RequestResponseHandler::resetBinaryMode()
+{
+    m_uploadZumoCommand.reset();
+    LOG_INFO("API BINARY mode has been reset in RequestResponseHandler!");
+}
+
+Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& request)
+{
+    Command* command = nullptr;
+    const String commandID = request.getCommandId();
+    if (commandID == "uploadzumo")
+    {
+        command = &m_uploadZumoCommand;
+    }
+    else if (commandID == "uploadcom")
+    {
+        command = &m_uploadCOMCommand;
+    }
+    else if (commandID == "flashcom")
+    {
+        command = &m_flashCOMCommand;
+    }
+    else if (commandID == "rebootcom")
+    {
+        command = &m_rebootCOMCommand;
+    }
+    else if (commandID == "rebootzumo")
+    {
+        command = &m_rebootZumoCommand;
+    }
+    else if (commandID == "setstacredentials")
+    {
+        command = &m_setSTACredentialsCommand;
+    }
+    else if (commandID == "flashzumo")
+    {
+        command = &m_flashZumoCommand;
+    }
+    else if (commandID == "getfirmwareinfo")
+    {
+        command = &m_getFirmwareInfoCommand;
+    }
+    else if (commandID == "echodemo")
     {
         command = &m_echoDemoCommand;
+    }
+    return command;
+}
+
+BinaryCommand* RequestResponseHandler::getCommandOfBinaryApiRequest(const String& commandId)
+{
+    BinaryCommand* command = nullptr;
+    if (commandId == "uploadzumo")
+    {
+        command = &m_uploadZumoCommand;
+    }
+    else if (commandId == "uploadcom")
+    {
+        command = &m_uploadCOMCommand;
     }
     return command;
 }

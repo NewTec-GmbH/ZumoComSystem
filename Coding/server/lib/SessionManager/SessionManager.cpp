@@ -74,6 +74,30 @@ bool SessionManager::checkSession(const Command* command, Session* connectionCtx
     return (sessionAuthenticated && permissionAvailable);
 }
 
+bool SessionManager::checkSession(const BinaryCommand* command, Session* connectionCtx) const
+{
+    bool sessionAuthenticated = connectionCtx->isAuthenticated();
+
+    uint8_t numberOfPermissions = 0;
+    const Permission* permissions = connectionCtx->getPermissions(numberOfPermissions);
+    bool permissionAvailable = false;
+
+    if (nullptr != permissions)
+    {
+        for (uint8_t permIdx = 0; permIdx < numberOfPermissions; permIdx++)
+        {
+            /* Check if linked user has required permission or has full priviliges */
+            if ((ANY == permissions[permIdx]) || (permissions[permIdx] == command->getBinaryReqPermission()))
+            {
+                permissionAvailable = true;
+                break;
+            }
+        }
+    }
+
+    return (sessionAuthenticated && permissionAvailable);
+}
+
 void SessionManager::aquireSession(const ApiRequest& request, ApiResponse& response, Session* connectionCtx) const
 {
     UserCredentials credentials;
@@ -90,4 +114,11 @@ void SessionManager::aquireSession(const ApiRequest& request, ApiResponse& respo
     {
         response.setStatusCode(ERROR);
     }
+}
+
+void SessionManager::invalidateSession(ApiResponse& response, Session* connectionCtx)
+{
+    /* De-authenticate the session instance */
+    connectionCtx->deauthenticateSession();
+    response.setStatusCode(SUCCESS);
 }

@@ -51,6 +51,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class Session : public httpsserver::WebsocketHandler
 {
 public:
+    /** Specifies the maximum buffer size in bytes for incoming websocket messages */
+    static const uint16_t MAX_BUFFER_SIZE_BYTE = 2048;
+
+    /** Specifies how many milliseconds it may take to read the input buffer byte before timeout occurs and read is aborted */
+    static const uint16_t API_TIMEOUT_MS = 15000;
+
+    /** Specifies how many bytes have been read in a single websocket message in API BINARY mode */
+    uint32_t m_readBytes;
+
+    /** Specifies how many bytes have been read in total during this session in API BINARY mode */
+    uint32_t m_streamByteIdx;
+
+    /** Specifies how many bytes are expected to be sent in total during this session in API BINARY mode */
+    uint32_t m_expectingBytes;
+
+    /** Temporary binary data buffer which contains received binary data for incoming websocket messages */
+    uint8_t m_binaryBuffer[MAX_BUFFER_SIZE_BYTE];
+
     /**
      * Default Constructor
      */
@@ -88,6 +106,21 @@ public:
     void onClose();
 
     /**
+     * Sets the current session into binary mode. The next incoming socket message
+     * will be treated as binary data stream.
+     *
+     *  @param[in] operation The operation to be executed
+     *  @param[in] binarySize Specifies the total size in bytes of the transmitted binary
+     */
+    void initBinaryMode(const String& operation, const uint32_t binarySize);
+
+    /**
+     * Exits the API BINARY mode and switches back to text mode so that further commands
+     * can be sent to the API and the API BINARY mode can be restared and configured
+     */
+    void exitBinaryMode();
+    
+    /**
      * Returns if this session is authenticated
      *
      * @return Returns true if session is authenticated, else false
@@ -115,15 +148,11 @@ public:
     const Permission* getPermissions(uint8_t& numberOfPermissions);
 
 private:
-    /**
-     * Checks which sessions need to be invalidated because of timeout
-     *
-     * @param[in] parameter Generic input parameter for FreeRTOS task
-     */
-    static void handleSessionTimeout(void* parameter);
-
     /** Specifies the maximum number of concurrent websocket clients */
     static const uint8_t MAX_CLIENTS = 4;
+
+    /** Specifies the maximum websocket message size for the non-binary API */
+    static const uint16_t MAX_TEXT_REQUEST_SIZE_BYTE = 512;
 
     /** Specifies how many seconds need to pass before session gets deauthenticated due to timeout */
     static const uint16_t SESSION_TIMEOUT_SECONDS = 900;
@@ -137,6 +166,12 @@ private:
     /** Stores how many clients are currently connected to websocket API */
     static uint8_t m_numberOfActiveClients;
 
+    /** Stores if the API should expect next incoming requests to be binary stream */
+    bool m_expectBinary;
+
+    /** Specifies the operation to be executed for the API BINARY mode */
+    String m_expectedOperation;
+
     /** Specifies if the current session is authenticated */
     bool m_sessionAuthenticated;
 
@@ -145,5 +180,12 @@ private:
 
     /** Timestamp which gets updated each time a request is made with this session */
     unsigned long m_lastAccessTime;
+
+    /**
+     * Checks which sessions need to be invalidated because of timeout
+     *
+     * @param[in] parameter Generic input parameter for FreeRTOS task
+     */
+    static void handleSessionTimeout(void* parameter);
 };
 #endif /** __SESSION_H__ */

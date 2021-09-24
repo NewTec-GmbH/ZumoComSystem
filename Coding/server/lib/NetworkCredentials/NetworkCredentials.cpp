@@ -110,6 +110,7 @@ bool NetworkCredentials::serialize(String& serial) const
     Pass the const/non-volatile char* pointers to ArduinoJson so that ArduinoJson
     will not copy/duplicate the string values
     */
+
     jsonDocument["ssid"] = m_ssid.c_str();
     jsonDocument["passphrase"] = m_passphrase.c_str();
 
@@ -118,6 +119,7 @@ bool NetworkCredentials::serialize(String& serial) const
     if (true == retCode)
     {
         LOG_DEBUG("Network credentials successfully serialized to JSON");
+        LOG_DEBUG(serial);
     }
     else
     {
@@ -126,7 +128,7 @@ bool NetworkCredentials::serialize(String& serial) const
     return retCode;
 }
 
-bool NetworkCredentials::deserialize(const String& serial)
+bool NetworkCredentials::deserialize(const String& serial, const bool staCredentials)
 {
     /*
     Reserve memory on stack for JSON structure which consists of two key-value pairs.
@@ -137,17 +139,13 @@ bool NetworkCredentials::deserialize(const String& serial)
     StaticJsonDocument<DOC_SIZE> jsonDocument;
     DeserializationError jsonRet = deserializeJson(jsonDocument, serial);
 
-    bool retCode = false;
+    bool retCode = ((DeserializationError::Ok == jsonRet)
+        && (true == setSSID(jsonDocument["ssid"].as<String>(), staCredentials))
+        && (true == setPassphrase(jsonDocument["passphrase"].as<String>())));
 
-    if (DeserializationError::Ok == jsonRet)
+    if (false == retCode)
     {
-        m_ssid = jsonDocument["ssid"].as<String>();
-        m_passphrase = jsonDocument["passphrase"].as<String>();
-        retCode = true;
-    }
-    else
-    {
-        LOG_ERROR("Error on deserializing the NetworkCredentials JSON object");
+        LOG_ERROR("Error on deserializing the NetworkCredentials JSON object. JSON may either be malformed or SSID or passphrase are not complying with IEEE 802.11");
         LOG_ERROR(jsonRet.c_str());
     }
     return retCode;

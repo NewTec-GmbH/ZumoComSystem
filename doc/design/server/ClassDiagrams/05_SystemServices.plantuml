@@ -7,11 +7,21 @@ package Data
 package "Arduino Core"
 {
     class Preferences
+    class SemaphoreHandle_t
+    class mbedtls_pk_context
+    class mbedtls_md_context_t
+    class DNSServer
 }
 
 package "Crypto"
 {
     class BLAKE2b
+}
+
+
+package "HAL"
+{
+    class GPIOPins
 }
 
 package Server
@@ -62,29 +72,104 @@ package SystemServices {
         + ~FileManager()
         + {static} initFS(): bool
         + openFile(fileName: const String&, mode: const char*): bool
+        + fileOpened(): bool
+        + {static} deleteFile(fileName: const String&): bool
         + closeFile(): void
         + resetFilePointer(): bool
         + read4KBlock(buffer: uint8_t*): int16_t
-        + write4KBlock(buffer: uint8_t*, size: const uint16_t&): int16_t
+        + write4KBlock(buffer: const uint8_t*, size: const uint16_t&): int16_t
         + {static} fileExists(fileName: const String&): bool
         + getFileSize(): int32_t {const}
         + {static} getFileSize(fileName: const String&): int32_t
-        + {static} listFiles(): std::vector<String>
-        - {static} getInfo(): String
+        - {static} getInfo(infoString: String&): void
     }
+    FileManager "0..*" *--> "1" File
     FileManager ..> FileMode : uses
+
+    class PublicSigningKey
+    {
+        + {static} RSA2048_PUBLIC_KEY: char* {readonly}
+        + {static} KEY_LENGTH_BYTES: uint16_t {readonly}
+    }
 
     class CryptoServices
     {
         - {static} SALT_LENGTH_BYTE: uint8_t {readonly} = 64
-        - {static} HASH_LENGTH_BYTE: uint8_t {readonly} = 64
+        - {static} BLAKE2b_LENGTH_BYTE: uint8_t {readonly} = 64
+        - {static} SHA256_LENGTH_BYTE: uint8_t {readonly} = 32
         - m_hasherInstance: BLAKE2b
+        - m_hashBuffer: uint8_t[SHA256_LENGTH_BYTE]
+        - m_hashAvailable: bool
+        - m_messageDigestInitialized: bool
+        - m_publicKeyContext: mbedtls_pk_context
+        - m_messageDigestContext: mbedtls_md_context_t
         + CryptoServices()
         + ~CryptoServices()
         + getRandomSalt(outputString: String&): bool
         + hashBlake2b(cleartext: const String&, salt: const String&, outputString: String&): bool
+        + updateSHA256Hash(dataChunk: const uint8_t*, dataSize: const uint16_t): bool
+        + resetSHA256Hash(): void
+        + getSHA256String(outputString: String&): bool
+        + verifySignature(signature: const uint8_t*, signatureSize: const uint16_t): bool
+        - finalizeSHA256Hash(): void
     }
     CryptoServices "0..*" *--> "1" BLAKE2b
+    CryptoServices "0..*" *--> "1" mbedtls_pk_context
+    CryptoServices "0..*" *--> "1" mbedtls_md_context_t
+    CryptoServices ..> PublicSigningKey : includes
+    CryptoServices ..> GPIOPins : includes
+
+    class FirmwareHeader
+    {
+        + {static} HEADER_SIZE_BYTE: uint16_t = {readonly} 337
+        - {static} ID_SIZE_BYTE: uint8_t = {readonly} 16
+        - {static} TARGET_SIZE_BYTE: uint8_t = {readonly} 16
+        - {static} VERSION_SIZE_BYTE: uint8_t = {readonly} 1
+        - {static} HASH_ALG_SIZE_BYTE: uint8_t = {readonly} 16
+        - {static} SIGN_ALG_SIZE_BYTE: uint8_t = {readonly} 32
+        - {static} SIGNATURE_SIZE_BYTE: uint16_t = {readonly} 256
+        - m_readHeaderBytes: uint16_t
+        - m_idBuffer: uint8_t[ID_SIZE_BYTE]
+        - m_targetBuffer: uint8_t[TARGET_SIZE_BYTE]
+        - m_versionBuffer: uint8_t[VERSION_SIZE_BYTE]
+        - m_hashAlgBuffer: uint8_t[HASH_ALG_SIZE_BYTE]
+        - m_signAlgBuffer: uint8_t[SIGN_ALG_SIZE_BYTE]
+        - m_signatureBuffer: uint8_t[SIGNATURE_SIZE_BYTE]
+        + FirmwareHeader()
+        + ~FirmwareHeader()
+        + deserialize(dataChunk: const uint8_t*, chunkSize: const uint16_t): bool
+        + reset(): void
+        + getID(id: String&): void {const}
+        + getVersion(): uint8_t {const}
+        + getHashAlg(alg: String&): void {const}
+        + getSignAlg(alg: String&): void {const}
+        + getTarget(target: String&): void {const}
+        + getSignature(): const uint8_t* {const}
+    }
+
+    class FirmwareChecker
+    {
+        + {static} MAX_ZUMO_FW_BLOB_SIZE_BYTE: uint32_t = {readonly} 32000
+        + {static} MAX_COM_FW_BLOB_SIZE_BYTE: uint32_t = {readonly} 1310720
+        - {static} EXPECTED_ID: char* = {readonly} "CPSFW"
+        - {static} EXPECTED_VERSION: uint8_t = {readonly} 1
+        - {static} EXPECTED_HASH_ALG: char* = {readonly} "SHA256"
+        - {static} EXPECTED_SIGN_ALG: char* = {readonly} "RSA2048PKCS#1v15"
+        - m_fwHeader: FirmwareHeader
+        - m_crypto: CryptoServices
+        - m_readPayloadBytes: uint32_t
+        + FirmwareChecker()
+        + ~FirmwareChecker()
+        + deserializeHeader(dataChunk: const uint8_t*, chunkSize: const uint16_t): void
+        + deserializePayload(dataChunk: const uint8_t*, chunkSize: const uint16_t): bool
+        + reset(): void
+        + idOK(): bool
+        + getTarget(target: String&): void {const}
+        + getComputedHashValue(outputString: String&): bool
+        + isValid(expectedTarget: const String&): bool
+    }
+    FirmwareChecker "0..*" *--> "1" FirmwareHeader
+    FirmwareChecker "0..*" *--> "1" CryptoServices
 
     class WiFiManager
     {
@@ -108,12 +193,13 @@ package SystemServices {
         + stopSTA(): bool
     }
     WiFiManager "0..*" *--> "1" Store
+    WiFiManager "0..*" *--> "1" DNSServer
 
     class System
     {
         - m_store: Store&
-        - m_wifiManager: WiFiManager
-        - m_webServer: WebServer
+        - m_wifiManager: WiFiManager*
+        - m_webServer: WebServer*
         - {static} m_genKeyCertSemaphore: SemaphoreHandle_t
         - SERVICE_HANDLING_SLEEP_TIME_MS {readonly} = 1
         + {static} getInstance(): System&
@@ -128,5 +214,6 @@ package SystemServices {
     System "0..*" *--> "1" WiFiManager
     System "0..*" *--> "1" Store
     System "0..*" *--> "1" WebServer
+    System "0..*" *--> "1" SemaphoreHandle_t
 }
 @enduml

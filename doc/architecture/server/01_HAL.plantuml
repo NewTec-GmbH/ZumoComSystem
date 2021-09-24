@@ -1,8 +1,5 @@
 @startuml
 package "Hardware Absraction Layer (HAL)" {
-    interface "Debug" as Debug
-    interface "FlashRobot" as FlashRobot
-    interface "RobotReset" as RobotReset
     interface "COMReset" as ComReset
     interface "ReadKey" as ReadKey
     interface "Crypto" as Crypto
@@ -14,8 +11,9 @@ package "Hardware Absraction Layer (HAL)" {
     interface "FS" as FS
     interface "Preferences" as nvshal
     interface "IO" as IO
+    interface "Zumo32U4" as zumo32u4interface
 
-    interface "SPIUSB" as SPIUSB
+    interface "USB" as SPIUSB
     interface "IO" as arduinoIO
     interface "SPI" as SPI
 
@@ -56,34 +54,38 @@ package "Hardware Absraction Layer (HAL)" {
         arduinoota -up- ota
     }
 
-    component "RobotFlasher" as zumoflasher
-    component "RobotDebugger" as zumodebugger
-    component "SPI_USB" as spiusbdriver
+    component "USB_Host_Shield_2.0" as spiusbdriver
     component "IO" as io
-    component "Robot" as robot
     component "Key" as key
+    component "GPIOPins" as gpiopins
+    component "Zumo32U4" as zumo32u4
+    component "ZumoState" as zumostate
+
 
     note right of spiusbdriver : Driver which sends\ndata to USB slave by\nusing the SPI bus
-    note right of zumodebugger : Driver which reads debug\nlogs from robot by using\nSPI-USB adapter
-    note right of zumoflasher : Driver which flashes firmware\nimage onto the currently\nconnected robot\nby using SPI-USB adapter
-    note left of robot : Driver for resetting the robot
     note left of key: Driver for reading the Reset/WiFi key
     note left of io : Driver for easy (unbounced) read- and write operations
+    note right of gpiopins : Pin description
+    note right of zumo32u4: Driver for resetting,\ndebugging and flashing the robot
+    note left of zumostate: State machine for Zumo32U4 driver
 
-    zumodebugger -up- Debug
-    zumoflasher -up- FlashRobot
     spiusbdriver -up- SPIUSB
+    zumo32u4 -up- zumo32u4interface
     esp -up- ComReset
-    robot -up- RobotReset
     key -up- ReadKey
     io -up- IO
 
-    zumoflasher -down-(SPIUSB
+    zumo32u4 -down-(IO
+    zumo32u4 -down-(SPIUSB
+
+    zumo32u4 *--> zumostate
+
     spiusbdriver -down-(SPI
-    zumodebugger -down-(SPIUSB
     io -down-(arduinoIO
-    robot -down-(IO
     key -down-(IO
+
+    key .up.> gpiopins
+    zumo32u4 .up.> gpiopins
 }
 
 package Hardware {

@@ -44,6 +44,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <HTTPRequest.hpp>
 #include <HTTPResponse.hpp>
 #include <ResponseCode.h>
+#include <Session.h>
+#include <Store.h>
 
 const KeyValue HTTPsWebServer::m_servedFileTypes[] =
 {
@@ -52,7 +54,11 @@ const KeyValue HTTPsWebServer::m_servedFileTypes[] =
     {".js", "application/javascript"},
     {".jpg", "image/jpeg"},
     {".png", "image/png"},
-    {".ico", "image/vnd.microsoft.icon"}
+    {".ico", "image/vnd.microsoft.icon"},
+    {".svg", "image/svg+xml"},
+    {".ttf", "font/ttf"},
+    {".woff", "font/woff"},
+    {".eot", "font/eot"},
 };
 
 FileManager HTTPsWebServer::m_fileManager;

@@ -1,5 +1,28 @@
 @startuml
 
+
+package SystemServices
+{
+    class FirmwareChecker
+    class FileManager
+    class System
+}
+
+package Data 
+{
+    class Store 
+}
+
+package "Arduino Core"
+{
+    class esp_ota
+}
+
+package "HAL"
+{
+    class Zumo32U4
+}
+
 abstract class Command
 {
     - m_serviceID: String
@@ -8,7 +31,24 @@ abstract class Command
     + {virtual} ~Command()
     + getServiceID(): const String& {const}
     + getReqPermission(): const Permission& {const}
-    + {abstract} run(request: const ApiRequest&, response: ApiResponse&): void {const}
+    + {abstract} run(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void {const}
+    - Command()
+    - Command(const Command&)
+    - Command& operator =(const Command&);
+}
+
+abstract class BinaryCommand
+{
+    - m_binaryServiceID: String
+    - m_BinaryReqPermission: Permission
+    + BinaryCommand(serviceId: const String&, reqPermission: const Permission&)
+    + {virtual} ~BinaryCommand()
+    + getBinaryReqPermission(): const Permission& {const}
+    + {abstract} run(response: ApiResponse&, connectionCtx: Session*): void
+    + {abstract} reset(): void
+    - BinaryCommand()
+    - BinaryCommand(const BinaryCommand&)
+    - BinaryCommand& operator =(const BinaryCommand&);
 }
 
 class EchoDemoCommand
@@ -18,34 +58,79 @@ class EchoDemoCommand
 }
 Command <|-down-EchoDemoCommand
 
+class UploadZumoCommand
+{
+    - {static} FIRMWARE_FILENAME: char* = {readonly} "/zumo_firmware.bin"
+    - {static} TARGET_SYSTEM: char* = {readonly} "ZUMO"
+    - {static} OVERWRITE_FIRMWAREINFO: bool = {readonly} true
+    - m_writtenFirmwareBytes: uint32_t
+    - m_fileManager: FileManager
+    - m_fwChecker: FirmwareChecker
+    + UploadZumoCommand()
+    + ~UploadZumoCommand()
+    - writeFile(dataChunk: const uint8_t*, chunkSize: const uint16_t): bool
+}
+Command <|-down-UploadZumoCommand
+BinaryCommand <|-down-UploadZumoCommand
+UploadZumoCommand "0..*" *--> "1" FileManager
+UploadZumoCommand "0..*" *--> "1" FirmwareChecker
+UploadZumoCommand ..> Store : uses
+
 class FlashZumoCommand
 {
     + FlashZumoCommand()
     + ~FlashZumoCommand()
 }
 Command <|-down-FlashZumoCommand
+FlashZumoCommand ..> Store : uses
+FlashZumoCommand "0..*" *--> "1" Zumo32U4
+FlashZumoCommand "0..*" *--> "1" FirmwareChecker
+FlashZumoCommand "0..*" *--> "1" File
 
-class UploadZumoCommand
+class UploadCOMCommand
 {
-    + UploadZumoCommand()
-    + ~UploadZumoCommand()
+    - {static} TARGET_SYSTEM: char* = {readonly} "COM"
+    - {static} OVERWRITE_FIRMWAREINFO: bool = {readonly} true
+    - m_fwChecker: FirmwareChecker
+    - m_writtenFirmwareBytes: uint32_t
+    - m_isInitialized: bool
+    - m_otaHandle: esp_ota_handle_t
+    - m_writePartitionSize: uint32_t
+    + UploadCOMCommand()
+    + ~UploadCOMCommand()
+    - writePartition(dataChunk: const uint8_t*, chunkSize: const uint16_t): esp_err_t
 }
-Command <|-down-UploadZumoCommand
+Command <|-down-UploadCOMCommand
+BinaryCommand <|-down-UploadCOMCommand
+UploadCOMCommand "0..*" *--> "1" FirmwareChecker
+UploadCOMCommand "0..*" *--> "1" esp_ota
+UploadCOMCommand ..> Store : uses
+
+class FlashCOMCommand
+{
+    - {static} TARGET_SYSTEM: char* = {readonly} "COM"
+    - {static} REBOOT_DELAY_MS: uint16_t = {readonly} 5000
+    + FlashCOMCommand()
+    + ~FlashCOMCommand()
+}
+Command <|-down-FlashCOMCommand
+FlashCOMCommand ..> Store : uses
 
 class RebootZumoCommand
 {
     + RebootZumoCommand()
     + ~RebootZumoCommand()
-
 }
 Command <|-down-RebootZumoCommand
+RebootZumoCommand "0..*" *--> "1" Zumo32U4
 
-class ConfigureNetworkCommand
+class SetSTACredentialsCommand
 {
-    + ConfigureNetworkCommand()
-    + ~ConfigureNetworkCommand()
+    + SetSTACredentialsCommand()
+    + ~SetSTACredentialsCommand()
 }
-Command <|-down-ConfigureNetworkCommand
+Command <|-down-SetSTACredentialsCommand
+SetSTACredentialsCommand ..> Store : uses
 
 class RebootCOMCommand
 {
@@ -60,18 +145,6 @@ class DebugZumoCommand
     + ~DebugZumoCommand()
 }
 Command <|-down-DebugZumoCommand
+DebugZumoCommand "0..*" *--> "1" Zumo32U4
 
-class FlashCOMCommand
-{
-    + FlashCOMCommand()
-    + ~FlashCOMCommand()
-}
-Command <|-down-FlashCOMCommand
-
-class UploadCOMCommand
-{
-    + UploadCOMCommand()
-    + ~UploadCOMCommand()
-}
-Command <|-down-UploadCOMCommand
 @enduml

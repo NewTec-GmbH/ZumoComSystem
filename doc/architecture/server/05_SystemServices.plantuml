@@ -16,21 +16,24 @@ package SystemServices {
 
     component "System" as initcom
     component "FirmwareChecker" as firmwarecheck
-    component "FirmwareDeserializer" as fwdeserializer
+    component "FirmwareHeader" as fwheader
+    component "PublicSigningKey" as pubkey
     component "CryptoServices" as cryptoservices
     component "FileManager" as filemanager
     component "NVSManager" as nvsmanager
     component "WiFiManager" as wifilayerhal
     component "Log" as logger
+    component "LogLevel" as loglevel
 
     note left of cryptoservices : Provides hardware-accelerated\nSHA256, BLAKE2b, RSA2048 and TRNG
-    note left of fwdeserializer : Converts binary firmware\nfile and checks integrity
     note right of firmwarecheck : Checks target system\nand signature of firmware.\nPublic key hardcoded
+    note right of fwheader : Contains all header data and\nprovides easy header deserialization
     note right of filemanager : Provides abstraction\nfor easy use of\n(buffered) file operations
     note right of nvsmanager : Provides abstraction to store\nkey-value pairs in\nnon-volatile storage
     note left of initcom : Provides init and reset of ComPlatform
     note left of wifilayerhal: Manages AP and STA mode
     note left of logger: Provides easy to use system logging
+    note left of loglevel: Enum for log level configuration
 
     filemanager -up- File
     cryptoservices -up- Crypt
@@ -38,16 +41,20 @@ package SystemServices {
     initcom -up- systemhal
     logger -up- Logging
 
-    initcom ..> wifilayerhal
-    firmwarecheck *--> fwdeserializer
+    initcom *--> wifilayerhal
+    firmwarecheck *--> fwheader
+    logger ..> loglevel
+    cryptoservices ..> pubkey
 
-    fwdeserializer -down(crypthal
+    firmwarecheck -down-(crypthal
     nvsmanager -down-(nvshal
     filemanager -down-(fshal
     initcom -down-(readkey
     initcom -down-(store
     wifilayerhal -down-(wifihal
     wifilayerhal -down-(store
+    wifilayerhal -down-(DNS
+    wifilayerhal -down-(mDNS
     cryptoservices -down-(crypthal
     cryptoservices -down-(mbedtlshal
 }
