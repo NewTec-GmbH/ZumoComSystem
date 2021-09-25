@@ -18,22 +18,27 @@ package HAL
 
     enum GPIOPins
     {
-        WIFI_AND_RESET_KEY_PIN = 0,
-        ROBOT_RESET_PIN = 2,
-        ANALOG_NOISE_SEED_PIN = 36
+        PIN_WIFI_AND_RESET_KEY = 0
+        PIN_ROBOT_RESET = 27
+        PIN_ROBOT_ON_OFF = 15
+        PIN_ANALOG_NOISE_SEED = 36
+        INFO_LED_R = 16
+        INFO_LED_G = 22
+        INFO_LED_B = 21
     }
 
     class IO
     {
         - m_ioMutex: SemaphoreHandle_t
-        {static} - DEBOUNCE_DELAY_TIME_MS: uint8_t {readonly} = 50
+        - {static} DEBOUNCE_DELAY_TIME_MS: uint8_t {readonly} = 50
+        - IO()
+        - ~IO()
         + {static} getInstance(): IO&
+        + initGPIOs(): void
         + setPinMode(gpio: const uint8_t, mode: const uint8_t): void
         + readGPIODebounced(gpio: const uint8_t): uint8_t
         + readGPIO(gpio: const uint8_t): uint8_t
         + writeGPIO(gpio: const uint8_t, value: const uint8_t): void
-        - IO()
-        - ~IO()
     }
     IO  ..> ArduinoIO : uses
     IO  ..> SemaphoreHandle_t : uses
@@ -41,31 +46,17 @@ package HAL
     class Key
     {
         - m_io : IO&
-        {static} - LONG_PRESS_TIME_MS: uint32_t {readonly}  = 1000
-        {static} + getInstance(): Key&
-        + registerSystemReset(): void
-        + readKey(): bool {const}
+        - {static} LONG_PRESS_TIME_MS: uint32_t {readonly}  = 1000
         - Key()
         - ~Key()
         - {static} resetTask(parameter: void*): void
         - {static} systemResetISR(): void
+        + {static} getInstance(): Key&
+        + registerSystemReset(): void
+        + readKey(): bool {const}
     }
     Key "0..*" *--> "1" IO
     Key ..> GPIOPins : includes
-
-    ' class Robot
-    ' {
-        '         - m_io : IO&
-        '         {static} - ROBOT_RESET_TIME_MS: uint32_t {readonly} = 500
-        '         {static} + getInstance(): Robot&
-        '         + resetRobotNow(): void
-        '         - Robot()
-        '         - ~Robot()
-
-        '
-    ' }
-    ' Robot "0..*" *--> "1" IO
-    ' Robot ..> GPIOPins : includes
 
     enum ZumoStates
     {
@@ -79,79 +70,149 @@ package HAL
     class ZumoDriverStateMachine
     {
         - m_currentState: ZumoStates
+        - {static} getEnumName(state: ZumoStates): String
         + ZumoDriverStateMachine()
         + ~ZumoDriverStateMachine()
-        + setState(state: ZumoStates): bool
+        + setState(state: ZumoStates, forceSet: bool = false): bool
         + getState(): ZumoStates
     }
     ZumoDriverStateMachine ..> ZumoStates
 
+    class ZumoCommand<size: int>
+    {
+        + commandData: uint8_t[size]
+        + commandSize: uint8_t
+    }
+
+    class ZumoData<size: int>
+    {
+        + data: uint8_t[size]
+        + dataSize: uint8_t
+    }
+
     class Zumo32U4Specification
     {
-        + {static} TRANSFER_BLOCK_SIZE_BYTES: uint8_t {readonly} = 128
+        + {static} READ_SW_ID: ZumoCommand<1> = {{0x53}, 1} {readonly};
 
-        + {static} READ_SW_ID: uint8_t {readonly} = 0x53
-        + {static} READ_SW_VERSION: uint8_t {readonly} = 0x56
-        + {static} READ_HW_VERSION: uint8_t {readonly} = 0x76
-        + {static} READ_PROGRAMMER_TYPE: uint8_t {readonly} = 0x53
-        + {static} READ_SUPPORTED_DEVICE_CODE: uint8_t {readonly} = 0x74
-        + {static} READ_SIGNATURE: uint8_t {readonly} = 0x73
-        + {static} READ_LSB_FUSE: uint8_t {readonly} = 0x46
-        + {static} READ_MSB_FUSE: uint8_t {readonly} = 0x4E
-        + {static} READ_EXTENDED_FUSE: uint8_t {readonly} = 0x51
-        + {static} CHECK_BLOCK_FLASH_SUPPORT: uint8_t {readonly} = 0x62
+        + {static} READ_SW_VERSION: ZumoCommand<1> = {{0x56}, 1} {readonly};
 
-        + {static} SET_MEMORY_ADDR: uint8_t {readonly} = 0x41
-        + {static} ENABLE_AUTO_INCR_MEMORY_WRITE_ADDR: uint8_t {readonly} = 0x61
-        + {static} SET_DEVICE_TYPE: uint8_t[] {readonly} = {0x64, 0x44}
+        + {static} READ_HW_VERSION: ZumoCommand<1> = {{0x76}, 1} {readonly};
 
-        + {static} ENTER_PROGRAMMING_MODE: uint8_t {readonly} = 0x50
-        + {static} EXIT_PROGRAMMING_MODE: uint8_t {readonly} = 0x4C
-        + {static} EXIT_BOOTLOADER_MODE: uint8_t {readonly} = 0x45
+        + {static} READ_PROGRAMMER_TYPE: ZumoCommand<1> = {{0x70}, 1} {readonly};
 
-        + {static} WRITE_MEMORY: uint8_t[] {readonly} = {0x42, 0x00, 0x80, 0x46}
-        + {static} READ_MEMORY: uint8_t[] {readonly} = {0x67, 0x00, 0x80, 0x46}
+        + {static} READ_SUPPORTED_DEVICE_CODE: ZumoCommand<1> = {{0x74}, 1} {readonly};
 
-        + {static} RET_OK: uint8_t {readonly} = 0x0D
-        + {static} EXPECTED_PROGRAMMER_ID: char* {readonly} = "CATERIN"
-        + {static} EXPECTED_SW_VERSION: uint8_t[] {readonly} = {0x31, 0x30}
-        + {static} EXPECTED_HW_VERSION: uint8_t {readonly} = 0x3F
-        + {static} EXPECTED_DEVICE_CODE: uint8_t {readonly} = 0x44
-        + {static} EXPECTED_AUTO_INCR_ADDR_BUF_SIZE: uint8_t {readonly} = 0x59
-        + {static} EXPECTED_BLOCK_BUFFER_SIZE: uint8_t[] {readonly} = {0x59, 0x00, 0x80}
-        + {static} EXPECTED_LSB_FUSE_VALUE: uint8_t {readonly} = 0xFF
-        + {static} EXPECTED_MSB_FUSE_VALUE: uint8_t {readonly} = 0xD0
-        + {static} EXPECTED_EXTENDED_FUSE_VALUE: uint8_t {readonly} = 0xC8
-        + {static} EXPECTED_SIGNATURE: uint8_t[] {readonly} = {0x87, 0x95, 0x1E}
+        + {static} READ_SIGNATURE : ZumoCommand<1> = {{0x73}, 1} {readonly};
+
+        + {static} READ_LSB_FUSE: ZumoCommand<1> = {{0x46}, 1} {readonly};
+
+        + {static} READ_MSB_FUSE: ZumoCommand<1> = {{0x4E}, 1} {readonly};
+
+        + {static} READ_EXTENDED_FUSE: ZumoCommand<1> = {{0x51}, 1} {readonly};
+
+        + {static} CHECK_BLOCK_FLASH_SUPPORT: ZumoCommand<1> = {{0x62}, 1} {readonly};
+
+        + {static} SET_MEMORY_ADDR: ZumoCommand<1> = {{0x41}, 1} {readonly};
+
+        + {static} CHECK_AUTO_MEM_ADDR_INC_SUPPORT: ZumoCommand<1> = {{0x61}, 1} {readonly};
+
+        + {static} SET_DEVICE_TYPE: ZumoCommand<1> = {{0x54}, 1} {readonly};
+
+        + {static} ENTER_PROGRAMMING_MODE: ZumoCommand<1> = {{0x50}, 1} {readonly};
+
+        + {static} EXIT_PROGRAMMING_MODE: ZumoCommand<1> = {{0x4C}, 1} {readonly};
+
+        + {static} EXIT_BOOTLOADER_MODE: ZumoCommand<1> = {{0x45}, 1} {readonly};
+
+        + {static} WRITE_MEMORY_PAGE: ZumoCommand<4> = {{0x42, 0x00, 0x80, 0x46}, 4} {readonly};
+
+        + {static} READ_MEMORY_PAGE: ZumoCommand<4> = {{0x67, 0x00, 0x80, 0x46}, 4} {readonly};
+
+        + {static} RET_OK: ZumoData<1> = {{0x0D}, 1} {readonly};
+
+        + {static} EXPECTED_SOFTWARE_ID: ZumoData<7> = {{'C', 'A', 'T', 'E', 'R', 'I', 'N'}, 7} {readonly};
+
+        + {static} EXPECTED_SW_VERSION: ZumoData<2> = {{0x31, 0x30}, 2} {readonly};
+
+        + {static} EXPECTED_HW_VERSION: ZumoData<1> = {{0x3F}, 1} {readonly};
+
+        + {static} EXPECTED_PROGRAMMER_TYPE: ZumoData<1> = {{0x53}, 1} {readonly};
+
+        + {static} EXPECTED_DEVICE_CODE: ZumoData<1> = {{0x44}, 1} {readonly};
+
+        + {static} EXPECTED_SUPPORTS_AUTO_MEM_ADDR_INC: ZumoData<1> = {{0x59}, 1} {readonly};
+
+        + {static} EXPECTED_BLOCK_BUFFER_SIZE: ZumoData<1> = {{0x59}, 1} {readonly};
+
+        + {static} EXPECTED_LSB_FUSE_VALUE: ZumoData<1> = {{0xFF}, 1} {readonly};
+
+        + {static} EXPECTED_MSB_FUSE_VALUE: ZumoData<1> = {{0xD0}, 1} {readonly};
+
+        + {static} EXPECTED_EXTENDED_FUSE_VALUE: ZumoData<1> = {{0xC8}, 1} {readonly};
+
+        + {static} EXPECTED_SIGNATURE: ZumoData<3> = {{0x87, 0x95, 0x1E}, 3} {readonly};
     }
+
+    class ACMAsyncOper
+    {
+        + OnInit(pacm: ACM*): uint8_t
+        - {static} BAUD_RATE: uint16_t = 57600 {readonly}
+        - {static} CHAR_FORMAT: uint8_t = 0 {readonly}
+        - {static} PARITY_TYPE: uint8_t = 0 {readonly}
+        - {static} NUMBER_OF_DATA_BITS: uint8_t = 8 {readonly}
+    }
+    ACMAsyncOper <|-- CDCAsyncOper
 
     class Zumo32U4
     {
+        - {static} m_usb: USB
+        - {static} m_asyncOper: ACMAsyncOper
+        - {static} m_acm: ACM
+        - {static} AWAIT_RESPONSE_DELAY_MS: uint8_t = 50 {readonly}
+        - {static} NEXT_SERIAL_SEND_DELAY_MS: uint8_t = 10 {readonly}
+        - {static} USB_TIMEOUT_MS: uint16_t = 2000 {readonly}
+        - {static} USB_RETRY_DELAY_MS: uint8_t = 10 {readonly}
+        - {static} USB_MAX_PACKET_READ_BYTES: uint8_t = 64 {readonly}
+        - {static} USB_MAX_PACKET_WRITE_BYTES: uint16_t = 64 {readonly}
+        - {static} PAGE_SIZE_BYTES: uint16_t = 128 {readonly}
+        - {static} MAX_FIRMWARE_BUFFER_BYTES: uint16_t = 4096 {readonly}
         - m_stateMachine: ZumoDriverStateMachine
-        + Zumo32U4()
-        + ~Zumo32U4()
-        + open(): bool
-        + close(): bool
-        + getState(): ZumoStates
-        + restart(): bool
-        + readSerial(dataBuffer: const uint8_t*, chunkSize: const uint16_t): bool
-        + writeSerial(dataBuffer: const uint8_t*, chunkSize: const uint16_t): bool
-        + beginWriteFirmware(firmwareSize: uint16_t, expectedHash: const String&): bool
-        + writeFirmwareChunk(dataChunk: const uint8_t*, chunkSize: const uint16_t): bool
-        + finalizeWriteFirmware(): bool
-        - sendCommand(command: const uint8_t*, retDataSize: const uint8_t, retData: const uint8_t*): bool
-        - enterBootloaderMode(): bool
+        - m_io: IO&
+        - m_crypto: CryptoServices
+        - m_firmwareWriteBuffer: uint8_t[MAX_FIRMWARE_BUFFER_BYTES]
+        - m_writtenFirmwareBytes: uint16_t
+        - m_currWriteMemAddr: uint16_t
+        - m_currReadMemAddr: uint16_t
+        - m_expectedFirmwareSIze: uint16_t
+        - m_expectedHashValue: String
+        - Zumo32U4()
+        - ~Zumo32U4()
+        - handleUSBDriver(): void
+        - sendCommand(command: const ZumoCommand<size>&, commandData: const uint8_t*, commandDataSize: const uint16_t*, retData: uint8_t*, retDataSize: uint16_t*): bool
+        - sendCommand(command: const ZumoCommand<size>&, retData: uint8_t*, retDataSize: uint16_t*): bool
+        - enterBootloaderMode(): void
         - exitBootloaderMode(): bool
         - enterProgrammerMode(): bool
         - exitProgrammermode(): bool
         - checkPlatform(): bool
         - verifyFuses(): bool
+        - verifySignature(): bool
         - configurePlatform(): bool
-        - readMemory(dataChunk: const uint8_t*, chunkSize: const uint16_t): bool
-        - resetReadAddress(): bool
-        - writeMemory(dataChunk: const uint8_t*, chunkSize: const uint16_t): bool
-        - resetWriteAddress(): bool
+        - readMemoryPage(dataChunk: uint8_t*, chunkSize: uint16_t&): bool
+        - flashPages(dataChunk: uint8_t*, chunkSize: const uint16_t): bool
         - verifyWrittenFirmware(expectedHash: const String&): bool
+        - resetZumoDriver(): void
+        - resetUSBDriver(): bool
+        + {static} getInstance(): Zumo32U4&
+        + open(): bool
+        + close(): bool
+        + getState(): ZumoStates
+        + restart(forceRestart: bool = false): bool
+        + readSerialBuffer(dataBuffer: uint8_t*, chunkSize: uint32_t&): bool
+        + writeSerialBuffer(dataBuffer: uint8_t*, chunkSize: const uint16_t): bool
+        + beginWriteFirmware(firmwareSize: uint16_t, expectedHash: const String&): bool
+        + writeFirmwareChunk(dataChunk: uint8_t*, chunkSize: const uint16_t): bool
+        + finalizeWriteFirmware(): bool
     }
     Zumo32U4 "0..*" *--> "1" ZumoDriverStateMachine
     Zumo32U4 "0..*" *--> "1" Zumo32U4Specification

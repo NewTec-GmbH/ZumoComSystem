@@ -1,11 +1,15 @@
 @startuml
 partition "System Initialization" {
     (*) --> "Turn on ComPlatform"
-    --> "Register Reset-ISR"
+    --> "Initialize GPIOs"
+
+    --> "Register System-Reset-ISR"
+
     --> === S1 ===
     --> "Start KeyCert generation task"
     --> "Load/set KeyCert from disk"
 
+    --> "Check if KeyCert is available"
     if "KeyCert available" then
     --> [true] === S2 ===
     else
@@ -14,10 +18,10 @@ partition "System Initialization" {
     --> === S2 ===
     endif
 
-    === S1 === --> "Generate unique SSID for AP mode"
+    === S1 === --> "Generate unique SSID and set default\npassphrase for AP mode"
     --> "Read WiFi/Reset key"
 
-    if "WiFi/Reset key pressed for two seconds" then
+    if "WiFi/Reset key pressed" then
     --> [true] "Init AP" as initap
     else
     --> [false] "Load NetworkCredentials from disk"
@@ -29,30 +33,59 @@ partition "System Initialization" {
     endif
 
     --> "Initialize file system"
-    --> "Initialize USB Driver"
     --> "Load Users and their Permissions from disk"
+    --> "Load FirmwareInfo entries from disk"
 
+    --> "Check existence of user admin"
     if "User 'admin' existing" then
-    --> [true] === S2 ===
+    --> [true] "Check existence of user student"
     else
-    --> [false] "Create user 'admin' with default password and full priviliges"
+    --> [false] "Create user 'admin' with default\npassword and full priviliges"
     --> "Save new user 'admin' to disk"
     endif
+
+    --> "Check existence of user student"
+    if "User 'student' existing" then
+    --> [true] "Open the Zumo32U4 driver"
+    else
+    --> [false] "Create user 'student' with default\npassword and reduced priviliges"
+    --> "Save new user 'student' to disk"
+    endif
+
+    --> "Open the Zumo32U4 driver"
     --> === S2 ===
+
     --> "Start session timeout service"
-    if "KeyCert set and session timeout service successfully started" then
+    if "KeyCert set and\nsession timeout service\nsuccessfully started" then
     --> [true] "Init HTTPs Server"
     --> "Init WSS Server"
     --> "Service Handling"
     else
-    --> "Service Handling"
+    --> [false] "Service Handling"
     endif
 }
 
 partition "Service Handling" {
-    --> "Handle DNS-Service" as handledns
-    --> "Handle Websocket & HTTPs Servers"
-    --> "Handle USB Services"
-    --> handledns
+    --> "Handle Websocket & HTTPs Servers" as handleserver
+    --> "Handle AP_DNS-Service"
+    --> "DELAY"
+    --> handleserver
+
+
+}
+
+partition "System Reset" {
+    --> (*)
+    --> "Stop AP mode if running"
+    --> "Stop STA mode if running"
+
+    --> "Close Store and flush all data"
+    --> "Stop HTTPs and WSS servers"
+
+    --> "Close the SPIFFS FS and flush all data"
+
+    --> "Close the Zumo32U4 driver"
+
+    --> "Restart the ESP32 µC"
 }
 @enduml

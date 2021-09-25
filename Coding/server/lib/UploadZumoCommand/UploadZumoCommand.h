@@ -84,6 +84,9 @@ public:
     void reset();
 
 private:
+    /** Specifies how many bytes of the firmware payload have been written into the file sytem */
+    uint32_t m_writtenFirmwareBytes;
+
     /** Instance of the FileManager */
     FileManager m_fileManager;
 
@@ -98,9 +101,6 @@ private:
 
     /** Specifies if FirmwareInfo should be overwritten or not */
     static const bool OVERWRITE_FIRMWAREINFO;
-
-    /** Specifies how many bytes of the firmware payload have been written into the file sytem */
-    uint32_t m_writtenFirmwareBytes;
 
     /**
      * Helper function for writing the firmware payload into the file system

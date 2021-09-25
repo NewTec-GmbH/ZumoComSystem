@@ -75,6 +75,7 @@ System::~System()
 void System::init()
 {
     bool certGenRetCode = false;
+    bool timeoutServiceRetCode = false;
     NetworkCredentials apCredentials;
 
     /* Initialize the GPIOs */
@@ -172,17 +173,33 @@ void System::init()
     }
 
     /* Open the Zumo driver */
-    Zumo32U4::getInstance().open();
+    if (true == Zumo32U4::getInstance().open())
+    {
+        LOG_DEBUG("Successfully opened the Zumo32U4 driver");
+    }
+    else
+    {
+        LOG_ERROR("Could not open the Zumo32U4 driver!");
+    }
 
     /* Await KeyCert generation task execution */
     xSemaphoreTake(m_genKeyCertSemaphore, portMAX_DELAY);
     xSemaphoreGive(m_genKeyCertSemaphore);
 
     /* Start the background task to enable session timeouts */
-    if ((true == certGenRetCode) && (true == Session::start()))
+    timeoutServiceRetCode = Session::start();
+    if (true == timeoutServiceRetCode)
     {
         LOG_DEBUG("Successfully started websocket API timeout service");
+    }
+    else
+    {
+        LOG_ERROR("Could not start websocket API timeout service");
+    }
 
+    /* Start the HTTPs web server and the WSS API server if KeyCert is available and session timeout is enabled */
+    if ((true == certGenRetCode) && (true == timeoutServiceRetCode))
+    {
         /* Init HTTPs and WSS servers */
         if (true == m_webServer->startServer())
         {
@@ -195,7 +212,7 @@ void System::init()
     }
     else
     {
-        LOG_ERROR("Did not start webserver because timeout service or KeyCert generation task could not be started!");
+        LOG_ERROR("Did not start webserver because timeout service or KeyCert generation task could not be executed successfully!");
     }
     LOG_INFO("++++++++++++++++ Done ++++++++++++++++");
 }

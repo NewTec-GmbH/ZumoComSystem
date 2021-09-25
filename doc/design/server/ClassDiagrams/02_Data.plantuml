@@ -20,9 +20,9 @@ package Data
 {
     class NetworkCredentials
     {
-        - {static} MAX_SSID_LENGTH_CHARS {readonly} = 31
-        - {static} MIN_PASSPHRASE_LENGTH_CHARS {readonly} = 8
-        - {static} MAX_PASSPHRASE_LENGTH_CHARS {readonly} = 63
+        - {static} MAX_SSID_LENGTH_CHARS: uint8_t {readonly} = 31
+        - {static} MIN_PASSPHRASE_LENGTH_CHARS: uint8_t {readonly} = 8
+        - {static} MAX_PASSPHRASE_LENGTH_CHARS: uint8_t {readonly} = 63
         - m_ssid: String
         - m_passphrase: String
         + NetworkCredentials()
@@ -38,19 +38,19 @@ package Data
 
     class KeyCert
     {
+        - m_sslCert: httpsserver::SSLCert
+        - {static} m_binaryKey: uint8_t[RSA_KEY_SIZE_BYTE]
+        - {static} m_binaryCert: uint8_t[CERT_SIZE_BYTE]
+        - m_certGenerated: bool = false
+        - freeSSLMemory(): void
         + {static} RSA_KEY_SIZE_BYTE : size_t {readonly} = 1190
         + {static} CERT_SIZE_BYTE: size_t {readonly} = 766
-        - m_sslCert: httpsserver::SSLCert
-        - {static} m_binaryKey: uint8_t[]
-        - {static} m_binaryCert: uint8_t[]
-        - m_certGenerated: bool = false
         + KeyCert()
         + ~KeyCert()
         + generateNewCert(): bool
         + getSSLCert(): httpsserver::SSLCert*
         + serialize(keyBuffer: uint8_t*, certBuffer: uint8_t*): void
         + deserialize(keyBuffer: const uint8_t*, certBuffer: const uint8_t*): void
-        - freeSSLMemory(): void
     }
     KeyCert "0..*" *--> "1" SSLCert
 
@@ -68,8 +68,9 @@ package Data
         + ~FirmwareInfo()
         + {static} putInfo(targetSystem: const String&, payloadHashValue: const String&, isValid: const bool, sizeBytes: const uin32_t, updateInfo: const bool): bool
         + {static} getInfo(targetSystem: const String&): const FirmwareInfo*
-        + {static} deleteInfo(targetSystem: const String&): bool
+        + {static} deleteInfo(targetSystem: const String&): void
         + {static} serialize(serial: String&): bool
+        + serializeInstance(serial: String&): bool {const}
         + {static} deserialize(serial: const String&): bool
         + getTargetSystem(): const String& {const}
         + getPayloadHashValue(): const String& {const}
@@ -80,14 +81,14 @@ package Data
 
     enum Permission
     {
-        ANY,
-        NONE,
-        DEBUG_ZUMO,
-        FLASH_ZUMO,
-        FLASH_COM,
-        REBOOT_ZUMO,
-        REBOOT_COM,
-        CONFIGURE_NETWORK,
+        ANY
+        NONE
+        DEBUG_ZUMO
+        FLASH_ZUMO
+        FLASH_COM
+        REBOOT_ZUMO
+        REBOOT_COM
+        CONFIGURE_NETWORK
         ECHO_DEMO
     }
 
@@ -101,27 +102,30 @@ package Data
         - {static} MAX_PERMISSIONS_PER_USER: uint8_t {readonly} = 32
         - {static} DEFAULT_ADMIN_USERNAME: const char* {readonly} = "admin"
         - {static} DEFAULT_ADMIN_PASSWORD: const char* {readonly} = "21091986"
+        - {static} DEFAULT_USER_USERNAME: const char* {readonly} = "student"
+        - {static} DEFAULT_USER_PASSWORD: const char* {readonly} = "nt2021nt"
         - {static} m_numberOfRegisteredUsers: uint8_t = 0
         - {static} m_registeredUsers: User*[MAX_REGISTERED_USERS]
         - {static} m_userMutex: SemaphoreHandle_t
-        - m_crypto: CryptoServices
+        - {static} m_crypto: CryptoServices
         - m_username: String
         - m_hashedPassword: String
         - m_passwordSalt: String
         - m_permissions: Permission[MAX_PERMISSIONS_PER_USER]
         - m_numberOfPermissions: uint8_t = 0
+        - {static} getUserIdx(username: const String&): int8_t
         + User()
         + ~User()
         + {static} registerAdminAccount(): bool
+        + {static} registerDefaultUser(): bool
         + {static} getPermissions(numberOfPermissions: uint8_t&): const Permission*
         + {static} getUsername(): String
         + {static} getUser(username: const String&): User*
         + {static} checkCredentials(username: const String&, password: const String&): bool
         + {static} putUser(username: const String&, password: const String&, permissions: const Permission*, numberOfPermissions: const uint8_t, updateUser: const bool): bool
         + {static} deleteUser(username: const String&): bool
-        + serialize(serialized: String&): void
+        + serialize(serialized: String&): bool {const}
         + deserialize(serial: const String&): bool
-        - {static} getUserIdx(username: const String&): int8_t
     }
     User "0..*" *--> "1" CryptoServices
     User "0..*" *--> "1" SemaphoreHandle_t
@@ -133,7 +137,7 @@ package Data
     {
         - {static} MAX_CLIENTS: uint8_t {readonly} = 4
         - {static} MAX_TEXT_REQUEST_SIZE_BYTE: uint16_t {readonly} = 512
-        - {static} SESSION_TIMEOUT_SECONDS {readonly} = 900;
+        - {static} SESSION_TIMEOUT_SECONDS: uint16_t {readonly} = 900;
         - {static} m_sessions: Session*[MAX_CLIENTS];
         - {static} m_sessionMutex: SemaphoreHandle_t
         - {static} m_numberOfActiveClients: uint8_t = 0
@@ -142,13 +146,13 @@ package Data
         - m_sessionAuthenticated: bool = false
         - m_linkedUser: User*
         - m_lastAccessTime: unsigned long = 0
+        - {static} handleSessionTimeout(parameter: void*): void
         + {static} MAX_BUFFER_SIZE_BYTE: uin16_t = {readonly} 2048
         + {static} API_TIMEOUT_MS: uin16_t = {readonly} 15000
         + m_readBytes: uint32_t
         + m_streamByteIdx: uint32_t
         + m_expectingBytes: uint32_t
         + m_binaryBuffer: uint8_t[MAX_BUFFER_SIZE_BYTE]
-        + m_fwCheck: FirmwareCheck
         + Session()
         + ~Session()
         + {static} start(): bool
@@ -161,7 +165,6 @@ package Data
         + authenticateSession(user: User*): void
         + deauthenticateSession(): void
         + getPermissions(numberOfPermissions: uint8_t&): const Permission*
-        + {static} handleSessionTimeout(parameter: void*): void
     }
     Session "0..*" *--> "1" SemaphoreHandle_t
     Session "1" *--> "4" Session
@@ -178,7 +181,8 @@ package Data
         - m_apCredentials: NetworkCredentials
         - m_keyCert: KeyCert
         - m_users: User
-        - m_firmwareInfo: FirmwareInfo
+        - Store()
+        - ~Store()
         {static} + getInstance(): Store&
         + getSTACredentials(): const NetworkCredentials& {const}
         + setSTACredentials(credentials: const NetworkCredentials&): void
@@ -193,15 +197,11 @@ package Data
         + setUsers(users: const User&): void
         + saveUsers(): bool
         + loadUsers(): bool
-        + getFirmwareInfo(): const FirmwareInfo& {const}
-        + setFirmwareInfo(info: const FirmwareInfo&): void
         + saveFirmwareInfo(): bool
         + loadFirmwareInfo(): bool
         + getAPCredentials(): const NetworkCredentials& {const}
         + setAPCredentials(credentials: const NetworkCredentials&): void
         + closeStore(): void
-        - Store()
-        - ~Store()
     }
     Store "0..*" *--> "1" NVSManager
     Store "0..*" *--> "2" NetworkCredentials

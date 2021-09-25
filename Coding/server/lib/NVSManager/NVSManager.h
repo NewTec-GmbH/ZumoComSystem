@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #ifndef __NVSMANAGER_H__
+#define __NVSMANAGER_H__
 
 #include <Arduino.h>
 #include <Preferences.h>
@@ -119,6 +120,4 @@ private:
     /* Instance of ESP32 preferences */
     Preferences m_preferences;
 };
-
-#define __NVSMANAGER_H__
 #endif /** __NVSMANAGER_H__ */

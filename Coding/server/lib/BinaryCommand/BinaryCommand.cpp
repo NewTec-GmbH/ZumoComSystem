@@ -43,7 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 BinaryCommand::BinaryCommand(const String& serviceID, const Permission& reqPermission) :
     m_binaryServiceID(serviceID),
-    m_BinaryReqPermission(reqPermission)
+    m_binaryReqPermission(reqPermission)
 {
 }
 
@@ -58,6 +58,6 @@ const String& BinaryCommand::getBinaryServiceID() const
 
 const Permission& BinaryCommand::getBinaryReqPermission() const
 {
-    return m_BinaryReqPermission;
+    return m_binaryReqPermission;
 }
 

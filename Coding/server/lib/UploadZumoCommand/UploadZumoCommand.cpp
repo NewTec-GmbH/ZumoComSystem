@@ -53,9 +53,9 @@ const bool  UploadZumoCommand::OVERWRITE_FIRMWAREINFO = true;
 UploadZumoCommand::UploadZumoCommand() :
     Command("uploadzumo", NONE),
     BinaryCommand("uploadzumo", NONE),
+    m_writtenFirmwareBytes(0),
     m_fileManager(),
-    m_fwChecker(),
-    m_writtenFirmwareBytes(0)
+    m_fwChecker()
 {
 }
 

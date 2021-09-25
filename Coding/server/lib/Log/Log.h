@@ -125,18 +125,17 @@ public:
     void writeLog(const LogLevel& level, const String& msg);
 
 private:
-    /** Constructor */
-    Log() :
-        m_logLevel(LEVEL_DEBUG)
-    {
-    }
-
-    /** Destructor */
-    ~Log()
-    {
-    }
-
     /** The log level which is used to determine what to print */
     LogLevel m_logLevel;
+
+    /**
+     * Default Constructor
+     */
+    Log();
+
+    /**
+     * Destructor
+     */
+    ~Log();
 };
 #endif /* __LOG_H__ */

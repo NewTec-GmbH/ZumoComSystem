@@ -79,7 +79,7 @@ Zumo32U4::Zumo32U4() :
     m_stateMachine(),
     m_io(IO::getInstance()),
     m_crypto(),
-    firmwareWriteBuffer(),
+    m_firmwareWriteBuffer(),
     m_writtenFirmwareBytes(0),
     m_currWriteMemAddr(0),
     m_currReadMemAddr(0),

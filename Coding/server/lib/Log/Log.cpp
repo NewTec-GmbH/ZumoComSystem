@@ -41,6 +41,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Log.h>
 
+Log::Log() :
+    m_logLevel(LEVEL_DEBUG)
+{
+}
+
+Log::~Log()
+{
+}
+
 const Log::LogLevel& Log::getLogLevel() const
 {
     return m_logLevel;

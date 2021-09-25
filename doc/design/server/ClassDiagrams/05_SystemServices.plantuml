@@ -32,21 +32,22 @@ package Server
 package SystemServices {
     enum LogLevel
     {
-        LEVEL_DEBUG
-        LEVEL_INFO
-        LEVEL_WARN
-        LEVEL_ERROR
+        LEVEL_INVALID = 4
+        LEVEL_DEBUG = 3
+        LEVEL_INFO = 2
+        LEVEL_WARN = 1
+        LEVEL_ERROR = 0
     }
 
     class Log
     {
         - m_LogLevel : LogLevel = DEBUG
+        - Log()
+        - ~Log()
         {static} + getInstance(): Log&
         + getLogLevel(): const LogLevel& {const}
         + setLogLevel(level: const LogLevel&): void
         + writeLog(level: const LogLevel&, msg: const String&): void
-        - Log()
-        - ~Log()
     }
     Log "0..*" *--> "1" LogLevel
 
@@ -68,9 +69,11 @@ package SystemServices {
     class FileManager
     {
         - m_fileHandle: File
+        - {static} getInfo(infoString: String&): void
         + FileManager()
         + ~FileManager()
         + {static} initFS(): bool
+        + {static} closeFS(): void
         + openFile(fileName: const String&, mode: const char*): bool
         + fileOpened(): bool
         + {static} deleteFile(fileName: const String&): bool
@@ -81,14 +84,13 @@ package SystemServices {
         + {static} fileExists(fileName: const String&): bool
         + getFileSize(): int32_t {const}
         + {static} getFileSize(fileName: const String&): int32_t
-        - {static} getInfo(infoString: String&): void
     }
     FileManager "0..*" *--> "1" File
     FileManager ..> FileMode : uses
 
     class PublicSigningKey
     {
-        + {static} RSA2048_PUBLIC_KEY: char* {readonly}
+        + {static} PUB_RSA_SIGN_KEY: char* {readonly}
         + {static} KEY_LENGTH_BYTES: uint16_t {readonly}
     }
 
@@ -96,13 +98,14 @@ package SystemServices {
     {
         - {static} SALT_LENGTH_BYTE: uint8_t {readonly} = 64
         - {static} BLAKE2b_LENGTH_BYTE: uint8_t {readonly} = 64
-        - {static} SHA256_LENGTH_BYTE: uint8_t {readonly} = 32
+        - {static} SHA256_LENGTH_BYTE: uint16_t {readonly} = 32
         - m_hasherInstance: BLAKE2b
         - m_hashBuffer: uint8_t[SHA256_LENGTH_BYTE]
         - m_hashAvailable: bool
         - m_messageDigestInitialized: bool
         - m_publicKeyContext: mbedtls_pk_context
         - m_messageDigestContext: mbedtls_md_context_t
+        - finalizeSHA256Hash(): void
         + CryptoServices()
         + ~CryptoServices()
         + getRandomSalt(outputString: String&): bool
@@ -111,7 +114,6 @@ package SystemServices {
         + resetSHA256Hash(): void
         + getSHA256String(outputString: String&): bool
         + verifySignature(signature: const uint8_t*, signatureSize: const uint16_t): bool
-        - finalizeSHA256Hash(): void
     }
     CryptoServices "0..*" *--> "1" BLAKE2b
     CryptoServices "0..*" *--> "1" mbedtls_pk_context
@@ -121,13 +123,6 @@ package SystemServices {
 
     class FirmwareHeader
     {
-        + {static} HEADER_SIZE_BYTE: uint16_t = {readonly} 337
-        - {static} ID_SIZE_BYTE: uint8_t = {readonly} 16
-        - {static} TARGET_SIZE_BYTE: uint8_t = {readonly} 16
-        - {static} VERSION_SIZE_BYTE: uint8_t = {readonly} 1
-        - {static} HASH_ALG_SIZE_BYTE: uint8_t = {readonly} 16
-        - {static} SIGN_ALG_SIZE_BYTE: uint8_t = {readonly} 32
-        - {static} SIGNATURE_SIZE_BYTE: uint16_t = {readonly} 256
         - m_readHeaderBytes: uint16_t
         - m_idBuffer: uint8_t[ID_SIZE_BYTE]
         - m_targetBuffer: uint8_t[TARGET_SIZE_BYTE]
@@ -135,9 +130,16 @@ package SystemServices {
         - m_hashAlgBuffer: uint8_t[HASH_ALG_SIZE_BYTE]
         - m_signAlgBuffer: uint8_t[SIGN_ALG_SIZE_BYTE]
         - m_signatureBuffer: uint8_t[SIGNATURE_SIZE_BYTE]
+        + {static} ID_SIZE_BYTE: uint8_t = {readonly} 16
+        + {static} TARGET_SIZE_BYTE: uint8_t = {readonly} 16
+        + {static} VERSION_SIZE_BYTE: uint8_t = {readonly} 1
+        + {static} HASH_ALG_SIZE_BYTE: uint8_t = {readonly} 16
+        + {static} SIGN_ALG_SIZE_BYTE: uint8_t = {readonly} 32
+        + {static} SIGNATURE_SIZE_BYTE: uint16_t = {readonly} 256
+        + {static} HEADER_SIZE_BYTE: uint16_t = {readonly} 337
         + FirmwareHeader()
         + ~FirmwareHeader()
-        + deserialize(dataChunk: const uint8_t*, chunkSize: const uint16_t): bool
+        + deserialize(dataChunk: const uint8_t*, chunkSize: const uint16_t): void
         + reset(): void
         + getID(id: String&): void {const}
         + getVersion(): uint8_t {const}
@@ -149,8 +151,6 @@ package SystemServices {
 
     class FirmwareChecker
     {
-        + {static} MAX_ZUMO_FW_BLOB_SIZE_BYTE: uint32_t = {readonly} 32000
-        + {static} MAX_COM_FW_BLOB_SIZE_BYTE: uint32_t = {readonly} 1310720
         - {static} EXPECTED_ID: char* = {readonly} "CPSFW"
         - {static} EXPECTED_VERSION: uint8_t = {readonly} 1
         - {static} EXPECTED_HASH_ALG: char* = {readonly} "SHA256"
@@ -158,6 +158,8 @@ package SystemServices {
         - m_fwHeader: FirmwareHeader
         - m_crypto: CryptoServices
         - m_readPayloadBytes: uint32_t
+        + {static} MAX_ZUMO_FW_BLOB_SIZE_BYTE: uint32_t = {readonly} 28672
+        + {static} MAX_COM_FW_BLOB_SIZE_BYTE: uint32_t = {readonly} 1310720
         + FirmwareChecker()
         + ~FirmwareChecker()
         + deserializeHeader(dataChunk: const uint8_t*, chunkSize: const uint16_t): void
@@ -175,7 +177,7 @@ package SystemServices {
     {
         - m_store: Store&
         - m_dnsServer: DNSServer
-        - DNS_PORT: uint8_t {readonly} = 53
+        - {static} DNS_PORT: uint8_t {readonly} = 53
         - m_dnsRetCode: bool = false
         - {static} HOSTNAME: char* = {readonly} "complatform.local"
         - {static} WIFI_CHANNEL_NO: uint8_t {readonly} = 1
@@ -199,21 +201,21 @@ package SystemServices {
     {
         - m_store: Store&
         - m_wifiManager: WiFiManager*
-        - m_webServer: WebServer*
+        - m_webServer: HTTPsWebServer*
         - {static} m_genKeyCertSemaphore: SemaphoreHandle_t
-        - SERVICE_HANDLING_SLEEP_TIME_MS {readonly} = 1
-        + {static} getInstance(): System&
-        + init(): void
-        + handleServices(): void
-        + reset(): void
+        - {static} SERVICE_HANDLING_SLEEP_TIME_MS: uint8_t {readonly} = 1
         - System()
         - ~System()
         - {static} genKeyCertTask(parameter: void*): void
         - registerKeyCertGenTask(): bool
+        + {static} getInstance(): System&
+        + init(): void
+        + handleServices(): void
+        + reset(): void
     }
     System "0..*" *--> "1" WiFiManager
     System "0..*" *--> "1" Store
-    System "0..*" *--> "1" WebServer
+    System "0..*" *--> "1" HTTPsWebServer
     System "0..*" *--> "1" SemaphoreHandle_t
 }
 @enduml

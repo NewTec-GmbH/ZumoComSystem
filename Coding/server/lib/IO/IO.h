@@ -98,20 +98,20 @@ public:
     void writeGPIO(const uint8_t gpio, const uint8_t value);
 
 private:
+    /** Mutex which is used to avoid that two or more concurrent tasks, which use the IO class, can have write access to the GPIOs at once */
+    SemaphoreHandle_t m_ioMutex;
+
+    /** The timespan between two two level transitions in which level changes are ignored */
+    static const uint8_t DEBOUNCE_DELAY_TIME_MS = 50;
+
     /**
-     * Default constructor
-     */
+    * Default constructor
+    */
     IO();
 
     /**
      * Destructor
      */
     ~IO();
-
-    /** Mutex which is used to avoid that two or more concurrent tasks, which use the IO class, can have write access to the GPIOs at once */
-    SemaphoreHandle_t m_ioMutex;
-
-    /** The timespan between two two level transitions in which level changes are ignored */
-    static const uint8_t DEBOUNCE_DELAY_TIME_MS = 50;
 };
 #endif /** __IO_H__ */

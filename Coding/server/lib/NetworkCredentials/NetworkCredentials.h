@@ -48,10 +48,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class NetworkCredentials
 {
 public:
-    /** Default constructor */
+    /**
+     * Default constructor
+     */
     NetworkCredentials();
 
-    /** Destructor */
+    /**
+     * Destructor
+     */
     ~NetworkCredentials();
 
     /**

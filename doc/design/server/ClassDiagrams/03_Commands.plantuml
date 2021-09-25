@@ -8,9 +8,9 @@ package SystemServices
     class System
 }
 
-package Data 
+package Data
 {
-    class Store 
+    class Store
 }
 
 package "Arduino Core"
@@ -40,9 +40,10 @@ abstract class Command
 abstract class BinaryCommand
 {
     - m_binaryServiceID: String
-    - m_BinaryReqPermission: Permission
+    - m_binaryReqPermission: Permission
     + BinaryCommand(serviceId: const String&, reqPermission: const Permission&)
     + {virtual} ~BinaryCommand()
+    + getBinaryServiceID(): const String& {const}
     + getBinaryReqPermission(): const Permission& {const}
     + {abstract} run(response: ApiResponse&, connectionCtx: Session*): void
     + {abstract} reset(): void
@@ -60,15 +61,15 @@ Command <|-down-EchoDemoCommand
 
 class UploadZumoCommand
 {
-    - {static} FIRMWARE_FILENAME: char* = {readonly} "/zumo_firmware.bin"
-    - {static} TARGET_SYSTEM: char* = {readonly} "ZUMO"
-    - {static} OVERWRITE_FIRMWAREINFO: bool = {readonly} true
     - m_writtenFirmwareBytes: uint32_t
     - m_fileManager: FileManager
     - m_fwChecker: FirmwareChecker
+    - {static} FIRMWARE_FILENAME: char* = {readonly} "/zumo_firmware.bin"
+    - {static} TARGET_SYSTEM: char* = {readonly} "ZUMO"
+    - {static} OVERWRITE_FIRMWAREINFO: bool = {readonly} true
+    - writeFile(dataChunk: const uint8_t*, chunkSize: const uint16_t): bool
     + UploadZumoCommand()
     + ~UploadZumoCommand()
-    - writeFile(dataChunk: const uint8_t*, chunkSize: const uint16_t): bool
 }
 Command <|-down-UploadZumoCommand
 BinaryCommand <|-down-UploadZumoCommand
@@ -78,6 +79,9 @@ UploadZumoCommand ..> Store : uses
 
 class FlashZumoCommand
 {
+    - m_zumoDriver: Zumo32U4&
+    - {static} TARGET_SYSTEM: char* = {readonly} "ZUMO"
+    - {static} FIRMWARE_FILENAME: char* = {readonly} "/zumo_firmware.bin"
     + FlashZumoCommand()
     + ~FlashZumoCommand()
 }
@@ -96,9 +100,9 @@ class UploadCOMCommand
     - m_isInitialized: bool
     - m_otaHandle: esp_ota_handle_t
     - m_writePartitionSize: uint32_t
+    - writePartition(dataChunk: const uint8_t*, chunkSize: const uint16_t): esp_err_t
     + UploadCOMCommand()
     + ~UploadCOMCommand()
-    - writePartition(dataChunk: const uint8_t*, chunkSize: const uint16_t): esp_err_t
 }
 Command <|-down-UploadCOMCommand
 BinaryCommand <|-down-UploadCOMCommand
@@ -139,12 +143,9 @@ class RebootCOMCommand
 }
 Command <|-down-RebootCOMCommand
 
-class DebugZumoCommand
+class GetFirmwareInfoCommand
 {
-    + DebugZumoCommand()
-    + ~DebugZumoCommand()
+    + GetFirmwareInfoCommand()
+    + ~GetFirmwareInfoCommand()
 }
-Command <|-down-DebugZumoCommand
-DebugZumoCommand "0..*" *--> "1" Zumo32U4
-
 @enduml
