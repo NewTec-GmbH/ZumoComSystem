@@ -1,24 +1,28 @@
 @startuml
+class WebSocketClient
+{
+    - {static} m_host: String = "complatform.local" {readonly}
+    - m_socketClient: WebSocket
+    - {static} m_instance: WebSocketClient
+    - WebSocketClient()
+    + {static} getInstance(): WebSocketClient
+    + onOpen(fnPtr: any): void
+    + onClose(fnPtr: any): void
+    + onError(fnPtr: any): void
+    + onMessage(fnPtr: any): void
+    + disconnect(): void
+    + getState(): number
+    + send(payload: string | Uint8Array): boolean
+}
+
 class RequestResponseHandler
 {
     - m_wsClient: WebSocketClient
+    - {static} m_reqResHandler: RequestResponseHandler
     - RequestResponseHandler()
     + {static} getInstance(): RequestResponseHandler
-    + makeRequest(request: ApiRequest): ApiResponse
-    + makeRequest(operation: String): ApiResponse
-    + sendBinary(dataChunk: Uint8Array): void
+    + makeRequest(request: ApiRequest, context: any, hideErrors: boolean): Promise<ApiResponse> {async}
+    + sendBinary(dataChunk: Uint8Array, context: any): Promise<ApiResponse> {async}
 }
-RequestResponseHandler ..> WebSocketClient : uses
-
-class WebSocketClient
-{
-    - {static} m_host: string {readonly} = "complatform.local"
-    - m_socketClient: WebSocket
-    - WebSocketClient()
-    + {static} getInstance(): WebSocketClient
-    + disconnect(): void
-    + sendString(payload: string): boolean
-    + sendBinary(payload: Uint8Array): boolean
-    + onMessage(fnPtr: any): void
-}
+RequestResponseHandler *--> WebSocketClient
 @enduml

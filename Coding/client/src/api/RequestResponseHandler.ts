@@ -74,6 +74,7 @@ export default class RequestResponseHandler {
    *
    * @param request The ApiRequest to be invoked
    * @param context The current context (this)
+   * @param hideErrors Set to true if errors should be not displayed with toast
    * @return Returns ApiResponse promise
    */
   public async makeRequest(
@@ -147,8 +148,6 @@ export default class RequestResponseHandler {
       }
     });
   }
-
-  // TODO: Refactor
 
   /**
    * Sends a binary data buffer to the WebSocket endpoint

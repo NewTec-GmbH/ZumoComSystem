@@ -41,6 +41,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /** HexConvert class */
 export class HexConvert {
+  /**
+   * Converts a binary buffer to a hex string with leading zeros
+   *
+   * @param binary The binary to be converted to hex
+   * @returns The output hex string with leading zeros if byte < 16
+   */
   public static binaryToHexString(binary: Uint8Array): string {
     let hexString = "";
     for (let byteIdx = 0; byteIdx < binary.length; byteIdx++) {
@@ -53,6 +59,12 @@ export class HexConvert {
     return hexString;
   }
 
+  /**
+   * Converts a hex string with leading zeros to binary buffer
+   *
+   * @param hexString The hex string with leading zeros if byte < 16
+   * @returns Returns the output binary buffer
+   */
   public static hexStringToBinary(hexString: string): Uint8Array {
     let byteIdx = 0;
     const binaryBuffer = new Uint8Array(hexString.length / 2);

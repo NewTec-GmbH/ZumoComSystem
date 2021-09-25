@@ -42,8 +42,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** Data model for WebSocket API NetworkCredentials */
 export class NetworkCredentials {
   /** The SSID string */
-  public ssid = "";
+  public ssid: string;
 
   /** The cleartext WiFi passphrase string */
-  public passphrase = "";
+  public passphrase: string;
+
+  /**
+   * Default Constructor
+   */
+  constructor() {
+    this.ssid = "";
+    this.passphrase = "";
+  }
 }

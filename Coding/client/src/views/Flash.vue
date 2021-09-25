@@ -87,7 +87,7 @@ export default defineComponent({
     FirmwareCard,
     TextDialog,
   },
-  mounted() {
+  mounted(): void {
     const autoFlash = this.$route.query.autoFlash;
     if (autoFlash && "true" === autoFlash) {
       Log.info("Auto-flashing enabled. Flashing firmware image now!");
@@ -96,7 +96,7 @@ export default defineComponent({
   },
 
   methods: {
-    async flash() {
+    async flash(): Promise<void> {
       let request = new ApiRequest();
       request.commandId = "getfirmwareinfo";
 

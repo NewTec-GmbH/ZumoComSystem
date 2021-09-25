@@ -69,7 +69,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         <div v-if="loginSuccess === false" class="error-container">
           <svg class="error-icon">
-            <use :xlink:href="require('@/assets/icons/icons.svg') + '#error-red'" />
+            <use
+              :xlink:href="require('@/assets/icons/icons.svg') + '#error-red'"
+            />
           </svg>
 
           <p class="error-label">
@@ -136,17 +138,17 @@ export default defineComponent({
   },
 
   methods: {
-    reset() {
+    reset(): void {
       this.showLoginDialog = false;
       this.spinnerVisible = false;
       this.loginSuccess = true;
     },
 
-    cancelClick() {
+    cancelClick(): void {
       this.reset();
     },
 
-    async signInClick() {
+    async signInClick(): Promise<void> {
       this.spinnerVisible = true;
 
       /* Prepare the API command */

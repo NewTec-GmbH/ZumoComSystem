@@ -69,24 +69,34 @@ export class FirmwareHeader {
     FirmwareHeader.SIGNATURE_SIZE_BYTE;
 
   /** Stores the id field of the header */
-  private m_idBuffer = new Uint8Array(FirmwareHeader.ID_SIZE_BYTE);
+  private m_idBuffer: Uint8Array;
 
   /** Stores the target system field of the header */
-  private m_targetBuffer = new Uint8Array(FirmwareHeader.TARGET_SIZE_BYTE);
+  private m_targetBuffer: Uint8Array;
 
   /** Stores the file version field of the header */
-  private m_versionBuffer = new Uint8Array(FirmwareHeader.VERSION_SIZE_BYTE);
+  private m_versionBuffer: Uint8Array;
 
   /** Stores the hash algorithm field of the header */
-  private m_hashAlgBuffer = new Uint8Array(FirmwareHeader.HASH_ALG_SIZE_BYTE);
+  private m_hashAlgBuffer: Uint8Array;
 
   /** Stores the signing algorithm field of the header */
-  private m_signAlgBuffer = new Uint8Array(FirmwareHeader.SIGN_ALG_SIZE_BYTE);
+  private m_signAlgBuffer: Uint8Array;
 
   /** Stores the signature field of the header */
-  private m_signatureBuffer = new Uint8Array(
-    FirmwareHeader.SIGNATURE_SIZE_BYTE
-  );
+  private m_signatureBuffer: Uint8Array;
+
+  /**
+   * Default Constructor
+   */
+  constructor() {
+    this.m_idBuffer = new Uint8Array(FirmwareHeader.ID_SIZE_BYTE);
+    this.m_targetBuffer = new Uint8Array(FirmwareHeader.TARGET_SIZE_BYTE);
+    this.m_versionBuffer = new Uint8Array(FirmwareHeader.VERSION_SIZE_BYTE);
+    this.m_hashAlgBuffer = new Uint8Array(FirmwareHeader.HASH_ALG_SIZE_BYTE);
+    this.m_signAlgBuffer = new Uint8Array(FirmwareHeader.SIGN_ALG_SIZE_BYTE);
+    this.m_signatureBuffer = new Uint8Array(FirmwareHeader.SIGNATURE_SIZE_BYTE);
+  }
 
   /**
    * Converts an ASCII String to binary
@@ -106,7 +116,7 @@ export class FirmwareHeader {
    * @param binary The binary data to be converted
    * @returns Returns the string
    */
-  private static BinaryToString(binary: Uint8Array): string {
+  private static binaryToString(binary: Uint8Array): string {
     return String.fromCharCode(...binary);
   }
 
@@ -115,7 +125,7 @@ export class FirmwareHeader {
    * @returns Returns the target
    */
   public getTarget(): string {
-    return FirmwareHeader.BinaryToString(this.m_targetBuffer);
+    return FirmwareHeader.binaryToString(this.m_targetBuffer);
   }
 
   /**
@@ -151,7 +161,7 @@ export class FirmwareHeader {
    * @returns Returns the ID
    */
   public getID(): string {
-    return FirmwareHeader.BinaryToString(this.m_idBuffer);
+    return FirmwareHeader.binaryToString(this.m_idBuffer);
   }
 
   /**
@@ -189,7 +199,7 @@ export class FirmwareHeader {
    * @returns Returns the hash algorithm
    */
   public getHashAlg(): string {
-    return FirmwareHeader.BinaryToString(this.m_hashAlgBuffer);
+    return FirmwareHeader.binaryToString(this.m_hashAlgBuffer);
   }
 
   /**
@@ -211,7 +221,7 @@ export class FirmwareHeader {
    * @returns Returns the signature algorithm
    */
   public getSignAlg(): string {
-    return FirmwareHeader.BinaryToString(this.m_signAlgBuffer);
+    return FirmwareHeader.binaryToString(this.m_signAlgBuffer);
   }
 
   /**

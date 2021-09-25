@@ -42,7 +42,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Settings from "../views/Settings.vue";
-import Debug from "../views/Debug.vue";
 import Flash from "../views/Flash.vue";
 import Upload from "../views/Upload.vue";
 
@@ -51,11 +50,6 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Home",
     component: Home,
-  },
-  {
-    path: "/debug",
-    name: "Debug",
-    component: Debug,
   },
   {
     path: "/flash",

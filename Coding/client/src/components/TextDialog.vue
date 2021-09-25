@@ -105,7 +105,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "LoginDialog",
+  name: "TextDialog",
   props: ["showTextDialog", "type", "text"],
 });
 </script>

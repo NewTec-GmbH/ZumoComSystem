@@ -1,0 +1,41 @@
+@startuml
+class FirmwareCard
+{
+    - firmwareAvailable: boolean
+    - fwInfo: FirmwareInfo
+    - updateFirmwareCard(): void
+}
+
+class Header
+{
+    - devices: Object[]
+    - menuEntries: Object[]
+    - signIn(): void
+    - userIconClick(event: any): void
+}
+
+class LoginDialog
+{
+    - usercredentials: UserCredentials
+    - spinnerVisible: boolean
+    - loginSuccess: boolean
+    - reset(): void
+    - cancelClick(): void
+    - signInClick(): Promise<void> {async}
+}
+
+class SettingsMenu
+{
+}
+
+class Sidebar
+{
+    - zumoMenu: Object[]
+    - comMenu: Object[]
+    - resetClick(event: any): void
+}
+
+class TextDialog
+{
+}
+@enduml
