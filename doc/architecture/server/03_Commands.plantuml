@@ -10,8 +10,10 @@ package Commands {
     interface "Store" as Store
     interface "Zumo32U4" as Zumo32U4
     interface "System" as System
+    interface "Crypto"
 
     component Command
+    component BinaryCommand
     component "EchoDemoCommand" as echodemocommand
     component "UploadZumoCommand" as uploadzumoservice
     component "FlashZumoCommand" as flashzumoservice
@@ -24,11 +26,13 @@ package Commands {
 
     Command <|-- echodemocommand
     Command <|-- uploadzumoservice
+    BinaryCommand <|-- uploadzumoservice
     Command <|-- flashzumoservice
     Command <|-- credconfig
     Command <|-- resetzumoservice
     Command <|-- resetcomplatforomservice
     Command <|-- uploadcomfirmware
+    BinaryCommand <|-- uploadcomfirmware
     Command <|-- flashcomfirmware
     Command <|-- getfirmwareinfo
     RequestResponseHandler *--> Command
@@ -36,17 +40,19 @@ package Commands {
     uploadzumoservice -down-(File
     uploadzumoservice -down-(Store
     uploadzumoservice -down-(FWCheck
+    uploadzumoservice -down-(Crypto
     uploadcomfirmware -down-(ota
     uploadcomfirmware -down-(Store
     uploadcomfirmware -down-(FWCheck
+    uploadcomfirmware -down-(Crypto
     flashcomfirmware -down-(ota
     flashcomfirmware -down-(Store
     flashcomfirmware -down-(System
+    flashcomfirmware -down-(Crypto
     credconfig -down-(Store
-    flashzumoservice -down-(FWCheck
     flashzumoservice -down-(File
     flashzumoservice -down-(Store
-    flashzumoservice -down-(Zumo32U4
+    flashzumoservice -down-(Crypto
     resetzumoservice -down-(Zumo32U4
     resetcomplatforomservice -down-(System
     getfirmwareinfo -down-(Store

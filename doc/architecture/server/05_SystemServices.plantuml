@@ -13,6 +13,7 @@ package SystemServices {
     interface "Crypt" as Crypt
     interface "NVS" as nvs
     interface "Logging" as Logging
+    interface "FWCheck" as fwcheck
 
     component "System" as initcom
     component "FirmwareChecker" as firmwarecheck
@@ -40,6 +41,7 @@ package SystemServices {
     nvsmanager -up- nvs
     initcom -up- systemhal
     logger -up- Logging
+    firmwarecheck -up- fwcheck
 
     initcom *--> wifilayerhal
     firmwarecheck *--> fwheader

@@ -9,7 +9,7 @@ package "Hardware Absraction Layer (HAL)" {
     interface "mDNS" as MDNS
     interface "OTA" as ota
     interface "FS" as FS
-    interface "Preferences" as nvshal
+    interface "NVS" as nvshal
     interface "IO" as IO
     interface "Zumo32U4" as zumo32u4interface
 
@@ -42,7 +42,6 @@ package "Hardware Absraction Layer (HAL)" {
         note right of mdnsserver : Abstraction/drivers to provide\nlocal Domain Name System driver
         note right of fshal : Abstraction/drivers to\nread/write files to\nfile system
 
-
         cryptohal -up- Crypto
         mbedtlshal -up- mbedtls
         wifihal -up- WiFi
@@ -63,7 +62,6 @@ package "Hardware Absraction Layer (HAL)" {
     component "ZumoDriverStateMachine" as zumostate
     component "ZumoStates" as states
     component "Zumo32U4Specification" as zumospec
-
 
     note right of spiusbdriver : Driver which sends\ndata to USB slave by\nusing the SPI bus
     note left of key: Driver for reading the Reset/WiFi key
