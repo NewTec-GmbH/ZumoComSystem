@@ -54,7 +54,7 @@ class ApiResponse
     + setstatusCode(statusCode: const ResponseCode&): void
 }
 ApiResponse ..> ArduinoJson : uses
-ApiResponse ..> ResponseCode : includes
+ApiResponse "*" ..> "1" ResponseCode
 
 class UserCredentials
 {
@@ -77,11 +77,12 @@ class SessionManager
     + aquireSession(request: const ApiRequest&, response: ApiResponse&, connectionCtx: Session*): void {const}
     + invalidateSession(response: ApiResponse&, connectionCtx: Session*): void
 }
-SessionManager ..> Command : includes
-SessionManager ..> Session : includes
-SessionManager ..> ApiRequest : includes
-SessionManager ..> ApiResponse : includes
-SessionManager ..> UserCredentials : uses
+SessionManager ..> Command
+SessionManager ..> BinaryCommand
+SessionManager ..> Session
+SessionManager ..> ApiRequest
+SessionManager ..> ApiResponse
+SessionManager ..> UserCredentials
 
 class RequestResponseHandler
 {
@@ -104,20 +105,24 @@ class RequestResponseHandler
     + makeRequest(operation: const String&, response: ApiResponse&, connectionCtx: Session*): void
     + resetBinaryMode(): void
 }
-RequestResponseHandler "0..*" *--> "1" SessionManager
-RequestResponseHandler "0..*" *--> "1" FirmwareChecker
-RequestResponseHandler "0..*" o--> "0..*" Command
-RequestResponseHandler "0..*" *--> "1" EchoDemoCommand
-RequestResponseHandler "0..*" *--> "1" UploadZumoCommand
-RequestResponseHandler "0..*" *--> "1" UploadCOMCommand
-RequestResponseHandler "0..*" *--> "1" FlashCOMCommand
-RequestResponseHandler "0..*" *--> "1" RebootCOMCommand
-RequestResponseHandler "0..*" *--> "1" RebootZumoCommand
+RequestResponseHandler "*" *--> "1" SessionManager
+RequestResponseHandler "*" *--> "1" FirmwareChecker
+RequestResponseHandler "*" o--> "*" Command
+RequestResponseHandler "*" *--> "1" EchoDemoCommand
+RequestResponseHandler "*" *--> "1" UploadZumoCommand
+RequestResponseHandler "*" *--> "1" UploadCOMCommand
+RequestResponseHandler "*" *--> "1" FlashCOMCommand
+RequestResponseHandler "*" *--> "1" RebootCOMCommand
+RequestResponseHandler "*" *--> "1" SetSTACredentialsCommand
+RequestResponseHandler "*" *--> "1" FlashZumoCommand
+RequestResponseHandler "*" *--> "1" GetFirmwareInfoCommand
+RequestResponseHandler ..> Command
+RequestResponseHandler ..> BinaryCommand
 RequestResponseHandler ..> ApiRequest
 RequestResponseHandler ..> ApiResponse
 RequestResponseHandler ..> ResponseCode
 RequestResponseHandler ..> Session
-RequestResponseHandler ..> ArduinoJson : uses
+RequestResponseHandler ..> ArduinoJson
 
 class KeyValue
 {
@@ -143,13 +148,13 @@ class HTTPsWebServer
     + stopServer(): void
     + handleServer(): void
 }
-HTTPsWebServer "0..*" *--> "1" FileManager
-HTTPsWebServer "0..*" *--> "1" Store
-HTTPsWebServer "0..*" *--> "1" HTTPSServer
-HTTPsWebServer "0..*" *--> "1" HTTPRequest
-HTTPsWebServer "0..*" *--> "1" HTTPResponse
-HTTPsWebServer "0..*" *--> "1" ResourceNode
-HTTPsWebServer "0..*" *--> "1" WebSocketNode
-HTTPsWebServer "0..*" *--> "1" RequestResponseHandler
+HTTPsWebServer "*" *--> "1" FileManager
+HTTPsWebServer "*" *--> "1" Store
+HTTPsWebServer "*" *--> "1" HTTPSServer
+HTTPsWebServer "*" *--> "1" HTTPRequest
+HTTPsWebServer "*" *--> "1" HTTPResponse
+HTTPsWebServer "*" *--> "1" ResourceNode
+HTTPsWebServer "*" *--> "1" WebSocketNode
+HTTPsWebServer "*" *--> "1" RequestResponseHandler
 HTTPsWebServer ..> KeyValue : uses
 @enduml

@@ -13,9 +13,10 @@ package Data
     class Store
 }
 
-package "Arduino Core"
+package "Arduino Core/ESP-IDF"
 {
     class esp_ota
+    class esp_ota_ops
 }
 
 package "HAL"
@@ -36,6 +37,10 @@ abstract class Command
     - Command(const Command&)
     - Command& operator =(const Command&);
 }
+Command "*" *--> "1" Permission
+Command ..> ApiRequest
+Command ..> ApiResponse
+Command ..> Session
 
 abstract class BinaryCommand
 {
@@ -51,6 +56,10 @@ abstract class BinaryCommand
     - BinaryCommand(const BinaryCommand&)
     - BinaryCommand& operator =(const BinaryCommand&);
 }
+BinaryCommand "*" *--> "1" Permission
+Command ..> ApiRequest
+Command ..> ApiResponse
+Command ..> Session
 
 class EchoDemoCommand
 {
@@ -73,8 +82,8 @@ class UploadZumoCommand
 }
 Command <|-down-UploadZumoCommand
 BinaryCommand <|-down-UploadZumoCommand
-UploadZumoCommand "0..*" *--> "1" FileManager
-UploadZumoCommand "0..*" *--> "1" FirmwareChecker
+UploadZumoCommand "*" *--> "1" FileManager
+UploadZumoCommand "*" *--> "1" FirmwareChecker
 UploadZumoCommand ..> Store : uses
 
 class FlashZumoCommand
@@ -87,9 +96,9 @@ class FlashZumoCommand
 }
 Command <|-down-FlashZumoCommand
 FlashZumoCommand ..> Store : uses
-FlashZumoCommand "0..*" *--> "1" Zumo32U4
-FlashZumoCommand "0..*" *--> "1" FirmwareChecker
-FlashZumoCommand "0..*" *--> "1" File
+FlashZumoCommand "*" *--> "1" Zumo32U4
+FlashZumoCommand "*" *--> "1" FirmwareChecker
+FlashZumoCommand ..> FileManager
 
 class UploadCOMCommand
 {
@@ -106,8 +115,8 @@ class UploadCOMCommand
 }
 Command <|-down-UploadCOMCommand
 BinaryCommand <|-down-UploadCOMCommand
-UploadCOMCommand "0..*" *--> "1" FirmwareChecker
-UploadCOMCommand "0..*" *--> "1" esp_ota
+UploadCOMCommand "*" *--> "1" FirmwareChecker
+UploadCOMCommand "*" *--> "1" esp_ota_handle_t
 UploadCOMCommand ..> Store : uses
 
 class FlashCOMCommand
@@ -118,7 +127,8 @@ class FlashCOMCommand
     + ~FlashCOMCommand()
 }
 Command <|-down-FlashCOMCommand
-FlashCOMCommand ..> Store : uses
+FlashCOMCommand ..> Store
+FlashCOMCommand ..> esp_ota_ops
 
 class RebootZumoCommand
 {
@@ -126,7 +136,7 @@ class RebootZumoCommand
     + ~RebootZumoCommand()
 }
 Command <|-down-RebootZumoCommand
-RebootZumoCommand "0..*" *--> "1" Zumo32U4
+RebootZumoCommand "*" *--> "1" Zumo32U4
 
 class SetSTACredentialsCommand
 {
@@ -148,4 +158,5 @@ class GetFirmwareInfoCommand
     + GetFirmwareInfoCommand()
     + ~GetFirmwareInfoCommand()
 }
+Command <|-down-GetFirmwareInfoCommand
 @enduml

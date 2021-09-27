@@ -7,6 +7,7 @@ interface "Store" as Store
 
 package Server {
     component "HTTPsWebServer" as webserver
+    component "Command" as command
 
     note left of webserver : Serves the HTML/JS/CSS\nfiles for web interface\nand provides access to\nall endpoint services
 
@@ -21,11 +22,13 @@ package Server {
 
     note left of sessionsmgmt : Checks and manages active sessions.\nChecks user credentials and permissions
     note left of requesthandler : Parses the incoming JSON request,\nchecks the session rights and invokes\ncorresponding API services
+    note right of command: The specific command\nimplementation to be called
 
     interface "RequestResponseManager" as Request
     requesthandler -up- Request
 
     requesthandler *--> sessionsmgmt : checks/requests\naccess/session
+    requesthandler "1" *--> "*" command
 
     webserver -down-(Request
     sessionsmgmt -down-(Store

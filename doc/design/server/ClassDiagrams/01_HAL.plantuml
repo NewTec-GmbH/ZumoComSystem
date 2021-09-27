@@ -1,14 +1,10 @@
 @startuml
 package HAL
 {
-    package "Arduino Core"
+    package "Arduino Core/ESP-IDF"
     {
         class "Digital I/O" as ArduinoIO
         class SemaphoreHandle_t
-    }
-
-    package "USB_Host_Shield_2.0" as shieldpackage
-    {
     }
 
     package "SystemServices"
@@ -55,7 +51,7 @@ package HAL
         + registerSystemReset(): void
         + readKey(): bool {const}
     }
-    Key "0..*" *--> "1" IO
+    Key "*" *--> "1" IO
     Key ..> GPIOPins : includes
 
     enum ZumoStates
@@ -76,7 +72,7 @@ package HAL
         + setState(state: ZumoStates, forceSet: bool = false): bool
         + getState(): ZumoStates
     }
-    ZumoDriverStateMachine ..> ZumoStates
+    ZumoDriverStateMachine "*" *--> "1" ZumoStates
 
     class ZumoCommand<size: int>
     {
@@ -214,11 +210,13 @@ package HAL
         + writeFirmwareChunk(dataChunk: uint8_t*, chunkSize: const uint16_t): bool
         + finalizeWriteFirmware(): bool
     }
-    Zumo32U4 "0..*" *--> "1" ZumoDriverStateMachine
-    Zumo32U4 "0..*" *--> "1" Zumo32U4Specification
-    Zumo32U4 "0..*" *--> "1" IO
-    Zumo32U4 "0..*" *--> "1" shieldpackage
-    Zumo32U4 "0..*" *--> "1" CryptoServices
+    Zumo32U4 "*" *--> "1" USB
+    Zumo32U4 "*" *--> "1" ACM
+    Zumo32U4 "*" *--> "1" ACMAsyncOper
+    Zumo32U4 "*" *--> "1" ZumoDriverStateMachine
+    Zumo32U4 "*" *--> "1" Zumo32U4Specification
+    Zumo32U4 "*" *--> "1" IO
+    Zumo32U4 "*" *--> "1" CryptoServices
     Zumo32U4 ..> GPIOPins : includes
 }
 

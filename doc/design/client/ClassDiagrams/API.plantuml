@@ -14,6 +14,7 @@ class WebSocketClient
     + getState(): number
     + send(payload: string | Uint8Array): boolean
 }
+WebSocketClient "1" *--> "1" WebSocketClient
 
 class RequestResponseHandler
 {
@@ -25,4 +26,5 @@ class RequestResponseHandler
     + sendBinary(dataChunk: Uint8Array, context: any): Promise<ApiResponse> {async}
 }
 RequestResponseHandler *--> WebSocketClient
+RequestResponseHandler "1" *--> "1" RequestResponseHandler
 @enduml

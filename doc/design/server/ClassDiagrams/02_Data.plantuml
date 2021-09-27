@@ -52,7 +52,7 @@ package Data
         + serialize(keyBuffer: uint8_t*, certBuffer: uint8_t*): void
         + deserialize(keyBuffer: const uint8_t*, certBuffer: const uint8_t*): void
     }
-    KeyCert "0..*" *--> "1" SSLCert
+    KeyCert "*" *--> "1" SSLCert
 
     class FirmwareInfo
     {
@@ -76,7 +76,7 @@ package Data
         + getPayloadHashValue(): const String& {const}
         + isValid(): bool
     }
-    FirmwareInfo "1" *--> "2" FirmwareInfo
+    FirmwareInfo "*" *--> "2" FirmwareInfo
     FirmwareInfo ..> ArduinoJson : uses
 
     enum Permission
@@ -127,10 +127,10 @@ package Data
         + serialize(serialized: String&): bool {const}
         + deserialize(serial: const String&): bool
     }
-    User "0..*" *--> "1" CryptoServices
-    User "0..*" *--> "1" SemaphoreHandle_t
-    User "0..*" *--> "32" Permission
-    User "1" o--> "4" User
+    User "*" *--> "1" CryptoServices
+    User "*" *--> "1" SemaphoreHandle_t
+    User "*" *--> "32" Permission
+    User "*" o--> "4" User
     User ..> ArduinoJson : uses
 
     class Session
@@ -166,10 +166,10 @@ package Data
         + deauthenticateSession(): void
         + getPermissions(numberOfPermissions: uint8_t&): const Permission*
     }
-    Session "0..*" *--> "1" SemaphoreHandle_t
-    Session "1" *--> "4" Session
+    Session "*" *--> "1" SemaphoreHandle_t
+    Session "*" *--> "4" Session
     WebSocketHandler <|-down- Session : is a
-    Session "1" o--> "1" User
+    Session "*" o--> "1" User
     Session ..> httpsserver::WebSocketHandler : uses
     Session ..> httpsserver::WebsocketInputStreambuf : uses
     Session ..> Permission : includes
@@ -203,10 +203,11 @@ package Data
         + setAPCredentials(credentials: const NetworkCredentials&): void
         + closeStore(): void
     }
-    Store "0..*" *--> "1" NVSManager
-    Store "0..*" *--> "2" NetworkCredentials
-    Store "0..*" *--> "1" KeyCert
-    Store "0..*" *--> "1" User
-    Store "0..*" *--> "1" FirmwareInfo
+    Store "*" *--> "1" Store 
+    Store "*" *--> "1" NVSManager
+    Store "*" *--> "2" NetworkCredentials
+    Store "*" *--> "1" KeyCert
+    Store "*" *--> "1" User
+    Store "*" *--> "1" FirmwareInfo
 }
 @enduml

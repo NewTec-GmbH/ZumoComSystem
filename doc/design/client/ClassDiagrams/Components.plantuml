@@ -1,10 +1,12 @@
 @startuml
+
 class FirmwareCard
 {
     - firmwareAvailable: boolean
     - fwInfo: FirmwareInfo
     - updateFirmwareCard(): void
 }
+FirmwareCard "*" *--> "1" FirmwareInfo
 
 class Header
 {
@@ -23,6 +25,7 @@ class LoginDialog
     - cancelClick(): void
     - signInClick(): Promise<void> {async}
 }
+LoginDialog "*" *--> "1" UserCredentials
 
 class SettingsMenu
 {

@@ -4,7 +4,7 @@ package Data
     class Store
 }
 
-package "Arduino Core"
+package "Arduino Core/EPS-IDF"
 {
     class Preferences
     class SemaphoreHandle_t
@@ -17,7 +17,6 @@ package "Crypto"
 {
     class BLAKE2b
 }
-
 
 package "HAL"
 {
@@ -49,7 +48,7 @@ package SystemServices {
         + setLogLevel(level: const LogLevel&): void
         + writeLog(level: const LogLevel&, msg: const String&): void
     }
-    Log "0..*" *--> "1" LogLevel
+    Log "*" *--> "1" LogLevel
 
     class NVSManager
     {
@@ -64,7 +63,7 @@ package SystemServices {
         + wipeNVS(): bool
         + closeNVS(): void
     }
-    NVSManager "0..*" *--> "1" Preferences
+    NVSManager "*" *--> "1" Preferences
 
     class FileManager
     {
@@ -85,7 +84,7 @@ package SystemServices {
         + getFileSize(): int32_t {const}
         + {static} getFileSize(fileName: const String&): int32_t
     }
-    FileManager "0..*" *--> "1" File
+    FileManager "*" *--> "1" File
     FileManager ..> FileMode : uses
 
     class PublicSigningKey
@@ -115,9 +114,9 @@ package SystemServices {
         + getSHA256String(outputString: String&): bool
         + verifySignature(signature: const uint8_t*, signatureSize: const uint16_t): bool
     }
-    CryptoServices "0..*" *--> "1" BLAKE2b
-    CryptoServices "0..*" *--> "1" mbedtls_pk_context
-    CryptoServices "0..*" *--> "1" mbedtls_md_context_t
+    CryptoServices "*" *--> "1" BLAKE2b
+    CryptoServices "*" *--> "1" mbedtls_pk_context
+    CryptoServices "*" *--> "1" mbedtls_md_context_t
     CryptoServices ..> PublicSigningKey : includes
     CryptoServices ..> GPIOPins : includes
 
@@ -170,8 +169,8 @@ package SystemServices {
         + getComputedHashValue(outputString: String&): bool
         + isValid(expectedTarget: const String&): bool
     }
-    FirmwareChecker "0..*" *--> "1" FirmwareHeader
-    FirmwareChecker "0..*" *--> "1" CryptoServices
+    FirmwareChecker "*" *--> "1" FirmwareHeader
+    FirmwareChecker "*" *--> "1" CryptoServices
 
     class WiFiManager
     {
@@ -194,8 +193,8 @@ package SystemServices {
         + startSTA(): bool
         + stopSTA(): bool
     }
-    WiFiManager "0..*" *--> "1" Store
-    WiFiManager "0..*" *--> "1" DNSServer
+    WiFiManager "*" *--> "1" Store
+    WiFiManager "*" *--> "1" DNSServer
 
     class System
     {
@@ -213,9 +212,9 @@ package SystemServices {
         + handleServices(): void
         + reset(): void
     }
-    System "0..*" *--> "1" WiFiManager
-    System "0..*" *--> "1" Store
-    System "0..*" *--> "1" HTTPsWebServer
-    System "0..*" *--> "1" SemaphoreHandle_t
+    System "*" *--> "1" WiFiManager
+    System "*" *--> "1" Store
+    System "*" *--> "1" HTTPsWebServer
+    System "*" *--> "1" SemaphoreHandle_t
 }
 @enduml

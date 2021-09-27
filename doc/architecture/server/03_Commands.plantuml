@@ -18,9 +18,9 @@ package Commands {
     component "SetSTACredentialsCommand" as credconfig
     component "RebootZumoCommand" as resetzumoservice
     component "RebootCOMCommand" as resetcomplatforomservice
-    component "DebugZumoCommand" as zumodebug
     component "UploadCOMCommand" as uploadcomfirmware
     component "FlashCOMCommand" as flashcomfirmware
+    component "GetFirmwareInfoCommand" as getfirmwareinfo
 
     Command <|-- echodemocommand
     Command <|-- uploadzumoservice
@@ -28,9 +28,9 @@ package Commands {
     Command <|-- credconfig
     Command <|-- resetzumoservice
     Command <|-- resetcomplatforomservice
-    Command <|-- zumodebug
     Command <|-- uploadcomfirmware
     Command <|-- flashcomfirmware
+    Command <|-- getfirmwareinfo
     RequestResponseHandler *--> Command
 
     uploadzumoservice -down-(File
@@ -49,6 +49,6 @@ package Commands {
     flashzumoservice -down-(Zumo32U4
     resetzumoservice -down-(Zumo32U4
     resetcomplatforomservice -down-(System
-    zumodebug -down-(Zumo32U4
+    getfirmwareinfo -down-(Store
 }
 @enduml
