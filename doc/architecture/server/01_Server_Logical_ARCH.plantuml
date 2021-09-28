@@ -44,6 +44,7 @@ package ComPlatform {
 
     component "HAL" {
         HAL-up-ComReset
+        HAL-up-IO
         HAL-up-ReadKey
         HAL-up-Zumo32U4
         HAL-up-Crypto

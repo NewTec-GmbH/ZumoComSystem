@@ -1,11 +1,16 @@
 @startuml
-package Client {
-    interface "HTTPS" as https
-    interface "WSS" as wss
-    interface "RRH" as rrh
+interface "HTTPS" as https
+interface "WSS" as wss
 
-    component "VuexStore" as store
-    component "VueRouter" as router
+package ComPlatform {
+    component Server
+    Server -up- https
+    Server -up- wss
+}
+
+package Client {
+
+    interface "RRH" as rrh
 
     package Models {
         component ApiRequest
@@ -17,8 +22,8 @@ package Client {
         component ResponseCode
         component UserCredentials
 
-        ApiResponse ..> ResponseCode
-        Firmware ..> FirmwareHeader
+        ApiResponse .down.> ResponseCode
+        Firmware .down.> FirmwareHeader
     }
 
     package API {
@@ -27,12 +32,12 @@ package Client {
 
         RequestResponseHandler -up-rrh
 
-        RequestResponseHandler ..> ApiRequest
-        RequestResponseHandler ..> ApiResponse
+        RequestResponseHandler .down.> ApiRequest
+        RequestResponseHandler .down.> ApiResponse
 
         RequestResponseHandler -->WebSocketClient
 
-        WebSocketClient --(wss
+        WebSocketClient -down-(wss
     }
 
     package Utility {
@@ -50,21 +55,21 @@ package Client {
         component TextDialog
 
         FirmwareCard --(rrh
-        headerc --(rrh
-        Sidebar --(rrh
+        headerc -down-(rrh
+        Sidebar -down-(rrh
 
-        FirmwareCard ..> FirmwareInfo
-        FirmwareCard ..> Log
-        FirmwareCard ..> LoginDialog
+        FirmwareCard .down.> FirmwareInfo
+        FirmwareCard .down.> Log
+        FirmwareCard .down.> LoginDialog
 
-        headerc ..> LoginDialog
-        headerc ..> Log
+        headerc .down.> LoginDialog
+        headerc .down.> Log
 
-        LoginDialog ..> UserCredentials
-        LoginDialog --(rrh
-        LoginDialog ..> Log
+        LoginDialog .down.> UserCredentials
+        LoginDialog -down-(rrh
+        LoginDialog .down.> Log
 
-        Sidebar --(rrh
+        Sidebar -down-(rrh
     }
 
     package Views {
@@ -74,32 +79,28 @@ package Client {
         component Settings
         component Upload
 
-        ConnectivityCOM --(rrh
-        Flash --(rrh
-        Upload --(rrh
+        ConnectivityCOM -down-(rrh
+        Flash -down-(rrh
+        Upload -down-(rrh
 
-        ConnectivityCOM ..> NetworkCredentials
+        ConnectivityCOM .down.> NetworkCredentials
 
-        Flash ..> FirmwareCard
-        Flash ..> Log
-        Flash ..> FirmwareInfo
-        Flash ..> TextDialog
+        Flash .down.> FirmwareCard
+        Flash .down.> Log
+        Flash .down.> FirmwareInfo
+        Flash .down.> TextDialog
 
-        Settings ..> ConnectivityCOM
-        Settings ..> SettingsMenu
+        Settings .down.> ConnectivityCOM
+        Settings .down.> SettingsMenu
 
-        Upload ..> FirmwareCard
-        Upload ..> TextDialog
-        Upload ..> Log
-        Upload ..> Firmware
-        Upload ..> FirmwareHeader
-        Upload ..> FirmwareSigner
+        Upload .down.> FirmwareCard
+        Upload .down.> TextDialog
+        Upload .down.> Log
+        Upload .down.> Firmware
+        Upload .down.> FirmwareHeader
+        Upload .down.> FirmwareSigner
     }
 
-    package ComPlatform {
-        component Server
-        Server -up- https
-        Server -up- wss
-    }
+
 }
 @enduml
