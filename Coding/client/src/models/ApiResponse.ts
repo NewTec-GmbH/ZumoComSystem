@@ -44,8 +44,16 @@ import { ResponseCode } from "@/models/ResponseCode";
 /** Data model for WebSocket API responses from the backend */
 export class ApiResponse {
   /** The status code of the operation */
-  public statusCode: ResponseCode = ResponseCode.ERROR;
+  public statusCode: ResponseCode;
 
   /** The returned JSON payload */
-  public jsonPayload = "";
+  public jsonPayload: string;
+
+  /**
+   * Default Constructor
+   */
+  constructor() {
+    this.statusCode = ResponseCode.ERROR;
+    this.jsonPayload = "";
+  }
 }

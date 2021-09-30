@@ -77,7 +77,7 @@ export default defineComponent({
       infoText: "Connecting to Server. Please wait ...",
     };
   },
-  beforeCreate() {
+  beforeCreate(): void {
     /* Establish the WebSocket connection on app start by creating a new instance */
     WebSocketClient.getInstance();
 
@@ -88,7 +88,7 @@ export default defineComponent({
   },
 
   methods: {
-    registerWSEvents() {
+    registerWSEvents(): void {
       /* Hide the info dialog when connected */
       WebSocketClient.getInstance().onOpen(() => {
         this.infoDialogVisible = false;
@@ -136,7 +136,7 @@ export default defineComponent({
     },
   },
 
-  mounted() {
+  mounted(): void {
     /* Show info dialog as long as WebSocket client is not connected */
     this.infoDialogVisible = true;
 

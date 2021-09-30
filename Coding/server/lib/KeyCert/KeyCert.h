@@ -97,11 +97,6 @@ public:
 
 private:
     /**
-     * Helper method which cleans up the SSLCert internal's memory which has been dynamically allocated
-     */
-    void freeSSLMemory();
-
-    /**
     * The DER-X509 certificate which stores the private RSA key as well as the public certificate.
     * This data structure is used by the HTTPs/WSS servers
     */
@@ -115,5 +110,10 @@ private:
 
     /** Saves if a SSL certificate has been generated for this instance */
     bool m_certGenerated;
+
+    /**
+     * Helper method which cleans up the SSLCert internal's memory which has been dynamically allocated
+     */
+    void freeSSLMemory();
 };
 #endif

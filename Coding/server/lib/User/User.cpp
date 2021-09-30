@@ -192,9 +192,13 @@ bool User::putUser(const String& username, const String& password, const Permiss
                         m_numberOfRegisteredUsers++;
 
                         retCode = true;
-                        break;
+                    }
+                    else
+                    {
+                        LOG_ERROR("Out of memory. Could not create new user!");
                     }
                 }
+                break;
             }
         }
     }

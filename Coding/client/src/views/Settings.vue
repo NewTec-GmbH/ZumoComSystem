@@ -83,7 +83,7 @@ export default defineComponent({
   },
 
   methods: {
-    entryClick(event: any, item: string) {
+    entryClick(event: any, item: string): void {
       this.hideView = false;
       this.selectedMenuEntry = item;
     },

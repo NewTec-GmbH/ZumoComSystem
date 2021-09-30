@@ -44,10 +44,18 @@ import { FirmwareHeader } from "@/models/FirmwareHeader";
 /** Data model for Firmware */
 export class Firmware {
   /** The FirmwareInfo header */
-  private m_header = new FirmwareHeader();
+  private m_header: FirmwareHeader;
 
   /** The actual firmware */
-  private m_firmware = new Uint8Array();
+  private m_firmware: Uint8Array;
+
+  /**
+   * Default Constructor
+   */
+  constructor() {
+    this.m_header = new FirmwareHeader();
+    this.m_firmware = new Uint8Array();
+  }
 
   /**
    * FirmwareHeader getter

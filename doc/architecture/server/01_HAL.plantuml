@@ -9,7 +9,7 @@ package "Hardware Absraction Layer (HAL)" {
     interface "mDNS" as MDNS
     interface "OTA" as ota
     interface "FS" as FS
-    interface "Preferences" as nvshal
+    interface "NVS" as nvshal
     interface "IO" as IO
     interface "Zumo32U4" as zumo32u4interface
 
@@ -17,7 +17,7 @@ package "Hardware Absraction Layer (HAL)" {
     interface "IO" as arduinoIO
     interface "SPI" as SPI
 
-    package "Arduino Core" {
+    package "Arduino Core/ESP-IDF" {
         component "Crypto" as cryptohal
         component "mbedTLS" as mbedtlshal
         component "ESP" as esp
@@ -28,7 +28,7 @@ package "Hardware Absraction Layer (HAL)" {
         component "mDNS" as mdnsserver
         component "SPI" as spihal
         component "Digital I/O" as iohal
-        component "ArduinoOTA" as arduinoota
+        component "ESP-IDF-OTA" as arduinoota
 
         note right of spihal : Serial Peripheral Interface\nabstraction/drivers
         note left of esp : Basic abstraction/drivers\nfor ESP32 functions, such as reset
@@ -59,15 +59,18 @@ package "Hardware Absraction Layer (HAL)" {
     component "Key" as key
     component "GPIOPins" as gpiopins
     component "Zumo32U4" as zumo32u4
-    component "ZumoState" as zumostate
-
+    component "ZumoDriverStateMachine" as zumostate
+    component "ZumoStates" as states
+    component "Zumo32U4Specification" as zumospec
 
     note right of spiusbdriver : Driver which sends\ndata to USB slave by\nusing the SPI bus
     note left of key: Driver for reading the Reset/WiFi key
     note left of io : Driver for easy (unbounced) read- and write operations
     note right of gpiopins : Pin description
-    note right of zumo32u4: Driver for resetting,\ndebugging and flashing the robot
+    note left of zumo32u4: Driver for resetting,\ndebugging and flashing the robot
     note left of zumostate: State machine for Zumo32U4 driver
+    note left of zumospec : Specifies the Zumo robot\nbootloader commands/data
+    note left of states: The state machine states
 
     spiusbdriver -up- SPIUSB
     zumo32u4 -up- zumo32u4interface
@@ -79,6 +82,9 @@ package "Hardware Absraction Layer (HAL)" {
     zumo32u4 -down-(SPIUSB
 
     zumo32u4 *--> zumostate
+    zumo32u4 ..> zumospec
+
+    zumostate ..> states
 
     spiusbdriver -down-(SPI
     io -down-(arduinoIO

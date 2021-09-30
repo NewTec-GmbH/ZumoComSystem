@@ -42,14 +42,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** Data model for WebSocket FirmwareInfo */
 export class FirmwareInfo {
   /** The target system of the firmware */
-  public targetSystem = "";
+  public targetSystem: string;
 
   /** The size in bytes of the firmware */
-  public sizeBytes = 0;
+  public sizeBytes: number;
 
   /** The SHA256 hash value of the firmware */
-  public payloadHash = "";
+  public payloadHash: string;
 
   /** Specifies if the firmware is valid */
-  public isValid = false;
+  public isValid: boolean;
+
+  /**
+   * Default Constructor
+   */
+  constructor() {
+    this.targetSystem = "";
+    this.sizeBytes = 0;
+    this.payloadHash = "";
+    this.isValid = false;
+  }
 }

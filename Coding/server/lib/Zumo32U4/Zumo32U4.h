@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #ifndef __ZUMO32U4_H__
+#define __ZUMO32U4_H__
 
 #include <Arduino.h>
 #include <ZumoDriverStateMachine.h>
@@ -73,9 +74,6 @@ private:
 
     /** Specifies how many bits are transferred per packet */
     static const uint8_t NUMBER_OF_DATA_BITS = 8;
-
-    /** Specifies RTS/CTS configuration */
-    static const uint8_t CONTROL_LINE_STATE = 3;
 };
 
 /** Driver class used for serial port R/W, rebooting and flashing the Pololu Zumo32U4 robot */
@@ -219,7 +217,7 @@ private:
     CryptoServices m_crypto;
 
     /** Binary buffer used for writing the firmware */
-    uint8_t firmwareWriteBuffer[MAX_FIRMWARE_BUFFER_BYTES];
+    uint8_t m_firmwareWriteBuffer[MAX_FIRMWARE_BUFFER_BYTES];
 
     /** Specifies how many bytes have already been written to Zumo program flash */
     uint16_t m_writtenFirmwareBytes;
@@ -247,7 +245,7 @@ private:
     ~Zumo32U4();
 
     /**
-     * Call this method periodically in the main loop to perform USB device enumration and cleanup tasks
+     * Call this method to clean up, enumerate all plugged in USB devices and to register the CDC device
      */
     void handleUSBDriver();
 
@@ -349,6 +347,15 @@ private:
     bool flashPages(uint8_t* dataChunk, const uint16_t chunkSize);
 
     /**
+     * Verifies the integrity of the written firmware image by calculating
+     * the SHA256 hash of the read image and comparing it with the expected
+     * SHA256 hash value
+     *
+     * @return Returns true if firmware is valid, else false
+     */
+    bool verifyWrittenFirmware();
+
+    /**
      * Resets/clears the driver data
      */
     void resetZumoDriver();
@@ -359,15 +366,5 @@ private:
      * @return Returns true if successful, else false
      */
     bool resetUSBDriver();
-
-    /**
-     * Verifies the integrity of the written firmware image by calculating
-     * the SHA256 hash of the read image and comparing it with the expected
-     * SHA256 hash value
-     *
-     * @return Returns true if firmware is valid, else false
-     */
-    bool verifyWrittenFirmware();
 };
-#define __ZUMO32U4_H__
 #endif

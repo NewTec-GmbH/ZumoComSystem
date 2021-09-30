@@ -102,7 +102,6 @@ import FirmwareCard from "@/components/FirmwareCard.vue";
 import TextDialog from "@/components/TextDialog.vue";
 import RequestResponseHandler from "@/api/RequestResponseHandler";
 import Log from "@/utility/Log";
-import { ApiResponse } from "@/models/ApiResponse";
 import { ApiRequest } from "@/models/ApiRequest";
 import { ResponseCode } from "@/models/ResponseCode";
 import { Firmware } from "@/models/Firmware";
@@ -252,7 +251,7 @@ export default defineComponent({
       });
     },
 
-    upload(firmwareBinary: Uint8Array) {
+    upload(firmwareBinary: Uint8Array): void {
       /* Upload the CPSFW file */
       this.uploadPackets(firmwareBinary).then((result: boolean) => {
         /* Force the FirmwareCard to update itself */
@@ -289,7 +288,7 @@ export default defineComponent({
       });
     },
 
-    save(firmwareBinary: Uint8Array, firmwareHeader: FirmwareHeader) {
+    save(firmwareBinary: Uint8Array, firmwareHeader: FirmwareHeader): void {
       /* Ask if CPSFW file should be saved */
       this.infoDialogVisible = true;
       this.infoText = "Do you want to download the generated CPSFW file?";
@@ -303,7 +302,7 @@ export default defineComponent({
       };
     },
 
-    async uploadFirmware(data: any) {
+    async uploadFirmware(data: any): Promise<void> {
       let files: Array<File> = data.files;
       let fileReader = new FileReader();
 
@@ -410,7 +409,7 @@ export default defineComponent({
       }
     },
 
-    flashFirmware() {
+    flashFirmware(): void {
       this.infoDialogVisible = false;
 
       /* Go to flash page */

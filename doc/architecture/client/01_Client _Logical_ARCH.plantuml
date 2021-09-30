@@ -2,132 +2,105 @@
 interface "HTTPS" as https
 interface "WSS" as wss
 
-note left of https : Used to fetch the\nweb interface application
-note right of wss : Used to consume the\nendpoint services
-
-left to right direction
+package ComPlatform {
+    component Server
+    Server -up- https
+    Server -up- wss
+}
 
 package Client {
-    interface "RequestResponseManager" as requestresponsemanager
 
-    component "VuexStore" as store
-    component "RequestResponseHandler" as requestresponsehandler
-    component "WebSocketClient" as websocketclient
+    interface "RRH" as rrh
 
-    requestresponsehandler -up- requestresponsemanager
+    package Models {
+        component ApiRequest
+        component ApiResponse
+        component Firmware
+        component FirmwareHeader
+        component FirmwareInfo
+        component NetworkCredentials
+        component ResponseCode
+        component UserCredentials
 
-    websocketclient -down-(wss
-    websocketclient -down-(requestresponsemanager
-
-    package Assets {
+        ApiResponse .down.> ResponseCode
+        Firmware .down.> FirmwareHeader
     }
 
-    package Libraries {
-        component "FileSaver" as filesaver
-        component "jsrsasign" as rsasign
+    package API {
+        component RequestResponseHandler
+        component WebSocketClient
 
-        note right of filesaver : Allows download of large\nblobs to local FS
-        note right of rsasign : Signs the passed firmware image with RSA2048/PKCS#1
+        RequestResponseHandler -up-rrh
+
+        RequestResponseHandler .down.> ApiRequest
+        RequestResponseHandler .down.> ApiResponse
+
+        RequestResponseHandler -->WebSocketClient
+
+        WebSocketClient -down-(wss
+    }
+
+    package Utility {
+        component FirmwareSigner
+        component HexConvert
+        component Log
     }
 
     package Components {
-        package Dialogs {
-            component "AuthDialog" as authdialog
-            component "ConfirmDialog" as confirmdialog
+        component FirmwareCard
+        component "Header" as headerc
+        component LoginDialog
+        component SettingsMenu
+        component Sidebar
+        component TextDialog
 
-            note right of authdialog : Dialog which provides\nuser input for credentials
-            note right of confirmdialog : Dialog which provides confirmation
-        }
+        FirmwareCard --(rrh
+        headerc -down-(rrh
+        Sidebar -down-(rrh
+
+        FirmwareCard .down.> FirmwareInfo
+        FirmwareCard .down.> Log
+        FirmwareCard .down.> LoginDialog
+
+        headerc .down.> LoginDialog
+        headerc .down.> Log
+
+        LoginDialog .down.> UserCredentials
+        LoginDialog -down-(rrh
+        LoginDialog .down.> Log
+
+        Sidebar -down-(rrh
     }
 
-    package Models {
-        package API {
-            package "RequestModels" as requestmodels {
-                component "ApiRequest" as request
-                component "UserCredentials" as usercredentials
-                component "NetworkCredentials" as networkcredentials
-                component "CPSFW" as cpsfw
+    package Views {
+        component ConnectivityCOM
+        component Flash
+        component Home
+        component Settings
+        component Upload
 
-                note right of request : ApiRequest data model
-                note right of usercredentials : UserCredentials data model
-                note right of networkcredentials : NetworkCredentials data model
-                note right of cpsfw : ComPlatform Signed Firmware data model
-            }
+        ConnectivityCOM -down-(rrh
+        Flash -down-(rrh
+        Upload -down-(rrh
 
-            package "ResponseModels" as responsemodels {
-                component "ApiResponse" as response
-                component "LogEntry" as debuglog
-                component "FirmwareInfo" as firmwareinfo
+        ConnectivityCOM .down.> NetworkCredentials
 
-                note right of response : ApiResponse data model
-                note right of debuglog : LogEntry data model
-                note right of firmwareinfo : FirmwareInfo data model
-            }
-        }
+        Flash .down.> FirmwareCard
+        Flash .down.> Log
+        Flash .down.> FirmwareInfo
+        Flash .down.> TextDialog
+
+        Settings .down.> ConnectivityCOM
+        Settings .down.> SettingsMenu
+
+        Upload .down.> FirmwareCard
+        Upload .down.> TextDialog
+        Upload .down.> Log
+        Upload .down.> Firmware
+        Upload .down.> FirmwareHeader
+        Upload .down.> FirmwareSigner
     }
 
-    package Modules {
-        package Home {
-            package Components_Home {
-            }
 
-            package Modules_Home {
-            }
-
-            component Store_Home
-        }
-
-        package Debug {
-            package Components_Debug {
-            }
-
-            package Modules_Debug {
-            }
-
-            component Store_Debug
-        }
-
-        package Upload {
-            package Components_Upload {
-            }
-
-            package Modules_Upload {
-            }
-
-            component Store_Upload
-        }
-
-        package Flash {
-            package Components_Flash {
-            }
-
-            package Modules_Flash {
-            }
-
-            component Store_Flash
-        }
-
-        package Reboot {
-            package Components_Reboot {
-            }
-
-            package Modules_Reboot {
-            }
-
-            component Store_Reboot
-        }
-    }
-
-    package Shared {
-    }
-
-    package Styles {
-    }
-}
-
-package ComPlatform {
-    component Server
-    Server -- https
-    Server -- wss
 }
 @enduml

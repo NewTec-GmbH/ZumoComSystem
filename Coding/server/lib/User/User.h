@@ -143,14 +143,6 @@ public:
     bool deserialize(const String& serial);
 
 private:
-    /**
-     * Returns the array index of the user with the specified username
-     *
-     * @param[in] Reference to the username string
-     * @return Returns index if user has been found, returns -1 if user is not existing
-     */
-    static int8_t getUserIdx(const String& username);
-
     /** Specifies the minimum password length in printable characters */
     static const uint8_t MIN_PASSWORD_CHARS = 8;
 
@@ -207,5 +199,13 @@ private:
 
     /** The number of permissions the current user has */
     uint8_t m_numberOfPermissions;
+
+    /**
+     * Returns the array index of the user with the specified username
+     *
+     * @param[in] username to the username string
+     * @return Returns index if user has been found, returns -1 if user is not existing
+     */
+    static int8_t getUserIdx(const String& username);
 };
 #endif /** __USER_H__ */

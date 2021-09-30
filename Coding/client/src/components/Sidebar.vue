@@ -78,14 +78,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           />
         </svg>
       </router-link>
-
-      <router-link to="/debug" class="Debug">
-        <svg class="icon">
-          <use
-            :xlink:href="require('@/assets/icons/icons.svg') + '#debug-white'"
-          />
-        </svg>
-      </router-link>
     </nav>
 
     <nav class="bottom-nav">
@@ -151,7 +143,7 @@ export default defineComponent({
     };
   },
   methods: {
-    resetClick(event: any) {
+    resetClick(event: any): void {
       (this.$refs.menu as Menu).toggle(event);
     },
   },

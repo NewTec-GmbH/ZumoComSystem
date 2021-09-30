@@ -74,6 +74,7 @@ export default class RequestResponseHandler {
    *
    * @param request The ApiRequest to be invoked
    * @param context The current context (this)
+   * @param hideErrors Set to true if errors should be not displayed with toast
    * @return Returns ApiResponse promise
    */
   public async makeRequest(
@@ -106,13 +107,10 @@ export default class RequestResponseHandler {
               summary: "Missing Permission",
               detail:
                 "You do not have the required permission to execute the command " +
-                request.commandId,
+                request.commandId + ". Either you dont have the permission or your session timed out!",
               life: 5000,
             });
-
-            if ("null" == context.$store.getters.currentUser) {
               context.$store.commit("setLoginDialogVisibility", true);
-            }
             resolve(apiResponse);
           } else {
             if (false === hideErrors) {
@@ -147,8 +145,6 @@ export default class RequestResponseHandler {
       }
     });
   }
-
-  // TODO: Refactor
 
   /**
    * Sends a binary data buffer to the WebSocket endpoint

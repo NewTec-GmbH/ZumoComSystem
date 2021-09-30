@@ -44,7 +44,7 @@ import Log from "@/utility/Log";
 /** Class for connecting to WebSocket servers */
 export default class WebSocketClient {
   /** Specifies the host endpoint URL */
-  private readonly m_host = "wss://complatform.local/api";
+  private readonly m_host: string;
 
   /** WebSocket instance */
   private m_socketClient: WebSocket;
@@ -56,29 +56,10 @@ export default class WebSocketClient {
    * Default Constructor
    */
   private constructor() {
+    this.m_host = "wss://complatform.local/api";
     /* Connect with specified endpoint */
     this.m_socketClient = new WebSocket(this.m_host);
     Log.debug("Trying to connect to WebSocket host at " + this.m_host);
-  }
-
-  public onOpen(fnPtr: any): void {
-    this.m_socketClient.onopen = fnPtr;
-  }
-
-  public onClose(fnPtr: any): void {
-    this.m_socketClient.onclose = fnPtr;
-  }
-
-  public onError(fnPtr: any): void {
-    this.m_socketClient.onerror = fnPtr;
-  }
-
-  /**
-   * Closes the opened WebSocket connection
-   */
-  public disconnect(): void {
-    Log.debug("Trying to close WebSocket connection!");
-    this.m_socketClient.close();
   }
 
   /**
@@ -91,6 +72,48 @@ export default class WebSocketClient {
       Log.debug("New WebSocketClient instance created!");
     }
     return this.m_instance;
+  }
+
+  /**
+   * Register function which is called on WebSocket connection open callback
+   * @param fnPtr The function to be registered
+   */
+  public onOpen(fnPtr: any): void {
+    this.m_socketClient.onopen = fnPtr;
+  }
+
+  /**
+   * Register function which is called on WebSocket connection close callback
+   * @param fnPtr The function to be registered
+   */
+  public onClose(fnPtr: any): void {
+    this.m_socketClient.onclose = fnPtr;
+  }
+
+  /**
+   * Register function which is called on WebSocket connection error callback
+   * @param fnPtr The function to be registered
+   */
+  public onError(fnPtr: any): void {
+    this.m_socketClient.onerror = fnPtr;
+  }
+
+  /**
+   * Registers a new callback which calls the specified function when the WebSocket client
+   * receives a new message
+   *
+   * @param fnPtr The function to be registered
+   */
+  public onMessage(fnPtr: any): void {
+    this.m_socketClient.onmessage = fnPtr;
+  }
+
+  /**
+   * Closes the opened WebSocket connection
+   */
+  public disconnect(): void {
+    Log.debug("Trying to close WebSocket connection!");
+    this.m_socketClient.close();
   }
 
   /**
@@ -122,15 +145,5 @@ export default class WebSocketClient {
       );
     }
     return retCode;
-  }
-
-  /**
-   * Registers a new callback which calls the specified function when the WebSocket client
-   * receives a new message
-   *
-   * @param fnPtr The function to be called on incoming messages
-   */
-  public onMessage(fnPtr: any): void {
-    this.m_socketClient.onmessage = fnPtr;
   }
 }

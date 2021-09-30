@@ -54,6 +54,18 @@ export default class Log {
   private static m_logLevel = LogLevel.LEVEL_DEBUG;
 
   /**
+   * Helper method to write the logs
+   *
+   * @param level The log level to be used
+   * @param msg The message to be written to log
+   */
+  private static writeLog(level: LogLevel, msg: string): void {
+    if (level <= this.m_logLevel && 0 < msg.length) {
+      console.log(msg);
+    }
+  }
+
+  /**
    * Sets the log level of the logging class
    *
    * @param level The log level to be set
@@ -105,17 +117,5 @@ export default class Log {
    */
   public static error(msg: string): void {
     Log.writeLog(LogLevel.LEVEL_ERROR, "[-]\t" + msg);
-  }
-
-  /**
-   * Helper method to write the logs
-   *
-   * @param level The log level to be used
-   * @param msg The message to be written to log
-   */
-  private static writeLog(level: LogLevel, msg: string): void {
-    if (level <= this.m_logLevel && 0 < msg.length) {
-      console.log(msg);
-    }
   }
 }

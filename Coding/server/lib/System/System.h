@@ -79,6 +79,21 @@ public:
     void reset();
 
 private:
+    /** Reference to store */
+    Store& m_store;
+
+    /** Instance of WiFiManager */
+    WiFiManager* m_wifimgr;
+
+    /** Instance of HTTPsWebServer */
+    HTTPsWebServer* m_webServer;
+
+    /** The binary semaphore for synchronizing init task and KeyCert generation task */
+    static SemaphoreHandle_t m_genKeyCertSemaphore;
+
+    /** Specifies how long the service handling task should be put to sleep */
+    static const uint8_t SERVICE_HANDLING_SLEEP_TIME_MS = 1;
+
     /**
      * Default Constructor
      */
@@ -103,20 +118,5 @@ private:
      * @return Returns true if successful, else false
      */
     bool registerKeyCertGenTask();
-
-    /** Reference to store */
-    Store& m_store;
-
-    /** Instance of WiFiManager */
-    WiFiManager* m_wifimgr;
-
-    /** Instance of HTTPsWebServer */
-    HTTPsWebServer* m_webServer;
-
-    /** The binary semaphore for synchronizing init task and KeyCert generation task */
-    static SemaphoreHandle_t m_genKeyCertSemaphore;
-
-    /** Specifies how long the service handling task should be put to sleep */
-    static const uint8_t SERVICE_HANDLING_SLEEP_TIME_MS = 1;
 };
 #endif /** __SYSTEM_H__ */

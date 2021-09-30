@@ -112,6 +112,6 @@ private:
     String m_binaryServiceID;
 
     /** Specifies the permissions required to invoke the API service */
-    Permission m_BinaryReqPermission;
+    Permission m_binaryReqPermission;
 };
 #endif /** __BINARYCOMMAND_H__ */

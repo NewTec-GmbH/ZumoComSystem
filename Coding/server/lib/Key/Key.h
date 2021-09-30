@@ -74,9 +74,12 @@ public:
     bool readKey() const;
 
 private:
+    /** Reference to IO class */
+    IO& m_io;
+
     /**
-     * Default Constructor
-     */
+    * Default Constructor
+    */
     Key();
 
     /**
@@ -93,11 +96,5 @@ private:
      * ISR which resets the ComPlatform which will be inovked when push key is being pressed
      */
     static void systemResetISR();
-
-    /** Reference to IO class */
-    IO& m_io;
-
-    /** Specifies push duration for a long-press event */
-    static const uint32_t LONG_PRESS_TIME_MS = 1000;
 };
 #endif /** __KEY_H__ */

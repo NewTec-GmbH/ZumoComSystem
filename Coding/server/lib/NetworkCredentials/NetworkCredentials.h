@@ -48,10 +48,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class NetworkCredentials
 {
 public:
-    /** Default constructor */
+    /**
+     * Default constructor
+     */
     NetworkCredentials();
 
-    /** Destructor */
+    /**
+     * Destructor
+     */
     ~NetworkCredentials();
 
     /**
@@ -114,6 +118,9 @@ private:
 
     /** Maximum number of printable chars (excluding null terminator) for passphrases according to IEEE 802.11*/
     static const uint8_t MAX_PASSPHRASE_LENGTH_CHARS = 63;
+
+    /* Number of appended printable SSID chars which are reserved when using AP mode to avoid SSID conflicts (including null terminator) */
+    static const uint8_t RESERVED_DEVICE_ID_CHARS = 12;
 
     /** The SSID to be stored */
     String m_ssid;

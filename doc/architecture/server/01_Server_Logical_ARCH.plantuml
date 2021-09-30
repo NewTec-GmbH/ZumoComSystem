@@ -1,108 +1,115 @@
 @startuml
-interface "WSS" as WSS
-interface "HTTPS" as HTTPS
+' Server interface
+interface "WSS"
+interface "HTTPS"
 
 component "Client" as client {
     client -down-(WSS
     client -down-(HTTPS
 }
 
-component "Hardware" as hardware {
-    port " " as hardwareport
-}
-
 package ComPlatform {
-    interface "Preferences" as preferences
-    interface "Debug" as Debug
-    interface "FlashRobot" as FlashRobot
-    interface "RobotReset" as RobotReset
-    interface "COMReset" as ComReset
-    interface "ReadKey" as ReadKey
-    interface "Crypto" as Crypto
-    interface "mbedTLS" as mbedtls
-    interface "WiFi" as WiFi
-    interface "DNS" as DNS
-    interface "FS" as FS
-    interface "OTA" as ota
+    ' API interface
+    interface "Command"
+    interface "BinaryCommand"
 
-    interface "System" as System
+    ' HAL inteface (with Arduino framework + ESP-IDF)
+    interface "ComReset"
+    interface "ReadKey"
+    interface "Crypto"
+    interface "mbedTLS"
+    interface "WiFi"
+    interface "DNS"
+    interface "mDNS"
+    interface "OTA"
+    interface "FS"
+    interface "NVS"
+    interface "IO"
+    interface "Zumo32U4"
 
-    interface "FWCheck" as FWCheck
-    interface "File" as File
-    interface "Crypt" as Crypt
-    interface "NVS" as nvs
-    interface "Store" as Store
-    interface "Logging" as Logging
-    interface "NVS" as NVSHAL
+    ' System Services interface
+    interface "File"
+    interface "CryptoServices"
+    interface "NVSManager"
+    interface "Logging"
+    interface "FWCheck"
+    interface "System"
 
-    component "HAL" as hal {
-        hal -up- Debug
-        hal -up- FlashRobot
-        hal -up- RobotReset
-        hal -up- ComReset
-        hal -up- ReadKey
-        hal -up- Crypto
-        hal -up- mbedtls
-        hal -up- WiFi
-        hal -up- DNS
-        hal -up- preferences
-        hal -up- FS
-        hal -up- ota
+    ' Data interface
+    interface "Store"
 
-        hal -down-> hardwareport
-        hal -down-( System
+    component "Hardware" as hardware {
+        port " " as hardwareport
     }
-    note right of hal : Provides hardware\nabstraction/drivers
 
-    component "Data" as data {
-        data -up- Store
+    component "HAL" {
+        HAL-up-ComReset
+        HAL-up-IO
+        HAL-up-ReadKey
+        HAL-up-Zumo32U4
+        HAL-up-Crypto
+        HAL-up-mbedTLS
+        HAL-up-WiFi
+        HAL-up-DNS
+        HAL-up-mDNS
+        HAL-up-OTA
+        HAL-up-FS
+        HAL-up-NVS
 
-        data -down-(NVSHAL
+        HAL-down->hardwareport
     }
-    note right of data : Provides centralized data\nstorage manager/saver
+    note right of HAL : Hardware drivers and\nArduino Framework/ESP-IDF services
 
-    component "API" as api {
-        api -down-(File
-        api -down-(ota
-        api -down-(Store
-        api -down-(FWCheck
-        api -down-(ComReset
-        api -down-(Debug
-        api -down-(RobotReset
-        api -down-(FlashRobot
+    component "Data" {
+        Data-up-Store
+        Data-down-(NVSManager
     }
-    note right of api : The actual service controller\nand API service implementations
+    note left of Data : Global data store; Loads and saves\nall settings from/to NVS
 
-    component "Server" as server {
-        server -up- WSS
-        server -up- HTTPS
+    component "SystemServices" {
+        SystemServices-up-FWCheck
+        SystemServices-up-File
+        SystemServices-up-CryptoServices
+        SystemServices-up-NVSManager
+        SystemServices-up-System
+        SystemServices-up-Logging
 
-        server -down-(File
-        server -down-(Store
-        server -down-(Crypt
-
-        server --> api
+        SystemServices-down-(ReadKey
+        SystemServices-down-(Crypto
+        SystemServices-down-(mbedTLS
+        SystemServices-down-(FS
+        SystemServices-down-(WiFi
+        SystemServices-down-(DNS
+        SystemServices-down-(mDNS
+        SystemServices-down-(NVS
+        SystemServices-down-(Store
+        SystemServices-down-(ComReset
+        SystemServices-down-(IO
     }
-    note right of server : The server with authentication\nwhich provides HTTPs and WSS
+    note right of SystemServices : Further HAL abstraction, system init/tools
 
-    component "SystemServices" as systemservices {
-        systemservices -up- FWCheck
-        systemservices -up- File
-        systemservices -up- Crypt
-        systemservices -up- nvs
-        systemservices -up- System
-        systemservices -up- Logging
-        systemservices -up- NVSHAL
+    component "API"{
+        API -up- BinaryCommand
+        API -up- Command
 
-        systemservices -down-(ReadKey
-        systemservices -down-(Crypto
-        systemservices -down-(mbedtls
-        systemservices -down-(FS
-        systemservices -down-(WiFi
-        systemservices -down-(DNS
-        systemservices -down-(preferences
-        systemservices -down-(Store
+        API-down-(File
+        API-down-(Store
+        API-down-(FWCheck
+        API-down-(OTA
+        API-down-(Zumo32U4
+        API-down-(CryptoServices
+        API-down-(System
     }
-    note right of systemservices : Helper/Init functions which\nfurther abstract existing HAL
-}
-@enduml
+    note right of API : API service implementations with stable interface
+
+    component "Server"{
+        Server-up-WSS
+        Server-up-HTTPS
+
+        Server-down-(File
+        Server-down-(Store
+        Server-down-(BinaryCommand
+        Server-down-(Command
+    }
+    note right of Server : HTTPs/WSS server which serves frontend/webspace\ncalls/redirects API services and checks permission/authentication
+    @enduml

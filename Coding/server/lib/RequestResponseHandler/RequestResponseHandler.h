@@ -90,32 +90,6 @@ public:
     void resetBinaryMode();
 
 private:
-    /**
-     * Default Constructor
-     */
-    RequestResponseHandler();
-
-    /**
-     * Destructor
-     */
-    ~RequestResponseHandler();
-
-    /**
-     * Returns pointer to API service class which corresponds to passed service id inside request
-     *
-     * @param[in] request The API request to be checked for its service id
-     * @return Returns pointer to correct service class instance. Returns nullpointer if there is no such service
-     */
-    Command* getCommandOfApiRequest(const ApiRequest& request);
-
-    /**
-     * Returns pointer to BINARY API service class which corresponds to passed service id inside request
-     *
-     * @param[in] commandId The BINARY API service id
-     * @return Returns pointer to correct service class instance. Returns nullpointer if there is no such service
-     */
-    BinaryCommand* getCommandOfBinaryApiRequest(const String& commandId);
-
     /** Instance of the EchoDemoCommand */
     EchoDemoCommand m_echoDemoCommand;
 
@@ -145,5 +119,31 @@ private:
 
     /** Instance of SessionManager */
     SessionManager m_sessionManager;
+
+    /**
+     * Constructor
+     */
+    RequestResponseHandler();
+
+    /**
+     * Destructor
+     */
+    ~RequestResponseHandler();
+
+    /**
+     * Returns pointer to API service class which corresponds to passed service id inside request
+     *
+     * @param[in] request The API request to be checked for its service id
+     * @return Returns pointer to correct service class instance. Returns nullpointer if there is no such service
+     */
+    Command* getCommandOfApiRequest(const ApiRequest& request);
+
+    /**
+     * Returns pointer to BINARY API service class which corresponds to passed service id inside request
+     *
+     * @param[in] commandId The BINARY API service id
+     * @return Returns pointer to correct service class instance. Returns nullpointer if there is no such service
+     */
+    BinaryCommand* getCommandOfBinaryApiRequest(const String& commandId);
 };
 #endif /** __REQUESTRESPONSEHANDLER_H__ */

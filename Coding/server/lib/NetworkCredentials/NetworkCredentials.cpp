@@ -60,9 +60,6 @@ const String& NetworkCredentials::getSSID() const
 
 bool NetworkCredentials::setSSID(const String& ssid, const bool staMode)
 {
-    /* Number of appended SSID chars which are reserved when using AP mode to avoid SSID conflicts */
-    const uint8_t RESERVED_DEVICE_ID_CHARS = 13;
-
     bool retCode = true;
     if ((true == staMode) && (ssid.length() <= MAX_SSID_LENGTH_CHARS))
     {
@@ -74,7 +71,9 @@ bool NetworkCredentials::setSSID(const String& ssid, const bool staMode)
         m_ssid = ssid + "_" + String(static_cast<unsigned long>(ESP.getEfuseMac()), HEX);
     }
     else
+    {
         retCode = false;
+    }
     return retCode;
 }
 

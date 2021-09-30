@@ -10,6 +10,7 @@ CLOSED --> OPENED : open()
 CLOSED --> CLOSED : restart()
 CLOSED --> CLOSED : close()
 
+OPENED --> OPENED: open()
 OPENED --> READING_SERIAL : readSerialBuffer()
 OPENED --> WRITING_SERIAL : writeSerialBuffer()
 OPENED --> INIT : beginWriteFirmware()

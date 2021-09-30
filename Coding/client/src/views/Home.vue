@@ -87,26 +87,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       </Card>
 
       <Card class="info-card">
-        <template #title>
-          Debugging your Code? Nothing easier than that!
-        </template>
-        <template #header>
-          <svg class="card-icon">
-            <use
-              :xlink:href="require('@/assets/icons/icons.svg') + '#debug-black'"
-            />
-          </svg>
-        </template>
-        <template #content>
-          Imagine a world without buggy software. With the help of the
-          ComPlatform system and its intuitive debugging console, you can get to
-          that dream one step closer now! The web interface allows you to
-          analyze the data which has been received by the attached robot through
-          the USB serial interface!
-        </template>
-      </Card>
-
-      <Card class="info-card">
         <template #title>Upload & Flash your Firmware? Done.</template>
         <template #header>
           <svg class="card-icon">

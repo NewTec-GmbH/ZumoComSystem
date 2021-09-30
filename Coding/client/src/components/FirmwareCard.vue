@@ -115,7 +115,7 @@ export default defineComponent({
     };
   },
 
-  mounted() {
+  mounted(): void {
     this.updateFirmwareCard();
   },
 
@@ -136,7 +136,7 @@ export default defineComponent({
   },
 
   methods: {
-    updateFirmwareCard() {
+    updateFirmwareCard(): void {
       let targetSystem = "";
       if ("Zumo32U4 Robot" === this.$store.getters.selectedDevice.name) {
         targetSystem = "ZUMO";

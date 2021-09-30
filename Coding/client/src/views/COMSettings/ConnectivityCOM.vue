@@ -106,7 +106,6 @@ import { ApiRequest } from "@/models/ApiRequest";
 import { ApiResponse } from "@/models/ApiResponse";
 import { ResponseCode } from "@/models/ResponseCode";
 import RequestResponseHandler from "@/api/RequestResponseHandler";
-import Log from "@/utility/Log";
 import TextDialog from "@/components/TextDialog.vue";
 
 export default defineComponent({
@@ -128,7 +127,7 @@ export default defineComponent({
   },
 
   methods: {
-    save() {
+    save(): void {
       /* Prepare the API command */
       let request = new ApiRequest();
       request.commandId = "setstacredentials";
@@ -148,11 +147,11 @@ export default defineComponent({
         });
     },
 
-    declineClick() {
+    declineClick(): void {
       this.confirmDialogVisible = false;
     },
 
-    acceptClick() {
+    acceptClick(): void {
       this.confirmDialogVisible = false;
 
       /* Prepare the API command */

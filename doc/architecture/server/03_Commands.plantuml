@@ -10,45 +10,51 @@ package Commands {
     interface "Store" as Store
     interface "Zumo32U4" as Zumo32U4
     interface "System" as System
+    interface "Crypto"
 
     component Command
+    component BinaryCommand
     component "EchoDemoCommand" as echodemocommand
     component "UploadZumoCommand" as uploadzumoservice
     component "FlashZumoCommand" as flashzumoservice
     component "SetSTACredentialsCommand" as credconfig
     component "RebootZumoCommand" as resetzumoservice
     component "RebootCOMCommand" as resetcomplatforomservice
-    component "DebugZumoCommand" as zumodebug
     component "UploadCOMCommand" as uploadcomfirmware
     component "FlashCOMCommand" as flashcomfirmware
+    component "GetFirmwareInfoCommand" as getfirmwareinfo
 
     Command <|-- echodemocommand
     Command <|-- uploadzumoservice
+    BinaryCommand <|-- uploadzumoservice
     Command <|-- flashzumoservice
     Command <|-- credconfig
     Command <|-- resetzumoservice
     Command <|-- resetcomplatforomservice
-    Command <|-- zumodebug
     Command <|-- uploadcomfirmware
+    BinaryCommand <|-- uploadcomfirmware
     Command <|-- flashcomfirmware
+    Command <|-- getfirmwareinfo
     RequestResponseHandler *--> Command
 
     uploadzumoservice -down-(File
     uploadzumoservice -down-(Store
     uploadzumoservice -down-(FWCheck
+    uploadzumoservice -down-(Crypto
     uploadcomfirmware -down-(ota
     uploadcomfirmware -down-(Store
     uploadcomfirmware -down-(FWCheck
+    uploadcomfirmware -down-(Crypto
     flashcomfirmware -down-(ota
     flashcomfirmware -down-(Store
     flashcomfirmware -down-(System
+    flashcomfirmware -down-(Crypto
     credconfig -down-(Store
-    flashzumoservice -down-(FWCheck
     flashzumoservice -down-(File
     flashzumoservice -down-(Store
-    flashzumoservice -down-(Zumo32U4
+    flashzumoservice -down-(Crypto
     resetzumoservice -down-(Zumo32U4
     resetcomplatforomservice -down-(System
-    zumodebug -down-(Zumo32U4
+    getfirmwareinfo -down-(Store
 }
 @enduml

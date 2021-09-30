@@ -8,7 +8,7 @@ participant Command
 Client->WebServer: Calls uploadZumoCommand TEXT API service and specifies firmware file size
 WebServer->RequestResponseHandler: Forwards incoming ApiRequest
 RequestResponseHandler->Command: Calls API service for switching API to BINARY mode, specifying the used API service and the binary size
-Command->Command: Calls initBinaryMode(commandId, fileSize)
+Command->Session: Calls initBinaryMode(commandId, fileSize)
 Command-->RequestResponseHandler: Return ApiResponse
 RequestResponseHandler-->WebServer: Forwards outgoing ApiResponse
 WebServer-->Client : Sends outgoing ApiResponse
@@ -16,8 +16,9 @@ WebServer-->Client : Sends outgoing ApiResponse
 loop until all firmware chunks have been transmitted
 Client->WebServer: Sends binary data stream consisting of firmware header and payload
 WebServer->Session: Forwards incoming binary stream
-Session->RequestResponseHandler: Sends data chunk to API BINARY service
-RequestResponseHandler->Command: Calls BINARY API service for uploading the firmware file
+Session->Session: Buffers the received data (accessible for API service)
+Session->RequestResponseHandler: Call specified API service
+RequestResponseHandler->Command: Calls BINARY API service for saving the firmware file to FS
 Command-->RequestResponseHandler: Return ApiResponse
 RequestResponseHandler-->WebServer: Forwards outgoing ApiResponse
 WebServer-->Client : Sends outgoing ApiResponse

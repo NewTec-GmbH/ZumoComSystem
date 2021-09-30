@@ -184,12 +184,6 @@ public:
     void closeStore();
 
 private:
-    /** Default constructor */
-    Store();
-
-    /** Destructor */
-    ~Store();
-
     /** Instance of NVSManager for making data persistent */
     NVSManager m_nvsmgr;
 
@@ -204,5 +198,11 @@ private:
 
     /** Instance of users */
     User m_users;
+
+    /** Default constructor */
+    Store();
+
+    /** Destructor */
+    ~Store();
 };
 #endif /** __STORE_H__ */
