@@ -107,13 +107,10 @@ export default class RequestResponseHandler {
               summary: "Missing Permission",
               detail:
                 "You do not have the required permission to execute the command " +
-                request.commandId,
+                request.commandId + ". Either you dont have the permission or your session timed out!",
               life: 5000,
             });
-
-            if ("null" == context.$store.getters.currentUser) {
               context.$store.commit("setLoginDialogVisibility", true);
-            }
             resolve(apiResponse);
           } else {
             if (false === hideErrors) {

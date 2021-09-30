@@ -77,9 +77,6 @@ private:
     /** Reference to IO class */
     IO& m_io;
 
-    /** Specifies push duration for a long-press event */
-    static const uint32_t LONG_PRESS_TIME_MS = 1000;
-
     /**
     * Default Constructor
     */

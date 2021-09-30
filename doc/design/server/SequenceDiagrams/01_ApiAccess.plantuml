@@ -8,6 +8,7 @@ participant Command
 
 Client->WebServer: Sends ApiRequest JSON string or binary data to socket connection
 alt API in TEXT mode
+    WebServer->WebServer: Deserializes incoming ApiRequest JSON
     WebServer->RequestResponseHandler: makeRequest(request, response, connectionCtx)
     RequestResponseHandler->RequestResponseHandler: getCommandId()
 
@@ -25,6 +26,7 @@ alt API in TEXT mode
 
         SessionManager-->RequestResponseHandler: return ApiResponse
         RequestResponseHandler-->WebServer: return ApiResponse
+        WebServer->WebServer: Serializes ApiResponse JSON
         WebServer-->Client: Sends ApiResponse JSON string to socket connection
 
     else De-Authentication command
@@ -32,6 +34,7 @@ alt API in TEXT mode
         SessionManager->Session: deauthenticateSession()
         SessionManager-->RequestResponseHandler: return ApiResponse
         RequestResponseHandler-->WebServer: return ApiResponse
+        WebServer->WebServer: Serializes ApiResponse JSON
         WebServer-->Client: Sends ApiResponse JSON string to socket connection
     end
 
@@ -56,6 +59,7 @@ alt API in TEXT mode
                     RequestResponseHandler->Command: run(request, response, connectionCtx)
                     Command->RequestResponseHandler: return ApiResponse
                     RequestResponseHandler-->WebServer: Return ApiResponse
+                    WebServer->WebServer: Serializes ApiResponse JSON
                     WebServer-->Client: Sends ApiResponse JSON string to socket connection
                 else Session not authenticated
                     RequestResponseHandler->RequestResponseHandler: response.setStatusCode(UNAUTHORIZED)
@@ -66,11 +70,13 @@ alt API in TEXT mode
                 RequestResponseHandler->Command: run(request, response, connectionCtx)
                 Command->RequestResponseHandler: return ApiResponse
                 RequestResponseHandler-->WebServer: return ApiResponse
+                WebServer->WebServer: Serializes ApiResponse JSON
                 WebServer-->Client: Sends ApiResponse JSON string to socket connection
             end
         else Service not implemented
             RequestResponseHandler->RequestResponseHandler: response.setStatusCode(NOT_IMPLEMENTED)
             RequestResponseHandler-->WebServer: return ApiResponse
+            WebServer->WebServer: Serializes ApiResponse JSON
             WebServer-->Client: Sends ApiResponse JSON string to socket connection
         end
     end
@@ -97,18 +103,21 @@ else API in BINARY mode
                 RequestResponseHandler->Command: run(response, connectionCtx)
                 Command->RequestResponseHandler: return ApiResponse
                 RequestResponseHandler-->WebServer: Return ApiResponse
+                WebServer->WebServer: Serializes ApiResponse JSON
                 WebServer-->Client: Sends ApiResponse JSON string to socket connection
             else Session not authenticated
                 RequestResponseHandler->RequestResponseHandler: response.setStatusCode(UNAUTHORIZED)
                 RequestResponseHandler->RequestResponseHandler: resetBinaryMode()
                 RequestResponseHandler->RequestResponseHandler: exitBinaryMode()
                 RequestResponseHandler-->WebServer: return ApiResponse
+                WebServer->WebServer: Serializes ApiResponse JSON
                 WebServer-->Client: Sends ApiResponse JSON string to socket connection
             end
         else No Permission required
             RequestResponseHandler->Command: run(response, connectionCtx)
             Command->RequestResponseHandler: return ApiResponse
             RequestResponseHandler-->WebServer: return ApiResponse
+            WebServer->WebServer: Serializes ApiResponse JSON
             WebServer-->Client: Sends ApiResponse JSON string to socket connection
         end
     else Service not implemented
@@ -116,6 +125,7 @@ else API in BINARY mode
         RequestResponseHandler->RequestResponseHandler: resetBinaryMode()
         RequestResponseHandler->RequestResponseHandler: exitBinaryMode()
         RequestResponseHandler-->WebServer: return ApiResponse
+        WebServer->WebServer: Serializes ApiResponse JSONx  q
         WebServer-->Client: Sends ApiResponse JSON string to socket connection
     end
 end
