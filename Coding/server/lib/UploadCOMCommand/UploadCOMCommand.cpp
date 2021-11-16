@@ -292,7 +292,7 @@ void UploadCOMCommand::run(ApiResponse& response, Session* connectionCtx)
         connectionCtx->exitBinaryMode();
     }
 
-#ifdef ACTIVATE_LOGGING
+#if (0 != ACTIVATE_LOGGING)
     const uint8_t PRINT_BUFFER_SIZE = 128;
     const uint8_t MULTIPLICATOR = 100;
     char buffer[PRINT_BUFFER_SIZE];

@@ -113,7 +113,7 @@ bool FirmwareChecker::isValid(const String& expectedTarget)
     {
         LOG_ERROR("Invalid ID in firmware header!");
 
-#ifdef ACTIVATE_LOGGING
+#if (0 != ACTIVATE_LOGGING)
         String id;
         m_fwHeader.getID(id);
         LOG_INFO(String("Actual firmware ID is: ") + id);

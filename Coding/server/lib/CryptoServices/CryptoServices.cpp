@@ -219,7 +219,7 @@ bool CryptoServices::verifySignature(const uint8_t* signature, const uint16_t si
     if (true == m_hashAvailable)
     {
 
-#ifdef ACTIVATE_LOGGING
+#if (0 != ACTIVATE_LOGGING)
         String hexString;
         if (true == getSHA256String(hexString))
         {

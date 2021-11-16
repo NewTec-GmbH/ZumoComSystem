@@ -441,7 +441,7 @@ bool Zumo32U4::checkPlatform()
         LOG_ERROR("Could not fetch supported device codes information!");
     }
 
-#ifdef ACTIVATE_LOGGING
+#if (0 != ACTIVATE_LOGGING)
     if (true == validSwID)
     {
         LOG_INFO("Received software ID is valid!");

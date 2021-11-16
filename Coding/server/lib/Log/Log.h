@@ -48,7 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Arduino.h>
 #endif /* USE_ARDUINO_FAKE */
 
-#ifdef ACTIVATE_LOGGING
+#if (0 != ACTIVATE_LOGGING)
  /** Macro for logging debug messages */
 #define LOG_DEBUG(msg) ((Log::getInstance().writeLog(Log::LEVEL_DEBUG, (String("[+]\t") + msg))))
 

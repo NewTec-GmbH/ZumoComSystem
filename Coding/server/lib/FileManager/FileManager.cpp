@@ -85,7 +85,7 @@ bool FileManager::initFS()
         retCode = true;
     }
 
-#ifdef ACTIVATE_LOGGING
+#if (0 != ACTIVATE_LOGGING)
     String outputString = "";
     getInfo(outputString);
     LOG_INFO(outputString);
