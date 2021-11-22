@@ -23,17 +23,21 @@ jobs:
         pip install platformio
         platformio update
     
-    - name: Compile target debug
+    - name: Compile target in DebugMode
       working-directory: './Coding/server/'
-      run: platformio run --environment debug
+      run: platformio run --environment DebugMode
         
-    - name: Perform static checks on native environment
+    - name: Compile target in ReleaseMode
       working-directory: './Coding/server/'
-      run: platformio check --environment native
+      run: platformio run --environment ReleaseMode
+    
+    - name: Perform static checks on Native environment
+      working-directory: './Coding/server/'
+      run: platformio check --environment Native
       
-    - name: Run tests on native environment
+    - name: Run tests on Native environment
       working-directory: './Coding/server/'
-      run: platformio test --environment native
+      run: platformio test --environment Native
 
     - name: Set up graphviz
       uses: ts-graphviz/setup-graphviz@v1
