@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 6 7
 Title "Zumo Communication System"
-Date "2021-07-30"
+Date "2021-08-20"
 Rev "V1.0"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -52,8 +52,6 @@ Wire Wire Line
 	1100 1950 1850 1950
 Wire Wire Line
 	1100 2050 1850 2050
-Text HLabel 7500 3900 2    50   Input ~ 0
-nBUTTON_A
 Text HLabel 7500 3700 2    50   Input ~ 0
 nBUTTON_B
 Text HLabel 7500 3400 2    50   Input ~ 0
@@ -72,8 +70,6 @@ Wire Wire Line
 	7100 3700 7500 3700
 Wire Wire Line
 	7100 3800 7500 3800
-Wire Wire Line
-	7100 3900 7500 3900
 Text HLabel 7500 2600 2    50   Output ~ 0
 nRGB_LED_R
 Text HLabel 7500 3100 2    50   Output ~ 0
@@ -86,20 +82,10 @@ Wire Wire Line
 	7100 3000 7500 3000
 Wire Wire Line
 	7100 3100 7500 3100
-Text HLabel 7500 2200 2    50   Output ~ 0
-nRemote_Butt_A
 Wire Wire Line
 	7100 3500 7500 3500
 Text HLabel 7500 3500 2    50   Output ~ 0
 nRST
-Text HLabel 7500 2300 2    50   Output ~ 0
-nRemote_Butt_B
-Text HLabel 7500 2400 2    50   Output ~ 0
-nRemote_Butt_C
-Wire Wire Line
-	7100 2300 7500 2300
-Wire Wire Line
-	7100 2400 7500 2400
 Wire Wire Line
 	7500 2500 7100 2500
 Text HLabel 7500 2500 2    50   Output ~ 0
@@ -392,8 +378,6 @@ NoConn ~ 7100 1800
 NoConn ~ 7100 1600
 Wire Wire Line
 	7100 3400 7500 3400
-Wire Wire Line
-	7100 2200 7500 2200
 $Comp
 L RF_Module:ESP32-WROOM-32 U?
 U 1 1 60C62D7A
@@ -466,4 +450,8 @@ Wire Wire Line
 Connection ~ 8600 2000
 Wire Wire Line
 	8600 2000 8600 1700
+NoConn ~ 7100 2200
+NoConn ~ 7100 2300
+NoConn ~ 7100 2400
+NoConn ~ 7100 3900
 $EndSCHEMATC

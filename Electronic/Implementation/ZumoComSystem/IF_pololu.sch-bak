@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 7 7
 Title "Zumo Communication System"
-Date "2021-07-30"
+Date "2021-08-20"
 Rev "V1.0"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -392,7 +392,7 @@ Text Label 9950 4400 2    50   ~ 0
 LED_A*
 Wire Wire Line
 	9500 4400 9950 4400
-Text Label 2150 1200 0    50   ~ 0
+Text Label 2450 1200 2    50   ~ 0
 BUT_A
 $Comp
 L power:GND #PWR?
@@ -456,8 +456,6 @@ Wire Wire Line
 	1950 7250 1400 7250
 Text HLabel 1400 4600 0    50   Input ~ 0
 nLED_B
-Text HLabel 6950 1200 2    50   Output ~ 0
-nBUTTON_C
 $Comp
 L power:GND #PWR?
 U 1 1 616AF1C8
@@ -552,14 +550,8 @@ Wire Wire Line
 Connection ~ 2150 3300
 Wire Wire Line
 	2150 3300 2250 3300
-Text HLabel 4650 1200 2    50   Output ~ 0
-nBUTTON_B
-Text HLabel 2450 1200 2    50   Output ~ 0
-nBUTTON_A
 Wire Wire Line
 	2100 1750 2100 1950
-Text HLabel 1500 1550 0    50   Input ~ 0
-nRemote_Butt_A
 $Comp
 L power:+3.3V #PWR?
 U 1 1 61243628
@@ -588,8 +580,6 @@ Wire Wire Line
 	2100 1350 2100 1200
 Wire Wire Line
 	2100 1200 2450 1200
-Wire Wire Line
-	1750 1450 1750 1550
 $Comp
 L power:GND #PWR?
 U 1 1 61349A7E
@@ -603,8 +593,6 @@ F 3 "" H 4300 1950 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	4300 1750 4300 1950
-Text HLabel 3700 1550 0    50   Input ~ 0
-nRemote_Butt_B
 $Comp
 L power:+3.3V #PWR?
 U 1 1 61349A8D
@@ -630,29 +618,27 @@ F 3 "~" H 3950 1300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4300 1200 4650 1200
-Wire Wire Line
 	3950 1450 3950 1550
 $Comp
 L Switch:SW_Push SW?
 U 1 1 61349AA0
-P 3550 2000
-F 0 "SW?" V 3504 2148 50  0000 L CNN
-F 1 "SW_Push" V 3595 2148 50  0000 L CNN
-F 2 "" H 3550 2200 50  0001 C CNN
-F 3 "~" H 3550 2200 50  0001 C CNN
-	1    3550 2000
+P 3550 1750
+F 0 "SW?" V 3504 1898 50  0000 L CNN
+F 1 "SW_Push" V 3595 1898 50  0000 L CNN
+F 2 "" H 3550 1950 50  0001 C CNN
+F 3 "~" H 3550 1950 50  0001 C CNN
+	1    3550 1750
 	0    -1   -1   0   
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 61349AA8
-P 3550 2200
-F 0 "#PWR?" H 3550 1950 50  0001 C CNN
-F 1 "GND" H 3555 2027 50  0000 C CNN
-F 2 "" H 3550 2200 50  0001 C CNN
-F 3 "" H 3550 2200 50  0001 C CNN
-	1    3550 2200
+P 3550 1950
+F 0 "#PWR?" H 3550 1700 50  0001 C CNN
+F 1 "GND" H 3555 1777 50  0000 C CNN
+F 2 "" H 3550 1950 50  0001 C CNN
+F 3 "" H 3550 1950 50  0001 C CNN
+	1    3550 1950
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -668,8 +654,6 @@ F 3 "" H 6600 1950 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	6600 1750 6600 1950
-Text HLabel 6000 1550 0    50   Input ~ 0
-nRemote_Butt_C
 $Comp
 L power:+3.3V #PWR?
 U 1 1 613906B5
@@ -694,10 +678,6 @@ F 3 "~" H 6250 1300 50  0001 C CNN
 	1    6250 1300
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	6600 1350 6600 1200
-Wire Wire Line
-	6600 1200 6950 1200
 Wire Wire Line
 	6250 1450 6250 1550
 $Comp
@@ -800,12 +780,12 @@ Text Label 2700 3000 0    50   ~ 0
 LED_A*
 Text Label 2750 4150 0    50   ~ 0
 LED_B*
-Text GLabel 5450 4600 1    50   Input ~ 0
+Text GLabel 6000 4400 1    50   Input ~ 0
 VBAT_ZCS
 Wire Wire Line
-	5450 4600 5450 4700
+	6000 4400 6000 4700
 Wire Wire Line
-	5450 4700 5200 4700
+	6000 4700 5200 4700
 NoConn ~ 4700 3500
 NoConn ~ 5200 3500
 NoConn ~ 4700 3700
@@ -818,7 +798,7 @@ NoConn ~ 5200 3700
 NoConn ~ 5200 3800
 NoConn ~ 5200 3900
 NoConn ~ 5200 4000
-NoConn ~ 5200 4200
+NoConn ~ 5200 4100
 NoConn ~ 5200 4300
 NoConn ~ 5200 4400
 NoConn ~ 5200 4500
@@ -890,107 +870,98 @@ Wire Wire Line
 $Comp
 L Device:R R?
 U 1 1 617380EC
-P 3800 1800
-F 0 "R?" V 3593 1800 50  0000 C CNN
-F 1 "R" V 3684 1800 50  0000 C CNN
-F 2 "" V 3730 1800 50  0001 C CNN
-F 3 "~" H 3800 1800 50  0001 C CNN
-	1    3800 1800
+P 3750 1550
+F 0 "R?" V 3543 1550 50  0000 C CNN
+F 1 "R" V 3634 1550 50  0000 C CNN
+F 2 "" V 3680 1550 50  0001 C CNN
+F 3 "~" H 3750 1550 50  0001 C CNN
+	1    3750 1550
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	3550 1800 3650 1800
+	3550 1550 3600 1550
 Wire Wire Line
-	3950 1550 3950 1800
+	3950 1550 3900 1550
 Connection ~ 6250 1550
 Wire Wire Line
 	6250 1550 6300 1550
-Wire Wire Line
-	6000 1550 6250 1550
 Connection ~ 3950 1550
 Wire Wire Line
 	3950 1550 4000 1550
-Wire Wire Line
-	3700 1550 3950 1550
 $Comp
 L Switch:SW_Push SW?
 U 1 1 617BFBA9
-P 5850 2000
-F 0 "SW?" V 5804 2148 50  0000 L CNN
-F 1 "SW_Push" V 5895 2148 50  0000 L CNN
-F 2 "" H 5850 2200 50  0001 C CNN
-F 3 "~" H 5850 2200 50  0001 C CNN
-	1    5850 2000
+P 5850 1750
+F 0 "SW?" V 5804 1898 50  0000 L CNN
+F 1 "SW_Push" V 5895 1898 50  0000 L CNN
+F 2 "" H 5850 1950 50  0001 C CNN
+F 3 "~" H 5850 1950 50  0001 C CNN
+	1    5850 1750
 	0    -1   -1   0   
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 617BFBAF
-P 5850 2200
-F 0 "#PWR?" H 5850 1950 50  0001 C CNN
-F 1 "GND" H 5855 2027 50  0000 C CNN
-F 2 "" H 5850 2200 50  0001 C CNN
-F 3 "" H 5850 2200 50  0001 C CNN
-	1    5850 2200
+P 5850 1950
+F 0 "#PWR?" H 5850 1700 50  0001 C CNN
+F 1 "GND" H 5855 1777 50  0000 C CNN
+F 2 "" H 5850 1950 50  0001 C CNN
+F 3 "" H 5850 1950 50  0001 C CNN
+	1    5850 1950
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R R?
 U 1 1 617BFBB5
-P 6100 1800
-F 0 "R?" V 5893 1800 50  0000 C CNN
-F 1 "R" V 5984 1800 50  0000 C CNN
-F 2 "" V 6030 1800 50  0001 C CNN
-F 3 "~" H 6100 1800 50  0001 C CNN
-	1    6100 1800
+P 6050 1550
+F 0 "R?" V 5843 1550 50  0000 C CNN
+F 1 "R" V 5934 1550 50  0000 C CNN
+F 2 "" V 5980 1550 50  0001 C CNN
+F 3 "~" H 6050 1550 50  0001 C CNN
+	1    6050 1550
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	5850 1800 5950 1800
+	5850 1550 5900 1550
 Wire Wire Line
-	6250 1550 6250 1800
-Connection ~ 1750 1550
+	6250 1550 6200 1550
 Wire Wire Line
-	1750 1550 1800 1550
-Wire Wire Line
-	1500 1550 1750 1550
+	1700 1550 1750 1550
 $Comp
 L Switch:SW_Push SW?
 U 1 1 617DBB37
-P 1350 2000
-F 0 "SW?" V 1304 2148 50  0000 L CNN
-F 1 "SW_Push" V 1395 2148 50  0000 L CNN
-F 2 "" H 1350 2200 50  0001 C CNN
-F 3 "~" H 1350 2200 50  0001 C CNN
-	1    1350 2000
+P 1350 1750
+F 0 "SW?" V 1304 1898 50  0000 L CNN
+F 1 "SW_Push" V 1395 1898 50  0000 L CNN
+F 2 "" H 1350 1950 50  0001 C CNN
+F 3 "~" H 1350 1950 50  0001 C CNN
+	1    1350 1750
 	0    -1   -1   0   
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 617DBB3D
-P 1350 2200
-F 0 "#PWR?" H 1350 1950 50  0001 C CNN
-F 1 "GND" H 1355 2027 50  0000 C CNN
-F 2 "" H 1350 2200 50  0001 C CNN
-F 3 "" H 1350 2200 50  0001 C CNN
-	1    1350 2200
+P 1350 1950
+F 0 "#PWR?" H 1350 1700 50  0001 C CNN
+F 1 "GND" H 1355 1777 50  0000 C CNN
+F 2 "" H 1350 1950 50  0001 C CNN
+F 3 "" H 1350 1950 50  0001 C CNN
+	1    1350 1950
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R R?
 U 1 1 617DBB43
-P 1600 1800
-F 0 "R?" V 1393 1800 50  0000 C CNN
-F 1 "R" V 1484 1800 50  0000 C CNN
-F 2 "" V 1530 1800 50  0001 C CNN
-F 3 "~" H 1600 1800 50  0001 C CNN
-	1    1600 1800
+P 1550 1550
+F 0 "R?" V 1343 1550 50  0000 C CNN
+F 1 "R" V 1434 1550 50  0000 C CNN
+F 2 "" V 1480 1550 50  0001 C CNN
+F 3 "~" H 1550 1550 50  0001 C CNN
+	1    1550 1550
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	1350 1800 1450 1800
-Wire Wire Line
-	1750 1550 1750 1800
+	1350 1550 1400 1550
 $Comp
 L power:GND #PWR?
 U 1 1 618039E4
@@ -1120,10 +1091,10 @@ Wire Wire Line
 	5800 5750 5800 5900
 Text HLabel 5050 6250 0    50   Input ~ 0
 nON_OFF
-Text Label 5750 4100 2    50   ~ 0
+Text Label 5750 4200 2    50   ~ 0
 Main_Switch
 Wire Wire Line
-	5750 4100 5200 4100
+	5750 4200 5200 4200
 $Comp
 L power:+3.3V #PWR?
 U 1 1 6194AF19
@@ -1177,8 +1148,6 @@ F 3 "~" H 7500 4400 50  0001 C CNN
 	1    7500 4400
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	4300 1350 4300 1200
 $Comp
 L power:+3.3V #PWR?
 U 1 1 619B11CA
@@ -1346,12 +1315,6 @@ Wire Wire Line
 Connection ~ 2100 1200
 Wire Wire Line
 	2100 1200 2100 1100
-Connection ~ 4300 1200
-Wire Wire Line
-	4300 1200 4300 1100
-Connection ~ 6600 1200
-Wire Wire Line
-	6600 1200 6600 1100
 Wire Wire Line
 	7900 5200 7900 5550
 $Comp
@@ -1392,4 +1355,13 @@ Wire Wire Line
 Wire Wire Line
 	7900 4550 7900 4700
 Connection ~ 7900 4700
+Wire Wire Line
+	4300 1100 4300 1350
+Wire Wire Line
+	6600 1100 6600 1350
+Wire Wire Line
+	1750 1450 1750 1550
+Connection ~ 1750 1550
+Wire Wire Line
+	1750 1550 1800 1550
 $EndSCHEMATC
