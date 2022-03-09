@@ -8,4 +8,5 @@
   (lib (name MLL1200S)(type Legacy)(uri ${KIPRJMOD}/libs/MLL1200S.lib)(options "")(descr ""))
   (lib (name R1218N021A)(type Legacy)(uri ${KIPRJMOD}/libs/R1218N021A.lib)(options "")(descr ""))
   (lib (name MCP73844T)(type Legacy)(uri ${KIPRJMOD}/libs/MCP73844T.lib)(options "")(descr ""))
+  (lib (name CP2102)(type Legacy)(uri ${KIPRJMOD}/libs/CP2102.lib)(options "")(descr ""))
 )
