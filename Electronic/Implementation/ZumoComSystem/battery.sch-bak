@@ -242,10 +242,6 @@ Wire Wire Line
 Wire Wire Line
 	4300 3150 4300 3300
 Wire Wire Line
-	3650 4000 3650 3250
-Wire Wire Line
-	3650 3250 3500 3250
-Wire Wire Line
 	3500 3250 3500 3050
 $Comp
 L power:GND #PWR025
@@ -284,27 +280,12 @@ L Device:Q_NMOS_GSD Q2
 U 1 1 622EB8BF
 P 3000 3550
 F 0 "Q2" V 3249 3550 50  0000 C CNN
-F 1 "AO3414" V 3340 3550 50  0000 C CNN
-F 2 "Package_TO_SOT_SMD:SOT-23" H 3200 3650 50  0001 C CNN
-F 3 "https://media.digikey.com/pdf/Data%20Sheets/Alpha%20&%20Omega/AO3414.pdf" H 3000 3550 50  0001 C CNN
+F 1 "RQ5E065AJTCL" V 3340 3550 50  0000 C CNN
+F 2 "footprints:SOT95P280X100-3N" H 3200 3650 50  0001 C CNN
+F 3 "https://fscdn.rohm.com/en/products/databook/datasheet/discrete/transistor/mosfet/rq5e065ajtcl-e.pdf" H 3000 3550 50  0001 C CNN
 	1    3000 3550
 	0    1    1    0   
 $EndComp
-$Comp
-L Device:Q_NMOS_GSD Q3
-U 1 1 622EC675
-P 3950 3750
-F 0 "Q3" V 4292 3750 50  0000 C CNN
-F 1 "AO3414" V 4201 3750 50  0000 C CNN
-F 2 "Package_TO_SOT_SMD:SOT-23" H 4150 3850 50  0001 C CNN
-F 3 "https://media.digikey.com/pdf/Data%20Sheets/Alpha%20&%20Omega/AO3414.pdf" H 3950 3750 50  0001 C CNN
-	1    3950 3750
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	3650 4000 3950 4000
-Wire Wire Line
-	3950 4000 3950 3950
 Wire Wire Line
 	7400 2950 7650 2950
 $Comp
@@ -336,20 +317,16 @@ $EndComp
 $Comp
 L Device:Q_PMOS_GSD Q4
 U 1 1 622FA455
-P 9050 1900
-F 0 "Q4" V 9299 1900 50  0000 C CNN
-F 1 "Q_PMOS_GSD" V 9390 1900 50  0000 C CNN
-F 2 "Package_TO_SOT_SMD:SOT-23" H 9250 2000 50  0001 C CNN
-F 3 "https://www.mccsemi.com/pdf/Products/SI2333(SOT-23).pdf" H 9050 1900 50  0001 C CNN
-	1    9050 1900
-	0    1    1    0   
+P 9050 2100
+F 0 "Q4" V 9299 2100 50  0000 C CNN
+F 1 "Q_PMOS_GSD" V 9390 2100 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 9250 2200 50  0001 C CNN
+F 3 "https://www.mccsemi.com/pdf/Products/SI2333(SOT-23).pdf" H 9050 2100 50  0001 C CNN
+	1    9050 2100
+	0    1    -1   0   
 $EndComp
 Wire Wire Line
-	8950 2600 9400 2600
-Wire Wire Line
-	9400 1700 9400 2600
-Wire Wire Line
-	9050 1700 9400 1700
+	8950 2600 9050 2600
 Wire Wire Line
 	7900 2000 8850 2000
 Wire Wire Line
@@ -535,4 +512,21 @@ Wire Wire Line
 	7000 1500 7000 2000
 Text HLabel 7000 1500 1    50   Input ~ 0
 V_LOADING
+$Comp
+L Device:Q_NMOS_GSD Q3
+U 1 1 622EC675
+P 3950 3550
+F 0 "Q3" V 4292 3550 50  0000 C CNN
+F 1 "RQ5E065AJTCL" V 4201 3550 50  0000 C CNN
+F 2 "footprints:SOT95P280X100-3N" H 4150 3650 50  0001 C CNN
+F 3 "https://fscdn.rohm.com/en/products/databook/datasheet/discrete/transistor/mosfet/rq5e065ajtcl-e.pdf" H 3950 3550 50  0001 C CNN
+	1    3950 3550
+	0    -1   1    0   
+$EndComp
+Wire Wire Line
+	3950 3350 3950 3250
+Wire Wire Line
+	3500 3250 3950 3250
+Wire Wire Line
+	9050 2600 9050 2300
 $EndSCHEMATC

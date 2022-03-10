@@ -37,17 +37,6 @@ F 5 "Linear Technology" H 4650 4200 50  0001 L BNN "VENDOR"
 	1    4650 4200
 	1    0    0    -1  
 $EndComp
-$Comp
-L Device:L L1
-U 1 1 60C698F7
-P 6600 1800
-F 0 "L1" V 6790 1800 50  0000 C CNN
-F 1 "15uH" V 6699 1800 50  0000 C CNN
-F 2 "footprints:L_Wuerth_HCI-1040_3D" H 6600 1800 50  0001 C CNN
-F 3 "https://www.we-online.de/katalog/datasheet/74437368150.pdf" H 6600 1800 50  0001 C CNN
-	1    6600 1800
-	0    -1   -1   0   
-$EndComp
 Wire Wire Line
 	6150 1800 6450 1800
 Text HLabel 1000 1250 0    50   Input ~ 0
@@ -194,8 +183,6 @@ Wire Wire Line
 Connection ~ 6350 1700
 Wire Wire Line
 	7200 1800 7200 1300
-Wire Wire Line
-	3250 2000 3350 2000
 $Comp
 L power:GND #PWR01
 U 1 1 60CF3E43
@@ -492,9 +479,6 @@ Wire Wire Line
 	2850 2350 2850 2150
 Wire Wire Line
 	2850 1850 2850 1700
-Connection ~ 2850 1700
-Wire Wire Line
-	2850 1700 3550 1700
 $Comp
 L power:GND #PWR02
 U 1 1 62464A3F
@@ -506,19 +490,41 @@ F 3 "" H 2850 2350 50  0001 C CNN
 	1    2850 2350
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3750 2000 3950 2000
-Wire Wire Line
-	3250 1250 3250 2000
+$Comp
+L Device:L L1
+U 1 1 60C698F7
+P 6600 1800
+F 0 "L1" V 6790 1800 50  0000 C CNN
+F 1 "15uH" V 6699 1800 50  0000 C CNN
+F 2 "footprints:L_Wuerth_HCI-1040_3D" H 6600 1800 50  0001 C CNN
+F 3 "https://www.we-online.de/katalog/datasheet/74437368150.pdf" H 6600 1800 50  0001 C CNN
+	1    6600 1800
+	0    -1   -1   0   
+$EndComp
 $Comp
 L Device:Q_PMOS_GDS Q1
 U 1 1 624703BF
-P 3550 1900
-F 0 "Q1" V 3799 1900 50  0000 C CNN
-F 1 "Q_PMOS_GDS" V 3890 1900 50  0000 C CNN
-F 2 "footprints:TSOT-23-6_HandSoldering" H 3750 2000 50  0001 C CNN
-F 3 "https://www.diodes.com/assets/Datasheets/DMP6023LE.pdf" H 3550 1900 50  0001 C CNN
-	1    3550 1900
-	0    1    1    0   
+P 3150 1700
+F 0 "Q1" H 3354 1654 50  0000 L CNN
+F 1 "PMOS-RQ5C060BCTCL" H 3354 1745 50  0000 L CNN
+F 2 "footprints:SOT95P280X100-3N" H 3350 1800 50  0001 C CNN
+F 3 "https://fscdn.rohm.com/en/products/databook/datasheet/discrete/transistor/mosfet/rq5c060bctcl-e.pdf" H 3150 1700 50  0001 C CNN
+	1    3150 1700
+	1    0    0    1   
 $EndComp
+Wire Wire Line
+	3250 2000 3250 1900
+Wire Wire Line
+	3250 2000 3950 2000
+Wire Wire Line
+	2950 1700 2850 1700
+Connection ~ 2850 1700
+Wire Wire Line
+	3250 1250 3250 1500
+Text Notes 1350 1150 0    50   ~ 0
+U_Bat_max = 8.4 V\nI_Bat_max = 4,2 A 
+Text Notes 9150 3250 0    50   ~ 0
+\nImax = 3 A 
+Text Notes 7050 1050 0    50   ~ 0
+Imax = 200 mA 
 $EndSCHEMATC
