@@ -75,9 +75,21 @@ bool NVSManager::putEntry(const String& key, const uint8_t* value, const size_t 
     return retCode;
 }
 
-bool NVSManager::readEntry(const String& key, uint8_t* buffer, const size_t length)
+bool NVSManager::readEntry(const String& key, uint8_t* buffer, size_t& length)
 {
-    return (m_preferences.getBytes(key.c_str(), buffer, length) == length);
+    bool isSuccessful = false;
+
+    if (nullptr == buffer)
+    {
+        length = m_preferences.getBytesLength(key.c_str());
+        isSuccessful = true;
+    }
+    else
+    {
+        isSuccessful = (m_preferences.getBytes(key.c_str(), buffer, length) == length);
+    }
+
+    return isSuccessful;
 }
 
 bool NVSManager::deleteEntry(const String& key)

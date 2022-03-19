@@ -42,24 +42,60 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <KeyCert.h>
 #include <Log.h>
 
-uint8_t KeyCert::m_binaryKey[RSA_KEY_SIZE_BYTE] = { 0 };
-uint8_t KeyCert::m_binaryCert[CERT_SIZE_BYTE] = { 0 };
-
 KeyCert::KeyCert() :
-    m_sslCert(),
-    m_certGenerated(false)
+    m_binaryCert(nullptr),
+    m_binaryCertSize(0),
+    m_binaryKey(nullptr),
+    m_binaryKeySize(0),
+    m_sslCert()
 {
 }
 
 KeyCert::~KeyCert()
 {
-    freeSSLMemory();
+    if (nullptr != m_binaryCert)
+    {
+        delete[] m_binaryCert;
+        m_binaryCert = nullptr;
+        m_binaryCertSize = 0;
+    }
+
+    if (nullptr != m_binaryKey)
+    {
+        delete[] m_binaryKey;
+        m_binaryKey = nullptr;
+        m_binaryKeySize = 0;
+    }
 }
 
 bool KeyCert::generateNewCert()
 {
-    freeSSLMemory();
+    /* Release certificate and key, because the creation of the
+     * self signed certificate will allocate them.
+     */
+    if (nullptr != m_binaryCert)
+    {
+        delete[] m_binaryCert;
+        m_binaryCert = nullptr;
+        m_binaryCertSize = 0;
+    }
 
+    if (nullptr != m_binaryKey)
+    {
+        delete[] m_binaryKey;
+        m_binaryKey = nullptr;
+        m_binaryKeySize = 0;
+    }
+
+    /* It will always allocate buffer for the certificate and the key.
+     * No chance to prevent it.
+     *
+     * Attention: Usually the allocated buffers should be released
+     *            via m_sslCert.clear(), but this method uses delete
+     *            instead of delete[] which may cause a memory leak.
+     *            Therefore the buffers will be released at least in
+     *            the destructor here.
+     */
     int retCode = createSelfSignedCert(
         m_sslCert,
         httpsserver::KEYSIZE_2048,
@@ -69,13 +105,16 @@ bool KeyCert::generateNewCert()
 
     if (0 != retCode)
     {
-        m_certGenerated = false;
         LOG_ERROR("Could not generate a new certificate!");
     }
     else
     {
-        m_certGenerated = true;
+        m_binaryCert        = m_sslCert.getCertData();
+        m_binaryCertSize    = m_sslCert.getCertLength();
+        m_binaryKey         = m_sslCert.getPKData();
+        m_binaryKeySize     = m_sslCert.getPKLength();
     }
+
     return (0 == retCode);
 }
 
@@ -84,37 +123,106 @@ httpsserver::SSLCert* KeyCert::getSSLCert()
     return &m_sslCert;
 }
 
-void KeyCert::serialize(uint8_t* keyBuffer, uint8_t* certBuffer)
+void KeyCert::serialize(uint8_t* keyBuffer, size_t& keyBufferSize, uint8_t* certBuffer, size_t& certBufferSize)
 {
-    if (true == m_certGenerated)
+    if (nullptr == keyBuffer)
     {
-        memcpy(keyBuffer, m_sslCert.getPKData(), RSA_KEY_SIZE_BYTE);
-        memcpy(certBuffer, m_sslCert.getCertData(), CERT_SIZE_BYTE);
+        keyBufferSize = m_binaryKeySize;
+    }
+    else if (m_binaryKeySize <= keyBufferSize)
+    {
+        memcpy(keyBuffer, m_binaryKey, m_binaryKeySize);
     }
     else
     {
-        memcpy(keyBuffer, m_binaryKey, RSA_KEY_SIZE_BYTE);
-        memcpy(certBuffer, m_binaryCert, CERT_SIZE_BYTE);
+        LOG_ERROR("Key serialization failed.");
+    }
+
+    if (nullptr == certBuffer)
+    {
+        certBufferSize = m_binaryCertSize;
+    }
+    else if (m_binaryCertSize <= certBufferSize)
+    {
+        memcpy(certBuffer, m_binaryCert, m_binaryCertSize);
+    }
+    else
+    {
+        LOG_ERROR("Certificate serialization failed.");
     }
 }
 
-void KeyCert::deserialize(const uint8_t* keyBuffer, const uint8_t* certBuffer)
+void KeyCert::deserialize(const uint8_t* keyBuffer, size_t keyBufferSize, const uint8_t* certBuffer, size_t certBufferSize)
 {
-    freeSSLMemory();
-
-    memcpy(m_binaryKey, keyBuffer, RSA_KEY_SIZE_BYTE);
-    memcpy(m_binaryCert, certBuffer, CERT_SIZE_BYTE);
-
-    m_sslCert.setPK(m_binaryKey, RSA_KEY_SIZE_BYTE);
-    m_sslCert.setCert(m_binaryCert, CERT_SIZE_BYTE);
-}
-
-void KeyCert::freeSSLMemory()
-{
-    /* Free up memory which might have been allocated previously after generating a certificate */
-    if ((true == m_certGenerated) && (nullptr != m_sslCert.getPKData()) && (nullptr != m_sslCert.getCertData()))
+    if (nullptr != keyBuffer)
     {
-        m_sslCert.clear();
-        m_certGenerated = false;
+        if (nullptr != m_binaryKey)
+        {
+            if (m_binaryKeySize != keyBufferSize)
+            {
+                delete[] m_binaryKey;
+                m_binaryKey = nullptr;
+                m_binaryKeySize = 0;
+            }
+        }
+
+        if (nullptr == m_binaryKey)
+        {
+            m_binaryKey = new(std::nothrow) uint8_t[keyBufferSize];
+
+            if (nullptr != m_binaryKey)
+            {
+                m_binaryKeySize = keyBufferSize;
+            }
+        }
+
+        if (nullptr == m_binaryKey)
+        {
+            LOG_ERROR("Key deserialization failed.");
+        }
+        else
+        {
+            memcpy(m_binaryKey, keyBuffer, m_binaryKeySize);
+
+            m_sslCert.setPK(m_binaryKey, m_binaryKeySize);
+
+            LOG_INFO(String("PK with size of ") + m_binaryKeySize + " set.");
+        }
+    }
+
+    if (nullptr != certBuffer)
+    {
+        if (nullptr != m_binaryCert)
+        {
+            if (m_binaryCertSize != certBufferSize)
+            {
+                delete[] m_binaryCert;
+                m_binaryCert = nullptr;
+                m_binaryCertSize = 0;
+            }
+        }
+
+        if (nullptr == m_binaryCert)
+        {
+            m_binaryCert = new(std::nothrow) uint8_t[keyBufferSize];
+
+            if (nullptr != m_binaryCert)
+            {
+                m_binaryCertSize = certBufferSize;
+            }
+        }
+
+        if (nullptr == m_binaryCert)
+        {
+            LOG_ERROR("Certificate deserialization failed.");
+        }
+        else
+        {
+            memcpy(m_binaryCert, certBuffer, m_binaryCertSize);
+
+            m_sslCert.setCert(m_binaryCert, m_binaryCertSize);
+
+            LOG_INFO(String("Certificate with size of ") + m_binaryCertSize + " set.");
+        }
     }
 }

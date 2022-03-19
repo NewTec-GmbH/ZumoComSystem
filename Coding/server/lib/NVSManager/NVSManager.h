@@ -97,12 +97,13 @@ public:
     /**
      * Returns the binary value of the key-value pair from persistent storage
      *
-     * @param[in] key The key-value pair to be read
-     * @param[out] buffer The buffer to be filled with the read data
-     * @param[in] length The lenght in bytes of the passed buffer
+     * @param[in]       key     The key-value pair to be read.
+     * @param[out]      buffer  The buffer to be filled with the read data. If nullptr, the length will contain the buffer size in bytes.
+     * @param[in,out]   length  The lenght in bytes of the passed buffer.
+     *
      * @return Returns true if successful, else false
      */
-    bool readEntry(const String& key, uint8_t* buffer, const size_t length);
+    bool readEntry(const String& key, uint8_t* buffer, size_t& length);
 
     /**
      * Completely removes all key-value pairs from persistent storage

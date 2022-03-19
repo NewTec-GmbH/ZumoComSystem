@@ -76,44 +76,41 @@ public:
     /**
      * Serializes this KeyCert object.
      *
-     * @param[out] keyBuffer The output buffer to be filled with the serialized binary RSA key. Allocate memory previously
-     * @param[out] certBuffer The output buffer to be filled with the serialized binary SSL cert. Allocate memory previously
+     * @param[out]      keyBuffer       The keyBuffer buffer to be filled with the serialized binary RSA key. Allocate memory previously.
+     * @param[in,out]   keyBufferSize   If keyBuffer is nullptr, it will return the binary RSA key size in bytes. Otherwise it shall contain the keyBuffer size.
+     * @param[out]      certBuffer      The certBuffer buffer to be filled with the serialized binary SSL cert. Allocate memory previously.
+     * @param[in,out]   certBufferSize  If certBuffer is nullptr, it will return the binary RSA key size in bytes. Otherwise it shall contain the certBuffer size.
      */
-    void serialize(uint8_t* keyBuffer, uint8_t* certBuffer);
+    void serialize(uint8_t* keyBuffer, size_t& keyBufferSize, uint8_t* certBuffer, size_t& certBufferSize);
 
     /**
-     * Deserializes this KeyCert object. All passed data is copied. Free passed buffers after this call
+     * Deserializes this KeyCert object. All passed data is copied.
      *
-     * @param[in] keyBuffer The input buffer which containts the serialized binary RSA key.
-     * @param[in] certBuffer The input buffer which containts the serialized binary SSL cert.
+     * @param[in] keyBuffer         The input buffer which containts the serialized binary RSA key.
+     * @param[in] keyBufferSize     The binary RSA key buffer size in bytes.
+     * @param[in] certBuffer        The input buffer which containts the serialized binary SSL certificate.
+     * @param[in] certBufferSize    The binary SSL certificate buffer size in bytes.
      */
-    void deserialize(const uint8_t* keyBuffer, const uint8_t* certBuffer);
-
-    /** Size of the binary RSA key in bytes */
-    static const size_t RSA_KEY_SIZE_BYTE = 1190;
-
-    /** Size of the binary cert in bytes */
-    static const size_t CERT_SIZE_BYTE = 766;
+    void deserialize(const uint8_t* keyBuffer, size_t keyBufferSize, const uint8_t* certBuffer, size_t certBufferSize);
 
 private:
-    /**
-    * The DER-X509 certificate which stores the private RSA key as well as the public certificate.
-    * This data structure is used by the HTTPs/WSS servers
-    */
-    httpsserver::SSLCert m_sslCert;
-
-    /** Stores the binary RSA key */
-    static uint8_t m_binaryKey[RSA_KEY_SIZE_BYTE];
 
     /** Stores the binary SSL certificate */
-    static uint8_t m_binaryCert[CERT_SIZE_BYTE];
+    uint8_t* m_binaryCert;
 
-    /** Saves if a SSL certificate has been generated for this instance */
-    bool m_certGenerated;
+    /** Binary SSL certificate size in bytes. */
+    size_t m_binaryCertSize;
+
+    /** Stores the binary RSA key */
+    uint8_t* m_binaryKey;
+
+    /** Binary RSA key size in bytes. */
+    size_t m_binaryKeySize;
 
     /**
-     * Helper method which cleans up the SSLCert internal's memory which has been dynamically allocated
+     * The DER-X509 certificate which stores the private RSA key as well as the public certificate.
+     * This data structure is used by the HTTPs/WSS servers
      */
-    void freeSSLMemory();
+    httpsserver::SSLCert m_sslCert;
 };
 #endif
