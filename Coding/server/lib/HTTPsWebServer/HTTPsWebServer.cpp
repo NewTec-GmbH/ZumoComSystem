@@ -61,8 +61,6 @@ const KeyValue HTTPsWebServer::m_servedFileTypes[] =
     {".eot", "font/eot"},
 };
 
-FileManager HTTPsWebServer::m_fileManager;
-
 HTTPsWebServer::HTTPsWebServer() :
     m_httpsServer(Store::getInstance().getKeyCert().getSSLCert(), SHARED_TCP_PORT, MAX_CLIENTS),
     m_fileServeRoute("", "", &registerFileServing),
@@ -101,15 +99,10 @@ void HTTPsWebServer::handleServer()
 
 void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response)
 {
-    int16_t writtenBytes = 0;
-    const uint16_t BUFFER_SIZE_BYTES = 4096;
-    static uint8_t buffer[BUFFER_SIZE_BYTES];
-
-    String mimeType;
-
     if (request->getMethod() == "GET")
     {
         String requestedFile = request->getRequestString().c_str();
+        String mimeType;
 
         /* Rewrite to index.html */
         if ((requestedFile == "/") || (requestedFile == ""))
@@ -120,35 +113,61 @@ void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, http
         getMIMEType(requestedFile, mimeType);
 
         if ((true == FileManager::fileExists(requestedFile))
-            && (mimeType != "null")
-            && (true == m_fileManager.openFile(requestedFile, FILE_READ)))
+            && (false == mimeType.isEmpty()))
         {
-            response->setHeader("Content-Length", httpsserver::intToString(m_fileManager.getFileSize()));
-            response->setHeader("Content-Type", mimeType.c_str());
+            FileManager     fileMgr;            
+            int16_t         writtenBytes    = 0;
 
-            do
+            if (true == fileMgr.openFile(requestedFile, FILE_READ))
             {
-                writtenBytes = m_fileManager.read4KBlock(buffer);
+                const uint16_t  BUFFER_SIZE_BYTES   = 4096;
+                uint8_t*        buffer              = nullptr;
+                
+                buffer = new(std::nothrow) uint8_t[BUFFER_SIZE_BYTES];
 
-                if (-1 == writtenBytes)
+                if (nullptr == buffer)
                 {
                     response->setStatusCode(ERROR);
-                    response->println("An error occurred while reading the file!");
+                    response->println("Internal error!");
                 }
                 else
                 {
-                    response->write(buffer, writtenBytes);
+                    response->setHeader("Content-Length", httpsserver::intToString(fileMgr.getFileSize()));
+                    response->setHeader("Content-Type", mimeType.c_str());
+
+                    do
+                    {
+                        writtenBytes = fileMgr.read4KBlock(buffer);
+
+                        if (-1 == writtenBytes)
+                        {
+                            response->setStatusCode(ERROR);
+                            response->println("An error occurred while reading the file!");
+                        }
+                        else
+                        {
+                            response->write(buffer, writtenBytes);
+                        }
+
+                    } while ((0 != writtenBytes) && (-1 != writtenBytes));
+
+                    delete[] buffer;
+                    buffer = nullptr;
                 }
 
-            } while ((0 != writtenBytes) && (-1 != writtenBytes));
+                fileMgr.closeFile();
+            }
+            else
+            {
+                response->setStatusCode(NOT_FOUND);
+                response->println("Couldn't open resource!");
+            }
         }
         else
         {
             response->setStatusCode(NOT_FOUND);
             response->println("Could not find such resource!");
         }
-
-        m_fileManager.closeFile();
     }
     else
     {
@@ -160,9 +179,9 @@ void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, http
 
 void HTTPsWebServer::getMIMEType(const String& filePath, String& mimeType)
 {
-    mimeType = "null";
-
     const uint8_t arrLength = sizeof(m_servedFileTypes) / sizeof(m_servedFileTypes[0]);
+
+    mimeType.clear();
 
     for (uint8_t endingIdx = 0; endingIdx < arrLength; endingIdx++)
     {

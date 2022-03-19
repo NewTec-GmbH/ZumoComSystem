@@ -103,9 +103,6 @@ private:
     /** Store instance */
     Store& m_store;
 
-    /** FileManager instance */
-    static FileManager m_fileManager;
-
     /**
      * Handles incoming file requests
      *
@@ -118,7 +115,7 @@ private:
      * Checks if the requested file has valid file ending and returns corresponding MIME type
      *
      * @param[in] filePath The filepath to be checked for its ending
-     * @param[out] mimeType The MIME type for the detected file ending, Returns 'null' if file ending is invalid
+     * @param[out] mimeType The MIME type for the detected file ending, Is empty if file ending is invalid.
      */
     static void getMIMEType(const String& filePath, String& mimeType);
 };
