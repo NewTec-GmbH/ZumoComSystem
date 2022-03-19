@@ -99,7 +99,7 @@ httpsserver::WebsocketHandler* Session::create()
         {
             if (nullptr == m_sessions[sessionIdx])
             {
-                newSession = new Session();
+                newSession = new(std::nothrow) Session();
                 if (nullptr != newSession)
                 {
                     m_sessions[sessionIdx] = newSession;

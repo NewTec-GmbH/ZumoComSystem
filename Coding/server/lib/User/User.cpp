@@ -174,7 +174,7 @@ bool User::putUser(const String& username, const String& password, const Permiss
 
                 if ((true == saltRetCode) && (true == hashRetCode))
                 {
-                    User* newUser = new User();
+                    User* newUser = new(std::nothrow) User();
                     if (nullptr != newUser)
                     {
                         newUser->m_username = username;
@@ -315,7 +315,7 @@ bool User::deserialize(const String& serial)
 
         for (uint8_t userIdx = 0; userIdx < userObjects.size(); userIdx++)
         {
-            User* newUser = new User();
+            User* newUser = new(std::nothrow) User();
             if (nullptr != newUser)
             {
                 newUser->m_username = userObjects[userIdx]["username"].as<String>();

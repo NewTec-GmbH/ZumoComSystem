@@ -68,7 +68,7 @@ void FlashZumoCommand::run(const ApiRequest& request, ApiResponse& response, Ses
     CryptoServices crypto;
 
     const uint16_t BUFFER_SIZE_BYTES = 4096;
-    uint8_t* readBuffer = new uint8_t[BUFFER_SIZE_BYTES];
+    uint8_t* readBuffer = new(std::nothrow) uint8_t[BUFFER_SIZE_BYTES];
     int16_t readBytes = 0;
 
     String actualHash = "";

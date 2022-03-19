@@ -116,8 +116,8 @@ bool Store::saveKeyCert()
     bool putCertResult = false;
     bool retCode = false;
 
-    uint8_t* keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
-    uint8_t* certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
+    uint8_t* keyBuffer = new(std::nothrow) uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
+    uint8_t* certBuffer = new(std::nothrow) uint8_t[KeyCert::CERT_SIZE_BYTE];
 
     if ((nullptr != keyBuffer) && (nullptr != certBuffer))
     {
@@ -155,8 +155,8 @@ bool Store::loadKeyCert()
     bool getCertResult = false;
     bool retCode = false;
 
-    uint8_t* keyBuffer = new uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
-    uint8_t* certBuffer = new uint8_t[KeyCert::CERT_SIZE_BYTE];
+    uint8_t* keyBuffer = new(std::nothrow) uint8_t[KeyCert::RSA_KEY_SIZE_BYTE];
+    uint8_t* certBuffer = new(std::nothrow) uint8_t[KeyCert::CERT_SIZE_BYTE];
 
     if ((nullptr != keyBuffer) && (nullptr != certBuffer))
     {
