@@ -39,6 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @{
  */
 #include <System.h>
+#include <Log.h>
 #include <KeyCert.h>
 #include <User.h>
 #include <Key.h>
@@ -77,6 +78,9 @@ void System::init()
     bool certGenRetCode = false;
     bool timeoutServiceRetCode = false;
     NetworkCredentials apCredentials;
+
+    /* Initialize log output first, to be able to get a log output in the further initialization steps. */
+    Log::getInstance().setOutput(&Serial);
 
     /* Initialize the GPIOs */
     IO::getInstance().initGPIOs();

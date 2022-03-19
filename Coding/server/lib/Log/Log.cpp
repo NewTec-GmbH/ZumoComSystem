@@ -42,7 +42,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Log.h>
 
 Log::Log() :
-    m_logLevel(LEVEL_DEBUG)
+    m_logLevel(LEVEL_DEBUG),
+    m_output(nullptr)
 {
 }
 
@@ -60,7 +61,6 @@ void Log::setLogLevel(const LogLevel& level)
     if ((0 <= level) && (level < LEVEL_INVALID))
     {
         m_logLevel = level;
-        LOG_DEBUG("Loglevel has been changed to" + m_logLevel);
     }
 }
 
@@ -68,6 +68,9 @@ void Log::writeLog(const LogLevel& level, const String& msg)
 {
     if ((level <= m_logLevel) && (0 < msg.length()))
     {
-        Serial.println(msg);
+        if (nullptr != m_output)
+        {
+            m_output->println(msg);
+        }
     }
 }

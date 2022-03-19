@@ -42,11 +42,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __LOG_H__
 #define __LOG_H__
 
-#ifdef USE_ARDUINO_FAKE
-#include <ArduinoFake.h>
-#else
-#include <Arduino.h>
-#endif /* USE_ARDUINO_FAKE */
+#include <WString.h>
+#include <Print.h>
 
 #if (0 != ACTIVATE_LOGGING)
  /** Macro for logging debug messages */
@@ -96,37 +93,53 @@ public:
     };
 
     /** Get the singleton instance of Log class
-    *
-    * @return Returns the Log class instance
-    */
+     *
+     * @return Returns the Log class instance
+     */
     static Log& getInstance()
     {
         static Log instance;
         return instance;
     }
 
-    /** Get the currently used log level
-    *
-    * @return Returns the log level
-    */
+    /**
+     * Set the output device for log messages.
+     * 
+     * @param[in] output    Log output device
+     */
+    void setOutput(Print* output)
+    {
+        m_output = output;
+    }
+
+    /**
+     * Get the currently used log level
+     *
+     * @return Returns the log level
+     */
     const LogLevel& getLogLevel() const;
 
-    /** Set the log level to be used
-    *
-    * @param[in] level The log level to be used
-    */
+    /**
+     * Set the log level to be used
+     *
+     * @param[in] level The log level to be used
+     */
     void setLogLevel(const LogLevel& level);
 
-    /** Write the passed string message into log
-    *
-    * @param[in] level The log level to be used
-    * @param[in] msg The log message to be written
-    */
+    /**
+     * Write the passed string message into log
+     * 
+     * @param[in] level The log level to be used
+     * @param[in] msg The log message to be written
+     */
     void writeLog(const LogLevel& level, const String& msg);
 
 private:
     /** The log level which is used to determine what to print */
     LogLevel m_logLevel;
+
+    /** Log output device */
+    Print* m_output;
 
     /**
      * Default Constructor
