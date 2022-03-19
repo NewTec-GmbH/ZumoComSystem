@@ -56,20 +56,67 @@ const Log::LogLevel& Log::getLogLevel() const
     return m_logLevel;
 }
 
-void Log::setLogLevel(const LogLevel& level)
+void Log::setLogLevel(LogLevel level)
 {
-    if ((0 <= level) && (level < LEVEL_INVALID))
+    if ((LEVEL_ERROR <= level) && (level < LEVE_MAX))
     {
         m_logLevel = level;
     }
 }
 
-void Log::writeLog(const LogLevel& level, const String& msg)
+void Log::writeLog(const char* fileNameFullPath, int line, LogLevel level, const String& msg)
 {
-    if ((level <= m_logLevel) && (0 < msg.length()))
+    if (level <= m_logLevel)
     {
         if (nullptr != m_output)
         {
+            const char* fileName    = strrchr(fileNameFullPath, '/');
+
+            if (nullptr == fileName)
+            {
+                fileName = strrchr(fileNameFullPath, '\\');
+
+                if (nullptr == fileName)
+                {
+                    fileName = fileNameFullPath;
+                }
+                else
+                {
+                    fileName++;
+                }
+            }
+            else
+            {
+                fileName++;
+            }
+
+            switch(level)
+            {
+            case LEVEL_ERROR:
+                m_output->print("[E]\t");
+                break;
+
+            case LEVEL_WARN:
+                m_output->print("[W]\t");
+                break;
+
+            case LEVEL_INFO:
+                m_output->print("[I]\t");
+                break;
+
+            case LEVEL_DEBUG:
+                m_output->print("[D]\t");
+                break;
+
+            default:
+                m_output->print("[?]\t");
+                break;
+            }
+            
+            m_output->print(fileName);
+            m_output->print(" @ ");
+            m_output->print(line);
+            m_output->print("\t");
             m_output->println(msg);
         }
     }

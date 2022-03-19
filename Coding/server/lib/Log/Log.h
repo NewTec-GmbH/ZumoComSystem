@@ -47,16 +47,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if (0 != ACTIVATE_LOGGING)
  /** Macro for logging debug messages */
-#define LOG_DEBUG(msg) ((Log::getInstance().writeLog(Log::LEVEL_DEBUG, (String("[+]\t") + msg))))
+#define LOG_DEBUG(msg)  Log::getInstance().writeLog(__FILE__, __LINE__, Log::LEVEL_DEBUG, msg)
 
 /** Macro for logging info messages */
-#define LOG_INFO(msg) ((Log::getInstance().writeLog(Log::LEVEL_INFO, (String("[i]\t") + msg))))
+#define LOG_INFO(msg)   Log::getInstance().writeLog(__FILE__, __LINE__, Log::LEVEL_INFO, msg)
 
 /** Macro for logging warning messages */
-#define LOG_WARN(msg) ((Log::getInstance().writeLog(Log::LEVEL_WARN, (String("[!]\t") + msg))))
+#define LOG_WARN(msg)   Log::getInstance().writeLog(__FILE__, __LINE__, Log::LEVEL_WARN, msg)
 
 /** Macro for logging error messages */
-#define LOG_ERROR(msg) ((Log::getInstance().writeLog(Log::LEVEL_ERROR, (String("[-]\t") + msg))))
+#define LOG_ERROR(msg)  Log::getInstance().writeLog(__FILE__, __LINE__, Log::LEVEL_ERROR, msg)
 #else
 #define LOG_DEBUG(msg) \
     do                 \
@@ -85,11 +85,11 @@ public:
     */
     enum LogLevel
     {
-        LEVEL_INVALID = 4,
-        LEVEL_DEBUG = 3,
-        LEVEL_INFO = 2,
-        LEVEL_WARN = 1,
-        LEVEL_ERROR = 0
+        LEVEL_ERROR = 0,    /**< Error */
+        LEVEL_WARN,         /**< Warning */
+        LEVEL_INFO,         /**< Information */
+        LEVEL_DEBUG,        /**< Debug */
+        LEVE_MAX            /**< Number of log levels */
     };
 
     /** Get the singleton instance of Log class
@@ -124,15 +124,17 @@ public:
      *
      * @param[in] level The log level to be used
      */
-    void setLogLevel(const LogLevel& level);
+    void setLogLevel(LogLevel level);
 
     /**
-     * Write the passed string message into log
+     * Write the passed string message into log.
      * 
+     * @param[in] fileNameFullPath The file where the log message is located.
+     * @param[in] line The line number in the file where the log message is located.
      * @param[in] level The log level to be used
      * @param[in] msg The log message to be written
      */
-    void writeLog(const LogLevel& level, const String& msg);
+    void writeLog(const char* fileNameFullPath, int line, LogLevel level, const String& msg);
 
 private:
     /** The log level which is used to determine what to print */
