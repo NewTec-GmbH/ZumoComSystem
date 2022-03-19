@@ -82,16 +82,19 @@ bool Store::saveSTACredentials()
 
 bool Store::loadSTACredentials()
 {
-    const bool ARE_STA_CREDENTIALS = true;
-    String json;
+    const bool  ARE_STA_CREDENTIALS = true;
+    String      json;
+    bool        isSuccessful        = true;
 
     m_nvsmgr.readEntry("netCredentials", json);
-    bool retCode = ((json != "null") && (true == m_staCredentials.deserialize(json, ARE_STA_CREDENTIALS)));
-    if (false == retCode)
+
+    if (false == m_staCredentials.deserialize(json, ARE_STA_CREDENTIALS))
     {
         LOG_ERROR("Could not load NetworkCredentials from persistent storage");
+        isSuccessful = false;
     }
-    return retCode;
+
+    return isSuccessful;
 }
 
 bool Store::deleteSTACredentials()
@@ -217,14 +220,18 @@ bool Store::saveUsers()
 
 bool Store::loadUsers()
 {
-    String json;
+    String  json;
+    bool    isSuccessful    = true;
+
     m_nvsmgr.readEntry("users", json);
-    bool retCode = ((String("null") != json) && (true == m_users.deserialize(json)));
-    if (false == retCode)
+
+    if (false == m_users.deserialize(json))
     {
         LOG_ERROR("Could not load users from persistent storage");
+        isSuccessful = false;
     }
-    return retCode;
+
+    return isSuccessful;
 }
 
 bool Store::saveFirmwareInfo()
@@ -242,14 +249,18 @@ bool Store::saveFirmwareInfo()
 
 bool Store::loadFirmwareInfo()
 {
-    String json;
+    String  json;
+    bool    isSuccessful    = true;
+
     m_nvsmgr.readEntry("fwinfo", json);
-    bool retCode = ((String("null") != json) && (true == FirmwareInfo::deserialize(json)));
-    if (false == retCode)
+
+    if (false == FirmwareInfo::deserialize(json))
     {
         LOG_ERROR("Could not load FirmwareInfo from persistent storage");
+        isSuccessful = false;
     }
-    return retCode;
+
+    return isSuccessful;
 }
 
 const NetworkCredentials& Store::getAPCredentials() const

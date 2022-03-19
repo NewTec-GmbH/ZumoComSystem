@@ -178,6 +178,8 @@ bool CryptoServices::getSHA256String(String& outputString)
     const uint8_t NUMBER_OF_PRINTABLE_CHARS = 2;
     char strBuffer[NUMBER_OF_PRINTABLE_CHARS + 1];
 
+    outputString.clear();
+
     if (false == m_hashAvailable)
     {
         finalizeSHA256Hash();
@@ -193,7 +195,6 @@ bool CryptoServices::getSHA256String(String& outputString)
             }
             else
             {
-                outputString = "null";
                 retCode = false;
                 break;
             }

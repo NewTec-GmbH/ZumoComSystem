@@ -99,8 +99,8 @@ public:
     /**
      * Returns the computed hash value if it is available
      *
-     * @param[in] outputString The output hex string
-     * @return Returns true if successful, else false
+     * @param[in] outputString The output hex string.
+     * @return Returns true if successful, else false.
      */
     bool getSHA256String(String& outputString);
 

@@ -87,10 +87,10 @@ public:
     bool deleteEntry(const String& key);
 
     /**
-     * Returns the string value of the key-value pair from persistent storage
+     * Returns the string value of the key-value pair from persistent storage.
      *
-     * @param[in] key The key-value pair to be read
-     * @param[out] outputString Contains value in case of success and "null" in case of failure
+     * @param[in] key The key-value pair to be read.
+     * @param[out] outputString Contains value in case of success or empty case of failure.
      */
     void readEntry(const String& key, String& outputString);
 

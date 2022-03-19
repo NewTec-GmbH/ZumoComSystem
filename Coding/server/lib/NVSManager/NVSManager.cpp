@@ -92,7 +92,7 @@ bool NVSManager::deleteEntry(const String& key)
 
 void NVSManager::readEntry(const String& key, String& outputString)
 {
-    outputString = m_preferences.getString(key.c_str(), "null");
+    outputString = m_preferences.getString(key.c_str(), "");
 }
 
 bool NVSManager::wipeNVS()
