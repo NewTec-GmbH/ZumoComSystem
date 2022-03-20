@@ -156,7 +156,6 @@ void FileManager::closeFile()
     {
         m_fileHandle.flush();
         m_fileHandle.close();
-        LOG_INFO("File has been successfully flushed and closed!");
     }
 }
 
@@ -179,7 +178,7 @@ int16_t FileManager::read4KBlock(uint8_t* buffer)
 
     if (true == m_fileHandle)
     {
-        readBytes = m_fileHandle.readBytes(reinterpret_cast<char*>(const_cast<uint8_t*>(buffer)), BUFFER_SIZE_BYTES);
+        readBytes = m_fileHandle.read(buffer, BUFFER_SIZE_BYTES);
     }
     return readBytes;
 }
