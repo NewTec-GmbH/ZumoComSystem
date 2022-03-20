@@ -56,7 +56,7 @@ export default class WebSocketClient {
    * Default Constructor
    */
   private constructor() {
-    this.m_host = "wss://complatform.local/api";
+    this.m_host = "wss://" + location.hostname + "/api";
     /* Connect with specified endpoint */
     this.m_socketClient = new WebSocket(this.m_host);
     Log.debug("Trying to connect to WebSocket host at " + this.m_host);
