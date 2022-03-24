@@ -45,5 +45,5 @@ jobs:
     - name: Set up doxygen and generate documentation
       uses: mattnotmitt/doxygen-action@v1.1.0
       with:
-        working-directory: './doc/doxygen'
+        working-directory: './Coding/doc/doxygen'
         doxyfile-path: './Doxyfile'
