@@ -52,7 +52,7 @@ There are two User Accounts available by default:
 |  student | nt2021nt |  DEBUG_ZUMO |
 
 # Documentation
-For more information, see the [documentation](./Coding/doc/README.md).
+For more information, see the [software](./Coding/doc/README.md) and [hardware](./Electronic/README.md) documentation.
 
 # Used Libraries
 
