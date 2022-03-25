@@ -48,8 +48,27 @@ There are two User Accounts available by default:
 
 | Username | Password | Permissions |
 |:--------:|:--------:|:-----------:|
-|   Admin  | 21091986 |     ANY     |
+|   admin  | 21091986 |     ANY     |
 |  student | nt2021nt |  DEBUG_ZUMO |
 
 # Documentation
+For more information, see the [documentation](./Coding/doc/README.md).
+
 # Used Libraries
+
+| Name | Description | Licence |
+|:--------:|:--------:|:-----------:|
+| [Arduino](https://github.com/platformio/platform-espressif32) | ESP32 Arduino framework | Apache-2.0 |
+| [ArduinoJson](https://github.com/bblanchon/ArduinoJson ) | JSON handling |  MIT |
+| [Crypto](https://github.com/OperatorFoundation/Crypto ) | Hashing |  MIT |
+| [ESP32 HTTPs server](https://github.com/fhessel/esp32_https_server ) | HTTPs server | MIT |
+| [USB Host Library Rev. 2.0 ](https://github.com/felis/USB_Host_Shield_2.0 ) | SPI-USB-Adapter driver  |  GLP |
+| [Vue.js](https://github.com/vuejs/vue ) | Frontend framework  |  MIT |
+| [PrimeVue](https://github.com/primefaces/primevue) | Frontend UI  |  MIT |
+| [PrimeIcons](https://github.com/primefaces/primeicons) | Frontend Icons  |  MIT |
+| [jsrsasign](https://github.com/kjur/jsrsasign) | RSA file signing |  MIT |
+| [file-saver](https://github.com/eligrey/FileSaver.js) | Saving blobs to file |  MIT |
+
+# License
+This project is published under the [BSD 3-Clause "New" or "Revised" License](./LICENSE).
+Consider the different licenses of the used third party libraries too!
