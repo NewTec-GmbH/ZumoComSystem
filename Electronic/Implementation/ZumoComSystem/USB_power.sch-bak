@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 5 7
 Title "Zumo Communication System"
-Date "2022-03-08"
+Date "2022-03-25"
 Rev "V1.0"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -13,8 +13,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text HLabel 6000 2350 0    50   Output ~ 0
-V_LOADING
 Text HLabel 4450 3300 2    50   BiDi ~ 0
 D-
 Text HLabel 4450 3200 2    50   BiDi ~ 0
@@ -24,10 +22,10 @@ Wire Wire Line
 Wire Wire Line
 	2800 3200 3450 3200
 $Comp
-L Connector:USB_B_Micro J2
+L Connector:USB_B_Micro J3
 U 1 1 60DEC307
 P 2500 3200
-F 0 "J2" H 2557 3667 50  0000 C CNN
+F 0 "J3" H 2557 3667 50  0000 C CNN
 F 1 "USB_B_Micro" H 2557 3576 50  0000 C CNN
 F 2 "footprints:USB_Micro-B_Molex-105133-0001-3D" H 2650 3150 50  0001 C CNN
 F 3 "~" H 2650 3150 50  0001 C CNN
@@ -41,10 +39,10 @@ Wire Wire Line
 Wire Wire Line
 	2450 3700 2450 3950
 $Comp
-L power:GND #PWR030
+L power:GND #PWR026
 U 1 1 60DEDA4E
 P 2450 3950
-F 0 "#PWR030" H 2450 3700 50  0001 C CNN
+F 0 "#PWR026" H 2450 3700 50  0001 C CNN
 F 1 "GND" H 2455 3777 50  0000 C CNN
 F 2 "" H 2450 3950 50  0001 C CNN
 F 3 "" H 2450 3950 50  0001 C CNN
@@ -58,130 +56,10 @@ Wire Wire Line
 	2450 3700 2500 3700
 NoConn ~ 2800 3400
 $Comp
-L LT1374CS8-5PBF:R1218N021A U6
-U 1 1 621F5235
-P 7300 2350
-F 0 "U6" H 7300 2765 50  0000 C CNN
-F 1 "R1218N021A" H 7300 2674 50  0000 C CNN
-F 2 "Package_TO_SOT_SMD:SOT-23-6_Handsoldering" H 7700 2700 50  0001 C CNN
-F 3 "https://www.nisshinbo-microdevices.co.jp/en/pdf/datasheet/r1218-ea.pdf" H 7700 2700 50  0001 C CNN
-	1    7300 2350
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7650 2350 8100 2350
-Wire Wire Line
-	8100 2350 8100 2750
-$Comp
-L power:GND #PWR034
-U 1 1 621F66D3
-P 8100 2750
-F 0 "#PWR034" H 8100 2500 50  0001 C CNN
-F 1 "GND" H 8105 2577 50  0000 C CNN
-F 2 "" H 8100 2750 50  0001 C CNN
-F 3 "" H 8100 2750 50  0001 C CNN
-	1    8100 2750
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	6950 2350 6250 2350
-Wire Wire Line
-	6950 2200 5800 2200
-Wire Wire Line
-	5000 3000 6800 3000
-$Comp
-L Device:R R10
-U 1 1 621FAFF2
-P 5650 2200
-F 0 "R10" V 5443 2200 50  0000 C CNN
-F 1 "10k" V 5534 2200 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 5580 2200 50  0001 C CNN
-F 3 "~" H 5650 2200 50  0001 C CNN
-	1    5650 2200
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	5500 2200 5000 2200
-$Comp
-L Device:R R11
-U 1 1 621FB991
-P 8500 2500
-F 0 "R11" H 8570 2546 50  0000 L CNN
-F 1 "10" H 8570 2455 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 8430 2500 50  0001 C CNN
-F 3 "~" H 8500 2500 50  0001 C CNN
-	1    8500 2500
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7650 2200 8500 2200
-Wire Wire Line
-	6800 2500 6800 3000
-Wire Wire Line
-	6800 3000 7150 3000
-Wire Wire Line
-	6800 2500 6950 2500
-Wire Wire Line
-	7450 3000 7800 3000
-Wire Wire Line
-	7800 3000 7800 2500
-Wire Wire Line
-	7800 2500 7650 2500
-Wire Wire Line
-	8500 2650 8500 2750
-$Comp
-L power:GND #PWR035
-U 1 1 621FE4AA
-P 8500 2750
-F 0 "#PWR035" H 8500 2500 50  0001 C CNN
-F 1 "GND" H 8505 2577 50  0000 C CNN
-F 2 "" H 8500 2750 50  0001 C CNN
-F 3 "" H 8500 2750 50  0001 C CNN
-	1    8500 2750
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	8500 2200 8500 2350
-Connection ~ 5000 3000
-Connection ~ 6800 3000
-Wire Wire Line
-	5000 2200 5000 3000
-$Comp
-L Device:C C14
-U 1 1 62201332
-P 6250 2550
-F 0 "C14" H 6365 2596 50  0000 L CNN
-F 1 "220n" H 6365 2505 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 6288 2400 50  0001 C CNN
-F 3 "~" H 6250 2550 50  0001 C CNN
-	1    6250 2550
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	6250 2700 6250 2750
-Wire Wire Line
-	6250 2400 6250 2350
-Connection ~ 6250 2350
-Wire Wire Line
-	6250 2350 6000 2350
-$Comp
-L power:GND #PWR033
-U 1 1 62201F1D
-P 6250 2750
-F 0 "#PWR033" H 6250 2500 50  0001 C CNN
-F 1 "GND" H 6255 2577 50  0000 C CNN
-F 2 "" H 6250 2750 50  0001 C CNN
-F 3 "" H 6250 2750 50  0001 C CNN
-	1    6250 2750
-	1    0    0    -1  
-$EndComp
-Text Notes 6950 1750 0    50   ~ 0
-V_Loading = 8.5V
-$Comp
-L power:VBUS #PWR031
+L power:VBUS #PWR027
 U 1 1 6230EF27
 P 3150 2700
-F 0 "#PWR031" H 3150 2550 50  0001 C CNN
+F 0 "#PWR027" H 3150 2550 50  0001 C CNN
 F 1 "VBUS" H 3165 2873 50  0000 C CNN
 F 2 "" H 3150 2700 50  0001 C CNN
 F 3 "" H 3150 2700 50  0001 C CNN
@@ -193,13 +71,11 @@ Wire Wire Line
 Wire Wire Line
 	2800 3000 3150 3000
 Connection ~ 3150 3000
-Wire Wire Line
-	3150 3000 5000 3000
 $Comp
-L Device:D D7
+L Device:D D5
 U 1 1 6235853C
 P 3450 3600
-F 0 "D7" V 3450 3680 50  0000 L CNN
+F 0 "D5" V 3450 3680 50  0000 L CNN
 F 1 "D5V0S1U2WS-7" V 3495 3680 50  0001 L CNN
 F 2 "Diode_SMD:D_SOD-323_HandSoldering" H 3450 3600 50  0001 C CNN
 F 3 "https://www.diodes.com/assets/Datasheets/D5V0S1U2WS.pdf" H 3450 3600 50  0001 C CNN
@@ -207,10 +83,10 @@ F 3 "https://www.diodes.com/assets/Datasheets/D5V0S1U2WS.pdf" H 3450 3600 50  00
 	0    1    1    0   
 $EndComp
 $Comp
-L Device:D D8
+L Device:D D6
 U 1 1 62358EEE
 P 3800 3600
-F 0 "D8" V 3754 3680 50  0000 L CNN
+F 0 "D6" V 3754 3680 50  0000 L CNN
 F 1 "D5V0S1U2WS-7" V 3800 4000 50  0000 L CNN
 F 2 "Diode_SMD:D_SOD-323_HandSoldering" H 3800 3600 50  0001 C CNN
 F 3 "https://www.diodes.com/assets/Datasheets/D5V0S1U2WS.pdf" H 3800 3600 50  0001 C CNN
@@ -228,10 +104,10 @@ Connection ~ 3800 3300
 Wire Wire Line
 	3800 3300 4450 3300
 $Comp
-L Device:D D6
+L Device:D D4
 U 1 1 62359ADA
 P 3150 3600
-F 0 "D6" V 3150 3680 50  0000 L CNN
+F 0 "D4" V 3150 3680 50  0000 L CNN
 F 1 "D5V0S1U2WS-7" V 3195 3680 50  0001 L CNN
 F 2 "Diode_SMD:D_SOD-323_HandSoldering" H 3150 3600 50  0001 C CNN
 F 3 "https://www.diodes.com/assets/Datasheets/D5V0S1U2WS.pdf" H 3150 3600 50  0001 C CNN
@@ -241,10 +117,10 @@ $EndComp
 Wire Wire Line
 	3150 3450 3150 3000
 $Comp
-L power:GND #PWR032
+L power:GND #PWR028
 U 1 1 6235AC4B
 P 3450 3950
-F 0 "#PWR032" H 3450 3700 50  0001 C CNN
+F 0 "#PWR028" H 3450 3700 50  0001 C CNN
 F 1 "GND" H 3455 3777 50  0000 C CNN
 F 2 "" H 3450 3950 50  0001 C CNN
 F 3 "" H 3450 3950 50  0001 C CNN
@@ -264,17 +140,4 @@ Wire Wire Line
 	3450 3850 3800 3850
 Wire Wire Line
 	3450 3850 3450 3950
-$Comp
-L Device:L L?
-U 1 1 623D0E3C
-P 7300 3000
-AR Path="/60C4F1BF/623D0E3C" Ref="L?"  Part="1" 
-AR Path="/60C3F428/623D0E3C" Ref="L3"  Part="1" 
-F 0 "L3" V 7490 3000 50  0000 C CNN
-F 1 "22uH" V 7399 3000 50  0000 C CNN
-F 2 "footprints:L_Wuerth_HCI-1350_3D" H 7300 3000 50  0001 C CNN
-F 3 "https://www.vishay.com/docs/34282/ihlp-6767gz-11.pdf" H 7300 3000 50  0001 C CNN
-	1    7300 3000
-	0    -1   -1   0   
-$EndComp
 $EndSCHEMATC
