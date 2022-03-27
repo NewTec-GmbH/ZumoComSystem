@@ -565,7 +565,7 @@ bool Zumo32U4::verifyFuses()
     }
 
     /* Check the extended fuse */
-    retCode = sendCommand(Zumo32U4Specification::READ_LSB_FUSE, readBuffer, &readBytes);
+    retCode = sendCommand(Zumo32U4Specification::READ_EXTENDED_FUSE, readBuffer, &readBytes);
     if (true == retCode)
     {
         extFuseValid = (0 == memcmp(readBuffer, Zumo32U4Specification::EXPECTED_EXTENDED_FUSE_VALUE.data, Zumo32U4Specification::EXPECTED_EXTENDED_FUSE_VALUE.dataSize));
@@ -970,8 +970,11 @@ bool Zumo32U4::beginWriteFirmware(uint16_t firmwareSize, const String& expectedH
                     {
                         if (true == enterProgrammerMode())
                         {
-                            verifyFuses();
-                            retCode = verifySignature();
+                            retCode = verifyFuses();
+                            if(retCode)
+                            {
+                                retCode = verifySignature();
+                            }
                             if (true == retCode)
                             {
                                 LOG_INFO("All checks for writing Zumo firmware have been passed!");
