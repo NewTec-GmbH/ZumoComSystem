@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 7
 Title "Zumo Communication System"
-Date "2022-03-08"
+Date "2022-03-25"
 Rev "V1.0"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -521,4 +521,10 @@ Wire Wire Line
 Connection ~ 2850 1700
 Wire Wire Line
 	3250 1250 3250 1500
+Text Notes 1350 1150 0    50   ~ 0
+U_Bat_max = 8.4 V\nI_Bat_max = 4,2 A 
+Text Notes 9150 3250 0    50   ~ 0
+\nImax = 3 A 
+Text Notes 7050 1050 0    50   ~ 0
+Imax = 200 mA 
 $EndSCHEMATC
