@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Log.h>
 #include <ESPmDNS.h>
 
-const char* WiFiManager::HOSTNAME = "complatform.local";
+const char* WiFiManager::HOSTNAME = "complatform";
 
 WiFiManager::WiFiManager() :
     m_store(Store::getInstance()),
