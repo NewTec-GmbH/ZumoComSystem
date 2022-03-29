@@ -18,7 +18,9 @@ With security in mind, the Shield uses a [HTTPs Web Server](https://github.com/N
 Additional features such as extra batteries and remote control of the robot's buttons have been also implemented.
 
 The following diagram depicts the minimal wiring setup for the successful flashing of the Zumo Robot:
+
 ![Basic MCU Overview](./Electronic/Design/MCU_Overview.png)
+
 This setup uses an [ESP32-DevKitC](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/hw-reference/esp32/get-started-devkitc.html) and an [UHS Mini](https://www.amazon.de/dp/B07Y83TJ47?ref_=cm_sw_r_cp_ud_dp_ZQC3AMQZY4V6GWWS08ZQ).
 
 ---
