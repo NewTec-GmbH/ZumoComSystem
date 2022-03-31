@@ -48,7 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace GPIOPins
 {
     /** Pin for push button for system reset/AP mode start (ACTIVE LOW) */
-    static const uint8_t PIN_WIFI_AND_RESET_KEY = 0;
+    static const uint8_t PIN_WIFI_AND_RESET_KEY = 4;
 
     /** Pin for resetting the attached Zumo robot (ACTIVE LOW) */
     static const uint8_t PIN_ROBOT_RESET = 27;
