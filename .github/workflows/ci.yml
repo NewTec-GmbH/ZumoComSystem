@@ -49,7 +49,7 @@ jobs:
         doxyfile-path: './Doxyfile'
     
     - name: Check for doxygen warnings
-        run: |
+      run: | 
           cd ./doc/doxygen
           chmod +x ./checkForWarnings.sh
           ./checkForWarnings.sh
