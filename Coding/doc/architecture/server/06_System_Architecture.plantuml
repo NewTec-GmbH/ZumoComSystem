@@ -1,0 +1,63 @@
+@startuml System Architecture
+Title System Architecture
+
+package "HAL" as hal {
+    component "GPIOPins" as gpiopins
+    component "IO" as io
+    component "Key" as key
+}
+
+package "Data" as data {
+    component "FirmwareHeader" as fwheader
+    component "FirmwareInfo" as fwinfo
+    component "KeyCert" as keycert
+    component "KeyValue" as keyvalue
+    component "NetworkCredentials" as netcredentials
+    component "Permission" as persmission
+    component "PublicSigningKey" as pubkey
+    component "Session" as session
+    component "Store" as store
+    component "User" as user
+    component "UserCredentials" as usercredentials
+}
+
+package "API" as api {
+    component "ApiRequest" as apirequest
+    component "ApiResponse" as apiresponse
+    component "BinaryCommand" as binarycommand
+    component "Command" as command
+    component "EchoDemoCommand" as echodemocommand
+    component "FlashCOMCommand" as flashcomfirmware
+    component "FlashZumoCommand" as flashzumoservice
+    component "GetFirmwareInfoCommand" as getfirmwareinfo
+    component "RebootCOMCommand" as resetcomplatforomservice
+    component "RebootZumoCommand" as resetzumoservice
+    component "SetSTACredentialsCommand" as credconfig
+    component "UploadCOMCommand" as uploadcomfirmware
+    component "UploadZumoCommand" as uploadzumoservice
+}
+
+package "Server" as server {
+    component "HTTPsWebServer" as httpswebserver
+    component "RequestResponseHandler" as requesthandler
+    component "ResponseCode" as responsecode
+    component "SessionManager" as sessionsmgmt
+}
+
+package "System Services" as systemservices {
+    component "CryptoServices" as cryptoservices
+    component "FileManager" as filemanager
+    component "FirmwareChecker" as firmwarecheck
+    component "Log" as logger
+    component "NVSManager" as nvsmanager
+    component "System" as initcom
+    component "WiFiManager" as wifilayerhal
+}
+
+package "Zumo" as zumo {
+    component "Zumo32U4" as zumo32u4
+    component "ZumoDriverStateMachine" as zumostate
+    component "Zumo32U4Specification" as zumospec
+}
+    
+@enduml

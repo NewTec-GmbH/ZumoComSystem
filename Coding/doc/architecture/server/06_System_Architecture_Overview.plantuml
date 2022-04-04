@@ -1,0 +1,18 @@
+@startuml System Overview
+
+component "Server" as server
+component "API" as api
+component "Data" as data
+component "Zumo" as zumo
+component "System Services" as systemservices
+component "HAL" as hal
+
+server *-down- api
+zumo *-down- systemservices
+data *-down- systemservices
+api *-down- systemservices
+systemservices *-down- hal
+api o-right-> data
+api o-left-> zumo
+
+@enduml
