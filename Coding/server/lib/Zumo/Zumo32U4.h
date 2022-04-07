@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Zumo32U4 header
  * @date 08/23/2021
- *
+ * @addtogroup Zumo
  * @{
  */
 
@@ -57,7 +57,7 @@ public:
     /**
      * Initializes the CDC device/Zumo robot when connected
      *
-     * @param[in] acm The ACM pointer/instance
+     * @param[in] pacm The ACM pointer/instance
      * @return Returns result code
      */
     uint8_t OnInit(ACM* pacm);
@@ -368,3 +368,7 @@ private:
     bool resetUSBDriver();
 };
 #endif
+
+/**
+ *  @}
+ */

@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FlashCOMCommand.h header
  * @date 08/18/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -75,3 +75,7 @@ private:
     static const uint16_t REBOOT_DELAY_MS;;
 };
 #endif /** __FLASHCOMCOMMAND_H__ */
+
+/**
+ *  @}
+ */

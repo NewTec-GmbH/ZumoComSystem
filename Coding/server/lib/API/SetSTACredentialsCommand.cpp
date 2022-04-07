@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief SetSTACredentialsCommand class
  * @date 08/19/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -98,3 +98,7 @@ void SetSTACredentialsCommand::run(const ApiRequest& request, ApiResponse& respo
         }
     }
 }
+
+/**
+ *  @}
+ */

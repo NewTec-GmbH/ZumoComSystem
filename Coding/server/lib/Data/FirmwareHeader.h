@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FirmwareHeader header
  * @date 08/02/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -161,3 +161,7 @@ private:
     uint8_t m_signatureBuffer[SIGNATURE_SIZE_BYTE];
 };
 #endif /** __FIRMWAREHEADER_H__ */
+
+/**
+ *  @}
+ */

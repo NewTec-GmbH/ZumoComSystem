@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief User class
  * @date 07/20/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -367,3 +367,7 @@ int8_t User::getUserIdx(const String& username)
     }
     return retIdx;
 }
+
+/**
+ *  @}
+ */

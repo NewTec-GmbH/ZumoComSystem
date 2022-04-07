@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief UploadCOMCommand.h header
  * @date 08/17/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -114,3 +114,7 @@ private:
     esp_err_t writePartition(const uint8_t* dataChunk, const uint16_t chunkSize);
 };
 #endif /** __UPLOADCOMCOMMAND_H__ */
+
+/**
+ *  @}
+ */

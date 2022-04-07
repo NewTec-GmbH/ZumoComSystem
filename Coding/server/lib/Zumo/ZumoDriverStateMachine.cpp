@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief ZumoDriverStateMachine class
  * @date 08/23/2021
- *
+ * @addtogroup Zumo
  * @{
  */
 
@@ -176,3 +176,7 @@ String ZumoDriverStateMachine::getEnumName(ZumoStates state)
     }
     return name;
 }
+
+/**
+ *  @}
+ */

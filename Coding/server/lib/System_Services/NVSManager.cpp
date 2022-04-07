@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief NVSManager class
  * @date 06/17/2021
- *
+ * @addtogroup System Services
  * @{
  */
 
@@ -123,3 +123,7 @@ void NVSManager::closeNVS()
     m_preferences.end();
     LOG_DEBUG("Closed complatform namespace for NVS");
 }
+
+/**
+ *  @}
+ */

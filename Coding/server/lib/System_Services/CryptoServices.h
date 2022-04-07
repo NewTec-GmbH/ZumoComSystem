@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief CryptoServices header
  * @date 07/20/2021
- *
+ * @addtogroup System Services
  * @{
  */
 
@@ -162,3 +162,7 @@ private:
     void finalizeSHA256Hash();
 };
 #endif /** __CRYPTOSERVICES_H__ */
+
+/**
+ *  @}
+ */

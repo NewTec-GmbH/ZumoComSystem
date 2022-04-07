@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Store class
  * @date 06/18/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -301,3 +301,7 @@ void Store::closeStore()
 {
     m_nvsmgr.closeNVS();
 }
+
+/**
+ *  @}
+ */

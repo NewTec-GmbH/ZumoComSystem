@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief KeyCert class
  * @date 06/22/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -226,3 +226,7 @@ void KeyCert::deserialize(const uint8_t* keyBuffer, size_t keyBufferSize, const 
         }
     }
 }
+
+/**
+ *  @}
+ */

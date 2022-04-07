@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief GetFirmwareInfoCommand class
  * @date 09/16/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -103,3 +103,7 @@ void GetFirmwareInfoCommand::run(const ApiRequest& request, ApiResponse& respons
         LOG_ERROR(String("ArduinoJson result: ") + jsonRet.c_str());
     }
 }
+
+/**
+ *  @}
+ */

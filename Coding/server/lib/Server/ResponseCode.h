@@ -29,7 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief ResponseCode header
  * @date 07/15/2021
- *
+ * @addtogroup Server
  * @{
  */
 
@@ -49,3 +49,7 @@ enum ResponseCode
     NOT_IMPLEMENTED = 501,
 };
 #endif /** __RESPONSECODE_H__ */
+
+/**
+ *  @}
+ */

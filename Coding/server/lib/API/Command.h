@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Command header
  * @date 07/16/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -113,3 +113,7 @@ private:
     Permission m_reqPermission;
 };
 #endif /** __COMMAND_H__ */
+
+/**
+ *  @}
+ */

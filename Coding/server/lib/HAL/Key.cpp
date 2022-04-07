@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Key class
  * @date 06/25/2021
- *
+ * @addtogroup HAL
  * @{
  */
 
@@ -96,3 +96,7 @@ void Key::systemResetISR()
         LOG_ERROR("Could not start system reset task!");
     }
 }
+
+/**
+ *  @}
+ */

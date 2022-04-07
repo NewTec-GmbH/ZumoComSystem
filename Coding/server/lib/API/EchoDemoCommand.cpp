@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief EchoDemoCommand class
  * @date 07/23/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -55,3 +55,7 @@ void EchoDemoCommand::run(const ApiRequest& request, ApiResponse& response, Sess
     response.setStatusCode(SUCCESS);
     response.setJsonPayload("Hello dear " + request.getJsonPayload());
 }
+
+/**
+ *  @}
+ */

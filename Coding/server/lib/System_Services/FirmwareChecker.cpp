@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FirmwareChecker class
  * @date 08/02/2021
- *
+ * @addtogroup System Services
  * @{
  */
 
@@ -191,3 +191,7 @@ bool FirmwareChecker::isValid(const String& expectedTarget)
     }
     return (validFileId && validTarget && validFileVersion && validHashAlg && validSignAlg && validSignature && validPayloadSize);
 }
+
+/**
+ *  @}
+ */

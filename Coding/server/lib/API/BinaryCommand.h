@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief BinaryCommand header
  * @date 08/11/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -115,3 +115,7 @@ private:
     Permission m_binaryReqPermission;
 };
 #endif /** __BINARYCOMMAND_H__ */
+
+/**
+ *  @}
+ */

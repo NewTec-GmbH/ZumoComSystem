@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief ApiRequest class
  * @date 07/14/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -98,3 +98,7 @@ const String& ApiRequest::getJsonPayload() const
 {
     return m_jsonPayload;
 }
+
+/**
+ *  @}
+ */

@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Key header
  * @date 06/25/2021
- *
+ * @addtogroup HAL
  * @{
  */
 
@@ -98,3 +98,7 @@ private:
     static void systemResetISR();
 };
 #endif /** __KEY_H__ */
+
+/**
+ *  @}
+ */

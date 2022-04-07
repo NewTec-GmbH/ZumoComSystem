@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief User header
  * @date 07/20/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -129,7 +129,7 @@ public:
     /**
      * Serializes the user data
      *
-     * @param[out] The output serialized data
+     * @param[out] serialized The output serialized data
      * @return Returns true if successful, else false
      */
     bool serialize(String& serialized) const;
@@ -137,7 +137,7 @@ public:
     /**
      * Deserializes the passed data and re-creates user data
      *
-     * @param[in] The serialized JSON string data
+     * @param[in] serial The serialized JSON string data
      * @return Returns true if successful, else false
      */
     bool deserialize(const String& serial);
@@ -209,3 +209,7 @@ private:
     static int8_t getUserIdx(const String& username);
 };
 #endif /** __USER_H__ */
+
+/**
+ *  @}
+ */

@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief NetworkCredentials class
  * @date 06/17/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -149,3 +149,7 @@ bool NetworkCredentials::deserialize(const String& serial, const bool staCredent
     }
     return retCode;
 }
+
+/**
+ *  @}
+ */

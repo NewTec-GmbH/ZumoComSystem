@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief System class
  * @date 06/22/2021
- *
+ * @addtogroup System Services
  * @{
  */
 #include <System.h>
@@ -324,3 +324,7 @@ bool System::registerKeyCertGenTask()
 
     return (pdPASS == retCode);
 }
+
+/**
+ *  @}
+ */

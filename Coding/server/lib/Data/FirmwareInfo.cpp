@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FirmwareInfo class
  * @date 08/02/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -261,3 +261,7 @@ bool FirmwareInfo::isValid() const
 {
     return m_isValid;
 }
+
+/**
+ *  @}
+ */

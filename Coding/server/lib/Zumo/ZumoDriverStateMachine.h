@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief ZumoDriverStateMachine header
  * @date 08/23/2021
- *
+ * @addtogroup Zumo
  * @{
  */
 
@@ -99,3 +99,7 @@ private:
     ZumoStates m_currentState;
 };
 #endif /** __ZUMODRIVERSTATEMACHINE_H__ */
+
+/**
+ *  @}
+ */

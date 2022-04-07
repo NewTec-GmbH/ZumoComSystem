@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief System header
  * @date 06/22/2021
- *
+ * @addtogroup System Services
  * @{
  */
 
@@ -120,3 +120,7 @@ private:
     bool registerKeyCertGenTask();
 };
 #endif /** __SYSTEM_H__ */
+
+/**
+ *  @}
+ */

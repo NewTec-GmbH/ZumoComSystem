@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FirmwareChecker header
  * @date 08/02/2021
- *
+ * @addtogroup System Services
  * @{
  */
 
@@ -84,6 +84,7 @@ public:
      *
      * @param[in] dataChunk Pointer to the input buffer which contains the header binary data to be deserialized
      * @param[in] chunkSize Specifies the size of the passed input buffer. Can be of 4096 bytes in size at max
+     * @return Returns true if successful, else false
      */
     bool deserializePayload(const uint8_t* dataChunk, const uint16_t chunkSize);
 
@@ -146,3 +147,7 @@ private:
     uint32_t m_readPayloadBytes;
 };
 #endif /** __FIRMWARECHECKER_H__ */
+
+/**
+ *  @}
+ */

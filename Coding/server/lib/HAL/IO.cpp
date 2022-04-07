@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief IO class
  * @date 06/21/2021
- *
+ * @addtogroup HAL
  * @{
  */
 
@@ -126,3 +126,7 @@ void IO::writeGPIO(const uint8_t gpio, const uint8_t value)
     digitalWrite(gpio, value);
     xSemaphoreGive(m_ioMutex);
 }
+
+/**
+ *  @}
+ */

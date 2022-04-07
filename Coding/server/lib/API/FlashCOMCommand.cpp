@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FlashCOMCommand.h class
  * @date 08/18/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -123,3 +123,7 @@ void FlashCOMCommand::run(const ApiRequest& request, ApiResponse& response, Sess
         LOG_ERROR("Could not fetch FirmwareInfo for COM system from persistent storage!");
     }
 }
+
+/**
+ *  @}
+ */

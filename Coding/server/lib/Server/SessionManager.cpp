@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief SessionManager class
  * @date 07/16/2021
- *
+ * @addtogroup Server
  * @{
  */
 
@@ -122,3 +122,7 @@ void SessionManager::invalidateSession(ApiResponse& response, Session* connectio
     connectionCtx->deauthenticateSession();
     response.setStatusCode(SUCCESS);
 }
+
+/**
+ *  @}
+ */

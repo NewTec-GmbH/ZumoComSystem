@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief WiFiManager header
  * @date 06/25/2021
- *
+ * @addtogroup System Services
  * @{
  */
 
@@ -127,3 +127,7 @@ private:
     bool m_staActive;
 };
 #endif /** __WIFIMANAGER_H__ */
+
+/**
+ *  @}
+ */

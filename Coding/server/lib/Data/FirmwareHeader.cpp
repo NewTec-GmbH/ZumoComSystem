@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FirmwareHeader class
  * @date 08/02/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -158,3 +158,7 @@ const uint8_t* FirmwareHeader::getSignature() const
 {
     return m_signatureBuffer;
 }
+
+/**
+ *  @}
+ */

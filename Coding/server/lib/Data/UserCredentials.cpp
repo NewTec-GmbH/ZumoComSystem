@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief UserCredentials class
  * @date 07/23/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -89,3 +89,7 @@ bool UserCredentials::deserialize(const String& serial)
     }
     return retCode;
 }
+
+/**
+ *  @}
+ */

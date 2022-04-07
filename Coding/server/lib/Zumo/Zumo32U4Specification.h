@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Zumo32U4Specification header
  * @date 08/23/2021
- *
+ * @addtogroup Zumo
  * @{
  */
 
@@ -160,3 +160,7 @@ namespace Zumo32U4Specification
     static const struct ZumoData<3> EXPECTED_SIGNATURE = {{0x87, 0x95, 0x1E}, 3};
 };
 #endif /** __ZUMO32U4Specification_H__ */
+
+/**
+ *  @}
+ */

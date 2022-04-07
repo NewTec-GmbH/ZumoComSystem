@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief UploadCOMCommand.h class
  * @date 08/17/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -329,3 +329,7 @@ esp_err_t UploadCOMCommand::writePartition(const uint8_t* dataChunk, const uint1
     }
     return otaWriteRetCode;
 }
+
+/**
+ *  @}
+ */

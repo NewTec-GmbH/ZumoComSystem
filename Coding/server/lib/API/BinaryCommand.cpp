@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief BinaryCommand class
  * @date 08/11/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -61,3 +61,6 @@ const Permission& BinaryCommand::getBinaryReqPermission() const
     return m_binaryReqPermission;
 }
 
+/**
+ *  @}
+ */

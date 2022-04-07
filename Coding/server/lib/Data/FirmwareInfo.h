@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FirmwareInfo header
  * @date 08/02/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -156,3 +156,7 @@ private:
     uint32_t m_sizeBytes;
 };
 #endif /** __FIRMWAREINFO_H__ */
+
+/**
+ *  @}
+ */

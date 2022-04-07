@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief RebootZumoCommand header
  * @date 08/19/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -70,3 +70,7 @@ public:
     void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx);
 };
 #endif /** __REBOOTZUMOCOMMAND_H__ */
+
+/**
+ *  @}
+ */

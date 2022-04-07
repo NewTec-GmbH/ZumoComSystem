@@ -35,14 +35,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Test class
  * @date 06/17/2021
- *
+ * @addtogroup Test
  * @{
  */
 
 #include <unity.h>
 #include <Log.h>
 
-#define ARRAY_NUM(__arr)    (sizeof(__arr) / sizeof((__arr)[0]))
+#define ARRAY_NUM(__arr)    (sizeof(__arr) / sizeof((__arr)[0])) /**< Macro to find the lenght of an array */
 
 /**
  * Logging interface for testing purposes.
@@ -133,8 +133,12 @@ private:
     char m_buffer[1024]; /**< Write buffer, containing the logMessage. */
 };
 
-static void test_Logging();
+static void test_Logging(); /**< Test: Logging */
 
+/**
+ * @brief Entry point for Unit testing.
+ * @return 0
+ */
 int main()
 {
     UNITY_BEGIN();
@@ -169,3 +173,7 @@ static void test_Logging()
     current = logger.getLogLevel();
     TEST_ASSERT_EQUAL(Log::LEVEL_INFO, current);
 }
+
+/**
+ *  @}
+ */

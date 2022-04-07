@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief IO header
  * @date 06/21/2021
- *
+ * @addtogroup HAL
  * @{
  */
 
@@ -115,3 +115,7 @@ private:
     ~IO();
 };
 #endif /** __IO_H__ */
+
+/**
+ *  @}
+ */

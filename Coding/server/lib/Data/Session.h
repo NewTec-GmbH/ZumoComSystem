@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Session header
  * @date 07/15/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -189,3 +189,7 @@ private:
     static void handleSessionTimeout(void* parameter);
 };
 #endif /** __SESSION_H__ */
+
+/**
+ *  @}
+ */

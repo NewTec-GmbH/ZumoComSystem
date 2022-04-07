@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Command class
  * @date 07/16/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -60,3 +60,7 @@ const Permission& Command::getReqPermission() const
 {
     return m_reqPermission;
 }
+
+/**
+ *  @}
+ */

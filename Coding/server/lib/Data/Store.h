@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Store header
  * @date 06/18/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -93,6 +93,7 @@ public:
 
     /**
      * Deletes the STA credentials from persistent storage
+     * @return Returns true if succesful, false if error occured
      */
     bool deleteSTACredentials();
 
@@ -133,6 +134,7 @@ public:
 
     /**
      * Copies the passed User class instance into store
+     * @param[in] users User class to be stored.
      */
     void setUsers(const User& users);
 
@@ -206,3 +208,7 @@ private:
     ~Store();
 };
 #endif /** __STORE_H__ */
+
+/**
+ *  @}
+ */

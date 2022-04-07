@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief ApiResponse class
  * @date 07/14/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -100,3 +100,7 @@ void ApiResponse::setStatusCode(const ResponseCode& statusCode)
 {
     m_statusCode = statusCode;
 }
+
+/**
+ *  @}
+ */

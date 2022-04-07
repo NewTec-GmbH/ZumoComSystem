@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief UploadZumoCommand header
  * @date 08/03/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -112,3 +112,7 @@ private:
     bool writeFile(const uint8_t* dataChunk, const uint16_t chunkSize);
 };
 #endif /** __UPLOADZUMOCOMMAND_H__ */
+
+/**
+ *  @}
+ */

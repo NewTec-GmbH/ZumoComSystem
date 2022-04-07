@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief NetworkCredentials header
  * @date 06/16/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -129,3 +129,7 @@ private:
     String m_passphrase;
 };
 #endif /** __NETWORKCREDENTIALS_H__ */
+
+/**
+ *  @}
+ */

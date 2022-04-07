@@ -29,7 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief PublicSigningKey header
  * @date 07/30/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -55,3 +55,7 @@ namespace PublicSigningKey
     static const uint16_t KEY_LENGTH_BYTES = strlen(PUB_RSA_SIGN_KEY) + 1;
 };
 #endif /** __PUBLICSIGNINGKEY_H__ */
+
+/**
+ *  @}
+ */

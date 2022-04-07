@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief WiFiManager class
  * @date 06/25/2021
- *
+ * @addtogroup System Services
  * @{
  */
 
@@ -208,3 +208,7 @@ bool WiFiManager::stopSTA()
     }
     return retCode;
 }
+
+/**
+ *  @}
+ */

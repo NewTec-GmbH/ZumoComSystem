@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief HTTPsWebServer header
  * @date 07/07/2021
- *
+ * @addtogroup Server
  * @{
  */
 
@@ -120,3 +120,7 @@ private:
     static void getMIMEType(const String& filePath, String& mimeType);
 };
 #endif /** __HTTPSWEBSERVER_H__ */
+
+/**
+ *  @}
+ */

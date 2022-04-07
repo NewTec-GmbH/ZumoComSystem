@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief RequestResponseHandler header
  * @date 07/16/2021
- *
+ * @addtogroup Server
  * @{
  */
 
@@ -147,3 +147,7 @@ private:
     BinaryCommand* getCommandOfBinaryApiRequest(const String& commandId);
 };
 #endif /** __REQUESTRESPONSEHANDLER_H__ */
+
+/**
+ *  @}
+ */

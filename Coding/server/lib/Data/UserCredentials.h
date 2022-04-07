@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief UserCredentials header
  * @date 07/23/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -88,3 +88,7 @@ private:
     String m_password;
 };
 #endif /** __USERCREDENTIALS_H__ */
+
+/**
+ *  @}
+ */

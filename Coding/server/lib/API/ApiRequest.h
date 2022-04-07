@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief ApiRequest header
  * @date 07/14/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -91,3 +91,7 @@ private:
     String m_jsonPayload;
 };
 #endif /** __APIREQUEST_H__ */
+
+/**
+ *  @}
+ */

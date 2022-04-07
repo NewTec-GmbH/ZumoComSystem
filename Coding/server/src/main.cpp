@@ -58,3 +58,7 @@ void loop()
 {
     System::getInstance().handleServices();
 }
+
+/**
+ *  @}
+ */

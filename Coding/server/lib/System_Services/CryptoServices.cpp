@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief CryptoServices class
  * @date 07/20/2021
- *
+ * @addtogroup System Services
  * @{
  */
 
@@ -260,3 +260,7 @@ bool CryptoServices::verifySignature(const uint8_t* signature, const uint16_t si
     }
     return retCode;
 }
+
+/**
+ *  @}
+ */

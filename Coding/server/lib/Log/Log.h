@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Log header
  * @date 06/14/2021
- *
+ * @addtogroup System Services
  * @{
  */
 
@@ -58,18 +58,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** Macro for logging error messages */
 #define LOG_ERROR(msg)  Log::getInstance().writeLog(__FILE__, __LINE__, Log::LEVEL_ERROR, msg)
 #else
+ /** Mock of Macro for logging debug messages. Prevents error when Logging is deactivated*/
 #define LOG_DEBUG(msg) \
     do                 \
     {                  \
     } while (0)
+/** Mock of Macro for logging info messages. Prevents error when Logging is deactivated */
 #define LOG_INFO(msg) \
     do                \
     {                 \
     } while (0)
+/** Mock of Macro for logging warning messages. Prevents error when Logging is deactivated */
 #define LOG_WARN(msg) \
     do                \
     {                 \
     } while (0)
+/** Mock of Macro for logging error messages. Prevents error when Logging is deactivated */
 #define LOG_ERROR(msg) \
     do                 \
     {                  \
@@ -154,3 +158,7 @@ private:
     ~Log();
 };
 #endif /* __LOG_H__ */
+
+/**
+ *  @}
+ */

@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FlashZumoCommand.h class
  * @date 09/20/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -180,3 +180,7 @@ void FlashZumoCommand::run(const ApiRequest& request, ApiResponse& response, Ses
         LOG_ERROR("Could not allocate memory for read buffer. OUT OF MEMORY!");
     }
 }
+
+/**
+ *  @}
+ */

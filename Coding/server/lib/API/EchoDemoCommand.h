@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief EchoDemoCommand header
  * @date 07/23/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -68,3 +68,7 @@ public:
     void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx);
 };
 #endif /** __ECHODEMOCOMMAND_H__ */
+
+/**
+ *  @}
+ */

@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Log class
  * @date 06/14/2021
- *
+ * @addtogroup System Services
  * @{
  */
 
@@ -121,3 +121,7 @@ void Log::writeLog(const char* fileNameFullPath, int line, LogLevel level, const
         }
     }
 }
+
+/**
+ *  @}
+ */

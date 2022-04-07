@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Zumo32U4 class
  * @date 08/23/2021
- *
+ * @addtogroup Zumo
  * @{
  */
 
@@ -44,9 +44,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Log.h>
 #include <GPIOPins.h>
 
-USB Zumo32U4::m_usb;
-ACMAsyncOper Zumo32U4::m_asyncOper;
-ACM Zumo32U4::m_acm(&m_usb, &m_asyncOper);
+USB Zumo32U4::m_usb;                        /**< Instance of USB Driver */
+ACMAsyncOper Zumo32U4::m_asyncOper;         /**< Instance of ACM Operator */
+ACM Zumo32U4::m_acm(&m_usb, &m_asyncOper);  /**< Instance of ACM Module */
 
 const uint8_t Zumo32U4::AWAIT_RESPONSE_DELAY_MS = 50;
 const uint8_t Zumo32U4::NEXT_SERIAL_SEND_DELAY_MS = 10;
@@ -1230,3 +1230,7 @@ bool Zumo32U4::resetUSBDriver()
     }
     return retCode;
 }
+
+/**
+ *  @}
+ */

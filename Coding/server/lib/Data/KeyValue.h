@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief KeyValue header
  * @date 08/04/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -52,3 +52,7 @@ struct KeyValue
     const char* value;
 };
 #endif
+
+/**
+ *  @}
+ */

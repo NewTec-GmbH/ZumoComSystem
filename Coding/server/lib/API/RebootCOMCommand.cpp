@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief RebootCOMCommand class
  * @date 08/18/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -58,3 +58,7 @@ void RebootCOMCommand::run(const ApiRequest& request, ApiResponse& response, Ses
     LOG_WARN("Rebooting the ComPlatform now!");
     System::getInstance().reset();
 }
+
+/**
+ *  @}
+ */

@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Session class
  * @date 07/15/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -376,3 +376,7 @@ const Permission* Session::getPermissions(uint8_t& numberOfPermissions)
     xSemaphoreGive(m_sessionMutex);
     return permission;
 }
+
+/**
+ *  @}
+ */

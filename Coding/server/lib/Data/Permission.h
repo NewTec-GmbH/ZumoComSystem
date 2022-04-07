@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief Permission header
  * @date 07/15/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -58,3 +58,7 @@ enum Permission
     ECHO_DEMO
 };
 #endif /** __PERMISSION_H__ */
+
+/**
+ *  @}
+ */

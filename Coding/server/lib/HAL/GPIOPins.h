@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief GPIOPins header
  * @date 07/28/2021
- *
+ * @addtogroup HAL
  * @{
  */
 
@@ -69,3 +69,7 @@ namespace GPIOPins
     static const uint8_t INFO_LED_B = 21;
 };
 #endif /** __GPIOPINS_H__ */
+
+/**
+ *  @}
+ */

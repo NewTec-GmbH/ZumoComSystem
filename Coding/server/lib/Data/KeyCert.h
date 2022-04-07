@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief KeyCert header
  * @date 06/22/2021
- *
+ * @addtogroup Data
  * @{
  */
 
@@ -114,3 +114,7 @@ private:
     httpsserver::SSLCert m_sslCert;
 };
 #endif
+
+/**
+ *  @}
+ */

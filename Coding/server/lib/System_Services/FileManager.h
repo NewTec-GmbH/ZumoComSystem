@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FileManager header
  * @date 07/07/2021
- *
+ * @addtogroup System Services
  * @{
  */
 
@@ -163,3 +163,7 @@ private:
     static void getInfo(String& infoString);
 };
 #endif /** __FILEMANAGER_H__ */
+
+/**
+ *  @}
+ */

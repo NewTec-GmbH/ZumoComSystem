@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief NVSManager header
  * @date 06/17/2021
- *
+ * @addtogroup System Services
  * @{
  */
 
@@ -122,3 +122,7 @@ private:
     Preferences m_preferences;
 };
 #endif /** __NVSMANAGER_H__ */
+
+/**
+ *  @}
+ */

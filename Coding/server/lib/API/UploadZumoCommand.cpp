@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief UploadZumoCommand class
  * @date 08/03/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -283,3 +283,7 @@ void UploadZumoCommand::reset()
     m_fileManager.closeFile();
     m_fwChecker.reset();
 }
+
+/**
+ *  @}
+ */

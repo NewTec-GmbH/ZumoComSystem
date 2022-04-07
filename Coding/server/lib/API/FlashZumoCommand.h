@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief FlashZumoCommand.h header
  * @date 08/23/2021
- *
+ * @addtogroup API
  * @{
  */
 
@@ -80,3 +80,7 @@ private:
     static const char* FIRMWARE_FILENAME;
 };
 #endif /** __FLASHZUMOCOMMAND_H__ */
+
+/**
+ *  @}
+ */
