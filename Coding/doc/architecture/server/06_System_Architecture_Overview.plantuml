@@ -1,18 +1,18 @@
 @startuml System Overview
 
-component "Server" as server
-component "API" as api
-component "Data" as data
-component "Zumo" as zumo
-component "System Services" as systemservices
-component "HAL" as hal
+folder "Server" as server
+folder "API" as api
+folder "Data" as data
+folder "Zumo" as zumo
+folder "System Services" as systemservices
+folder "HAL" as hal
 
-server *-down- api
-zumo *-down- systemservices
-data *-down- systemservices
-api *-down- systemservices
-systemservices *-down- hal
-api o-right-> data
-api o-left-> zumo
+server .down.> api : <<access>>
+zumo .down.> systemservices : <<access>>
+data .down.> systemservices : <<access>>
+api .down.> systemservices : <<access>>
+systemservices .down.> hal : <<access>>
+api .right.> data
+api .left.> zumo
 
 @enduml
