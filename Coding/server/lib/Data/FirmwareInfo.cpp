@@ -220,6 +220,7 @@ bool FirmwareInfo::deserialize(const String& serial)
         FirmwareInfo& info = m_fwInfos[fwIdx];
         info.m_available = false;
     }
+    m_savedFirmwares = 0;
 
     const size_t DOC_SIZE = 384;
     StaticJsonDocument<DOC_SIZE> jsonDocument;
