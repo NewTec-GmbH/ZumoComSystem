@@ -113,8 +113,8 @@ void Log::writeLog(const char* fileNameFullPath, int line, LogLevel level, const
                 break;
             }
             
-            m_output->print(fileName);
-            m_output->print(" @ ");
+            m_output->printf("%30s",fileName);
+            m_output->print(":");
             m_output->print(line, 10);
             m_output->print("\t");
             m_output->println(msg);
