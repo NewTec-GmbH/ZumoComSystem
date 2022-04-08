@@ -97,6 +97,7 @@ bool FirmwareInfo::putInfo(const String& targetSystem, const String& payloadHash
     else
     {
         LOG_ERROR("Cannot store a new FirmwareInfo entry. Database is full!");
+        LOG_DEBUG("Number of saved Firmwares: " + String(m_savedFirmwares));
     }
     return retCode;
 }
@@ -104,6 +105,8 @@ bool FirmwareInfo::putInfo(const String& targetSystem, const String& payloadHash
 const FirmwareInfo* FirmwareInfo::getInfo(const String& targetSystem)
 {
     const FirmwareInfo* fwInfo = nullptr;
+
+    LOG_DEBUG("Number of saved Firmwares: " + String(m_savedFirmwares));
 
     if (0 < m_savedFirmwares)
     {
