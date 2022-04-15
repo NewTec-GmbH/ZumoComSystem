@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 7
 Title "Zumo Communication System"
-Date "2022-03-25"
+Date "2022-04-15"
 Rev "V1.0"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -30,6 +30,7 @@ F3 "INT" O L 6500 5100 50
 F4 "SCK" I L 6500 5000 50 
 F5 "MISO" O L 6500 4900 50 
 F6 "MOSI" B L 6500 4800 50 
+F7 "ESP_EN" B L 6500 5300 50 
 $EndSheet
 $Sheet
 S 1500 800  1500 2500
@@ -127,6 +128,7 @@ F16 "nON_OFF" O R 8000 3050 50
 F17 "nBUT_B" I R 8000 1550 50 
 F18 "nBUT_C" I R 8000 1650 50 
 F19 "nBUT_A" I R 8000 1450 50 
+F20 "ESP_EN" B L 6500 2400 50 
 $EndSheet
 Wire Wire Line
 	9500 3050 8000 3050
@@ -1944,4 +1946,10 @@ Wire Wire Line
 	5500 1900 6500 1900
 Wire Wire Line
 	5500 2100 6500 2100
+Wire Wire Line
+	6500 2400 5700 2400
+Wire Wire Line
+	5700 2400 5700 5300
+Wire Wire Line
+	5700 5300 6500 5300
 $EndSCHEMATC

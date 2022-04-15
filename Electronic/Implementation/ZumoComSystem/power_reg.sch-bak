@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 7
 Title "Zumo Communication System"
-Date "2022-03-25"
+Date "2022-04-15"
 Rev "V1.0"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -13,30 +13,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-$Comp
-L TPS62056DGS:TPS62056DGS U2
-U 1 1 60C6791C
-P 5450 2000
-F 0 "U2" H 5450 2670 50  0000 C CNN
-F 1 "TPS62056DGS" H 5450 2579 50  0000 C CNN
-F 2 "SOP50P490X110-10N" H 5450 2000 50  0001 L BNN
-F 3 "https://www.ti.com/lit/ds/symlink/tps62056.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1624013814534&ref_url=https%253A%252F%252Feu.mouser.com%252F" H 5450 2000 50  0001 L BNN
-	1    5450 2000
-	1    0    0    -1  
-$EndComp
-$Comp
-L LT1374CS8-5PBF:LT1374CS8-5PBF U1
-U 1 1 60C689A1
-P 4650 4200
-F 0 "U1" H 6250 4565 50  0000 C CNN
-F 1 "LT1374CS8-5PBF" H 6250 4474 50  0000 C CNN
-F 2 "SO-8_S" H 4650 4200 50  0001 L BNN
-F 3 "https://www.analog.com/media/en/technical-documentation/data-sheets/1374fd.pdf" H 4650 4200 50  0001 L BNN
-F 4 "lt1374cs85#pbf" H 4650 4200 50  0001 L BNN "MANUFACTURER_PART_NUMBER"
-F 5 "Linear Technology" H 4650 4200 50  0001 L BNN "VENDOR"
-	1    4650 4200
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	6150 1800 6450 1800
 Text HLabel 1000 1250 0    50   Input ~ 0
@@ -127,17 +103,6 @@ Wire Wire Line
 	6850 950  6850 1800
 Wire Wire Line
 	6850 1800 6750 1800
-$Comp
-L Device:C C2
-U 1 1 60CE065A
-P 4650 2250
-F 0 "C2" H 4765 2296 50  0000 L CNN
-F 1 "10uF" H 4765 2205 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 4688 2100 50  0001 C CNN
-F 3 "https://product.tdk.com/en/system/files?file=dam/doc/product/capacitor/ceramic/mlcc/catalog/mlcc_commercial_general_en.pdf" H 4650 2250 50  0001 C CNN
-	1    4650 2250
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	6850 1800 6850 2050
 Connection ~ 6850 1800
@@ -196,18 +161,6 @@ F 3 "" H 1950 2350 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3950 1600 3950 2000
-$Comp
-L MLL1200S:MLL1200S SW1
-U 1 1 60CF5DEF
-P 1950 1800
-F 0 "SW1" H 1950 2265 50  0000 C CNN
-F 1 "MLL1200S" H 1950 2174 50  0000 C CNN
-F 2 "SW_MLL1200S" H 1950 1800 50  0001 L BNN
-F 3 "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1308111-1_SWITCHES_CORE_PROGRAM_CATALOG&DocType=CS&DocLang=English" H 1950 1800 50  0001 L BNN
-F 4 "1437575-1" H 1950 1800 50  0001 L BNN "Comment"
-	1    1950 1800
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	1550 1800 1450 1800
 Wire Wire Line
@@ -223,17 +176,6 @@ Wire Wire Line
 Connection ~ 1950 2150
 Wire Wire Line
 	1950 2150 2500 2150
-$Comp
-L Device:C C1
-U 1 1 60D11B75
-P 3950 4850
-F 0 "C1" H 4065 4896 50  0000 L CNN
-F 1 "22uF" H 4065 4805 50  0000 L CNN
-F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 3988 4700 50  0001 C CNN
-F 3 "https://product.tdk.com/info/en/catalog/datasheets/mlcc_commercial_general_en.pdf?ref_disty=digikey" H 3950 4850 50  0001 C CNN
-	1    3950 4850
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	4650 4300 4450 4300
 $Comp
@@ -252,17 +194,6 @@ Wire Wire Line
 	3950 4200 3950 4700
 Wire Wire Line
 	3950 5400 3950 5000
-$Comp
-L Device:D D2
-U 1 1 60D196DD
-P 8900 3700
-F 0 "D2" H 8900 3917 50  0000 C CNN
-F 1 "30V 100mA" H 8900 3826 50  0000 C CNN
-F 2 "Diode_SMD:D_SOD-323" H 8900 3700 50  0001 C CNN
-F 3 "https://my.centralsemi.com/datasheets/CMDSH-3.PDF" H 8900 3700 50  0001 C CNN
-	1    8900 3700
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	7850 4200 8650 4200
 Wire Wire Line
@@ -282,17 +213,6 @@ Wire Wire Line
 Wire Wire Line
 	4450 3700 4450 4300
 Connection ~ 8650 3700
-$Comp
-L Device:C C4
-U 1 1 60D211FE
-P 8050 4800
-F 0 "C4" H 8165 4846 50  0000 L CNN
-F 1 "1.5nF" H 8165 4755 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 8088 4650 50  0001 C CNN
-F 3 "https://www.we-online.de/katalog/datasheet/885012206084.pdf" H 8050 4800 50  0001 C CNN
-	1    8050 4800
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	4650 4400 4450 4400
 Wire Wire Line
@@ -300,17 +220,6 @@ Wire Wire Line
 Connection ~ 4450 4300
 Wire Wire Line
 	9250 4500 9250 4200
-$Comp
-L Device:C C6
-U 1 1 60D2533E
-P 9250 4800
-F 0 "C6" H 9365 4846 50  0000 L CNN
-F 1 "100uF" H 9365 4755 50  0000 L CNN
-F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 9288 4650 50  0001 C CNN
-F 3 "https://product.tdk.com/en/system/files?file=dam/doc/product/capacitor/ceramic/mlcc/catalog/mlcc_commercial_general_en.pdf" H 9250 4800 50  0001 C CNN
-	1    9250 4800
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	9250 4500 9250 4650
 Connection ~ 9250 4500
@@ -349,17 +258,6 @@ Wire Wire Line
 Connection ~ 9250 3700
 Wire Wire Line
 	9250 3700 9250 3500
-$Comp
-L Device:D D1
-U 1 1 60D62CCC
-P 8650 4800
-F 0 "D1" V 8604 4880 50  0000 L CNN
-F 1 "40V 5A" V 8695 4880 50  0000 L CNN
-F 2 "Diode_SMD:D_2114_3652Metric_Pad1.85x3.75mm_HandSolder" H 8650 4800 50  0001 C CNN
-F 3 "https://datasheets.avx.com/schottky.pdf" H 8650 4800 50  0001 C CNN
-	1    8650 4800
-	0    1    1    0   
-$EndComp
 $Comp
 L power:GND #PWR011
 U 1 1 60D630D3
@@ -407,39 +305,6 @@ Wire Wire Line
 	3950 3450 3950 4200
 Wire Wire Line
 	7850 4400 8050 4400
-$Comp
-L Device:L L2
-U 1 1 60C6A253
-P 8950 4200
-F 0 "L2" V 9140 4200 50  0000 C CNN
-F 1 "22uH" V 9049 4200 50  0000 C CNN
-F 2 "footprints:L_Wuerth_HCI-1350_3D" H 8950 4200 50  0001 C CNN
-F 3 "https://www.vishay.com/docs/34282/ihlp-6767gz-11.pdf" H 8950 4200 50  0001 C CNN
-	1    8950 4200
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Device:C C5
-U 1 1 60D19B44
-P 8650 3950
-F 0 "C5" H 8400 4000 50  0000 L CNN
-F 1 "270nF" H 8300 3900 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 8688 3800 50  0001 C CNN
-F 3 "https://api.kemet.com/component-edge/download/specsheet/C0805R274K5RACT500.pdf" H 8650 3950 50  0001 C CNN
-	1    8650 3950
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C C3
-U 1 1 60D9BDF5
-P 6850 2200
-F 0 "C3" H 6965 2246 50  0000 L CNN
-F 1 "22uF" H 6965 2155 50  0000 L CNN
-F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 6888 2050 50  0001 C CNN
-F 3 "https://product.tdk.com/info/en/catalog/datasheets/mlcc_commercial_general_en.pdf?ref_disty=digikey" H 6850 2200 50  0001 C CNN
-	1    6850 2200
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	1550 1600 1450 1600
 Wire Wire Line
@@ -449,28 +314,6 @@ Wire Wire Line
 	1450 1250 3250 1250
 Wire Wire Line
 	1000 1250 1450 1250
-$Comp
-L Device:R R1
-U 1 1 62459142
-P 2600 1700
-F 0 "R1" V 2393 1700 50  0000 C CNN
-F 1 "100k" V 2484 1700 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2530 1700 50  0001 C CNN
-F 3 "~" H 2600 1700 50  0001 C CNN
-	1    2600 1700
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:R R2
-U 1 1 6245A145
-P 2850 2000
-F 0 "R2" H 2780 1954 50  0000 R CNN
-F 1 "100k" H 2780 2045 50  0000 R CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2780 2000 50  0001 C CNN
-F 3 "~" H 2850 2000 50  0001 C CNN
-	1    2850 2000
-	-1   0    0    1   
-$EndComp
 Wire Wire Line
 	2350 1700 2450 1700
 Wire Wire Line
@@ -490,28 +333,6 @@ F 3 "" H 2850 2350 50  0001 C CNN
 	1    2850 2350
 	1    0    0    -1  
 $EndComp
-$Comp
-L Device:L L1
-U 1 1 60C698F7
-P 6600 1800
-F 0 "L1" V 6790 1800 50  0000 C CNN
-F 1 "15uH" V 6699 1800 50  0000 C CNN
-F 2 "footprints:L_Wuerth_HCI-1040_3D" H 6600 1800 50  0001 C CNN
-F 3 "https://www.we-online.de/katalog/datasheet/74437368150.pdf" H 6600 1800 50  0001 C CNN
-	1    6600 1800
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Device:Q_PMOS_GDS Q1
-U 1 1 624703BF
-P 3150 1700
-F 0 "Q1" H 3354 1654 50  0000 L CNN
-F 1 "PMOS-RQ5C060BCTCL" H 3354 1745 50  0000 L CNN
-F 2 "footprints:SOT95P280X100-3N" H 3350 1800 50  0001 C CNN
-F 3 "https://fscdn.rohm.com/en/products/databook/datasheet/discrete/transistor/mosfet/rq5c060bctcl-e.pdf" H 3150 1700 50  0001 C CNN
-	1    3150 1700
-	1    0    0    1   
-$EndComp
 Wire Wire Line
 	3250 2000 3250 1900
 Wire Wire Line
@@ -527,4 +348,212 @@ Text Notes 9150 3250 0    50   ~ 0
 \nImax = 3 A 
 Text Notes 7050 1050 0    50   ~ 0
 Imax = 200 mA 
+$Comp
+L TPS62056DGS:TPS62056DGS U2
+U 1 1 60C6791C
+P 5450 2000
+F 0 "U2" H 5450 2670 50  0000 C CNN
+F 1 "TPS62056DGS" H 5450 2579 50  0000 C CNN
+F 2 "SOP50P490X110-10N" H 5450 2000 50  0001 L BNN
+F 3 "https://www.ti.com/lit/ds/symlink/tps62056.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1624013814534&ref_url=https%253A%252F%252Feu.mouser.com%252F" H 5450 2000 50  0001 L BNN
+F 4 "Texas Instruments" H 5450 2000 50  0001 C CNN "Manufacturer"
+F 5 "TPS62056DGS" H 5450 2000 50  0001 C CNN "Part-No."
+	1    5450 2000
+	1    0    0    -1  
+$EndComp
+$Comp
+L LT1374CS8-5PBF:LT1374CS8-5PBF U1
+U 1 1 60C689A1
+P 4650 4200
+F 0 "U1" H 6250 4565 50  0000 C CNN
+F 1 "LT1374CS8-5PBF" H 6250 4474 50  0000 C CNN
+F 2 "SO-8_S" H 4650 4200 50  0001 L BNN
+F 3 "https://www.analog.com/media/en/technical-documentation/data-sheets/1374fd.pdf" H 4650 4200 50  0001 L BNN
+F 4 "Analog Device" H 4650 4200 50  0001 C CNN "Manufacturer"
+F 5 "LT1374CS8-5PBF" H 4650 4200 50  0001 C CNN "Part-No."
+	1    4650 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C2
+U 1 1 60CE065A
+P 4650 2250
+F 0 "C2" H 4765 2296 50  0000 L CNN
+F 1 "10uF" H 4765 2205 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 4688 2100 50  0001 C CNN
+F 3 "https://product.tdk.com/en/system/files?file=dam/doc/product/capacitor/ceramic/mlcc/catalog/mlcc_commercial_general_en.pdf" H 4650 2250 50  0001 C CNN
+F 4 "TDK Corporation" H 4650 2250 50  0001 C CNN "Manufacturer"
+F 5 "C2012X5R1V106M085AC" H 4650 2250 50  0001 C CNN "Part-No."
+	1    4650 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L MLL1200S:MLL1200S SW1
+U 1 1 60CF5DEF
+P 1950 1800
+F 0 "SW1" H 1950 2265 50  0000 C CNN
+F 1 "MLL1200S" H 1950 2174 50  0000 C CNN
+F 2 "SW_MLL1200S" H 1950 1800 50  0001 L BNN
+F 3 "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1308111-1_SWITCHES_CORE_PROGRAM_CATALOG&DocType=CS&DocLang=English" H 1950 1800 50  0001 L BNN
+F 4 "TE Connectivity / P&B " H 1950 1800 50  0001 C CNN "Manufacturer"
+F 5 "MLL1200S " H 1950 1800 50  0001 C CNN "Part-No."
+	1    1950 1800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C1
+U 1 1 60D11B75
+P 3950 4850
+F 0 "C1" H 4065 4896 50  0000 L CNN
+F 1 "22uF" H 4065 4805 50  0000 L CNN
+F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 3988 4700 50  0001 C CNN
+F 3 "https://product.tdk.com/info/en/catalog/datasheets/mlcc_commercial_general_en.pdf?ref_disty=digikey" H 3950 4850 50  0001 C CNN
+F 4 "TDK Corporation" H 3950 4850 50  0001 C CNN "Manufacturer"
+F 5 "C3216X5R1V226M160AC " H 3950 4850 50  0001 C CNN "Part-No."
+	1    3950 4850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:D D2
+U 1 1 60D196DD
+P 8900 3700
+F 0 "D2" H 8900 3917 50  0000 C CNN
+F 1 "30V 100mA" H 8900 3826 50  0000 C CNN
+F 2 "Diode_SMD:D_SOD-323" H 8900 3700 50  0001 C CNN
+F 3 "https://www.comchiptech.com/admin/files/product/SS8050-G%20RevA181526.pdf" H 8900 3700 50  0001 C CNN
+F 4 "SMC Diode Solutions" H 8900 3700 50  0001 C CNN "Manufacturer"
+F 5 "SD103BWSA" H 8900 3700 50  0001 C CNN "Part-No."
+	1    8900 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C4
+U 1 1 60D211FE
+P 8050 4800
+F 0 "C4" H 8165 4846 50  0000 L CNN
+F 1 "1.5nF" H 8165 4755 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 8088 4650 50  0001 C CNN
+F 3 "https://www.we-online.de/katalog/datasheet/885012206084.pdf" H 8050 4800 50  0001 C CNN
+F 4 "TDK Corporation" H 8050 4800 50  0001 C CNN "Manufacturer"
+F 5 "C3216X5R1V226M160AC" H 8050 4800 50  0001 C CNN "Part-No."
+	1    8050 4800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C6
+U 1 1 60D2533E
+P 9250 4800
+F 0 "C6" H 9365 4846 50  0000 L CNN
+F 1 "100uF" H 9365 4755 50  0000 L CNN
+F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 9288 4650 50  0001 C CNN
+F 3 "https://product.tdk.com/en/system/files?file=dam/doc/product/capacitor/ceramic/mlcc/catalog/mlcc_commercial_general_en.pdf" H 9250 4800 50  0001 C CNN
+F 4 "TDK Corporation" H 9250 4800 50  0001 C CNN "Manufacturer"
+F 5 "C3216X5R1A107M160AC" H 9250 4800 50  0001 C CNN "Part-No."
+	1    9250 4800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:D D1
+U 1 1 60D62CCC
+P 8650 4800
+F 0 "D1" V 8604 4880 50  0000 L CNN
+F 1 "40V 5A" V 8695 4880 50  0000 L CNN
+F 2 "Diode_SMD:D_2114_3652Metric_Pad1.85x3.75mm_HandSolder" H 8650 4800 50  0001 C CNN
+F 3 "https://datasheets.avx.com/schottky.pdf" H 8650 4800 50  0001 C CNN
+F 4 " Kyocera AVX " H 8650 4800 50  0001 C CNN "Manufacturer"
+F 5 "SD2114S040S5R0" H 8650 4800 50  0001 C CNN "Part-No."
+	1    8650 4800
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:L L2
+U 1 1 60C6A253
+P 8950 4200
+F 0 "L2" V 9140 4200 50  0000 C CNN
+F 1 "22uH" V 9049 4200 50  0000 C CNN
+F 2 "footprints:L_Wuerth_HCI-1350_3D" H 8950 4200 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/34282/ihlp-6767gz-11.pdf" H 8950 4200 50  0001 C CNN
+F 4 "Vishay Dale" H 8950 4200 50  0001 C CNN "Manufacturer"
+F 5 "IHLP6767GZER220M11" H 8950 4200 50  0001 C CNN "Part-No."
+	1    8950 4200
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:C C5
+U 1 1 60D19B44
+P 8650 3950
+F 0 "C5" H 8400 4000 50  0000 L CNN
+F 1 "270nF" H 8300 3900 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 8688 3800 50  0001 C CNN
+F 3 "https://api.kemet.com/component-edge/download/specsheet/C0805R274K5RACT500.pdf" H 8650 3950 50  0001 C CNN
+F 4 "KEMET" H 8650 3950 50  0001 C CNN "Manufacturer"
+F 5 "C0805C274K5RACTU" H 8650 3950 50  0001 C CNN "Part-No."
+	1    8650 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C3
+U 1 1 60D9BDF5
+P 6850 2200
+F 0 "C3" H 6965 2246 50  0000 L CNN
+F 1 "22uF" H 6965 2155 50  0000 L CNN
+F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 6888 2050 50  0001 C CNN
+F 3 "https://product.tdk.com/info/en/catalog/datasheets/mlcc_commercial_general_en.pdf?ref_disty=digikey" H 6850 2200 50  0001 C CNN
+F 4 "TDK Corporation" H 6850 2200 50  0001 C CNN "Manufacturer"
+F 5 "C3216X5R1V226M160AC " H 6850 2200 50  0001 C CNN "Part-No."
+	1    6850 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R1
+U 1 1 62459142
+P 2600 1700
+F 0 "R1" V 2393 1700 50  0000 C CNN
+F 1 "10k" V 2484 1700 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2530 1700 50  0001 C CNN
+F 3 "~" H 2600 1700 50  0001 C CNN
+F 4 "TE Connectivity Passive Product" H 2600 1700 50  0001 C CNN "Manufacturer"
+F 5 "CRGCQ0603J10K" H 2600 1700 50  0001 C CNN "Part-No."
+	1    2600 1700
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R2
+U 1 1 6245A145
+P 2850 2000
+F 0 "R2" H 2780 1954 50  0000 R CNN
+F 1 "68k" H 2780 2045 50  0000 R CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2780 2000 50  0001 C CNN
+F 3 "~" H 2850 2000 50  0001 C CNN
+F 4 "TE Connectivity Passive Product" H 2850 2000 50  0001 C CNN "Manufacturer"
+F 5 "CRGCQ0603F68K" H 2850 2000 50  0001 C CNN "Part-No."
+	1    2850 2000
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:L L1
+U 1 1 60C698F7
+P 6600 1800
+F 0 "L1" V 6790 1800 50  0000 C CNN
+F 1 "15uH" V 6699 1800 50  0000 C CNN
+F 2 "footprints:L_Wuerth_HCI-1040_3D" H 6600 1800 50  0001 C CNN
+F 3 "https://www.we-online.de/katalog/datasheet/74437368150.pdf" H 6600 1800 50  0001 C CNN
+F 4 " Würth Elektronik" H 6600 1800 50  0001 C CNN "Manufacturer"
+F 5 "74437368150" H 6600 1800 50  0001 C CNN "Part-No."
+	1    6600 1800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:Q_PMOS_GSD Q1
+U 1 1 62648C22
+P 3150 1700
+F 0 "Q1" H 3354 1654 50  0000 L CNN
+F 1 "PMOS_GSD-RQ5C060BCTCL" H 3354 1745 50  0000 L CNN
+F 2 "footprints:SOT95P280X100-3N" H 3350 1800 50  0001 C CNN
+F 3 "https://fscdn.rohm.com/en/products/databook/datasheet/discrete/transistor/mosfet/rq5c060bctcl-e.pdf" H 3150 1700 50  0001 C CNN
+F 4 "Rohm Semiconductor" H 3150 1700 50  0001 C CNN "Manufacturer"
+F 5 "RQ5C060BCTCL" H 3150 1700 50  0001 C CNN "Part-No."
+	1    3150 1700
+	1    0    0    1   
+$EndComp
 $EndSCHEMATC

@@ -1,4 +1,4 @@
-18659553606469756
+18662860237998792
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -82095,6 +82095,20 @@ Surface mounted socket strip SMD 2x07 2.54mm double row
 0
 14
 14
+footprints
+QFN50P500X500X80-33N
+
+
+0
+33
+33
+footprints
+QFN50P500X500X80-33N_Generell
+
+
+0
+33
+32
 footprints
 QFN50P500X500X100-29N
 
