@@ -29,7 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Luis Moser
  * @brief PublicSigningKey header
  * @date 07/30/2021
- * @addtogroup Data
+ *
  * @{
  */
 
@@ -43,13 +43,13 @@ namespace PublicSigningKey
 {
     static const char* PUB_RSA_SIGN_KEY = 
     "-----BEGIN PUBLIC KEY-----\n"
-"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvXghNdQI2ACbuZQZM5dk"
-"35RT7Av1ppBBHBphtHWogNXsVKuR3jLi5LA/TXuTjE9hv8PtJYcVN3xe4XkCrsEV"
-"O/rWpCzXrS7Wadf9vhyNte9TWE2abHVd+hGA8OpzpUlaqPgTaJZEyxWziotYRWA8"
-"jBfnYVyHxIGxEFRtfVpou2+Bf0P/4a0eqBUXfXbA05CYkJiGKA2caf8sKkoXqcRt"
-"8fVz6EbhcBoQ3mNUFg8t1x4lgH04294cjXdDOxWyK9Dx1WChictGqVCjKbUL1JcJ"
-"FOcFunaWdRLjdi1Gi67HzyUO8ADmx0mQ7Lw444xJFcOD0C3KXT9knYgJ4/JQ5p2F"
-"1wIDAQAB"
+"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwO80BNFKnza1OApkT68F"
+"+q1hi434TDhcyl0Wq5c9uZOAakEUV7dU+QuBrP+mMjAoQCUBSezO/jV+dI7Gibau"
+"hITUXVxw1UhgRWaucUu2veE81v+0jVrZis2rrhXJ32Wr4hKP8z7ZwKe2cQ1RGnb9"
+"y7nz5jD8wlGkywxLDlQzgyhvajiHFw4D8vjVEsAP+wPj5vh+J4SMM8OphjiRbs4s"
+"SONm3ENF/U1KcfYcf2xXgVI/ohkBWbz2vISbpHQD6r+brUEzMkLlC7cP9j/9jeZx"
+"dp8hLrIiDl+t3qstiT7RvQev/yVE6+D1iRwWY4lmZf51L0pZluvOyPmAN9waPX1e"
+"nQIDAQAB"
 "-----END PUBLIC KEY-----\n";
 
     static const uint16_t KEY_LENGTH_BYTES = strlen(PUB_RSA_SIGN_KEY) + 1;
