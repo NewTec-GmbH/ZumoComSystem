@@ -47,6 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Session* Session::m_sessions[MAX_CLIENTS] = {nullptr};
 uint8_t Session::m_numberOfActiveClients = 0;
 SemaphoreHandle_t Session::m_sessionMutex = xSemaphoreCreateMutex();
+QueueHandle_t messageQueue; /**< WS Text Message Queue for asynchronous processing */
 
 Session::Session() :
     m_readBytes(0),
@@ -77,6 +78,9 @@ bool Session::start()
 
     /* Use rather high priority to ensure that session are always timed out */
     const uint8_t PRIORITY = configMAX_PRIORITIES - 2;
+
+    /* Create Queue */
+    messageQueue = xQueueCreate( 10, sizeof( char[MAX_TEXT_REQUEST_SIZE_BYTE] ) );
 
     BaseType_t retCode = xTaskCreate(
         handleSessionTimeout,
@@ -194,10 +198,18 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
             response.setStatusCode(BAD_REQUEST);
             LOG_ERROR(String("Input record bigger than input buffer. Discarding data!. Please decrease record size! Max buffer size: ") + MAX_BUFFER_SIZE_BYTE);
         }
+        
+        if (false == response.serialize(serialResponse))
+        {
+            serialResponse = "{\\\"statusCode\\\":" + String(ERROR) + "}";
+            LOG_ERROR("Could not serialize the outgoing ApiResponse!");
+        }
+
+        /* Always send the ApiResponse */
+        send(serialResponse.c_str(), SEND_TYPE_TEXT);
     }
     else
     {
-        ApiRequest request;
         std::ostringstream stringStream;
         std::string inputString;
 
@@ -209,26 +221,60 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
             LOG_DEBUG(String("Incoming request data:\n") + inputString.c_str());
 
             String serial = inputString.c_str();
-            if (true == request.deserialize(serial))
+
+            char buffer[MAX_TEXT_REQUEST_SIZE_BYTE];
+            serial.toCharArray(buffer, MAX_TEXT_REQUEST_SIZE_BYTE);
+            if(pdFALSE == xQueueSend(messageQueue, buffer, portMAX_DELAY))
             {
-                /* Invoke the API call and send back response */
-                RequestResponseHandler::getInstance().makeRequest(request, response, this);
-            }
-            else
-            {
-                LOG_ERROR("Could not deserialize the incoming ApiResponse!");
-                response.setStatusCode(BAD_REQUEST);
+                LOG_ERROR("Could not push message to Queue");
             }
         }
         else
         {
             LOG_ERROR("Exceeded MAX_TEXT_REQUEST_SIZE_BYTE for API TEXT mode!");
             response.setStatusCode(BAD_REQUEST);
+            if (false == response.serialize(serialResponse))
+            {
+                serialResponse = "{\\\"statusCode\\\":" + String(ERROR) + "}";
+                LOG_ERROR("Could not serialize the outgoing ApiResponse!");
+            }
+
+            /* Always send the ApiResponse */
+            send(serialResponse.c_str(), SEND_TYPE_TEXT);
         }
     }
 
     /* Clear the input buffer */
     inputBuffer->discard();
+
+    handleWSTextMessage();
+}
+
+void Session::handleWSTextMessage()
+{
+    ApiRequest request;
+    ApiResponse response;
+    String serialResponse;
+    String messageString;
+    char receivedMessage[MAX_TEXT_REQUEST_SIZE_BYTE];
+
+    if(pdFALSE == xQueueReceive(messageQueue, receivedMessage, portMAX_DELAY))
+    {
+        return;
+    }
+    
+    messageString = String(receivedMessage);
+    
+    if (true == request.deserialize(messageString))
+    {
+        /* Invoke the API call and send back response */
+        RequestResponseHandler::getInstance().makeRequest(request, response, this);
+    }
+    else
+    {
+        LOG_ERROR("Could not deserialize the incoming ApiResponse!");
+        response.setStatusCode(BAD_REQUEST);
+    }
 
     if (false == response.serialize(serialResponse))
     {

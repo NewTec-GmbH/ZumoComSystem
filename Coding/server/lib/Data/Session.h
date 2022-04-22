@@ -140,6 +140,11 @@ public:
     void deauthenticateSession();
 
     /**
+     * Handles the Websocket TEXT Message
+     */
+    void handleWSTextMessage();
+
+    /**
      * Returns the permissions of the user which is linked to this session
      *
      * @param[out] numberOfPermissions Specifies the length of the returned array
