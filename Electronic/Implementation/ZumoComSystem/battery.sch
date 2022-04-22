@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 4 7
 Title "Zumo Communication System"
-Date "2022-03-25"
+Date "2022-04-22"
 Rev "V1.0"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -27,6 +27,8 @@ F 0 "Q3" V 6542 4100 50  0000 C CNN
 F 1 "RQ5E065AJTCL" V 6451 4100 50  0000 C CNN
 F 2 "footprints:SOT95P280X100-3N" H 6400 4200 50  0001 C CNN
 F 3 "https://fscdn.rohm.com/en/products/databook/datasheet/discrete/transistor/mosfet/rq5e065ajtcl-e.pdf" H 6200 4100 50  0001 C CNN
+F 4 "Rohm Semiconductor" H 6200 4100 50  0001 C CNN "Manufacturer"
+F 5 "RQ5E065AJTCL" H 6200 4100 50  0001 C CNN "Part-No."
 	1    6200 4100
 	0    -1   1    0   
 $EndComp
@@ -38,6 +40,8 @@ F 0 "Q2" V 5499 4100 50  0000 C CNN
 F 1 "RQ5E065AJTCL" V 5590 4100 50  0000 C CNN
 F 2 "footprints:SOT95P280X100-3N" H 5450 4200 50  0001 C CNN
 F 3 "https://fscdn.rohm.com/en/products/databook/datasheet/discrete/transistor/mosfet/rq5e065ajtcl-e.pdf" H 5250 4100 50  0001 C CNN
+F 4 "Rohm Semiconductor" H 5250 4100 50  0001 C CNN "Manufacturer"
+F 5 "RQ5E065AJTCL" H 5250 4100 50  0001 C CNN "Part-No."
 	1    5250 4100
 	0    1    1    0   
 $EndComp
@@ -50,10 +54,10 @@ Connection ~ 3300 4200
 Wire Wire Line
 	3300 4200 3300 4250
 $Comp
-L power:GNDREF #PWR023
+L power:GNDREF #PWR024
 U 1 1 62258A4E
 P 3300 4250
-F 0 "#PWR023" H 3300 4000 50  0001 C CNN
+F 0 "#PWR024" H 3300 4000 50  0001 C CNN
 F 1 "GNDREF" H 3305 4077 50  0000 C CNN
 F 2 "" H 3300 4250 50  0001 C CNN
 F 3 "" H 3300 4250 50  0001 C CNN
@@ -63,10 +67,10 @@ $EndComp
 Wire Wire Line
 	7750 4200 7750 4250
 $Comp
-L power:GND #PWR025
+L power:GND #PWR026
 U 1 1 62256923
 P 7750 4250
-F 0 "#PWR025" H 7750 4000 50  0001 C CNN
+F 0 "#PWR026" H 7750 4000 50  0001 C CNN
 F 1 "GND" H 7755 4077 50  0000 C CNN
 F 2 "" H 7750 4250 50  0001 C CNN
 F 3 "" H 7750 4250 50  0001 C CNN
@@ -84,13 +88,15 @@ Wire Wire Line
 Wire Wire Line
 	5850 4200 6000 4200
 $Comp
-L Device:R R5
+L Device:R R9
 U 1 1 6224F0C3
 P 5700 4200
-F 0 "R5" V 5493 4200 50  0000 C CNN
+F 0 "R9" V 5493 4200 50  0000 C CNN
 F 1 "0" V 5584 4200 50  0000 C CNN
 F 2 "Resistor_SMD:R_1206_3216Metric_Pad1.42x1.75mm_HandSolder" V 5630 4200 50  0001 C CNN
 F 3 "~" H 5700 4200 50  0001 C CNN
+F 4 "YAGEO" H 5700 4200 50  0001 C CNN "Manufacturer"
+F 5 "RC1206FR-070RL" H 5700 4200 50  0001 C CNN "Part-No."
 	1    5700 4200
 	0    1    1    0   
 $EndComp
@@ -108,13 +114,15 @@ Wire Wire Line
 Wire Wire Line
 	6550 4150 6550 4200
 $Comp
-L Device:R R6
+L Device:R R10
 U 1 1 6223E89F
 P 6550 4000
-F 0 "R6" H 6620 4046 50  0000 L CNN
+F 0 "R10" H 6620 4046 50  0000 L CNN
 F 1 "2k" H 6620 3955 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 6480 4000 50  0001 C CNN
-F 3 "" H 6550 4000 50  0001 C CNN
+F 3 "~" H 6550 4000 50  0001 C CNN
+F 4 "YAGEO" H 6550 4000 50  0001 C CNN "Manufacturer"
+F 5 "RC0603FR-072KL" H 6550 4000 50  0001 C CNN "Part-No."
 	1    6550 4000
 	1    0    0    -1  
 $EndComp
@@ -160,6 +168,8 @@ F 0 "C10" H 4665 3696 50  0000 L CNN
 F 1 "100n" H 4665 3605 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 4588 3500 50  0001 C CNN
 F 3 "~" H 4550 3650 50  0001 C CNN
+F 4 "YAGEO" H 4550 3650 50  0001 C CNN "Manufacturer"
+F 5 "CC0603JRX7R9BB104" H 4550 3650 50  0001 C CNN "Part-No."
 	1    4550 3650
 	1    0    0    -1  
 $EndComp
@@ -171,32 +181,38 @@ F 0 "C9" H 4215 3696 50  0000 L CNN
 F 1 "100n" H 4215 3605 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 4138 3500 50  0001 C CNN
 F 3 "~" H 4100 3650 50  0001 C CNN
+F 4 "YAGEO" H 4100 3650 50  0001 C CNN "Manufacturer"
+F 5 "CC0603JRX7R9BB104" H 4100 3650 50  0001 C CNN "Part-No."
 	1    4100 3650
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	3700 3200 3300 3200
 $Comp
-L Device:R R3
+L Device:R R7
 U 1 1 6221DDB1
 P 3850 3200
-F 0 "R3" V 3643 3200 50  0000 C CNN
+F 0 "R7" V 3643 3200 50  0000 C CNN
 F 1 "470" V 3734 3200 50  0000 C CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 3780 3200 50  0001 C CNN
 F 3 "~" H 3850 3200 50  0001 C CNN
+F 4 "TE Connectivity Passive Product" H 3850 3200 50  0001 C CNN "Manufacturer"
+F 5 "CRGCQ0603F470R" H 3850 3200 50  0001 C CNN "Part-No."
 	1    3850 3200
 	0    1    1    0   
 $EndComp
 Wire Wire Line
 	4550 2550 4550 2450
 $Comp
-L Device:R R4
+L Device:R R8
 U 1 1 6221D323
 P 4550 2700
-F 0 "R4" H 4620 2746 50  0000 L CNN
+F 0 "R8" H 4620 2746 50  0000 L CNN
 F 1 "470" H 4620 2655 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 4480 2700 50  0001 C CNN
 F 3 "~" H 4550 2700 50  0001 C CNN
+F 4 "TE Connectivity Passive Product" H 4550 2700 50  0001 C CNN "Manufacturer"
+F 5 "CRGCQ0603F470R" H 4550 2700 50  0001 C CNN "Part-No."
 	1    4550 2700
 	1    0    0    -1  
 $EndComp
@@ -212,6 +228,8 @@ F 0 "U4" H 5250 3550 50  0000 L CNN
 F 1 "S-8252AAL-M6T1U" H 5950 3550 50  0000 L CNN
 F 2 "Package_TO_SOT_SMD:TSOT-23-6_HandSoldering" H 5750 2450 50  0001 C CNN
 F 3 "https://www.ablic.com/en/doc/datasheet/battery_protection/S8252_E.pdf" H 6150 3550 50  0001 C CNN
+F 4 "ablic" H 5700 3200 50  0001 C CNN "Manufacturer"
+F 5 "S-8252AAL-M6T1U" H 5700 3200 50  0001 C CNN "Part-No."
 	1    5700 3200
 	1    0    0    -1  
 $EndComp
@@ -231,10 +249,10 @@ Text HLabel 7750 2050 1    50   BiDi ~ 0
 V_Bat
 Connection ~ 7150 2450
 $Comp
-L power:GND #PWR024
+L power:GND #PWR025
 U 1 1 60C86FBB
 P 7150 3450
-F 0 "#PWR024" H 7150 3200 50  0001 C CNN
+F 0 "#PWR025" H 7150 3200 50  0001 C CNN
 F 1 "GND" H 7155 3277 50  0000 C CNN
 F 2 "" H 7150 3450 50  0001 C CNN
 F 3 "" H 7150 3450 50  0001 C CNN
@@ -254,7 +272,9 @@ P 7150 3000
 F 0 "D3" V 7104 3080 50  0000 L CNN
 F 1 "8.55VWM 14.5VC" V 7195 3080 50  0000 L CNN
 F 2 "Diode_SMD:D_SMB_Handsoldering" H 7150 3000 50  0001 C CNN
-F 3 "https://www.bourns.com/docs/Product-Datasheets/P6SMB.pdf" H 7150 3000 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/88370/p6smb.pdf" H 7150 3000 50  0001 C CNN
+F 4 "Vishay General Semiconductor - Diodes Division" H 7150 3000 50  0001 C CNN "Manufacturer"
+F 5 "P6SMB10A-E3/52" H 7150 3000 50  0001 C CNN "Part-No."
 	1    7150 3000
 	0    1    1    0   
 $EndComp
@@ -266,6 +286,8 @@ F 0 "F1" V 6553 2450 50  0000 C CNN
 F 1 "12V / 4.5A" V 6644 2450 50  0000 C CNN
 F 2 "Fuse:Fuse_1210_3225Metric_Pad1.42x2.65mm_HandSolder" V 6680 2450 50  0001 C CNN
 F 3 "https://www.bourns.com/docs/product-datasheets/mf-usml-x.pdf" H 6750 2450 50  0001 C CNN
+F 4 "Bourns Inc." H 6750 2450 50  0001 C CNN "Manufacturer"
+F 5 "MF-USML450/12-2" H 6750 2450 50  0001 C CNN "Part-No."
 	1    6750 2450
 	0    1    1    0   
 $EndComp
@@ -285,6 +307,8 @@ F 0 "BT2" H 3418 3796 50  0000 L CNN
 F 1 "Battery_Cell" H 3418 3705 50  0000 L CNN
 F 2 "footprints:BAT_1043" V 3300 3760 50  0001 C CNN
 F 3 "https://www.keyelco.com/userAssets/file/M65p27.pdf" V 3300 3760 50  0001 C CNN
+F 4 " Keystone Electronics " H 3300 3700 50  0001 C CNN "Manufacturer"
+F 5 "1043" H 3300 3700 50  0001 C CNN "Part-No."
 	1    3300 3700
 	1    0    0    -1  
 $EndComp
@@ -298,6 +322,8 @@ F 0 "BT1" H 3418 2996 50  0000 L CNN
 F 1 "Battery_Cell" H 3418 2905 50  0000 L CNN
 F 2 "footprints:BAT_1043" V 3300 2960 50  0001 C CNN
 F 3 "https://www.keyelco.com/userAssets/file/M65p27.pdf" V 3300 2960 50  0001 C CNN
+F 4 " Keystone Electronics " H 3300 2900 50  0001 C CNN "Manufacturer"
+F 5 "1043" H 3300 2900 50  0001 C CNN "Part-No."
 	1    3300 2900
 	1    0    0    -1  
 $EndComp
@@ -308,7 +334,9 @@ P 8800 3250
 F 0 "J2" H 8570 3204 50  0000 R CNN
 F 1 "66200221122" H 8570 3295 50  0000 R CNN
 F 2 "footprints:66200221122" H 8800 3250 50  0001 L BNN
-F 3 "" H 8800 3250 50  0001 L BNN
+F 3 "~" H 8800 3250 50  0001 L BNN
+F 4 " Würth Elektronik " H 8800 3250 50  0001 C CNN "Manufacturer"
+F 5 "66200221122" H 8800 3250 50  0001 C CNN "Part-No."
 	1    8800 3250
 	-1   0    0    1   
 $EndComp

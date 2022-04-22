@@ -1,4 +1,4 @@
-18659553606469756
+18671113046657880
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -82047,6 +82047,20 @@ WR-MPC3-3.00mm Male Dual Row Vertical Header,2 pins
 2
 2
 footprints
+ADP2370ACPZ-3.3-R7
+
+
+0
+9
+9
+footprints
+ADP2370ACPZ-3.3-R7_original
+
+
+0
+9
+9
+footprints
 BAT_1043
 
 
@@ -82061,12 +82075,33 @@ CUI_UJ2-AV-W4-TH
 6
 6
 footprints
+DFN300X300X80-9N
+
+
+0
+9
+9
+footprints
+DFN300X300X80-9N_thermal
+
+
+0
+9
+9
+footprints
 GCT_USB4120-03-C_REVA
 
 
 0
 20
 20
+footprints
+L_Coilcraft_XxL4030
+L_Coilcraft_XxL4030 https://www.coilcraft.com/pdfs/xfl4030.pdf
+L Coilcraft XxL4030
+0
+2
+2
 footprints
 L_Wuerth_HCI-1040_3D
 Inductor, Wuerth Elektronik, Wuerth_HCI-1040, 10.2mmx10.2mm
@@ -82095,6 +82130,20 @@ Surface mounted socket strip SMD 2x07 2.54mm double row
 0
 14
 14
+footprints
+QFN50P500X500X80-33N
+
+
+0
+33
+33
+footprints
+QFN50P500X500X80-33N_Generell
+
+
+0
+33
+32
 footprints
 QFN50P500X500X100-29N
 
