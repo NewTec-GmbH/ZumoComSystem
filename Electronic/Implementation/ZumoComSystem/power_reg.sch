@@ -575,6 +575,8 @@ F 0 "U2" H 6200 1787 60  0000 C CNN
 F 1 "ADP2370ACPZ-3.3-R7" H 6200 1681 60  0000 C CNN
 F 2 "footprints:DFN300X300X80-9N_thermal" H 6200 1640 60  0001 C CNN
 F 3 "https://www.analog.com/media/en/technical-documentation/data-sheets/ADP2370_2371.pdf" H 6200 1681 60  0001 C CNN
+F 4 "Analog Device" H 5000 1400 50  0001 C CNN "Manufacturer"
+F 5 "ADP2371ACPZ-3.3-R7" H 5000 1400 50  0001 C CNN "Part-No."
 	1    5000 1400
 	1    0    0    -1  
 $EndComp

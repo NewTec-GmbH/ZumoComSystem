@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 7
 Title "Zumo Communication System"
-Date "2022-04-15"
+Date "2022-04-22"
 Rev "V1.0"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -16,10 +16,10 @@ $EndDescr
 Text HLabel 1000 1250 0    50   Input ~ 0
 V_Bat
 $Comp
-L power:+3V3 #PWR09
+L power:+3V3 #PWR014
 U 1 1 60CC7A1E
 P 9750 1250
-F 0 "#PWR09" H 9750 1100 50  0001 C CNN
+F 0 "#PWR014" H 9750 1100 50  0001 C CNN
 F 1 "+3V3" H 9765 1423 50  0000 C CNN
 F 2 "" H 9750 1250 50  0001 C CNN
 F 3 "" H 9750 1250 50  0001 C CNN
@@ -27,10 +27,10 @@ F 3 "" H 9750 1250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+5V #PWR012
+L power:+5V #PWR011
 U 1 1 60CC818D
 P 9250 3500
-F 0 "#PWR012" H 9250 3350 50  0001 C CNN
+F 0 "#PWR011" H 9250 3350 50  0001 C CNN
 F 1 "+5V" H 9265 3673 50  0000 C CNN
 F 2 "" H 9250 3500 50  0001 C CNN
 F 3 "" H 9250 3500 50  0001 C CNN
@@ -58,10 +58,10 @@ Wire Wire Line
 Wire Wire Line
 	4650 2400 4650 2550
 $Comp
-L power:GND #PWR06
+L power:GND #PWR05
 U 1 1 60CE2DC8
 P 4650 2550
-F 0 "#PWR06" H 4650 2300 50  0001 C CNN
+F 0 "#PWR05" H 4650 2300 50  0001 C CNN
 F 1 "GND" H 4655 2377 50  0000 C CNN
 F 2 "" H 4650 2550 50  0001 C CNN
 F 3 "" H 4650 2550 50  0001 C CNN
@@ -69,10 +69,10 @@ F 3 "" H 4650 2550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR08
+L power:GND #PWR013
 U 1 1 60CE2EFC
 P 9400 2500
-F 0 "#PWR08" H 9400 2250 50  0001 C CNN
+F 0 "#PWR013" H 9400 2250 50  0001 C CNN
 F 1 "GND" H 9405 2327 50  0000 C CNN
 F 2 "" H 9400 2500 50  0001 C CNN
 F 3 "" H 9400 2500 50  0001 C CNN
@@ -161,10 +161,10 @@ Wire Wire Line
 Wire Wire Line
 	8050 4650 8050 4400
 $Comp
-L power:GND #PWR010
+L power:GND #PWR09
 U 1 1 60D2AA9B
 P 8050 5400
-F 0 "#PWR010" H 8050 5150 50  0001 C CNN
+F 0 "#PWR09" H 8050 5150 50  0001 C CNN
 F 1 "GND" H 8055 5227 50  0000 C CNN
 F 2 "" H 8050 5400 50  0001 C CNN
 F 3 "" H 8050 5400 50  0001 C CNN
@@ -172,10 +172,10 @@ F 3 "" H 8050 5400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR013
+L power:GND #PWR012
 U 1 1 60D2B041
 P 9250 5400
-F 0 "#PWR013" H 9250 5150 50  0001 C CNN
+F 0 "#PWR012" H 9250 5150 50  0001 C CNN
 F 1 "GND" H 9255 5227 50  0000 C CNN
 F 2 "" H 9250 5400 50  0001 C CNN
 F 3 "" H 9250 5400 50  0001 C CNN
@@ -192,10 +192,10 @@ Connection ~ 9250 3700
 Wire Wire Line
 	9250 3700 9250 3500
 $Comp
-L power:GND #PWR011
+L power:GND #PWR010
 U 1 1 60D630D3
 P 8650 5400
-F 0 "#PWR011" H 8650 5150 50  0001 C CNN
+F 0 "#PWR010" H 8650 5150 50  0001 C CNN
 F 1 "GND" H 8655 5227 50  0000 C CNN
 F 2 "" H 8650 5400 50  0001 C CNN
 F 3 "" H 8650 5400 50  0001 C CNN
@@ -209,10 +209,10 @@ Wire Wire Line
 Wire Wire Line
 	4450 4500 4450 5400
 $Comp
-L power:GND #PWR05
+L power:GND #PWR04
 U 1 1 60D67CF9
 P 4450 5400
-F 0 "#PWR05" H 4450 5150 50  0001 C CNN
+F 0 "#PWR04" H 4450 5150 50  0001 C CNN
 F 1 "GND" H 4455 5227 50  0000 C CNN
 F 2 "" H 4450 5400 50  0001 C CNN
 F 3 "" H 4450 5400 50  0001 C CNN
@@ -347,10 +347,10 @@ F 5 "SD103BWSA" H 8900 3700 50  0001 C CNN "Part-No."
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:C C4
+L Device:C C3
 U 1 1 60D211FE
 P 8050 4800
-F 0 "C4" H 8165 4846 50  0000 L CNN
+F 0 "C3" H 8165 4846 50  0000 L CNN
 F 1 "1.5nF" H 8165 4755 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 8088 4650 50  0001 C CNN
 F 3 "https://www.we-online.de/katalog/datasheet/885012206084.pdf" H 8050 4800 50  0001 C CNN
@@ -360,10 +360,10 @@ F 5 "C3216X5R1V226M160AC" H 8050 4800 50  0001 C CNN "Part-No."
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:C C6
+L Device:C C5
 U 1 1 60D2533E
 P 9250 4800
-F 0 "C6" H 9365 4846 50  0000 L CNN
+F 0 "C5" H 9365 4846 50  0000 L CNN
 F 1 "100uF" H 9365 4755 50  0000 L CNN
 F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 9288 4650 50  0001 C CNN
 F 3 "https://product.tdk.com/en/system/files?file=dam/doc/product/capacitor/ceramic/mlcc/catalog/mlcc_commercial_general_en.pdf" H 9250 4800 50  0001 C CNN
@@ -399,10 +399,10 @@ F 5 "IHLP6767GZER220M11" H 8950 4200 50  0001 C CNN "Part-No."
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Device:C C5
+L Device:C C4
 U 1 1 60D19B44
 P 8650 3950
-F 0 "C5" H 8400 4000 50  0000 L CNN
+F 0 "C4" H 8400 4000 50  0000 L CNN
 F 1 "270nF" H 8300 3900 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 8688 3800 50  0001 C CNN
 F 3 "https://api.kemet.com/component-edge/download/specsheet/C0805R274K5RACT500.pdf" H 8650 3950 50  0001 C CNN
@@ -444,9 +444,9 @@ P 8000 1500
 F 0 "L1" V 8190 1500 50  0000 C CNN
 F 1 "6.8u" V 8099 1500 50  0000 C CNN
 F 2 "Inductor_SMD:L_Coilcraft_XxL4040" H 8000 1500 50  0001 C CNN
-F 3 "" H 8000 1500 50  0001 C CNN
-F 4 "" H 8000 1500 50  0001 C CNN "Manufacturer"
-F 5 "" H 8000 1500 50  0001 C CNN "Part-No."
+F 3 "https://www.mouser.de/datasheet/2/597/xal4000-270751.pdf" H 8000 1500 50  0001 C CNN
+F 4 "Coilcraft" H 8000 1500 50  0001 C CNN "Manufacturer"
+F 5 "XAL4030-682MEC " H 8000 1500 50  0001 C CNN "Part-No."
 	1    8000 1500
 	0    -1   -1   0   
 $EndComp
@@ -463,24 +463,13 @@ F 5 "RQ5C060BCTCL" H 3150 1700 50  0001 C CNN "Part-No."
 	1    3150 1700
 	1    0    0    1   
 $EndComp
-$Comp
-L 2022-04-19_08-29-50:ADP2370ACPZ-3.3-R7 U2
-U 1 1 625EC3B8
-P 5000 1400
-F 0 "U2" H 6200 1787 60  0000 C CNN
-F 1 "ADP2370ACPZ-3.3-R7" H 6200 1681 60  0000 C CNN
-F 2 "footprints:ADP2370ACPZ-3.3-R7" H 6200 1640 60  0001 C CNN
-F 3 "https://www.analog.com/media/en/technical-documentation/data-sheets/ADP2370_2371.pdf" H 6200 1681 60  0001 C CNN
-	1    5000 1400
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	4950 1800 4950 2550
 $Comp
-L power:GND #PWR04
+L power:GND #PWR06
 U 1 1 60CDABA5
 P 4950 2550
-F 0 "#PWR04" H 4950 2300 50  0001 C CNN
+F 0 "#PWR06" H 4950 2300 50  0001 C CNN
 F 1 "GND" H 4955 2377 50  0000 C CNN
 F 2 "" H 4950 2550 50  0001 C CNN
 F 3 "" H 4950 2550 50  0001 C CNN
@@ -490,10 +479,10 @@ $EndComp
 Wire Wire Line
 	4950 1800 5000 1800
 $Comp
-L power:GND #PWR?
+L power:GND #PWR07
 U 1 1 62600CF4
 P 6200 2550
-F 0 "#PWR?" H 6200 2300 50  0001 C CNN
+F 0 "#PWR07" H 6200 2300 50  0001 C CNN
 F 1 "GND" H 6205 2377 50  0000 C CNN
 F 2 "" H 6200 2550 50  0001 C CNN
 F 3 "" H 6200 2550 50  0001 C CNN
@@ -505,10 +494,10 @@ Wire Wire Line
 Wire Wire Line
 	7500 1800 7500 2550
 $Comp
-L power:GND #PWR?
+L power:GND #PWR08
 U 1 1 6260344D
 P 7500 2550
-F 0 "#PWR?" H 7500 2300 50  0001 C CNN
+F 0 "#PWR08" H 7500 2300 50  0001 C CNN
 F 1 "GND" H 7505 2377 50  0000 C CNN
 F 2 "" H 7500 2550 50  0001 C CNN
 F 3 "" H 7500 2550 50  0001 C CNN
@@ -518,10 +507,10 @@ $EndComp
 Wire Wire Line
 	7400 1800 7500 1800
 $Comp
-L Device:C C?
+L Device:C C6
 U 1 1 62608AD6
 P 9400 2150
-F 0 "C?" H 9515 2196 50  0000 L CNN
+F 0 "C6" H 9515 2196 50  0000 L CNN
 F 1 "10u" H 9515 2105 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 9438 2000 50  0001 C CNN
 F 3 "https://product.tdk.com/en/system/files?file=dam/doc/product/capacitor/ceramic/mlcc/catalog/mlcc_commercial_general_en.pdf" H 9400 2150 50  0001 C CNN
@@ -548,10 +537,10 @@ Wire Wire Line
 Wire Wire Line
 	7400 1500 7850 1500
 $Comp
-L Device:R R?
+L Device:R R3
 U 1 1 6262337C
 P 6200 850
-F 0 "R?" V 5993 850 50  0000 C CNN
+F 0 "R3" V 5993 850 50  0000 C CNN
 F 1 "10k" V 6084 850 50  0000 C CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 6130 850 50  0001 C CNN
 F 3 "~" H 6200 850 50  0001 C CNN
@@ -578,4 +567,17 @@ Wire Wire Line
 Connection ~ 8500 1500
 Wire Wire Line
 	8500 1500 8150 1500
+$Comp
+L 2022-04-19_08-29-50:ADP2370ACPZ-3.3-R7 U2
+U 1 1 625EC3B8
+P 5000 1400
+F 0 "U2" H 6200 1787 60  0000 C CNN
+F 1 "ADP2370ACPZ-3.3-R7" H 6200 1681 60  0000 C CNN
+F 2 "footprints:DFN300X300X80-9N_thermal" H 6200 1640 60  0001 C CNN
+F 3 "https://www.analog.com/media/en/technical-documentation/data-sheets/ADP2370_2371.pdf" H 6200 1681 60  0001 C CNN
+F 4 "Analog Device" H 5000 1400 50  0001 C CNN "Manufacturer"
+F 5 "ADP2371ACPZ-3.3-R7" H 5000 1400 50  0001 C CNN "Part-No."
+	1    5000 1400
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
