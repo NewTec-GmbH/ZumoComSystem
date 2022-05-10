@@ -81,6 +81,8 @@ def buildSignedFirmware() :
     outputFile.write(firmwareFile.read())
 
     outputFile.close()
+    signatureFile.close()
+    firmwareFile.close()
 
 def sign_firmware (source, target, env) :
 
