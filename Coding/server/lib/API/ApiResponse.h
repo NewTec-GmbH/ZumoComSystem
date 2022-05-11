@@ -85,6 +85,7 @@ public:
 
     /**
      * Returns the current Status Code set in in the Request
+     * @return Current Status Code
      */
     ResponseCode getStatusCode();
 
