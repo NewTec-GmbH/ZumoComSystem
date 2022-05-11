@@ -76,7 +76,8 @@ bool Session::start()
     }
 
     /* Small stack sufficient */
-    const uint16_t STACK_SIZE_BYTE = 4096;
+    /* Stack Size increased for WS message and API handling*/
+    const uint16_t STACK_SIZE_BYTE = 8192;
 
     /* Use rather high priority to ensure that session are always timed out */
     const uint8_t PRIORITY = configMAX_PRIORITIES - 2;
