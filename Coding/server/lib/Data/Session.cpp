@@ -248,14 +248,17 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
     /* Clear the input buffer */
     inputBuffer->discard();
 
-    if (false == response.serialize(serialResponse))
+    if((ERROR == response.getStatusCode()) || (BAD_REQUEST == response.getStatusCode()))
     {
-        serialResponse = "{\\\"statusCode\\\":" + String(ERROR) + "}";
-        LOG_ERROR("Could not serialize the outgoing ApiResponse!");
-    }
+        if (false == response.serialize(serialResponse))
+        {
+            serialResponse = "{\\\"statusCode\\\":" + String(ERROR) + "}";
+            LOG_ERROR("Could not serialize the outgoing ApiResponse!");
+        }
 
-    /* Always send the ApiResponse */
-    send(serialResponse.c_str(), SEND_TYPE_TEXT);
+        /* Always send the ApiResponse */
+        send(serialResponse.c_str(), SEND_TYPE_TEXT);
+    }
 }
 
 void Session::onClose()
