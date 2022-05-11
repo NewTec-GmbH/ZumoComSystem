@@ -181,6 +181,12 @@ private:
     /** Timestamp which gets updated each time a request is made with this session */
     unsigned long m_lastAccessTime;
 
+    /** WS Message Queue for asynchronous processing */
+    QueueHandle_t m_messageQueue;
+
+    /** Internal command after binary file has been read */
+    String m_binaryIsReady;
+
     /**
      * Checks which sessions need to be invalidated because of timeout
      *

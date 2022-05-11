@@ -57,12 +57,15 @@ Session::Session() :
     m_expectedOperation(),
     m_sessionAuthenticated(false),
     m_linkedUser(nullptr),
-    m_lastAccessTime(0)
+    m_lastAccessTime(0),
+    m_binaryIsReady("BinaryFileIsReady")
 {
+    m_messageQueue = xQueueCreate( 10, sizeof( char* ) );
 }
 
 Session::~Session()
 {
+    vQueueDelete( m_messageQueue );
 }
 
 bool Session::start()
@@ -168,8 +171,20 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
             /* All bytes of the websocket message have been successfully read */
             if (m_readBytes == recordSize)
             {
-                /* Call the API service */
-                RequestResponseHandler::getInstance().makeRequest(m_expectedOperation, response, this);
+                
+                char* cmdStr = new char[binaryIsReady.length() + 1];
+
+                if (nullptr != cmdStr)
+                {
+                    strcpy(cmdStr, binaryIsReady.c_str());
+
+                    if (pdFALSE == xQueueSend(m_messageQueue, &cmdStr, portMAX_DELAY))
+                    {
+                        LOG_ERROR("Could not deserialize the incoming ApiResponse!");
+                        response.setStatusCode(BAD_REQUEST);
+                        LOG_ERROR("Could not push message to Queue");
+                    }
+                }
             }
             else
             {
@@ -209,15 +224,18 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
             LOG_DEBUG(String("Incoming request data:\n") + inputString.c_str());
 
             String serial = inputString.c_str();
-            if (true == request.deserialize(serial))
+
+            char* cmdStr = new char[serial.length() + 1];
+
+            if (nullptr != cmdStr)
             {
-                /* Invoke the API call and send back response */
-                RequestResponseHandler::getInstance().makeRequest(request, response, this);
-            }
-            else
-            {
-                LOG_ERROR("Could not deserialize the incoming ApiResponse!");
-                response.setStatusCode(BAD_REQUEST);
+                strcpy(cmdStr, serial.c_str());
+
+                if (pdFALSE == xQueueSend(m_messageQueue, &cmdStr, portMAX_DELAY))
+                {
+                    response.setStatusCode(BAD_REQUEST);
+                    LOG_ERROR("Could not push message to Queue");
+                }
             }
         }
         else
