@@ -47,6 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Session* Session::m_sessions[MAX_CLIENTS] = {nullptr};
 uint8_t Session::m_numberOfActiveClients = 0;
 SemaphoreHandle_t Session::m_sessionMutex = xSemaphoreCreateMutex();
+static const String binaryIsReady = "BinaryFileIsReady";
 
 Session::Session() :
     m_readBytes(0),
@@ -57,8 +58,7 @@ Session::Session() :
     m_expectedOperation(),
     m_sessionAuthenticated(false),
     m_linkedUser(nullptr),
-    m_lastAccessTime(0),
-    m_binaryIsReady("BinaryFileIsReady")
+    m_lastAccessTime(0)
 {
     m_messageQueue = xQueueCreate( 10, sizeof( char* ) );
 }
@@ -386,6 +386,70 @@ void Session::handleSession(void* parameter)
                     }
                 }
             }
+        }
+
+        // Check WS Messages
+        for (uint8_t sessionIdx = 0; sessionIdx < MAX_CLIENTS; sessionIdx++)
+        {
+            currentSession = m_sessions[sessionIdx];
+
+            /* Check if the session exists or has been stopped before timeout */
+            if (nullptr != currentSession)
+            {
+                char* cmdStr;
+                
+                if (pdFALSE != xQueueReceive(currentSession->m_messageQueue, &cmdStr, 0))
+                {
+                    ApiResponse response;
+                    String serialResponse;
+
+                    LOG_DEBUG("Message Retreived!");
+
+                    response.setStatusCode(SUCCESS);
+
+                    if((true == currentSession->m_expectBinary) && (String(cmdStr) == binaryIsReady))
+                    {
+                        LOG_DEBUG("Binary is expected and ready!");
+                        /* Call the API service */
+	                    RequestResponseHandler::getInstance().makeRequest(currentSession->m_expectedOperation, response, currentSession);
+
+                    }
+                    else if((false == currentSession->m_expectBinary) && (String(cmdStr) == binaryIsReady))
+                    {
+                        LOG_ERROR("Something went wrong here!");
+                    }
+                    else
+                    {
+                        ApiRequest request;
+                        if (true == request.deserialize(String(cmdStr)))
+                        {
+                            LOG_DEBUG("Calling API");
+                            /* Invoke the API call and send back response */
+                            RequestResponseHandler::getInstance().makeRequest(request, response, currentSession);
+                            LOG_DEBUG("API Finished");
+                        }
+                        else
+                        {
+                            LOG_ERROR("Could not deserialize the incoming ApiResponse!");
+                            response.setStatusCode(BAD_REQUEST);
+                        }
+                    }
+
+
+                    if (false == response.serialize(serialResponse))
+                    {
+                        serialResponse = "{\\\"statusCode\\\":" + String(ERROR) + "}";
+                        LOG_ERROR("Could not serialize the outgoing ApiResponse!");
+                    }
+
+                    /* Always send the ApiResponse */
+                    currentSession->send(serialResponse.c_str(), SEND_TYPE_TEXT);
+
+                    /* Clean */
+                    delete[] cmdStr;
+                }
+            }
+        }
         xSemaphoreGive(m_sessionMutex);
 
         /* Put task to sleep and re-check after SESSION_TIMEOUT_SECONDS */
