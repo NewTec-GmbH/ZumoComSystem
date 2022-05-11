@@ -82,7 +82,7 @@ bool Session::start()
     const uint8_t PRIORITY = configMAX_PRIORITIES - 2;
 
     BaseType_t retCode = xTaskCreate(
-        handleSessionTimeout,
+        handleSession,
         "HandleSessionTimeout",
         STACK_SIZE_BYTE,
         nullptr,
@@ -344,7 +344,7 @@ void Session::deauthenticateSession()
     }
 }
 
-void Session::handleSessionTimeout(void* parameter)
+void Session::handleSession(void* parameter)
 {
     Session* currentSession = nullptr;
     const uint16_t MILLISECONDS = 1000;

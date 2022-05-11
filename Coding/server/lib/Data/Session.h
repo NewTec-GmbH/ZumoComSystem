@@ -184,15 +184,12 @@ private:
     /** WS Message Queue for asynchronous processing */
     QueueHandle_t m_messageQueue;
 
-    /** Internal command after binary file has been read */
-    String m_binaryIsReady;
-
     /**
      * Checks which sessions need to be invalidated because of timeout
      *
      * @param[in] parameter Generic input parameter for FreeRTOS task
      */
-    static void handleSessionTimeout(void* parameter);
+    static void handleSession(void* parameter);
 };
 #endif /** __SESSION_H__ */
 
