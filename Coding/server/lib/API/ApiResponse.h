@@ -83,6 +83,11 @@ public:
      */
     void setStatusCode(const ResponseCode& statusCode);
 
+    /**
+     * Returns the current Status Code set in in the Request
+     */
+    ResponseCode getStatusCode();
+
 private:
     /** Specifies the status code of the response */
     ResponseCode m_statusCode;

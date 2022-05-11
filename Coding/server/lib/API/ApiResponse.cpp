@@ -101,6 +101,11 @@ void ApiResponse::setStatusCode(const ResponseCode& statusCode)
     m_statusCode = statusCode;
 }
 
+ResponseCode ApiResponse::getStatusCode()
+{
+    return m_statusCode;
+}
+
 /**
  *  @}
  */
