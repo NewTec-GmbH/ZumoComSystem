@@ -452,9 +452,7 @@ void Session::handleSession(void* parameter)
             }
         }
         xSemaphoreGive(m_sessionMutex);
-
-        /* Put task to sleep and re-check after SESSION_TIMEOUT_SECONDS */
-        delay(SESSION_TIMEOUT_SECONDS * MILLISECONDS);
+        vTaskDelay(250 / portTICK_PERIOD_MS);
     }
 }
 
