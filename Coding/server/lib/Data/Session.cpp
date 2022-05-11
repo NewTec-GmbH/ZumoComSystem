@@ -348,6 +348,7 @@ void Session::handleSession(void* parameter)
 {
     Session* currentSession = nullptr;
     const uint16_t MILLISECONDS = 1000;
+    unsigned long lastSessionTimeoutCheck = 0;
     unsigned long currentTimeStamp = 0;
 
     (void)parameter;
@@ -355,30 +356,36 @@ void Session::handleSession(void* parameter)
     while (true)
     {
         currentTimeStamp = millis();
+
         xSemaphoreTake(m_sessionMutex, portMAX_DELAY);
-        for (uint8_t sessionIdx = 0; sessionIdx < MAX_CLIENTS; sessionIdx++)
+        // Check Session Timeout
+        if ((currentTimeStamp - lastSessionTimeoutCheck) >= (SESSION_TIMEOUT_SECONDS * MILLISECONDS))
         {
-            currentSession = m_sessions[sessionIdx];
+            lastSessionTimeoutCheck = currentTimeStamp;
 
-            /* Check if the session exists or has been stopped before timeout */
-            if (nullptr != currentSession)
+            for (uint8_t sessionIdx = 0; sessionIdx < MAX_CLIENTS; sessionIdx++)
             {
-                if (((currentTimeStamp - currentSession->m_lastAccessTime) / MILLISECONDS) > SESSION_TIMEOUT_SECONDS)
+                currentSession = m_sessions[sessionIdx];
+
+                /* Check if the session exists or has been stopped before timeout */
+                if (nullptr != currentSession)
                 {
-                    currentSession->deauthenticateSession();
-
-                    /* Switch back to TEXT mode and clean up used resources */
-                    if (true == currentSession->m_expectBinary)
+                    if (((currentTimeStamp - currentSession->m_lastAccessTime) / MILLISECONDS) > SESSION_TIMEOUT_SECONDS)
                     {
-                        /* Clean up */
-                        RequestResponseHandler::getInstance().resetBinaryMode();
+                        currentSession->deauthenticateSession();
 
-                        /* Exit BINARY mode and switch back to TEXT mode */
-                        currentSession->exitBinaryMode();
+                        /* Switch back to TEXT mode and clean up used resources */
+                        if (true == currentSession->m_expectBinary)
+                        {
+                            /* Clean up */
+                            RequestResponseHandler::getInstance().resetBinaryMode();
+
+                            /* Exit BINARY mode and switch back to TEXT mode */
+                            currentSession->exitBinaryMode();
+                        }
                     }
                 }
             }
-        }
         xSemaphoreGive(m_sessionMutex);
 
         /* Put task to sleep and re-check after SESSION_TIMEOUT_SECONDS */
