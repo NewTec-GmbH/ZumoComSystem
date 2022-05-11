@@ -461,12 +461,16 @@ void Session::handleSession(void* parameter)
 const Permission* Session::getPermissions(uint8_t& numberOfPermissions)
 {
     const Permission* permission = nullptr;
-    xSemaphoreTake(m_sessionMutex, portMAX_DELAY);
+
+    /* Removed Conflicting Semaphore. handleSession Task has the Mutex when this method is called.*/
+
+    // xSemaphoreTake(m_sessionMutex, portMAX_DELAY);
+
     if (nullptr != m_linkedUser)
     {
         permission = m_linkedUser->getPermissions(numberOfPermissions);
     }
-    xSemaphoreGive(m_sessionMutex);
+    // xSemaphoreGive(m_sessionMutex);
     return permission;
 }
 
