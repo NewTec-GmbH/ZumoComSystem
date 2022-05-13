@@ -12,4 +12,5 @@
   (lib (name 66200221122)(type Legacy)(uri ${KIPRJMOD}/libs/66200221122.lib)(options "")(descr ""))
   (lib (name MAX3421EETJ)(type Legacy)(uri ${KIPRJMOD}/libs/MAX3421EETJ.lib)(options "")(descr ""))
   (lib (name 2022-04-19_08-29-50)(type Legacy)(uri ${KIPRJMOD}/libs/2022-04-19_08-29-50.lib)(options "")(descr ""))
+  (lib (name KMR221GLFS)(type Legacy)(uri ${KIPRJMOD}/libs/KMR221GLFS.lib)(options "")(descr ""))
 )
