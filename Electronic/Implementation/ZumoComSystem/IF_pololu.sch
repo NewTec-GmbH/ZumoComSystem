@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 7 7
 Title "Zumo Communication System"
-Date "2022-05-13"
-Rev "V1.0"
+Date "2022-05-27"
+Rev "V1.1"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
 Comment2 ""
