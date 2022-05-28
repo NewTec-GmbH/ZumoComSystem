@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 7
 Title "Zumo Communication System"
-Date "2022-04-22"
+Date "2022-05-13"
 Rev "V1.0"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -328,8 +328,8 @@ F 0 "C1" H 4065 4896 50  0000 L CNN
 F 1 "22uF" H 4065 4805 50  0000 L CNN
 F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 3988 4700 50  0001 C CNN
 F 3 "https://product.tdk.com/info/en/catalog/datasheets/mlcc_commercial_general_en.pdf?ref_disty=digikey" H 3950 4850 50  0001 C CNN
-F 4 "TDK Corporation" H 3950 4850 50  0001 C CNN "Manufacturer"
-F 5 "C3216X5R1V226M160AC " H 3950 4850 50  0001 C CNN "Part-No."
+F 4 " Murata Electronics " H 3950 4850 50  0001 C CNN "Manufacturer"
+F 5 "GRM31CC81E226KE11L" H 3950 4850 50  0001 C CNN "Part-No."
 	1    3950 4850
 	1    0    0    -1  
 $EndComp
