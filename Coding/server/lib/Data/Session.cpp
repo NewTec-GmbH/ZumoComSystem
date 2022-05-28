@@ -228,15 +228,13 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
             /* Read entire buffer. Get the request payload text */
             stringStream << inputBuffer;
             inputString = stringStream.str();
-            LOG_DEBUG(String("Incoming request data:\n") + inputString.c_str());
+            LOG_DEBUG(String("Incoming request data:\n") + inputString.c_str());        
 
-            String serial = inputString.c_str();
-
-            char* cmdStr = new char[serial.length() + 1];
+            char* cmdStr = new char[inputString.length() + 1];
 
             if (nullptr != cmdStr)
             {
-                strcpy(cmdStr, serial.c_str());
+                strcpy(cmdStr, inputString.c_str());
 
                 if (pdFALSE == xQueueSend(m_messageQueue, &cmdStr, portMAX_DELAY))
                 {
