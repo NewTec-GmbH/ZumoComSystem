@@ -32,14 +32,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
 
+import subprocess
+from os.path import exists, getsize
 Import("env")
 
-from os.path import exists, getsize
-import subprocess
 
-def buildSignedFirmware() :
+def buildSignedFirmware():
     '''
-    Builds the .cpsfw file using the created binary file and its signature, including the respective header.
+    Builds the .cpsfw file using the created binary file
+    and its signature, including the respective header.
     '''
 
     ID_SIZE_BYTE = 16
@@ -48,7 +49,9 @@ def buildSignedFirmware() :
     HASH_ALG_SIZE_BYTE = 16
     SIGN_ALG_SIZE_BYTE = 32
     SIGNATURE_SIZE_BYTE = 256
-    HEADER_SIZE_BYTE = ID_SIZE_BYTE + TARGET_SIZE_BYTE + VERSION_SIZE_BYTE + HASH_ALG_SIZE_BYTE + SIGN_ALG_SIZE_BYTE + SIGNATURE_SIZE_BYTE
+    HEADER_SIZE_BYTE = ID_SIZE_BYTE + TARGET_SIZE_BYTE + \
+        VERSION_SIZE_BYTE + HASH_ALG_SIZE_BYTE + \
+        SIGN_ALG_SIZE_BYTE + SIGNATURE_SIZE_BYTE
 
     ID = b'CPSFW'
     TARGET = b'ZUMO'
@@ -63,14 +66,13 @@ def buildSignedFirmware() :
     HEADER += HASH_ALG + (b'\0' * (HASH_ALG_SIZE_BYTE - len(HASH_ALG)))
     HEADER += SIGN_ALG + (b'\0' * (SIGN_ALG_SIZE_BYTE - len(SIGN_ALG)))
 
-    
-    if(HEADER_SIZE_BYTE != (len(HEADER) + getsize("./signature.sign"))) :
+    if(HEADER_SIZE_BYTE != (len(HEADER) + getsize("./signature.sign"))):
         raise RuntimeError("Error on Header Length")
     else:
         outputFile = open("./outputFirmware.cpsfw", "wb")
         signatureFile = open("./signature.sign", "rb")
         firmwareFile = open("./firmware.bin", "rb")
-        
+
         outputFile.write(HEADER)
         outputFile.write(signatureFile.read())
         outputFile.write(firmwareFile.read())
@@ -78,10 +80,11 @@ def buildSignedFirmware() :
         outputFile.close()
         signatureFile.close()
         firmwareFile.close()
-    
+
     return
 
-def sign_firmware (source, target, env) :
+
+def sign_firmware(source, target, env):
     """
     This function is called after the file "firmware.hex" is built.
     - Checks that the private signing key is in the root directory.
@@ -95,34 +98,39 @@ def sign_firmware (source, target, env) :
         target (SCons.Node.Alias.Alias): Alias object
         env (SCons.Script.SConscript.SConsEnvironment): Environment object
     """
-    
+
     # Check for Private Key in top directory
     if not exists("./privateKey.pem"):
         print("Private Key is missing!")
         Exit(1)
-    
+
     # Convert .hex into .bin using objcopy.
-    if 0 != env.Execute("objcopy -I ihex \"${BUILD_DIR}\\${PROGNAME}.hex\" -O binary ./firmware.bin") :
+    if 0 != env.Execute("objcopy -I ihex \
+            \"${BUILD_DIR}\\${PROGNAME}.hex\" -O binary ./firmware.bin"):
         print("objcopy failed!")
-        Exit(1) # Exit the building process
+        Exit(1)  # Exit the building process
 
     try:
-        # Sign using OpenSSL included with Git for Windows. Assumed that user is working in Windows and has Git installed in default path (Program Files)
-        subprocess.run("openssl.exe dgst -sha256 -sign privateKey.pem -out signature.sign firmware.bin", check=True, timeout=5, capture_output=True, shell=True)
-        
+        # Sign using OpenSSL included with Git for Windows.
+        subprocess.run("openssl.exe dgst -sha256 -sign privateKey.pem \
+                -out signature.sign firmware.bin",
+                       check=True, timeout=5, capture_output=True, shell=True)
+
         # Build the Signed Firmware file
         buildSignedFirmware()
 
         # Clean temporary files
-        subprocess.run("rm firmware.bin signature.sign", check=True, timeout=5, capture_output=True, shell=True)
+        subprocess.run("rm firmware.bin signature.sign", check=True,
+                       timeout=5, capture_output=True, shell=True)
 
-    except subprocess.CalledProcessError :
+    except subprocess.CalledProcessError:
         # Print the error
-        print(f"\033[93mIs OpenSSL/Git for Windows installed? Please check installation and add OpenSSL to Path\033[0m")
+        print(f"\033[93mIs OpenSSL/Git for Windows installed? \
+            Please check installation and add OpenSSL to Path\033[0m")
         # Exit the building process
         Exit(1)
 
-    except subprocess.TimeoutExpired :
+    except subprocess.TimeoutExpired:
         # Print the error
         print(f"\033[93mSigning Process timed-out\033[0m")
         # Exit the building process
@@ -135,8 +143,9 @@ def sign_firmware (source, target, env) :
         Exit(1)
     else:
         print("Successfully signed the firmware!")
-    
+
     return
+
 
 # Always build .hex file. Assume it is always out-of-date
 env.AlwaysBuild("${BUILD_DIR}\\${PROGNAME}.hex")
