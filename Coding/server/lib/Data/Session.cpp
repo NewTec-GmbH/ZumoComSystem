@@ -187,6 +187,11 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
                         LOG_ERROR("Could not push message to Queue");
                     }
                 }
+                else
+                {
+                    response.setStatusCode(ERROR);
+                    LOG_ERROR("Could not create instance the queue message");
+                }
             }
             else
             {
@@ -238,6 +243,11 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
                     response.setStatusCode(BAD_REQUEST);
                     LOG_ERROR("Could not push message to Queue");
                 }
+            }
+            else
+            {
+                response.setStatusCode(ERROR);
+                LOG_ERROR("Could not create instance the queue message");
             }
         }
         else
