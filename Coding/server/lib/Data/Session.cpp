@@ -58,7 +58,8 @@ Session::Session() :
     m_expectedOperation(),
     m_sessionAuthenticated(false),
     m_linkedUser(nullptr),
-    m_lastAccessTime(0)
+    m_lastAccessTime(0),
+    m_messageQueue(nullptr)
 {
     m_messageQueue = xQueueCreate( 10, sizeof( char* ) );
 }
