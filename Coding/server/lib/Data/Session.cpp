@@ -419,14 +419,14 @@ void Session::handleSession(void* parameter)
 
                         response.setStatusCode(SUCCESS);
 
-                        if ((true == currentSession->m_expectBinary) && (String(cmdStr) == binaryIsReady))
+                        if ((true == currentSession->m_expectBinary) && (strcmp(cmdStr, binaryIsReady.c_str()) == 0))
                         {
                             LOG_DEBUG("Binary is expected and ready!");
                             /* Call the API service */
                             RequestResponseHandler::getInstance().makeRequest(currentSession->m_expectedOperation, response, currentSession);
 
                         }
-                        else if ((false == currentSession->m_expectBinary) && (String(cmdStr) == binaryIsReady))
+                        else if ((false == currentSession->m_expectBinary) && (strcmp(cmdStr, binaryIsReady.c_str()) == 0))
                         {
                             LOG_ERROR("Something went wrong here!");
                         }
