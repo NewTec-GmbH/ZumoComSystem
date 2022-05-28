@@ -190,7 +190,7 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
                 else
                 {
                     response.setStatusCode(ERROR);
-                    LOG_ERROR("Could not create instance the queue message");
+                    LOG_ERROR("Could not create instance of the queue message");
                 }
             }
             else
@@ -245,7 +245,7 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
             else
             {
                 response.setStatusCode(ERROR);
-                LOG_ERROR("Could not create instance the queue message");
+                LOG_ERROR("Could not create instance of the queue message");
             }
         }
         else
