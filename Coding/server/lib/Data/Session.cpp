@@ -407,56 +407,63 @@ void Session::handleSession(void* parameter)
             if (nullptr != currentSession)
             {
                 char* cmdStr;
-                
-                if (pdFALSE != xQueueReceive(currentSession->m_messageQueue, &cmdStr, 0))
+
+                if (nullptr != cmdStr)
                 {
-                    ApiResponse response;
-                    String serialResponse;
-
-                    LOG_DEBUG("Message Retreived!");
-
-                    response.setStatusCode(SUCCESS);
-
-                    if((true == currentSession->m_expectBinary) && (String(cmdStr) == binaryIsReady))
+                    if (pdFALSE != xQueueReceive(currentSession->m_messageQueue, &cmdStr, 0))
                     {
-                        LOG_DEBUG("Binary is expected and ready!");
-                        /* Call the API service */
-	                    RequestResponseHandler::getInstance().makeRequest(currentSession->m_expectedOperation, response, currentSession);
+                        ApiResponse response;
+                        String serialResponse;
 
-                    }
-                    else if((false == currentSession->m_expectBinary) && (String(cmdStr) == binaryIsReady))
-                    {
-                        LOG_ERROR("Something went wrong here!");
-                    }
-                    else
-                    {
-                        ApiRequest request;
-                        if (true == request.deserialize(String(cmdStr)))
+                        LOG_DEBUG("Message Retreived!");
+
+                        response.setStatusCode(SUCCESS);
+
+                        if ((true == currentSession->m_expectBinary) && (String(cmdStr) == binaryIsReady))
                         {
-                            LOG_DEBUG("Calling API");
-                            /* Invoke the API call and send back response */
-                            RequestResponseHandler::getInstance().makeRequest(request, response, currentSession);
-                            LOG_DEBUG("API Finished");
+                            LOG_DEBUG("Binary is expected and ready!");
+                            /* Call the API service */
+                            RequestResponseHandler::getInstance().makeRequest(currentSession->m_expectedOperation, response, currentSession);
+
+                        }
+                        else if ((false == currentSession->m_expectBinary) && (String(cmdStr) == binaryIsReady))
+                        {
+                            LOG_ERROR("Something went wrong here!");
                         }
                         else
                         {
-                            LOG_ERROR("Could not deserialize the incoming ApiResponse!");
-                            response.setStatusCode(BAD_REQUEST);
+                            ApiRequest request;
+                            if (true == request.deserialize(String(cmdStr)))
+                            {
+                                LOG_DEBUG("Calling API");
+                                /* Invoke the API call and send back response */
+                                RequestResponseHandler::getInstance().makeRequest(request, response, currentSession);
+                                LOG_DEBUG("API Finished");
+                            }
+                            else
+                            {
+                                LOG_ERROR("Could not deserialize the incoming ApiResponse!");
+                                response.setStatusCode(BAD_REQUEST);
+                            }
                         }
+
+
+                        if (false == response.serialize(serialResponse))
+                        {
+                            serialResponse = "{\\\"statusCode\\\":" + String(ERROR) + "}";
+                            LOG_ERROR("Could not serialize the outgoing ApiResponse!");
+                        }
+
+                        /* Always send the ApiResponse */
+                        currentSession->send(serialResponse.c_str(), SEND_TYPE_TEXT);
+
+                        /* Clean */
+                        delete[] cmdStr;
                     }
-
-
-                    if (false == response.serialize(serialResponse))
-                    {
-                        serialResponse = "{\\\"statusCode\\\":" + String(ERROR) + "}";
-                        LOG_ERROR("Could not serialize the outgoing ApiResponse!");
-                    }
-
-                    /* Always send the ApiResponse */
-                    currentSession->send(serialResponse.c_str(), SEND_TYPE_TEXT);
-
-                    /* Clean */
-                    delete[] cmdStr;
+                }
+                else
+                {
+                    LOG_ERROR("Could not create instance of receiving array");
                 }
             }
         }
