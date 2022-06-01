@@ -1,1 +1,281 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><title>complatform</title><link href="/css/app.9aea5736.css" rel="preload" as="style"><link href="/css/chunk-vendors.44520931.css" rel="preload" as="style"><link href="/js/app.1e0c0493.js" rel="preload" as="script"><link href="/js/chunk-vendors.baa0b7ab.js" rel="preload" as="script"><link href="/css/chunk-vendors.44520931.css" rel="stylesheet"><link href="/css/app.9aea5736.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but complatform doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div><script src="/js/chunk-vendors.baa0b7ab.js"></script><script src="/js/app.1e0c0493.js"></script></body></html>
+<!--
+  (c) NewTec GmbH 2022   -   www.newtec.de
+  $URL: https://github.com/NewTec-GmbH/ZumoComSystem $
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--Required Meta-tags -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZumoComSystem</title>
+
+    <!--Favicon-->
+    <link rel="shortcut icon" href="./media/favicon.ico" type="image/x-icon">
+
+    <!--Bootstrap CSS-->
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
+        <div class="container-fluid h4">
+
+            <!-- NavBar Brand -->
+            <a class="navbar-brand" href="/index.html"><span class="h3">ZumoComSystem</span></a>
+
+            <!-- NavBar Toggler -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- NavBar Elements -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link active" href="#home">Home</a>
+                    <a class="nav-link" href="#settings">Settings</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Firmware Tab -->
+    <div class="container p-4" id="firmware">
+
+        <!-- Current Firmware Status -->
+        <div class="container text-center p-2" id="firmwareStatus">
+            <div class="container d-none" id="firmwareAvailable">
+                <img src="./media/check-circle.svg" alt="Checked Circle" width="32">
+                <h2>Firmware Available</h2>
+                <div class="row">
+                    <div class="col-6 text-end fw-bold">Target:</div>
+                    <div class="col-6 text-start" id="targetValue"></div>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-end fw-bold">SHA256:</div>
+                    <div class="col-6 text-start" id="shaValue"></div>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-end fw-bold">Valid:</div>
+                    <div class="col-6 text-start" id="validValue"></div>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-end fw-bold">Bytes:</div>
+                    <div class="col-6 text-start" id="bytesValue"></div>
+                </div>
+            </div>
+            <div class="container d-none" id="firmwareNotAvailable">
+                <img src="./media/x-circle.svg" alt="X Circle" width="32">
+                <h2>No Firmware Available</h2>
+            </div>
+        </div>
+    
+    
+        <!-- Actions Panel -->
+        <div class="container p-2" id="actionsPanel">
+            <div class="row">
+
+                <!-- Upload Card -->
+                <div class="col-md">
+                    <div class="card border-dark h-100">
+                        <div class="div card-body">
+                            <h3 class="card-title text-center p-2">Upload</h3>
+                            <select class="form-select mb-2" id="uploadType" onchange="setInputFileType()" required>
+                                <option selected value="1">Signed Firmware (.cpsfw)</option>
+                                <option value="2">Unsigned Firmware (.bin) and Private Signing Key (.pem)</option>
+                            </select>
+                            <form class="text-center">
+                                <input class="form-control mb-2" type="file" id="fileInput" onchange="checkInputFiles()" accept="" required/>
+                                <button class="btn btn-primary" id="uploadButton" onclick="uploadFiles()" disabled>Upload Files</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flash Card -->
+                <div class="col-md">
+                    <div class="card border-dark h-100 text-center">
+                        <div class="div card-body">
+                            <h3 class="card-title text-center p-2 mb-4">Flash</h3>
+                            <button class="btn btn-primary p-4" id="flashButton" onclick="flashFirmware()" disabled>Flash Software to Target</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    
+
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <!-- JQuery -->
+    <script src="./js/jquery-3.5.1.slim.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="./js/bootstrap.min.js"></script>
+
+    <!-- Websocket -->
+    <script src="./js/ws.js"></script>
+
+    <!-- Local Script -->
+    <script>
+        var global = {
+            firmwareAvailable: false,
+            firmwareInfo: {
+                target: null,
+                sha256: null,
+                valid: null,
+                bytes: null
+            },
+        };
+
+        function insertTestData() {
+            global.firmwareAvailable = true;
+            global.firmwareInfo.target = "Zumo";
+            global.firmwareInfo.sha256 = "1224466598809";
+            global.firmwareInfo.valid = "true";
+            global.firmwareInfo.bytes = "112334124";
+        }
+
+        function updateFirmwareInfo() {
+
+            var flashButton = document.getElementById("flashButton");
+            var fwAvailableTabClasses = document.getElementById("firmwareAvailable").classList;
+            var fwNotAvailableTabClasses = document.getElementById("firmwareNotAvailable").classList;
+
+            flashButton.setAttribute("disabled", "");
+
+            if ((null != global.firmwareInfo.target) &&
+                (null != global.firmwareInfo.sha256) &&
+                (null != global.firmwareInfo.valid) &&
+                (null != global.firmwareInfo.bytes) &&
+                (global.firmwareAvailable == true)) 
+            {
+
+                fwAvailableTabClasses.remove("d-none");
+                fwNotAvailableTabClasses.add("d-none");
+
+                document.getElementById("targetValue").innerText = global.firmwareInfo.target;
+                document.getElementById("shaValue").innerText = global.firmwareInfo.sha256;
+                document.getElementById("validValue").innerText = global.firmwareInfo.valid;
+                document.getElementById("bytesValue").innerText = global.firmwareInfo.bytes;
+
+                if("true" == global.firmwareInfo.valid)
+                {
+                    flashButton.removeAttribute("disabled");
+                }
+            }
+            else 
+            {
+                fwAvailableTabClasses.add("d-none");
+                fwNotAvailableTabClasses.remove("d-none");
+            }
+        }
+
+        function setInputFileType() {
+            var inputType = document.getElementById("uploadType").value;
+            var inputField = document.getElementById("fileInput");
+            var uploadButton = document.getElementById("uploadButton");
+
+            uploadButton.setAttribute("disabled", "");
+            
+            switch (inputType) {
+                case "1":
+                    inputField.setAttribute("accept",".cpsfw");
+                    if(inputField.hasAttribute("multiple"))
+                    {
+                        inputField.removeAttribute("multiple");
+                    }
+                    break;
+                
+                case "2":
+                    inputField.setAttribute("accept",".bin,.pem");
+                    inputField.setAttribute("multiple","");
+                    break;
+            
+                default:
+                    console.error("Unknown selection");
+                    break;
+            }
+        }
+
+        function checkInputFiles() {
+            var areFilesValid = false;
+            var inputType = document.getElementById("uploadType").value;
+            var selectedFiles = document.getElementById("fileInput").files;
+            var uploadButton = document.getElementById("uploadButton");
+
+            uploadButton.setAttribute("disabled", "");
+
+            switch (inputType) {
+                case "1":
+                    // Checking is handled by form's attributes: Multiple not allowed, and file ending is .cpsfw
+                    areFilesValid = true;
+                    break;
+
+                case "2":
+                    if(2 != selectedFiles.length)
+                    {
+                        alert("2 files are required!");
+                    }
+                    else
+                    {
+                        var hasFirmware = false;
+                        var hasSigningKey = false;
+
+                        for (let index = 0; index < selectedFiles.length; index++) {
+                            const file = selectedFiles[index];
+                            hasFirmware = /.*\.bin/.test(file.name) || hasFirmware;
+                            hasSigningKey = /.*\.pem/.test(file.name) || hasSigningKey;
+                        }
+
+                        if(hasFirmware && hasSigningKey)
+                        {
+                            areFilesValid = true;
+                        }
+                        else
+                        {
+                            // Log selected files for debug.
+                            console.log(selectedFiles);
+                            console.log("Firmware: " + hasFirmware);
+                            console.log("Key: " + hasSigningKey);
+                        }
+                    }
+                    break;
+                    
+                    default:
+                        console.log("Unknown selection");
+                        break;
+            }
+
+            if (areFilesValid) {
+                uploadButton.removeAttribute("disabled");
+            }
+        }
+
+        function uploadFiles() {
+            insertTestData();
+            updateFirmwareInfo();
+        }
+        
+        function flashFirmware() {
+
+        }
+
+        $(document).ready(function () {
+            setInputFileType();
+            updateFirmwareInfo();
+        });
+        
+    </script>
+</body>
+
+</html>
