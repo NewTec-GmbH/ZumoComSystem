@@ -165,7 +165,7 @@
             firmwareInfo: {
                 target: null,
                 sha256: null,
-                valid: null,
+                valid: false,
                 bytes: null
             },
             loggedIn: false
@@ -298,6 +298,9 @@
         // Upload Files
         function uploadFiles() {
             insertTestData();
+            // TODO: Send Upload Request
+            // TODO: Get Firmware Info Request
+
             updateFirmwareInfo();
             if("true" == global.firmwareInfo.valid)
             {
@@ -308,7 +311,7 @@
         
         // Flash the available firmware
         function flashFirmware() {
-
+            // TODO: Send Flash Request here
         }
 
         // Login User
@@ -344,6 +347,7 @@
             }
         }
 
+        // Logout User
         function logout() {
             if (global.loggedIn)
             {
