@@ -50,6 +50,8 @@
 
         <!-- Current Firmware Status -->
         <div class="container text-center p-2" id="firmwareStatus">
+
+            <!-- Firmware Info when Available -->
             <div class="container d-none" id="firmwareAvailable">
                 <img src="./media/check-circle.svg" alt="Checked Circle" width="32">
                 <h2>Firmware Available</h2>
@@ -70,12 +72,13 @@
                     <div class="col-6 text-start" id="bytesValue"></div>
                 </div>
             </div>
+
+            <!-- Firmware not Available -->
             <div class="container d-none" id="firmwareNotAvailable">
                 <img src="./media/x-circle.svg" alt="X Circle" width="32">
                 <h2>No Firmware Available</h2>
             </div>
         </div>
-    
     
         <!-- Actions Panel -->
         <div class="container p-2" id="actionsPanel">
@@ -107,6 +110,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
@@ -127,6 +131,8 @@
 
     <!-- Local Script -->
     <script>
+
+        // Global structure for common data.
         var global = {
             firmwareAvailable: false,
             firmwareInfo: {
@@ -137,6 +143,7 @@
             },
         };
 
+        // Debug funtion to test web application
         function insertTestData() {
             global.firmwareAvailable = true;
             global.firmwareInfo.target = "Zumo";
@@ -145,9 +152,9 @@
             global.firmwareInfo.bytes = "112334124";
         }
 
+        // Update the display of the Firmware Info.
         function updateFirmwareInfo() {
 
-            var flashButton = document.getElementById("flashButton");
             var fwAvailableTabClasses = document.getElementById("firmwareAvailable").classList;
             var fwNotAvailableTabClasses = document.getElementById("firmwareNotAvailable").classList;
 
@@ -168,10 +175,7 @@
                 document.getElementById("validValue").innerText = global.firmwareInfo.valid;
                 document.getElementById("bytesValue").innerText = global.firmwareInfo.bytes;
 
-                if("true" == global.firmwareInfo.valid)
-                {
-                    flashButton.removeAttribute("disabled");
-                }
+                
             }
             else 
             {
@@ -180,6 +184,7 @@
             }
         }
 
+        // Set the type and number of files accepted by the file input field.
         function setInputFileType() {
             var inputType = document.getElementById("uploadType").value;
             var inputField = document.getElementById("fileInput");
@@ -207,6 +212,7 @@
             }
         }
 
+        // Check that the input files are valid before uploading
         function checkInputFiles() {
             var areFilesValid = false;
             var inputType = document.getElementById("uploadType").value;
@@ -261,20 +267,28 @@
             }
         }
 
+        // Upload Files
         function uploadFiles() {
             insertTestData();
             updateFirmwareInfo();
+            if("true" == global.firmwareInfo.valid)
+            {
+                var flashButton = document.getElementById("flashButton");
+                flashButton.removeAttribute("disabled");
+            }
         }
         
+        // Flash the available firmware
         function flashFirmware() {
 
         }
 
+        // Process to perform when document is ready
         $(document).ready(function () {
             setInputFileType();
             updateFirmwareInfo();
         });
-        
+
     </script>
 </body>
 
