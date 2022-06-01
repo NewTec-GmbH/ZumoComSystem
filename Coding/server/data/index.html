@@ -203,6 +203,10 @@
                 document.getElementById("validValue").innerText = global.firmwareInfo.valid;
                 document.getElementById("bytesValue").innerText = global.firmwareInfo.bytes;
 
+                if(true == global.firmwareInfo.valid)
+                {
+                    flashButton.removeAttribute("disabled");
+                }
                 
             }
             else 
@@ -297,7 +301,7 @@
 
         // Upload Files
         function uploadFiles() {
-            insertTestData();
+            // insertTestData();
             // TODO: Send Upload Request
             // TODO: Get Firmware Info Request
 
@@ -369,6 +373,48 @@
         $(document).ready(function () {
             setInputFileType();
             updateFirmwareInfo();
+
+            var protocol = "wss";
+            var hostname = "192.168.178.93";
+            var port = 443;
+            var endpoint = "/api";
+            var wsUrl = null;
+
+            wsUrl = protocol + "://" + hostname + ":" + port + endpoint;
+
+            console.log(wsUrl);
+
+            try {
+                var socket = new WebSocket(wsUrl);
+
+                socket.onopen = function(openEvent) {
+                    console.debug("Websocket opened.");
+                    socket.send('{"commandId":"getfirmwareinfo","jsonPayload":"{\\"target\\":\\"ZUMO\\"}"}');
+                }
+
+                socket.onclose = function(closeEvent) {
+                    console.debug("Websocket closed.");
+                };
+
+                socket.onmessage = function(messageEvent) {
+                    try {
+                        jsonObject = JSON.parse(messageEvent.data);
+                        jsonPayload = JSON.parse(jsonObject.jsonPayload);
+                        global.firmwareAvailable = true;
+                        global.firmwareInfo.target = jsonPayload.targetSystem
+                        global.firmwareInfo.sha256 = jsonPayload.payloadHash
+                        global.firmwareInfo.valid = jsonPayload.isValid
+                        global.firmwareInfo.bytes = jsonPayload.sizeBytes
+                        updateFirmwareInfo();
+                    } catch (error) {
+                        console.error(error);
+                    }
+
+                }
+            } catch (e) {
+                console.error(e);
+            }
+
         });
 
     </script>
