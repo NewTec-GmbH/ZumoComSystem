@@ -127,14 +127,14 @@
                     <button id="buttonCloseLoginModal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="loginForm">
+                    <form id="loginForm" autocomplete="on">
                         <div class="mb-3">
                           <label for="usernameInput" class="form-label">Username</label>
-                          <input type="text" class="form-control" id="usernameInput" aria-describedby="emailHelp">
+                          <input type="text" class="form-control" id="usernameInput" autocomplete="username">
                         </div>
                         <div class="mb-3">
-                          <label for="passwordInput" class="form-label">Password</label>
-                          <input type="password" class="form-control" id="passwordInput">
+                          <label for="passwordInput" class="form-label" >Password</label>
+                          <input type="password" class="form-control" id="passwordInput" autocomplete="current-password">
                         </div>
                     </form>
                 </div>
