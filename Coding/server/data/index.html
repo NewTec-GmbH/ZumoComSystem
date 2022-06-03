@@ -334,30 +334,32 @@
             var usernameInput = formElements["usernameInput"].value;
             var passwordInput = formElements["passwordInput"].value;
 
-            console.log("Username: " + usernameInput);
-            console.log("Password: " + passwordInput);
-
-            // TODO: Send Login Request here
-            global.loggedIn = true;
-
-            if(global.loggedIn)
-            {
+            return global.wsClient.authenticate(usernameInput, passwordInput).then(function (rsp) {
                 var openModalBtn = document.getElementById("openLoginModal").classList;
                 var logoutBtn = document.getElementById("logoutBtn");
                 var closeBtn = document.getElementById("buttonCloseLoginModal");
-
+                
+                global.loggedIn = true;
                 openModalBtn.add("d-none");
                 logoutBtn.classList.remove("d-none");
                 logoutBtn.innerText = "Logout: " + usernameInput;
 
                 // Close Modal
                 closeBtn.click();
-            }
-            else
-            {
-                // TODO: Improve UE
-                alert("Invalid username/password combination");
-            }
+                return Promise.resolve();
+            }).catch(function(err) {
+                if ("undefined" !== typeof err) {
+                    if(500 == err)
+                    {
+                        // TODO: Improve UE
+                        alert("Invalid username/password combination");
+                        console.warn("Invalid username/password combination");
+                    }
+                    else{
+                        console.error(err);
+                    }
+                }
+            });
         }
 
         // Logout User

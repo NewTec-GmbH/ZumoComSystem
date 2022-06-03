@@ -33,6 +33,7 @@ cpjs.ws.Client = function (options) {
             this.socket.send(msg);
 
             console.info("Command sent: " + this.pendingCmd.commandId);
+            console.debug("Message sent: " + msg);
         }
     };
 
@@ -122,7 +123,7 @@ cpjs.ws.Client.prototype._onMessage = function (msg) {
             }
         } else {
             console.error("Command " + this.pendingCmd.commandId + " failed.");
-            this.pendingCmd.reject();
+            this.pendingCmd.reject(data.statusCode);
         }
 
         this.pendingCmd = null;
@@ -141,6 +142,22 @@ cpjs.ws.Client.prototype.getFirmwareInfo = function (target) {
             this._sendCmd({
                 commandId: "getfirmwareinfo",
                 jsonPayload: "{\"target\":\"" + target + "\"}",
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};
+
+// API Command: Log-in user
+cpjs.ws.Client.prototype.authenticate = function(username, password) {
+    return new Promise(function (resolve, reject) {
+        if ((null === this.socket) || (typeof (target) === undefined)) {
+            reject();
+        } else {
+            this._sendCmd({
+                commandId: "authenticate",
+                jsonPayload: "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}",
                 resolve: resolve,
                 reject: reject
             });
