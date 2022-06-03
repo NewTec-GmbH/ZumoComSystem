@@ -161,6 +161,7 @@
 
         // Global structure for common data.
         var global = {
+            wsClient: new cpjs.ws.Client(),
             firmwareAvailable: false,
             firmwareInfo: {
                 target: null,
@@ -182,38 +183,56 @@
 
         // Update the display of the Firmware Info.
         function updateFirmwareInfo() {
+            return global.wsClient.getFirmwareInfo("ZUMO").then(function (rsp) {
 
-            var fwAvailableTabClasses = document.getElementById("firmwareAvailable").classList;
-            var fwNotAvailableTabClasses = document.getElementById("firmwareNotAvailable").classList;
+                var fwAvailableTabClasses = document.getElementById("firmwareAvailable").classList;
+                var fwNotAvailableTabClasses = document.getElementById("firmwareNotAvailable").classList;
 
-            flashButton.setAttribute("disabled", "");
+                flashButton.setAttribute("disabled", "");
 
-            if ((null != global.firmwareInfo.target) &&
-                (null != global.firmwareInfo.sha256) &&
-                (null != global.firmwareInfo.valid) &&
-                (null != global.firmwareInfo.bytes) &&
-                (global.firmwareAvailable == true)) 
-            {
-
-                fwAvailableTabClasses.remove("d-none");
-                fwNotAvailableTabClasses.add("d-none");
-
-                document.getElementById("targetValue").innerText = global.firmwareInfo.target;
-                document.getElementById("shaValue").innerText = global.firmwareInfo.sha256;
-                document.getElementById("validValue").innerText = global.firmwareInfo.valid;
-                document.getElementById("bytesValue").innerText = global.firmwareInfo.bytes;
-
-                if(true == global.firmwareInfo.valid)
+                if (("undefined" != typeof rsp.targetSystem) &&
+                    ("undefined" != typeof rsp.payloadHash) &&
+                    ("undefined" != typeof rsp.isValid) &&
+                    ("undefined" != typeof rsp.sizeBytes)) 
                 {
-                    flashButton.removeAttribute("disabled");
+                    global.firmwareAvailable = true;
+                    global.firmwareInfo.target = rsp.targetSystem;
+                    global.firmwareInfo.sha256 = rsp.payloadHash;
+                    global.firmwareInfo.valid = rsp.isValid;
+                    global.firmwareInfo.bytes = rsp.sizeBytes;
                 }
+
+                if (global.firmwareAvailable == true)
+                {
+
+                    fwAvailableTabClasses.remove("d-none");
+                    fwNotAvailableTabClasses.add("d-none");
+
+                    document.getElementById("targetValue").innerText = global.firmwareInfo.target;
+                    document.getElementById("shaValue").innerText = global.firmwareInfo.sha256;
+                    document.getElementById("validValue").innerText = global.firmwareInfo.valid;
+                    document.getElementById("bytesValue").innerText = global.firmwareInfo.bytes;
+
+                    if(true == global.firmwareInfo.valid)
+                    {
+                        flashButton.removeAttribute("disabled");
+                    }
                 
-            }
-            else 
-            {
-                fwAvailableTabClasses.add("d-none");
-                fwNotAvailableTabClasses.remove("d-none");
-            }
+                }
+                else 
+                {
+                    fwAvailableTabClasses.add("d-none");
+                    fwNotAvailableTabClasses.remove("d-none");
+                }
+
+                return Promise.resolve();
+            }).catch(function(err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+            });
+
+            
         }
 
         // Set the type and number of files accepted by the file input field.
@@ -369,51 +388,36 @@
             }
         }
 
+        // Handler of Websocket Event
+        function onEvent(event) {
+            console.log(event);
+        }
+
+        // Handler of closing of the Websocket 
+        function onClosed() {
+            alert("Websocket Closed!")
+        }
+
         // Process to perform when document is ready
         $(document).ready(function () {
             setInputFileType();
             updateFirmwareInfo();
-
-            var protocol = "wss";
-            var hostname = "192.168.178.93";
-            var port = 443;
-            var endpoint = "/api";
-            var wsUrl = null;
-
-            wsUrl = protocol + "://" + hostname + ":" + port + endpoint;
-
-            console.log(wsUrl);
-
-            try {
-                var socket = new WebSocket(wsUrl);
-
-                socket.onopen = function(openEvent) {
-                    console.debug("Websocket opened.");
-                    socket.send('{"commandId":"getfirmwareinfo","jsonPayload":"{\\"target\\":\\"ZUMO\\"}"}');
+            global.wsClient.connect({
+                protocol: "wss",
+                // hostname: location.hostname // Uncomment when Client runs on the target system
+                hostname: "192.168.178.93", // IP of remote Test Server
+                port: 443,
+                endpoint: "/api",
+                onEvent: onEvent,
+                onClosed: onClosed,
+            }).then(function () {
+                console.log("Websocket opened.")
+                return updateFirmwareInfo();
+            }).catch(function (err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
                 }
-
-                socket.onclose = function(closeEvent) {
-                    console.debug("Websocket closed.");
-                };
-
-                socket.onmessage = function(messageEvent) {
-                    try {
-                        jsonObject = JSON.parse(messageEvent.data);
-                        jsonPayload = JSON.parse(jsonObject.jsonPayload);
-                        global.firmwareAvailable = true;
-                        global.firmwareInfo.target = jsonPayload.targetSystem
-                        global.firmwareInfo.sha256 = jsonPayload.payloadHash
-                        global.firmwareInfo.valid = jsonPayload.isValid
-                        global.firmwareInfo.bytes = jsonPayload.sizeBytes
-                        updateFirmwareInfo();
-                    } catch (error) {
-                        console.error(error);
-                    }
-
-                }
-            } catch (e) {
-                console.error(e);
-            }
+            });
 
         });
 
