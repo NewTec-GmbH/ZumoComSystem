@@ -164,3 +164,19 @@ cpjs.ws.Client.prototype.authenticate = function(username, password) {
         }
     }.bind(this));
 };
+
+// API Command: Log-out user
+cpjs.ws.Client.prototype.deauthenticate = function() {
+    return new Promise(function (resolve, reject) {
+        if ((null === this.socket) || (typeof (target) === undefined)) {
+            reject();
+        } else {
+            this._sendCmd({
+                commandId: "deauthenticate",
+                jsonPayload: "",
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};

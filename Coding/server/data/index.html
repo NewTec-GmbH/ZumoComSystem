@@ -366,17 +366,25 @@
         function logout() {
             if (global.loggedIn)
             {
-                var openModalBtn = document.getElementById("openLoginModal").classList;
-                var logoutBtn = document.getElementById("logoutBtn");
+                return global.wsClient.deauthenticate().then(function (rsp) {                    
+                    var openModalBtn = document.getElementById("openLoginModal").classList;
+                    var logoutBtn = document.getElementById("logoutBtn");
+       
+                    openModalBtn.remove("d-none");
+                    logoutBtn.classList.add("d-none");
+                    logoutBtn.innerText = "";
+                    global.loggedIn = false;    
 
-                // TODO: Send Logout Request here
-
-                openModalBtn.remove("d-none");
-                logoutBtn.classList.add("d-none");
-                logoutBtn.innerText = "";
-
-                global.loggedIn = false;
-                alert("Logged-out");
+                    return Promise.resolve();
+                }).catch(function(err) {
+                    if ("undefined" !== typeof err) {
+                    console.error(err);
+                    }
+                });
+            }
+            else
+            {
+                console.error("Cannot log-out because user is not logged-in");
             }
         }
 
