@@ -172,15 +172,6 @@
             loggedIn: false
         };
 
-        // Debug funtion to test web application
-        function insertTestData() {
-            global.firmwareAvailable = true;
-            global.firmwareInfo.target = "Zumo";
-            global.firmwareInfo.sha256 = "1224466598809";
-            global.firmwareInfo.valid = "true";
-            global.firmwareInfo.bytes = "112334124";
-        }
-
         // Update the display of the Firmware Info.
         function updateFirmwareInfo() {
             return global.wsClient.getFirmwareInfo("ZUMO").then(function (rsp) {
@@ -320,7 +311,6 @@
 
         // Upload Files
         function uploadFiles() {
-            // insertTestData();
             // TODO: Send Upload Request
             // TODO: Get Firmware Info Request
 
