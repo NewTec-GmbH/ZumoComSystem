@@ -349,7 +349,7 @@
                 return Promise.resolve();
             }).catch(function(err) {
                 if ("undefined" !== typeof err) {
-                    if(500 == err)
+                    if(401 == err)
                     {
                         // TODO: Improve UE
                         alert("Invalid username/password combination");

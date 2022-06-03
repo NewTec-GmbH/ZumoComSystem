@@ -112,7 +112,7 @@ void SessionManager::aquireSession(const ApiRequest& request, ApiResponse& respo
     }
     else
     {
-        response.setStatusCode(ERROR);
+        response.setStatusCode(UNAUTHORIZED);
     }
 }
 
