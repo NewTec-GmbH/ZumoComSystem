@@ -180,3 +180,19 @@ cpjs.ws.Client.prototype.deauthenticate = function() {
         }
     }.bind(this));
 };
+
+// API Command: Flash Zumo
+cpjs.ws.Client.prototype.flashzumo = function() {
+    return new Promise(function (resolve, reject) {
+        if ((null === this.socket) || (typeof (target) === undefined)) {
+            reject();
+        } else {
+            this._sendCmd({
+                commandId: "flashzumo",
+                jsonPayload: "",
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};

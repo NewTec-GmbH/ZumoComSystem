@@ -324,7 +324,31 @@
         
         // Flash the available firmware
         function flashFirmware() {
-            // TODO: Send Flash Request here
+            // TODO: Add animation to show the firmware is being flashed.
+            var flashButton = document.getElementById("flashButton");
+            flashButton.setAttribute("disabled", "");
+            
+            return global.wsClient.flashzumo().then(function (rsp) {    
+                // Improve UX                
+                alert("Zumo successfully flashed!");
+                flashButton.removeAttribute("disabled");
+                return Promise.resolve();
+            }).catch(function(err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                    if(401 == err)
+                    {
+                        // TODO: Improve UE
+                        alert("User must be logged-in to perform this operation!");
+                        console.warn("User must be logged-in to perform this operation!");
+                    }
+                    else{
+                        console.error(err);
+                        alert("Unknown Error: Could not flash Zumo.");
+                    }
+                    flashButton.removeAttribute("disabled");
+                }
+            });
         }
 
         // Login User
@@ -378,7 +402,7 @@
                     return Promise.resolve();
                 }).catch(function(err) {
                     if ("undefined" !== typeof err) {
-                    console.error(err);
+                        console.error(err);
                     }
                 });
             }
