@@ -152,7 +152,7 @@ cpjs.ws.Client.prototype.getFirmwareInfo = function (target) {
 // API Command: Log-in user
 cpjs.ws.Client.prototype.authenticate = function(username, password) {
     return new Promise(function (resolve, reject) {
-        if ((null === this.socket) || (typeof (target) === undefined)) {
+        if ((null === this.socket) || (typeof (username) === undefined) || (typeof (password) === undefined)) {
             reject();
         } else {
             this._sendCmd({
@@ -168,7 +168,7 @@ cpjs.ws.Client.prototype.authenticate = function(username, password) {
 // API Command: Log-out user
 cpjs.ws.Client.prototype.deauthenticate = function() {
     return new Promise(function (resolve, reject) {
-        if ((null === this.socket) || (typeof (target) === undefined)) {
+        if ((null === this.socket)) {
             reject();
         } else {
             this._sendCmd({
@@ -184,7 +184,7 @@ cpjs.ws.Client.prototype.deauthenticate = function() {
 // API Command: Flash Zumo
 cpjs.ws.Client.prototype.flashzumo = function() {
     return new Promise(function (resolve, reject) {
-        if ((null === this.socket) || (typeof (target) === undefined)) {
+        if ((null === this.socket)) {
             reject();
         } else {
             this._sendCmd({
