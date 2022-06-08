@@ -220,6 +220,16 @@
             }).catch(function(err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
+                    if(500 == err){
+                        var fwAvailableTabClasses = document.getElementById("firmwareAvailable").classList;
+                        var fwNotAvailableTabClasses = document.getElementById("firmwareNotAvailable").classList;
+                        fwAvailableTabClasses.add("d-none");
+                        fwNotAvailableTabClasses.remove("d-none");
+                    }
+                    else
+                    {
+                        console.error(err);
+                    }
                 }
             });
 
