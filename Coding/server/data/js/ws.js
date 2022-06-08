@@ -196,3 +196,19 @@ cpjs.ws.Client.prototype.flashzumo = function() {
         }
     }.bind(this));
 };
+
+// API Command: Upload Zumo TEXT
+cpjs.ws.Client.prototype.uploadzumoTEXT = function(sizeBytes) {
+    return new Promise(function (resolve, reject) {
+        if ((null === this.socket) || (typeof (sizeBytes) === undefined)) {
+            reject();
+        } else {
+            this._sendCmd({
+                commandId: "uploadzumo",
+                jsonPayload: "{\"fileSizeBytes\":\"" + sizeBytes + "\"}",
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};
