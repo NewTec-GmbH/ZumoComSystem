@@ -33,7 +33,6 @@ cpjs.ws.Client = function (options) {
             this.socket.send(msg);
 
             console.info("Command sent: " + this.pendingCmd.commandId);
-            console.debug("Message sent: " + msg);
         }
     };
 
