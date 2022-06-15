@@ -106,7 +106,6 @@ cpjs.ws.Client.prototype.connect = function (options) {
 cpjs.ws.Client.prototype._onMessage = function (msg) {
     if (null === this.pendingCmd) {
         console.error("No pending command, but response received.");
-        // TODO: "Deauthenticate" Command comes as event?
     }
     else {
         var data = JSON.parse(msg);
