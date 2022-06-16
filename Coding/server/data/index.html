@@ -176,7 +176,7 @@
 
                 var fwAvailableTabClasses = document.getElementById("firmwareAvailable").classList;
                 var fwNotAvailableTabClasses = document.getElementById("firmwareNotAvailable").classList;
-
+                var flashButton = document.getElementById("flashButton");
                 flashButton.setAttribute("disabled", "");
 
                 if (("undefined" != typeof rsp.targetSystem) &&
@@ -332,9 +332,12 @@
 
             var files = document.getElementById("fileInput").files;
             var inputType = document.getElementById("uploadType").value;
+            var flashButton = document.getElementById("flashButton");
             var firmware = null;
             var fileReader = new FileReader(); 
             var binaryRead = new Uint8Array();
+
+            flashButton.setAttribute("disabled", "");
             
             if (2 == inputType) {
                 // PEM and BIN files uploaded: Parse CPSFW and download it to client
@@ -358,12 +361,14 @@
                 /* Called when firmware has been read */
                 fileReader.onload = (event) => {
                     let firmwareBinary = new Uint8Array(fileReader.result);
+
                     const uploadBlockSizeBytes = 2048;
                     const uploadChunks = Math.floor(firmwareBinary.length / uploadBlockSizeBytes);
                     const remainingBytes = firmwareBinary.length % uploadBlockSizeBytes;
-                    let byteOffset = 0;
+
                     let chunkBuffer = new Uint8Array(uploadBlockSizeBytes);
                     let remainBuffer = new Uint8Array(remainingBytes);
+                    let byteOffset = 0;
                     let retCode = true;
                     let uploadProgressPercent = 0;
 
@@ -374,8 +379,6 @@
 
                         for (let chunkNo = 0; chunkNo < uploadChunks; chunkNo++) {
                             byteOffset = (chunkNo * uploadBlockSizeBytes);
-
-                            console.debug("Sending Chunk #" + chunkNo);
                                           
                             /* Assemble current package */
                             for (let byteIdx = 0; byteIdx < uploadBlockSizeBytes; byteIdx++) {
@@ -385,7 +388,7 @@
                             /* Send the current chunk/package */
                             global.wsClient.uploadChunk(chunkBuffer).then(function () {
                                 uploadProgressPercent = Math.round((chunkNo / uploadChunks) * 100);
-                                console.debug("Upload Progress: " + uploadProgressPercent + "%")
+                                console.info("Upload Progress: " + uploadProgressPercent + "%")
                             }).catch(function () {
                                 console.error("Could not upload data chunk! Aborting upload now!");
                                 retCode = false;
@@ -400,13 +403,11 @@
                               remainBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
                             }
                         
-                            console.debug("Sending Last Chunk");
-
                             /* Send the current chunk/package */
                             global.wsClient.uploadChunk(remainBuffer).then(function () {
                                 uploadProgressPercent = 100;
                                 updateFirmwareInfo();
-                                console.debug("Upload Progress: " + uploadProgressPercent + "%")
+                                console.info("Upload Progress: " + uploadProgressPercent + "%")
                             }).catch(function () {
                                 console.error("Could not upload last data chunk!");
                                 retCode = false;
