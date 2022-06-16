@@ -91,6 +91,10 @@
                     <div class="card border-dark h-100">
                         <div class="div card-body text-center">
                             <h3 class="card-title text-center p-2">Upload</h3>
+                            <select class="form-select mb-2" id="targetPlatform" onchange="setTargetPlatform()" required>
+                                <option selected value="1">Zumo32U4 Robot</option>
+                                <option value="2">ZumoComPlatform</option>
+                            </select>
                             <select class="form-select mb-2" id="uploadType" onchange="setInputFileType()" required>
                                 <option selected value="1">Signed Firmware (.cpsfw)</option>
                                 <option value="2">Unsigned Firmware (.bin) and Private Signing Key (.pem)</option>
@@ -167,12 +171,13 @@
                 valid: false,
                 bytes: null
             },
-            loggedIn: false
+            loggedIn: false,
+            targetPlatform: null
         };
 
         // Update the display of the Firmware Info.
         function updateFirmwareInfo() {
-            return global.wsClient.getFirmwareInfo("ZUMO").then(function (rsp) {
+            return global.wsClient.getFirmwareInfo(global.targetPlatform).then(function (rsp) {
 
                 var fwAvailableTabClasses = document.getElementById("firmwareAvailable").classList;
                 var fwNotAvailableTabClasses = document.getElementById("firmwareNotAvailable").classList;
@@ -260,6 +265,25 @@
                     console.error("Unknown selection");
                     break;
             }
+        }
+
+        // Set the Target Platform (ZumoRobot or ZumoComSystem)
+        function setTargetPlatform() {
+            var inputPlatform = document.getElementById("targetPlatform").value;
+
+            switch (inputPlatform) {
+                case "1":
+                    global.targetPlatform = "ZUMO";
+                    break;                
+                case "2":
+                    global.targetPlatform = "COM";
+                    break;
+            
+                default:
+                    console.error("Unknown selection");
+                    break;
+            }
+            return updateFirmwareInfo();
         }
 
         // Check that the input files are valid before uploading
@@ -535,7 +559,7 @@
         // Process to perform when document is ready
         $(document).ready(function () {
             setInputFileType();
-            updateFirmwareInfo();
+            setTargetPlatform();
             global.wsClient.connect({
                 protocol: "wss",
                 // hostname: location.hostname // Uncomment when Client runs on the target system
