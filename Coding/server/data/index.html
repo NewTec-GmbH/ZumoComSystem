@@ -198,7 +198,7 @@
                     fwNotAvailableTabClasses.add("d-none");
 
                     document.getElementById("targetValue").innerText = global.firmwareInfo.target;
-                    document.getElementById("shaValue").innerText = global.firmwareInfo.sha256;
+                    document.getElementById("shaValue").innerText = global.firmwareInfo.sha256.substring(0,4) + "....." + global.firmwareInfo.sha256.substring(60);
                     document.getElementById("validValue").innerText = global.firmwareInfo.valid;
                     document.getElementById("bytesValue").innerText = global.firmwareInfo.bytes;
 
