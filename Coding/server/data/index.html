@@ -603,8 +603,7 @@
             }).then(function () {
                 console.log("Websocket opened.")
                 setInputFileType();
-                setTargetPlatform();
-                return updateFirmwareInfo();
+                return setTargetPlatform();
             }).catch(function (err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);

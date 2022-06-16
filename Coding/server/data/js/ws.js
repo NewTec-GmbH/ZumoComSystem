@@ -246,3 +246,19 @@ cpjs.ws.Client.prototype.reboot = function(targetPlatform) {
         }
     }.bind(this));
 };
+
+// API Command: Echo Demo
+cpjs.ws.Client.prototype.echodemo = function() {
+    return new Promise(function (resolve, reject) {
+        if ((null === this.socket)) {
+            reject();
+        } else {
+            this._sendCmd({
+                commandId: "echodemo",
+                jsonPayload: "Albert Einstein",
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};
