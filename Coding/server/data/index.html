@@ -362,59 +362,67 @@
                 fileReader.onload = (event) => {
                     let firmwareBinary = new Uint8Array(fileReader.result);
 
-                    const uploadBlockSizeBytes = 2048;
-                    const uploadChunks = Math.floor(firmwareBinary.length / uploadBlockSizeBytes);
-                    const remainingBytes = firmwareBinary.length % uploadBlockSizeBytes;
-
-                    let chunkBuffer = new Uint8Array(uploadBlockSizeBytes);
-                    let remainBuffer = new Uint8Array(remainingBytes);
-                    let byteOffset = 0;
-                    let retCode = true;
-                    let uploadProgressPercent = 0;
-
-                    console.debug("Chunks to be uploaded: " + (uploadChunks + 1));
-
                     global.wsClient.uploadzumoTEXT(firmwareBinary.length).then(function() {
                         console.debug("Successfully switched to API to BINARY Mode");
 
+                        const uploadBlockSizeBytes = 2048;
+                        const uploadChunks = Math.floor(firmwareBinary.length / uploadBlockSizeBytes);
+                        const remainingBytes = firmwareBinary.length % uploadBlockSizeBytes;
+
+                        let chunkBuffer = new Uint8Array(uploadBlockSizeBytes);
+                        let remainBuffer = new Uint8Array(remainingBytes);
+                        let byteOffset = 0;
+                        let retCode = true;
+                        let uploadProgressPercent = 0;
+                        let promiseChain = Promise.resolve();
+
+                        console.debug("Chunks to be uploaded: " + (uploadChunks + 1));
+
+
                         for (let chunkNo = 0; chunkNo < uploadChunks; chunkNo++) {
-                            byteOffset = (chunkNo * uploadBlockSizeBytes);
-                                          
-                            /* Assemble current package */
-                            for (let byteIdx = 0; byteIdx < uploadBlockSizeBytes; byteIdx++) {
-                              chunkBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
-                            }
-                                                    
-                            /* Send the current chunk/package */
-                            global.wsClient.uploadChunk(chunkBuffer).then(function () {
-                                uploadProgressPercent = Math.round((chunkNo / uploadChunks) * 100);
-                                console.info("Upload Progress: " + uploadProgressPercent + "%")
-                            }).catch(function () {
-                                console.error("Could not upload data chunk! Aborting upload now!");
-                                retCode = false;
-                            });  
+                            promiseChain = promiseChain.then(function () {
+                                if (true === retCode){
+                                    byteOffset = (chunkNo * uploadBlockSizeBytes);
+      
+                                    /* Assemble current package */
+                                    for (let byteIdx = 0; byteIdx < uploadBlockSizeBytes; byteIdx++) {
+                                        chunkBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
+                                    }
+
+                                    /* Send the current chunk/package */
+                                    return global.wsClient.uploadChunk(chunkBuffer).then(function () {
+                                        uploadProgressPercent = Math.round((chunkNo / uploadChunks) * 100);
+                                        console.info("Upload Progress: " + uploadProgressPercent + "%")
+                                    }).catch(function () {
+                                        console.error("Could not upload data chunk! Aborting upload now!");
+                                        retCode = false;
+                                    });
+                                }
+                            });
                         }
 
-                        if (true === retCode) {
-                            byteOffset = (uploadChunks * uploadBlockSizeBytes);
-                                            
-                            /* Assemble last package */
-                            for (let byteIdx = 0; byteIdx < remainingBytes; byteIdx++) {
-                              remainBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
+                        promiseChain.then(function () {
+                            if (true === retCode) {
+                                byteOffset = (uploadChunks * uploadBlockSizeBytes);
+
+                                /* Assemble last package */
+                                for (let byteIdx = 0; byteIdx < remainingBytes; byteIdx++) {
+                                    remainBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
+                                }
+
+                                /* Send the current chunk/package */
+                                global.wsClient.uploadChunk(remainBuffer).then(function () {
+                                    uploadProgressPercent = 100;
+                                    updateFirmwareInfo();
+                                    console.info("Upload Progress: " + uploadProgressPercent + "%")
+                                }).catch(function () {
+                                    console.error("Could not upload last data chunk!");
+                                    retCode = false;
+                                });
+                            } else {
+                                console.error("Not sending remaining bytes because previous packet could not be sent!");
                             }
-                        
-                            /* Send the current chunk/package */
-                            global.wsClient.uploadChunk(remainBuffer).then(function () {
-                                uploadProgressPercent = 100;
-                                updateFirmwareInfo();
-                                console.info("Upload Progress: " + uploadProgressPercent + "%")
-                            }).catch(function () {
-                                console.error("Could not upload last data chunk!");
-                                retCode = false;
-                            });
-                        } else {
-                            console.error("Not sending remaining bytes because previous packet could not be sent!");
-                        }
+                        });
                     }).catch(function(err) {
                         if ("undefined" !== typeof err) {
                             console.error(err);
