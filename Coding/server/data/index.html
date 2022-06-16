@@ -89,16 +89,14 @@
                 <!-- Upload Card -->
                 <div class="col-md my-2">
                     <div class="card border-dark h-100">
-                        <div class="div card-body">
+                        <div class="div card-body text-center">
                             <h3 class="card-title text-center p-2">Upload</h3>
                             <select class="form-select mb-2" id="uploadType" onchange="setInputFileType()" required>
                                 <option selected value="1">Signed Firmware (.cpsfw)</option>
                                 <option value="2">Unsigned Firmware (.bin) and Private Signing Key (.pem)</option>
                             </select>
-                            <form class="text-center">
-                                <input class="form-control mb-2" type="file" id="fileInput" onchange="checkInputFiles()" accept="" required/>
-                                <button class="btn btn-primary" id="uploadButton" onclick="uploadFiles()" disabled>Upload Files</button>
-                            </form>
+                            <input class="form-control mb-2" type="file" id="fileInput" onchange="checkInputFiles()" accept="" required/>
+                            <button class="btn btn-primary" id="uploadButton" onclick="uploadFiles()" disabled>Upload Files</button>
                         </div>
                     </div>
                 </div>
@@ -321,15 +319,108 @@
 
         // Upload Files
         function uploadFiles() {
-            // TODO: Send Upload Request
-            // TODO: Get Firmware Info Request
+            /*
+                Upload Sequence:
+                - Read Uploaded Files
+                - If PEM and BIN files uploaded: Parse CPSFW and download it to client
+                - Retrieve Header from CPSFW
+                - Calculate Number of Chunks and size of (last) remainder Chunk.
+                - Send uploadzumoTEXT to change API to Binary
+                - Wait for Code 200
+                - Send Chunks. Wait for individual SUCCESS Response before sending the next chunk.
+            */
 
-            updateFirmwareInfo();
-            if("true" == global.firmwareInfo.valid)
-            {
-                var flashButton = document.getElementById("flashButton");
-                flashButton.removeAttribute("disabled");
+            var files = document.getElementById("fileInput").files;
+            var inputType = document.getElementById("uploadType").value;
+            var firmware = null;
+            var fileReader = new FileReader(); 
+            var binaryRead = new Uint8Array();
+            
+            if (2 == inputType) {
+                // PEM and BIN files uploaded: Parse CPSFW and download it to client
+                // TODO: bin + pem = cpsfw
+                // firmware = outputCpsfwFile;
+                alert("Support for binary files is not implemented yet!")
             }
+            else
+            {
+                firmware = files[0];
+            }
+
+            if(false == /.*\.cpsfw/.test(firmware.name))
+            {
+                console.error("Wrong Input file. Expected CPSFW File");
+            }
+            else
+            {
+                /* Read the unsigned firmware binary */
+                fileReader.readAsArrayBuffer(firmware);
+                /* Called when firmware has been read */
+                fileReader.onload = (event) => {
+                    let firmwareBinary = new Uint8Array(fileReader.result);
+                    const uploadBlockSizeBytes = 2048;
+                    const uploadChunks = Math.floor(firmwareBinary.length / uploadBlockSizeBytes);
+                    const remainingBytes = firmwareBinary.length % uploadBlockSizeBytes;
+                    let byteOffset = 0;
+                    let chunkBuffer = new Uint8Array(uploadBlockSizeBytes);
+                    let remainBuffer = new Uint8Array(remainingBytes);
+                    let retCode = true;
+                    let uploadProgressPercent = 0;
+
+                    console.debug("Chunks to be uploaded: " + (uploadChunks + 1));
+
+                    global.wsClient.uploadzumoTEXT(firmwareBinary.length).then(function() {
+                        console.debug("Successfully switched to API to BINARY Mode");
+
+                        for (let chunkNo = 0; chunkNo < uploadChunks; chunkNo++) {
+                            byteOffset = (chunkNo * uploadBlockSizeBytes);
+
+                            console.debug("Sending Chunk #" + chunkNo);
+                                          
+                            /* Assemble current package */
+                            for (let byteIdx = 0; byteIdx < uploadBlockSizeBytes; byteIdx++) {
+                              chunkBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
+                            }
+                                                    
+                            /* Send the current chunk/package */
+                            global.wsClient.uploadChunk(chunkBuffer).then(function () {
+                                uploadProgressPercent = Math.round((chunkNo / uploadChunks) * 100);
+                                console.debug("Upload Progress: " + uploadProgressPercent + "%")
+                            }).catch(function () {
+                                console.error("Could not upload data chunk! Aborting upload now!");
+                                retCode = false;
+                            });  
+                        }
+
+                        if (true === retCode) {
+                            byteOffset = (uploadChunks * uploadBlockSizeBytes);
+                                            
+                            /* Assemble last package */
+                            for (let byteIdx = 0; byteIdx < remainingBytes; byteIdx++) {
+                              remainBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
+                            }
+                        
+                            console.debug("Sending Last Chunk");
+
+                            /* Send the current chunk/package */
+                            global.wsClient.uploadChunk(remainBuffer).then(function () {
+                                uploadProgressPercent = 100;
+                                updateFirmwareInfo();
+                                console.debug("Upload Progress: " + uploadProgressPercent + "%")
+                            }).catch(function () {
+                                console.error("Could not upload last data chunk!");
+                                retCode = false;
+                            });
+                        } else {
+                            console.error("Not sending remaining bytes because previous packet could not be sent!");
+                        }
+                    }).catch(function(err) {
+                        if ("undefined" !== typeof err) {
+                            console.error(err);
+                        }
+                    });
+                };
+            };
         }
         
         // Flash the available firmware

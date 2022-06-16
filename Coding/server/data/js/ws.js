@@ -18,21 +18,35 @@ cpjs.ws.Client = function (options) {
     this.cmdQueue = [];
     this.pendingCmd = null;
     this.onEvent = null;
+    this.binaryQueue = [];
 
     this._sendCmdFromQueue = function () {
         var msg = "";
 
         if (0 < this.cmdQueue.length) {
             this.pendingCmd = this.cmdQueue.shift();
-
-            msg = JSON.stringify({
-                commandId: this.pendingCmd.commandId,
-                jsonPayload: this.pendingCmd.jsonPayload
-            });
-
+            if ("uploadChunk" == this.pendingCmd.commandId) {
+                msg = new Uint8Array(this.pendingCmd.jsonPayload);
+                if (0 < this.binaryQueue.length)
+                {
+                    msg = this.binaryQueue.shift();
+                }
+                else
+                {
+                    console.error("Error on Binary Queue");
+                }
+            }
+            else {
+                msg = JSON.stringify({
+                    commandId: this.pendingCmd.commandId,
+                    jsonPayload: this.pendingCmd.jsonPayload
+                });
+            }
+            
             this.socket.send(msg);
 
             console.info("Command sent: " + this.pendingCmd.commandId);
+            console.debug(msg);
         }
     };
 
@@ -40,6 +54,16 @@ cpjs.ws.Client = function (options) {
 
         this.cmdQueue.push(cmd);
 
+        if (null === this.pendingCmd) {
+            this._sendCmdFromQueue();
+        }
+    };
+
+    this._sendChunk = function (cmd , binaryData) {
+
+        this.cmdQueue.push(cmd);
+        this.binaryQueue.push(Uint8Array.from(binaryData));
+        
         if (null === this.pendingCmd) {
             this._sendCmdFromQueue();
         }
@@ -207,6 +231,22 @@ cpjs.ws.Client.prototype.uploadzumoTEXT = function(sizeBytes) {
                 resolve: resolve,
                 reject: reject
             });
+        }
+    }.bind(this));
+};
+
+// API Command: Upload Zumo TEXT
+cpjs.ws.Client.prototype.uploadChunk = function(dataChunk) {
+    return new Promise(function (resolve, reject) {
+        if ((null === this.socket) || (typeof (dataChunk) === undefined)) {
+            reject();
+        } else {
+            this._sendChunk({
+                commandId: "uploadChunk",
+                jsonPayload: dataChunk.length, // Keeping name even if it is not JSON Format in order to prevent exception-handling.
+                resolve: resolve,
+                reject: reject
+            }, dataChunk);
         }
     }.bind(this));
 };
