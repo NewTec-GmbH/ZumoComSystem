@@ -184,13 +184,13 @@ cpjs.ws.Client.prototype.deauthenticate = function() {
 };
 
 // API Command: Flash Zumo
-cpjs.ws.Client.prototype.flashzumo = function() {
+cpjs.ws.Client.prototype.flash = function(targetPlatform) {
     return new Promise(function (resolve, reject) {
-        if ((null === this.socket)) {
+        if ((null === this.socket) || (typeof (targetPlatform) === undefined)) {
             reject();
         } else {
             this._sendCmd({
-                commandId: "flashzumo",
+                commandId: (("ZUMO" == targetPlatform) ? "flashzumo" : "flashcom"),
                 jsonPayload: "",
                 resolve: resolve,
                 reject: reject
@@ -199,14 +199,14 @@ cpjs.ws.Client.prototype.flashzumo = function() {
     }.bind(this));
 };
 
-// API Command: Upload Zumo TEXT
-cpjs.ws.Client.prototype.uploadzumoTEXT = function(sizeBytes) {
+// API Command: Upload Firmware
+cpjs.ws.Client.prototype.upload = function(sizeBytes, targetPlatform) {
     return new Promise(function (resolve, reject) {
-        if ((null === this.socket) || (typeof (sizeBytes) === undefined)) {
+        if ((null === this.socket) || (typeof (sizeBytes) === undefined) || (typeof (targetPlatform) === undefined)) {
             reject();
         } else {
             this._sendCmd({
-                commandId: "uploadzumo",
+                commandId: (("ZUMO" == targetPlatform) ? "uploadzumo" : "uploadcom"),
                 jsonPayload: "{\"fileSizeBytes\":\"" + sizeBytes + "\"}",
                 resolve: resolve,
                 reject: reject
@@ -215,7 +215,7 @@ cpjs.ws.Client.prototype.uploadzumoTEXT = function(sizeBytes) {
     }.bind(this));
 };
 
-// API Command: Upload Zumo TEXT
+// API Command: Upload Binary Chunks
 cpjs.ws.Client.prototype.uploadChunk = function(dataChunk) {
     return new Promise(function (resolve, reject) {
         if ((null === this.socket) || (typeof (dataChunk) === undefined)) {

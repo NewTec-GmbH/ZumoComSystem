@@ -177,12 +177,12 @@
 
         // Update the display of the Firmware Info.
         function updateFirmwareInfo() {
-            return global.wsClient.getFirmwareInfo(global.targetPlatform).then(function (rsp) {
+            var fwAvailableTabClasses = document.getElementById("firmwareAvailable").classList;
+            var fwNotAvailableTabClasses = document.getElementById("firmwareNotAvailable").classList;
+            var flashButton = document.getElementById("flashButton");
+            flashButton.setAttribute("disabled", "");
 
-                var fwAvailableTabClasses = document.getElementById("firmwareAvailable").classList;
-                var fwNotAvailableTabClasses = document.getElementById("firmwareNotAvailable").classList;
-                var flashButton = document.getElementById("flashButton");
-                flashButton.setAttribute("disabled", "");
+            return global.wsClient.getFirmwareInfo(global.targetPlatform).then(function (rsp) {
 
                 if (("undefined" != typeof rsp.targetSystem) &&
                     ("undefined" != typeof rsp.payloadHash) &&
@@ -224,6 +224,7 @@
                 if ("undefined" !== typeof err) {
                     console.error(err);
                     if(500 == err){
+                        global.firmwareAvailable = false;
                         var fwAvailableTabClasses = document.getElementById("firmwareAvailable").classList;
                         var fwNotAvailableTabClasses = document.getElementById("firmwareNotAvailable").classList;
                         fwAvailableTabClasses.add("d-none");
@@ -386,7 +387,7 @@
                 fileReader.onload = (event) => {
                     let firmwareBinary = new Uint8Array(fileReader.result);
 
-                    global.wsClient.uploadzumoTEXT(firmwareBinary.length).then(function() {
+                    global.wsClient.upload(firmwareBinary.length, global.targetPlatform).then(function() {
                         console.debug("Successfully switched to API to BINARY Mode");
 
                         const uploadBlockSizeBytes = 2048;
@@ -437,8 +438,8 @@
                                 /* Send the current chunk/package */
                                 global.wsClient.uploadChunk(remainBuffer).then(function () {
                                     uploadProgressPercent = 100;
-                                    updateFirmwareInfo();
                                     console.info("Upload Progress: " + uploadProgressPercent + "%")
+                                    updateFirmwareInfo();
                                 }).catch(function () {
                                     console.error("Could not upload last data chunk!");
                                     retCode = false;
@@ -462,7 +463,7 @@
             var flashButton = document.getElementById("flashButton");
             flashButton.setAttribute("disabled", "");
             
-            return global.wsClient.flashzumo().then(function (rsp) {    
+            return global.wsClient.flash(global.targetPlatform).then(function (rsp) {    
                 // Improve UX                
                 alert("Zumo successfully flashed!");
                 flashButton.removeAttribute("disabled");
