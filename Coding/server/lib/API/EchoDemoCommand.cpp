@@ -53,7 +53,7 @@ EchoDemoCommand::~EchoDemoCommand()
 void EchoDemoCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx)
 {
     response.setStatusCode(SUCCESS);
-    response.setJsonPayload("Hello dear " + request.getJsonPayload());
+    response.setJsonPayload("{\"Echo Message\" : \"" + request.getJsonPayload()+"\"}");
 }
 
 /**
