@@ -230,3 +230,19 @@ cpjs.ws.Client.prototype.uploadChunk = function(dataChunk) {
         }
     }.bind(this));
 };
+
+// API Command: Reboot
+cpjs.ws.Client.prototype.reboot = function(targetPlatform) {
+    return new Promise(function (resolve, reject) {
+        if ((null === this.socket) || (typeof (targetPlatform) === undefined)) {
+            reject();
+        } else {
+            this._sendCmd({
+                commandId: (("ZUMO" == targetPlatform) ? "rebootzumo" : "rebootcom"),
+                jsonPayload: "",
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};
