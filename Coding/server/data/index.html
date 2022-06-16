@@ -594,8 +594,7 @@
         $(document).ready(function () {
             global.wsClient.connect({
                 protocol: "wss",
-                // hostname: location.hostname // Uncomment when Client runs on the target system
-                hostname: "192.168.178.93", // IP of remote Test Server
+                hostname: location.hostname,
                 port: 443,
                 endpoint: "/api",
                 onEvent: onEvent,
