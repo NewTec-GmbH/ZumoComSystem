@@ -262,3 +262,19 @@ cpjs.ws.Client.prototype.echodemo = function() {
         }
     }.bind(this));
 };
+
+// API Command: Set STA Credentials
+cpjs.ws.Client.prototype.setstacredentials = function(ssid, passphrase) {
+    return new Promise(function (resolve, reject) {
+        if ((null === this.socket) || (typeof (ssid) === undefined) || (typeof (passphrase) === undefined)) {
+            reject();
+        } else {
+            this._sendCmd({
+                commandId: "setstacredentials",
+                jsonPayload: "{\"ssid\":\"" + ssid + "\", \"passphrase\":\"" + passphrase + "\"}",
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};
