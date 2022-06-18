@@ -111,8 +111,6 @@
                         <div class="div card-body">
                             <h3 class="card-title text-center p-2 mb-4">Flash</h3>
                             <button class="btn btn-primary p-4" id="flashButton" onclick="flashFirmware()" disabled>Flash Software to Target</button>
-                            <h3 class="card-title text-center p-2 m-4">Reboot</h3>
-                            <button class="btn btn-primary p-4" id="rebootButton" onclick="rebootTarget()" disabled>Reboot Target</button>
                         </div>
                     </div>
                 </div>
@@ -273,16 +271,13 @@
         // Set the Target Platform (ZumoRobot or ZumoComSystem)
         function setTargetPlatform() {
             var inputPlatform = document.getElementById("targetPlatform").value;
-            var rebootButton = document.getElementById("rebootButton");
-
+            
             switch (inputPlatform) {
                 case "1":
                     global.targetPlatform = "ZUMO";
-                    rebootButton.removeAttribute("disabled");
                     break;                
                 case "2":
                     global.targetPlatform = "COM";
-                    rebootButton.removeAttribute("disabled");
                     break;
             
                 default:
@@ -560,34 +555,6 @@
         // Handler of closing of the Websocket 
         function onClosed() {
             alert("Websocket Closed!")
-        }
-
-        // Reboot the target platform
-        function rebootTarget() {
-            var rebootButton = document.getElementById("rebootButton");
-            rebootButton.setAttribute("disabled", "");
-
-            if("COM" == global.targetPlatform)
-            {
-                alert("ZumoComPlatform will reboot now! Please reload the page after a few seconds.");
-            }
-
-            return global.wsClient.reboot(global.targetPlatform).then(function () {
-                rebootButton.removeAttribute("disabled");
-            }).catch(function (err) {
-                if ("undefined" !== typeof err) {
-                    if(401 == err)
-                    {
-                        // TODO: Improve UE
-                        alert("User must be logged-in to perform this operation!");
-                        console.warn("User must be logged-in to perform this operation!");
-                        rebootButton.removeAttribute("disabled");
-                    }
-                    else{
-                        console.error(err);
-                    }
-                }
-            });
         }
 
         // Process to perform when document is ready
