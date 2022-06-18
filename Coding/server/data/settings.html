@@ -1,0 +1,192 @@
+<!--
+  (c) NewTec GmbH 2022   -   www.newtec.de
+  $URL: https://github.com/NewTec-GmbH/ZumoComSystem $
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--Required Meta-tags -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZumoComSystem - Settings</title>
+
+    <!--Favicon-->
+    <link rel="shortcut icon" href="./media/favicon.ico" type="image/x-icon">
+
+    <!--Bootstrap CSS-->
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
+        <div class="container-fluid h4">
+
+            <!-- NavBar Brand -->
+            <a class="navbar-brand" href="./index.html"><span class="h3">ZumoComSystem</span></a>
+
+            <!-- NavBar Toggler -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- NavBar Elements -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="navbar-nav ms-auto">
+                    <button id="openLoginModal" class="btn btn-secondary me-4 my-4 my-lg-1" data-bs-toggle="modal"
+                        data-bs-target="#loginModal">Login
+                        <img src="./media/person.svg" alt="Person" width="25"></button>
+                    <button id="logoutBtn" class="btn btn-secondary me-4 my-4 my-lg-1 d-none"
+                        onclick="logout()"></button>
+                    <a class="nav-link" href="./index.html">Home</a>
+                    <a class="nav-link active" href="./settings.html">Settings</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Login</h5>
+                    <button id="buttonCloseLoginModal" type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm" autocomplete="on">
+                        <div class="mb-3">
+                            <label for="usernameInput" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="usernameInput" autocomplete="username">
+                        </div>
+                        <div class="mb-3">
+                            <label for="passwordInput" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="passwordInput"
+                                autocomplete="current-password">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="login()">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <!-- JQuery -->
+    <script src="./js/jquery-3.5.1.slim.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="./js/bootstrap.min.js"></script>
+
+    <!-- Websocket -->
+    <script src="./js/ws.js"></script>
+
+    <!-- Local Script -->
+    <script>
+        // Global structure for common data.
+        var global = {
+            wsClient: new cpjs.ws.Client(),
+            loggedIn: false,
+            targetPlatform: null
+        };
+
+        // Login User
+        function login() {
+            const formElements = document.getElementById('loginForm').elements;
+
+            var usernameInput = formElements["usernameInput"].value;
+            var passwordInput = formElements["passwordInput"].value;
+
+            return global.wsClient.authenticate(usernameInput, passwordInput).then(function (rsp) {
+                var openModalBtn = document.getElementById("openLoginModal").classList;
+                var logoutBtn = document.getElementById("logoutBtn");
+                var closeBtn = document.getElementById("buttonCloseLoginModal");
+                
+                global.loggedIn = true;
+                openModalBtn.add("d-none");
+                logoutBtn.classList.remove("d-none");
+                logoutBtn.innerText = "Logout: " + usernameInput;
+
+                // Close Modal
+                closeBtn.click();
+                return Promise.resolve();
+            }).catch(function(err) {
+                if ("undefined" !== typeof err) {
+                    if(401 == err)
+                    {
+                        // TODO: Improve UE
+                        alert("Invalid username/password combination");
+                        console.warn("Invalid username/password combination");
+                    }
+                    else{
+                        console.error(err);
+                    }
+                }
+            });
+        }
+
+        // Logout User
+        function logout() {
+            if (global.loggedIn)
+            {
+                return global.wsClient.deauthenticate().then(function (rsp) {                    
+                    var openModalBtn = document.getElementById("openLoginModal").classList;
+                    var logoutBtn = document.getElementById("logoutBtn");
+       
+                    openModalBtn.remove("d-none");
+                    logoutBtn.classList.add("d-none");
+                    logoutBtn.innerText = "";
+                    global.loggedIn = false;    
+
+                    return Promise.resolve();
+                }).catch(function(err) {
+                    if ("undefined" !== typeof err) {
+                        console.error(err);
+                    }
+                });
+            }
+            else
+            {
+                console.error("Cannot log-out because user is not logged-in");
+            }
+        }
+
+        // Handler of Websocket Event
+        function onEvent(event) {
+            console.log(event);
+        }
+
+        // Handler of closing of the Websocket 
+        function onClosed() {
+            alert("Websocket Closed!")
+        }
+
+        // Process to perform when document is ready
+        $(document).ready(function () {
+            global.wsClient.connect({
+                protocol: "wss",
+                hostname: location.hostname,
+                port: 443,
+                endpoint: "/api",
+                onEvent: onEvent,
+                onClosed: onClosed,
+            }).then(function () {
+                console.log("Websocket opened.")
+            }).catch(function (err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+            });
+        });
+
+    </script>
+</body>
