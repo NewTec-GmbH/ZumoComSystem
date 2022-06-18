@@ -79,6 +79,50 @@
         </div>
     </div>
 
+    <!-- Settings Cards -->
+    <div class="container p-4" id="settings">
+        <div class="row">
+
+            <!-- Reboot Card -->
+            <div class="col-md my-2">
+                <div class="card border-dark h-100">
+                    <div class="div card-body text-center">
+                        <h3 class="card-title text-center p-2">Reboot</h3>
+                        <select class="form-select my-4" id="targetPlatform" onchange="setTargetPlatform()" required>
+                            <option selected value="1">Zumo32U4 Robot</option>
+                            <option value="2">ZumoComPlatform</option>
+                        </select>
+                        <button class="btn btn-primary p-2" id="rebootButton" onclick="rebootTarget()" disabled>Reboot
+                            Target</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STA Crendentials Card -->
+            <div class="col-md my-2">
+                <div class="card border-dark h-100 text-center">
+                    <div class="div card-body">
+                        <h3 class="card-title text-center p-2 mb-4">Station Credentials</h3>
+                        <form id="staCrendentialsForm" autocomplete="on">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">SSID</span>
+                                <input type="text" class="form-control" id="staSSID">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Passphrase</span>
+                                <input type="password" class="form-control" id="staPassphrase">
+                            </div>
+                        </form>
+                        <button class="btn btn-primary p-2" id="setCredentialsButton" onclick="setSTACrendentials()"
+                            disable>Set
+                            Credentials</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <!-- Placed at the end of the document so the pages load faster -->
 
     <!-- JQuery -->
@@ -110,7 +154,7 @@
                 var openModalBtn = document.getElementById("openLoginModal").classList;
                 var logoutBtn = document.getElementById("logoutBtn");
                 var closeBtn = document.getElementById("buttonCloseLoginModal");
-                
+
                 global.loggedIn = true;
                 openModalBtn.add("d-none");
                 logoutBtn.classList.remove("d-none");
@@ -119,15 +163,14 @@
                 // Close Modal
                 closeBtn.click();
                 return Promise.resolve();
-            }).catch(function(err) {
+            }).catch(function (err) {
                 if ("undefined" !== typeof err) {
-                    if(401 == err)
-                    {
+                    if (401 == err) {
                         // TODO: Improve UE
                         alert("Invalid username/password combination");
                         console.warn("Invalid username/password combination");
                     }
-                    else{
+                    else {
                         console.error(err);
                     }
                 }
@@ -136,28 +179,96 @@
 
         // Logout User
         function logout() {
-            if (global.loggedIn)
-            {
-                return global.wsClient.deauthenticate().then(function (rsp) {                    
+            if (global.loggedIn) {
+                return global.wsClient.deauthenticate().then(function (rsp) {
                     var openModalBtn = document.getElementById("openLoginModal").classList;
                     var logoutBtn = document.getElementById("logoutBtn");
-       
+
                     openModalBtn.remove("d-none");
                     logoutBtn.classList.add("d-none");
                     logoutBtn.innerText = "";
-                    global.loggedIn = false;    
+                    global.loggedIn = false;
 
                     return Promise.resolve();
-                }).catch(function(err) {
+                }).catch(function (err) {
                     if ("undefined" !== typeof err) {
                         console.error(err);
                     }
                 });
             }
-            else
-            {
+            else {
                 console.error("Cannot log-out because user is not logged-in");
             }
+        }
+
+        // Set the Target Platform (ZumoRobot or ZumoComSystem)
+        function setTargetPlatform() {
+            var inputPlatform = document.getElementById("targetPlatform").value;
+            var rebootButton = document.getElementById("rebootButton");
+
+            switch (inputPlatform) {
+                case "1":
+                    global.targetPlatform = "ZUMO";
+                    rebootButton.removeAttribute("disabled");
+                    break;
+                case "2":
+                    global.targetPlatform = "COM";
+                    rebootButton.removeAttribute("disabled");
+                    break;
+
+                default:
+                    console.error("Unknown selection");
+                    break;
+            }
+        }
+
+        // Reboot the target platform
+        function rebootTarget() {
+            var rebootButton = document.getElementById("rebootButton");
+            rebootButton.setAttribute("disabled", "");
+
+            if ("COM" == global.targetPlatform) {
+                alert("ZumoComPlatform will reboot now! Please reload the page after a few seconds.");
+            }
+
+            return global.wsClient.reboot(global.targetPlatform).then(function () {
+                rebootButton.removeAttribute("disabled");
+            }).catch(function (err) {
+                if ("undefined" !== typeof err) {
+                    if (401 == err) {
+                        // TODO: Improve UE
+                        alert("User must be logged-in to perform this operation!");
+                        console.warn("User must be logged-in to perform this operation!");
+                        rebootButton.removeAttribute("disabled");
+                    }
+                    else {
+                        console.error(err);
+                    }
+                }
+            });
+        }
+
+        // Set Station Credentials
+        function setSTACrendentials() {
+            const formElements = document.getElementById('staCrendentialsForm').elements;
+
+            var ssidInput = formElements["staSSID"].value;
+            var passphraseInput = formElements["staPassphrase"].value;
+
+            return global.wsClient.setstacredentials(ssidInput, passphraseInput).then(function (rsp) {
+                alert("Successfully changed the STA network credentials! Reboot the system for the changes to take effect");
+            }).catch(function (err) {
+                if ("undefined" !== typeof err) {
+                    if (401 == err) {
+                        // TODO: Improve UE
+                        alert("User must be logged-in to perform this operation!");
+                        console.warn("User must be logged-in to perform this operation!");
+                    }
+                    else {
+                        console.error(err);
+                    }
+                }
+            });
         }
 
         // Handler of Websocket Event
@@ -180,7 +291,8 @@
                 onEvent: onEvent,
                 onClosed: onClosed,
             }).then(function () {
-                console.log("Websocket opened.")
+                console.log("Websocket opened.");
+                setTargetPlatform();
             }).catch(function (err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
