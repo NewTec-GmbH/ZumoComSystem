@@ -1,1 +1,584 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><title>complatform</title><link href="/css/app.9aea5736.css" rel="preload" as="style"><link href="/css/chunk-vendors.44520931.css" rel="preload" as="style"><link href="/js/app.1e0c0493.js" rel="preload" as="script"><link href="/js/chunk-vendors.baa0b7ab.js" rel="preload" as="script"><link href="/css/chunk-vendors.44520931.css" rel="stylesheet"><link href="/css/app.9aea5736.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but complatform doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div><script src="/js/chunk-vendors.baa0b7ab.js"></script><script src="/js/app.1e0c0493.js"></script></body></html>
+<!--
+  (c) NewTec GmbH 2022   -   www.newtec.de
+  $URL: https://github.com/NewTec-GmbH/ZumoComSystem $
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--Required Meta-tags -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZumoComSystem</title>
+
+    <!--Favicon-->
+    <link rel="shortcut icon" href="./media/favicon.ico" type="image/x-icon">
+
+    <!--Bootstrap CSS-->
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
+        <div class="container-fluid h4">
+
+            <!-- NavBar Brand -->
+            <a class="navbar-brand" href="./index.html"><span class="h3">ZumoComSystem</span></a>
+
+            <!-- NavBar Toggler -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- NavBar Elements -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="navbar-nav ms-auto">
+                    <button id="openLoginModal" class="btn btn-secondary me-4 my-4 my-lg-1" data-bs-toggle="modal" data-bs-target="#loginModal">Login <img src="./media/person.svg" alt="Person" width="25"></button>
+                    <button id="logoutBtn" class="btn btn-secondary me-4 my-4 my-lg-1 d-none" onclick="logout()"></button>
+                    <a class="nav-link active" href="./index.html">Home</a>
+                    <a class="nav-link" href="./settings.html">Settings</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Firmware Tab -->
+    <div class="container p-4" id="firmware">
+
+        <!-- Current Firmware Status -->
+        <div class="container text-center p-2" id="firmwareStatus">
+
+            <!-- Firmware Info when Available -->
+            <div class="container d-none" id="firmwareAvailable">
+                <img src="./media/check-circle.svg" alt="Checked Circle" width="32">
+                <h2>Firmware Available</h2>
+                <div class="row">
+                    <div class="col-6 text-end fw-bold">Target:</div>
+                    <div class="col-6 text-start" id="targetValue"></div>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-end fw-bold">SHA256:</div>
+                    <div class="col-6 text-start" id="shaValue"></div>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-end fw-bold">Valid:</div>
+                    <div class="col-6 text-start" id="validValue"></div>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-end fw-bold">Bytes:</div>
+                    <div class="col-6 text-start" id="bytesValue"></div>
+                </div>
+            </div>
+
+            <!-- Firmware not Available -->
+            <div class="container d-none" id="firmwareNotAvailable">
+                <img src="./media/x-circle.svg" alt="X Circle" width="32">
+                <h2>No Firmware Available</h2>
+            </div>
+        </div>
+    
+        <!-- Actions Panel -->
+        <div class="container p-2" id="actionsPanel">
+            <div class="row">
+
+                <!-- Upload Card -->
+                <div class="col-md my-2">
+                    <div class="card border-dark h-100">
+                        <div class="div card-body text-center">
+                            <h3 class="card-title text-center p-2">Upload</h3>
+                            <select class="form-select mb-2" id="targetPlatform" onchange="setTargetPlatform()" required>
+                                <option selected value="1">Zumo32U4 Robot</option>
+                                <option value="2">ZumoComPlatform</option>
+                            </select>
+                            <select class="form-select mb-2" id="uploadType" onchange="setInputFileType()" required>
+                                <option selected value="1">Signed Firmware (.cpsfw)</option>
+                                <option value="2">Unsigned Firmware (.bin) and Private Signing Key (.pem)</option>
+                            </select>
+                            <input class="form-control mb-2" type="file" id="fileInput" onchange="checkInputFiles()" accept="" required/>
+                            <button class="btn btn-primary" id="uploadButton" onclick="uploadFiles()" disabled>Upload Files</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flash Card -->
+                <div class="col-md my-2">
+                    <div class="card border-dark h-100 text-center">
+                        <div class="div card-body">
+                            <h3 class="card-title text-center p-2 mb-4">Flash</h3>
+                            <button class="btn btn-primary p-4" id="flashButton" onclick="flashFirmware()" disabled>Flash Software to Target</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Login</h5>
+                    <button id="buttonCloseLoginModal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm" autocomplete="on">
+                        <div class="mb-3">
+                          <label for="usernameInput" class="form-label">Username</label>
+                          <input type="text" class="form-control" id="usernameInput" autocomplete="username">
+                        </div>
+                        <div class="mb-3">
+                          <label for="passwordInput" class="form-label" >Password</label>
+                          <input type="password" class="form-control" id="passwordInput" autocomplete="current-password">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="login()">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <!-- JQuery -->
+    <script src="./js/jquery-3.5.1.slim.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="./js/bootstrap.min.js"></script>
+
+    <!-- Websocket -->
+    <script src="./js/ws.js"></script>
+
+    <!-- Local Script -->
+    <script>
+
+        // Global structure for common data.
+        var global = {
+            wsClient: new cpjs.ws.Client(),
+            firmwareAvailable: false,
+            firmwareInfo: {
+                target: null,
+                sha256: null,
+                valid: false,
+                bytes: null
+            },
+            loggedIn: false,
+            targetPlatform: null
+        };
+
+        // Update the display of the Firmware Info.
+        function updateFirmwareInfo() {
+            var fwAvailableTabClasses = document.getElementById("firmwareAvailable").classList;
+            var fwNotAvailableTabClasses = document.getElementById("firmwareNotAvailable").classList;
+            var flashButton = document.getElementById("flashButton");
+            flashButton.setAttribute("disabled", "");
+
+            return global.wsClient.getFirmwareInfo(global.targetPlatform).then(function (rsp) {
+
+                if (("undefined" != typeof rsp.targetSystem) &&
+                    ("undefined" != typeof rsp.payloadHash) &&
+                    ("undefined" != typeof rsp.isValid) &&
+                    ("undefined" != typeof rsp.sizeBytes)) 
+                {
+                    global.firmwareAvailable = true;
+                    global.firmwareInfo.target = rsp.targetSystem;
+                    global.firmwareInfo.sha256 = rsp.payloadHash;
+                    global.firmwareInfo.valid = rsp.isValid;
+                    global.firmwareInfo.bytes = rsp.sizeBytes;
+                }
+
+                if (global.firmwareAvailable == true)
+                {
+
+                    fwAvailableTabClasses.remove("d-none");
+                    fwNotAvailableTabClasses.add("d-none");
+
+                    document.getElementById("targetValue").innerText = global.firmwareInfo.target;
+                    document.getElementById("shaValue").innerText = global.firmwareInfo.sha256.substring(0,4) + "....." + global.firmwareInfo.sha256.substring(60);
+                    document.getElementById("validValue").innerText = global.firmwareInfo.valid;
+                    document.getElementById("bytesValue").innerText = global.firmwareInfo.bytes;
+
+                    if(true == global.firmwareInfo.valid)
+                    {
+                        flashButton.removeAttribute("disabled");
+                    }
+                
+                }
+                else 
+                {
+                    fwAvailableTabClasses.add("d-none");
+                    fwNotAvailableTabClasses.remove("d-none");
+                }
+
+                return Promise.resolve();
+            }).catch(function(err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                    if(500 == err){
+                        global.firmwareAvailable = false;
+                        var fwAvailableTabClasses = document.getElementById("firmwareAvailable").classList;
+                        var fwNotAvailableTabClasses = document.getElementById("firmwareNotAvailable").classList;
+                        fwAvailableTabClasses.add("d-none");
+                        fwNotAvailableTabClasses.remove("d-none");
+                    }
+                    else
+                    {
+                        console.error(err);
+                    }
+                }
+            });
+
+            
+        }
+
+        // Set the type and number of files accepted by the file input field.
+        function setInputFileType() {
+            var inputType = document.getElementById("uploadType").value;
+            var inputField = document.getElementById("fileInput");
+            var uploadButton = document.getElementById("uploadButton");
+
+            uploadButton.setAttribute("disabled", "");
+            
+            switch (inputType) {
+                case "1":
+                    inputField.setAttribute("accept",".cpsfw");
+                    if(inputField.hasAttribute("multiple"))
+                    {
+                        inputField.removeAttribute("multiple");
+                    }
+                    break;
+                
+                case "2":
+                    inputField.setAttribute("accept",".bin,.pem");
+                    inputField.setAttribute("multiple","");
+                    break;
+            
+                default:
+                    console.error("Unknown selection");
+                    break;
+            }
+        }
+
+        // Set the Target Platform (ZumoRobot or ZumoComSystem)
+        function setTargetPlatform() {
+            var inputPlatform = document.getElementById("targetPlatform").value;
+            
+            switch (inputPlatform) {
+                case "1":
+                    global.targetPlatform = "ZUMO";
+                    break;                
+                case "2":
+                    global.targetPlatform = "COM";
+                    break;
+            
+                default:
+                    console.error("Unknown selection");
+                    break;
+            }
+            return updateFirmwareInfo();
+        }
+
+        // Check that the input files are valid before uploading
+        function checkInputFiles() {
+            var areFilesValid = false;
+            var inputType = document.getElementById("uploadType").value;
+            var selectedFiles = document.getElementById("fileInput").files;
+            var uploadButton = document.getElementById("uploadButton");
+
+            uploadButton.setAttribute("disabled", "");
+
+            switch (inputType) {
+                case "1":
+                    // Checking is handled by form's attributes: Multiple not allowed, and file ending is .cpsfw
+                    areFilesValid = true;
+                    break;
+
+                case "2":
+                    if(2 != selectedFiles.length)
+                    {
+                        alert("2 files are required!");
+                    }
+                    else
+                    {
+                        var hasFirmware = false;
+                        var hasSigningKey = false;
+
+                        for (let index = 0; index < selectedFiles.length; index++) {
+                            const file = selectedFiles[index];
+                            hasFirmware = /.*\.bin/.test(file.name) || hasFirmware;
+                            hasSigningKey = /.*\.pem/.test(file.name) || hasSigningKey;
+                        }
+
+                        if(hasFirmware && hasSigningKey)
+                        {
+                            areFilesValid = true;
+                        }
+                        else
+                        {
+                            // Log selected files for debug.
+                            console.log(selectedFiles);
+                            console.log("Firmware: " + hasFirmware);
+                            console.log("Key: " + hasSigningKey);
+                        }
+                    }
+                    break;
+                    
+                    default:
+                        console.log("Unknown selection");
+                        break;
+            }
+
+            if (areFilesValid) {
+                uploadButton.removeAttribute("disabled");
+            }
+        }
+
+        // Upload Files
+        function uploadFiles() {
+            /*
+                Upload Sequence:
+                - Read Uploaded Files
+                - If PEM and BIN files uploaded: Parse CPSFW and download it to client
+                - Retrieve Header from CPSFW
+                - Calculate Number of Chunks and size of (last) remainder Chunk.
+                - Send uploadzumoTEXT to change API to Binary
+                - Wait for Code 200
+                - Send Chunks. Wait for individual SUCCESS Response before sending the next chunk.
+            */
+
+            var files = document.getElementById("fileInput").files;
+            var inputType = document.getElementById("uploadType").value;
+            var flashButton = document.getElementById("flashButton");
+            var firmware = null;
+            var fileReader = new FileReader(); 
+            var binaryRead = new Uint8Array();
+
+            flashButton.setAttribute("disabled", "");
+            
+            if (2 == inputType) {
+                // PEM and BIN files uploaded: Parse CPSFW and download it to client
+                // TODO: bin + pem = cpsfw
+                // firmware = outputCpsfwFile;
+                alert("Support for binary files is not implemented yet!")
+            }
+            else
+            {
+                firmware = files[0];
+            }
+
+            if(false == /.*\.cpsfw/.test(firmware.name))
+            {
+                console.error("Wrong Input file. Expected CPSFW File");
+            }
+            else
+            {
+                /* Read the unsigned firmware binary */
+                fileReader.readAsArrayBuffer(firmware);
+                /* Called when firmware has been read */
+                fileReader.onload = (event) => {
+                    let firmwareBinary = new Uint8Array(fileReader.result);
+
+                    global.wsClient.upload(firmwareBinary.length, global.targetPlatform).then(function() {
+                        console.debug("Successfully switched to API to BINARY Mode");
+
+                        const uploadBlockSizeBytes = 2048;
+                        const uploadChunks = Math.floor(firmwareBinary.length / uploadBlockSizeBytes);
+                        const remainingBytes = firmwareBinary.length % uploadBlockSizeBytes;
+
+                        let chunkBuffer = new Uint8Array(uploadBlockSizeBytes);
+                        let remainBuffer = new Uint8Array(remainingBytes);
+                        let byteOffset = 0;
+                        let retCode = true;
+                        let uploadProgressPercent = 0;
+                        let promiseChain = Promise.resolve();
+
+                        console.debug("Chunks to be uploaded: " + (uploadChunks + 1));
+
+
+                        for (let chunkNo = 0; chunkNo < uploadChunks; chunkNo++) {
+                            promiseChain = promiseChain.then(function () {
+                                if (true === retCode){
+                                    byteOffset = (chunkNo * uploadBlockSizeBytes);
+      
+                                    /* Assemble current package */
+                                    for (let byteIdx = 0; byteIdx < uploadBlockSizeBytes; byteIdx++) {
+                                        chunkBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
+                                    }
+
+                                    /* Send the current chunk/package */
+                                    return global.wsClient.uploadChunk(chunkBuffer).then(function () {
+                                        uploadProgressPercent = Math.round((chunkNo / uploadChunks) * 100);
+                                        console.info("Upload Progress: " + uploadProgressPercent + "%")
+                                    }).catch(function () {
+                                        console.error("Could not upload data chunk! Aborting upload now!");
+                                        retCode = false;
+                                    });
+                                }
+                            });
+                        }
+
+                        promiseChain.then(function () {
+                            if (true === retCode) {
+                                byteOffset = (uploadChunks * uploadBlockSizeBytes);
+
+                                /* Assemble last package */
+                                for (let byteIdx = 0; byteIdx < remainingBytes; byteIdx++) {
+                                    remainBuffer[byteIdx] = firmwareBinary[byteOffset + byteIdx];
+                                }
+
+                                /* Send the current chunk/package */
+                                global.wsClient.uploadChunk(remainBuffer).then(function () {
+                                    uploadProgressPercent = 100;
+                                    console.info("Upload Progress: " + uploadProgressPercent + "%")
+                                    updateFirmwareInfo();
+                                }).catch(function () {
+                                    console.error("Could not upload last data chunk!");
+                                    retCode = false;
+                                });
+                            } else {
+                                console.error("Not sending remaining bytes because previous packet could not be sent!");
+                            }
+                        });
+                    }).catch(function(err) {
+                        if ("undefined" !== typeof err) {
+                            console.error(err);
+                        }
+                    });
+                };
+            };
+        }
+        
+        // Flash the available firmware
+        function flashFirmware() {
+            // TODO: Add animation to show the firmware is being flashed.
+            var flashButton = document.getElementById("flashButton");
+            flashButton.setAttribute("disabled", "");
+            
+            return global.wsClient.flash(global.targetPlatform).then(function (rsp) {    
+                // Improve UX                
+                alert("Zumo successfully flashed!");
+                flashButton.removeAttribute("disabled");
+                return Promise.resolve();
+            }).catch(function(err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                    if(401 == err)
+                    {
+                        // TODO: Improve UE
+                        alert("User must be logged-in to perform this operation!");
+                        console.warn("User must be logged-in to perform this operation!");
+                    }
+                    else{
+                        console.error(err);
+                        alert("Unknown Error: Could not flash Zumo.");
+                    }
+                    flashButton.removeAttribute("disabled");
+                }
+            });
+        }
+
+        // Login User
+        function login() {
+            const formElements = document.getElementById('loginForm').elements;
+
+            var usernameInput = formElements["usernameInput"].value;
+            var passwordInput = formElements["passwordInput"].value;
+
+            return global.wsClient.authenticate(usernameInput, passwordInput).then(function (rsp) {
+                var openModalBtn = document.getElementById("openLoginModal").classList;
+                var logoutBtn = document.getElementById("logoutBtn");
+                var closeBtn = document.getElementById("buttonCloseLoginModal");
+                
+                global.loggedIn = true;
+                openModalBtn.add("d-none");
+                logoutBtn.classList.remove("d-none");
+                logoutBtn.innerText = "Logout: " + usernameInput;
+
+                // Close Modal
+                closeBtn.click();
+                return Promise.resolve();
+            }).catch(function(err) {
+                if ("undefined" !== typeof err) {
+                    if(401 == err)
+                    {
+                        // TODO: Improve UE
+                        alert("Invalid username/password combination");
+                        console.warn("Invalid username/password combination");
+                    }
+                    else{
+                        console.error(err);
+                    }
+                }
+            });
+        }
+
+        // Logout User
+        function logout() {
+            if (global.loggedIn)
+            {
+                return global.wsClient.deauthenticate().then(function (rsp) {                    
+                    var openModalBtn = document.getElementById("openLoginModal").classList;
+                    var logoutBtn = document.getElementById("logoutBtn");
+       
+                    openModalBtn.remove("d-none");
+                    logoutBtn.classList.add("d-none");
+                    logoutBtn.innerText = "";
+                    global.loggedIn = false;    
+
+                    return Promise.resolve();
+                }).catch(function(err) {
+                    if ("undefined" !== typeof err) {
+                        console.error(err);
+                    }
+                });
+            }
+            else
+            {
+                console.error("Cannot log-out because user is not logged-in");
+            }
+        }
+
+        // Handler of Websocket Event
+        function onEvent(event) {
+            console.log(event);
+        }
+
+        // Handler of closing of the Websocket 
+        function onClosed() {
+            alert("Websocket Closed!")
+        }
+
+        // Process to perform when document is ready
+        $(document).ready(function () {
+            global.wsClient.connect({
+                protocol: "wss",
+                hostname: location.hostname,
+                port: 443,
+                endpoint: "/api",
+                onEvent: onEvent,
+                onClosed: onClosed,
+            }).then(function () {
+                console.log("Websocket opened.")
+                setInputFileType();
+                return setTargetPlatform();
+            }).catch(function (err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+            });
+
+        });
+
+    </script>
+</body>
+
+</html>

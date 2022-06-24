@@ -58,7 +58,8 @@ Session::Session() :
     m_expectedOperation(),
     m_sessionAuthenticated(false),
     m_linkedUser(nullptr),
-    m_lastAccessTime(0)
+    m_lastAccessTime(0),
+    m_messageQueue(nullptr)
 {
     m_messageQueue = xQueueCreate( 10, sizeof( char* ) );
 }
@@ -186,6 +187,11 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
                         LOG_ERROR("Could not push message to Queue");
                     }
                 }
+                else
+                {
+                    response.setStatusCode(ERROR);
+                    LOG_ERROR("Command (cmdStr) is nullptr");
+                }
             }
             else
             {
@@ -222,21 +228,24 @@ void Session::onMessage(httpsserver::WebsocketInputStreambuf* inputBuffer)
             /* Read entire buffer. Get the request payload text */
             stringStream << inputBuffer;
             inputString = stringStream.str();
-            LOG_DEBUG(String("Incoming request data:\n") + inputString.c_str());
+            LOG_DEBUG(String("Incoming request data:\n") + inputString.c_str());        
 
-            String serial = inputString.c_str();
-
-            char* cmdStr = new char[serial.length() + 1];
+            char* cmdStr = new char[inputString.length() + 1];
 
             if (nullptr != cmdStr)
             {
-                strcpy(cmdStr, serial.c_str());
+                strcpy(cmdStr, inputString.c_str());
 
                 if (pdFALSE == xQueueSend(m_messageQueue, &cmdStr, portMAX_DELAY))
                 {
                     response.setStatusCode(BAD_REQUEST);
                     LOG_ERROR("Could not push message to Queue");
                 }
+            }
+            else
+            {
+                response.setStatusCode(ERROR);
+                LOG_ERROR("Command (cmdStr) is nullptr");
             }
         }
         else
@@ -397,8 +406,8 @@ void Session::handleSession(void* parameter)
             /* Check if the session exists or has been stopped before timeout */
             if (nullptr != currentSession)
             {
-                char* cmdStr;
-                
+                char* cmdStr = nullptr;
+
                 if (pdFALSE != xQueueReceive(currentSession->m_messageQueue, &cmdStr, 0))
                 {
                     ApiResponse response;
@@ -408,14 +417,14 @@ void Session::handleSession(void* parameter)
 
                     response.setStatusCode(SUCCESS);
 
-                    if((true == currentSession->m_expectBinary) && (String(cmdStr) == binaryIsReady))
+                    if ((true == currentSession->m_expectBinary) && (0 == strcmp(cmdStr, binaryIsReady.c_str())))
                     {
                         LOG_DEBUG("Binary is expected and ready!");
                         /* Call the API service */
-	                    RequestResponseHandler::getInstance().makeRequest(currentSession->m_expectedOperation, response, currentSession);
+                        RequestResponseHandler::getInstance().makeRequest(currentSession->m_expectedOperation, response, currentSession);
 
                     }
-                    else if((false == currentSession->m_expectBinary) && (String(cmdStr) == binaryIsReady))
+                    else if ((false == currentSession->m_expectBinary) && (0 == strcmp(cmdStr, binaryIsReady.c_str())))
                     {
                         LOG_ERROR("Something went wrong here!");
                     }
