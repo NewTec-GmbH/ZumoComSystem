@@ -62,7 +62,7 @@ const KeyValue HTTPsWebServer::m_servedFileTypes[] =
 };
 
 HTTPsWebServer::HTTPsWebServer() :
-    m_httpsServer(Store::getInstance().getKeyCert().getSSLCert(), SHARED_TCP_PORT, MAX_CLIENTS),
+    m_httpsServer(SHARED_TCP_PORT, MAX_CLIENTS),
     m_fileServeRoute("", "", &registerFileServing),
     m_apiRoute("/api", &Session::create),
     m_store(Store::getInstance())

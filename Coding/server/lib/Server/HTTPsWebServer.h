@@ -83,7 +83,7 @@ public:
 
 private:
     /** TCP port which is used for frontend delivery as well as backend API services */
-    static const uint16_t SHARED_TCP_PORT = 443;
+    static const uint16_t SHARED_TCP_PORT = 80;
 
     /** Max number of concurrent clients which can access the server */
     static const uint8_t MAX_CLIENTS = 4;
@@ -92,7 +92,7 @@ private:
     static const KeyValue m_servedFileTypes[];
 
     /** HTTPSServer instance */
-    httpsserver::HTTPSServer m_httpsServer;
+    httpsserver::HTTPServer m_httpsServer;
 
     /** Specifies the file serving route */
     httpsserver::ResourceNode m_fileServeRoute;

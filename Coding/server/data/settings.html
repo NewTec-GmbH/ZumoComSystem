@@ -284,9 +284,9 @@
         // Process to perform when document is ready
         $(document).ready(function () {
             global.wsClient.connect({
-                protocol: "wss",
+                protocol: "ws",
                 hostname: location.hostname,
-                port: 443,
+                port: 80,
                 endpoint: "/api",
                 onEvent: onEvent,
                 onClosed: onClosed,
