@@ -65,22 +65,14 @@ If the building process is successful, proceed to upload the firmware using the 
 # User Interface
 
 ## :house: Home Page
-Upon visiting the Frontend, you are welcomed by the home page, which provides some information about the ZumoComPlatform. The different pages of the interface can be accessed through the navigation bar to the left, while the target selection and login are located on the top right corner.
+Upon visiting the Frontend, you are welcomed by the home page, which provides the firmware information at a glance. The different pages of the interface can be accessed through the navigation bar to the top. The upload and flash options are organized in Cards.
 
 ![Home Screen](./Coding/doc/images/Client_Home.png)
 
-<details><summary>Target Selection</summary>
-<p>
-
-The Web Interface provides the possibility of choosing which target should be controlled or flashed with the uploaded firmware: the Zumo Robot or the ZumoComSystem itself.
-
-![Target Select](./Coding/doc/images/Client_TargetSelect.png)
-
-</p>
-</details>
-
 <details><summary>User Accounts</summary>
 <p>
+
+On the Navigation Bar is the Login/Logout Button.
 
 There are two User Accounts available by default:
 
@@ -92,9 +84,7 @@ There are two User Accounts available by default:
 </p>
 </details>
 
-## :cloud: Upload Page
-
-The upload page shows the status of the available firmware in the platform.
+## :cloud: Upload Card
 
 ![Upload Screen](./Coding/doc/images/Client_Upload.png)
 
@@ -103,7 +93,10 @@ If there is no firmware in the System's memory, it facilitates the upload of the
 * Upload signed Firmware (.cpsfw)
 * Upload unsigned Firmware (.bin) and a RSA2048 signing (private) key (.pem) as mentioned in the [preparation](#preparation) section.
 
-## :zap: Flash Page
+The Web Interface provides the possibility of choosing which target should be controlled or flashed with the uploaded firmware: the Zumo Robot or the ZumoComSystem itself.
+
+
+## :zap: Flash Card
 
 Once the Firmware is succesfully uploaded, it saved in the memory of the ZumoComPlatform and can be flashed onto the Zumo Robot.
 
@@ -115,12 +108,7 @@ When working on the **ComPlatform Target**, it is possible to configure the Stat
 
 ![Settings Screen](./Coding/doc/images/Client_Settings.png)
 
-The Reboot Button affects the currently-selected target:
-
-
-|![Reboot Button Zumo](./Coding/doc/images/Client_RebootZumo.png) | ![Reboot Button Platform](./Coding/doc/images/Client_RebootPlatform.png)|
-| :---: | :---: |
-
+The Reboot Button affects the currently-selected target.
 
 
 # Documentation
@@ -132,14 +120,10 @@ For more in-depth information, see the [software](./Coding/doc/README.md) and [h
 |:--------:|:--------:|:-----------:|
 | [Arduino](https://github.com/platformio/platform-espressif32) | ESP32 Arduino framework | Apache-2.0 |
 | [ArduinoJson](https://github.com/bblanchon/ArduinoJson ) | JSON handling |  MIT |
+| [Bootstrap](https://getbootstrap.com/docs/5.0/getting-started/introduction/) | Frontend Toolkit |  MIT |
 | [Crypto](https://github.com/OperatorFoundation/Crypto ) | Hashing |  MIT |
-| [ESP32 HTTPs server](https://github.com/fhessel/esp32_https_server ) | HTTPs server | MIT |
-| [USB Host Library Rev. 2.0 ](https://github.com/felis/USB_Host_Shield_2.0 ) | SPI-USB-Adapter driver  |  GLP |
-| [Vue.js](https://github.com/vuejs/vue ) | Frontend framework  |  MIT |
-| [PrimeVue](https://github.com/primefaces/primevue) | Frontend UI  |  MIT |
-| [PrimeIcons](https://github.com/primefaces/primeicons) | Frontend Icons  |  MIT |
-| [jsrsasign](https://github.com/kjur/jsrsasign) | RSA file signing |  MIT |
-| [file-saver](https://github.com/eligrey/FileSaver.js) | Saving blobs to file |  MIT |
+| [ESP32 HTTPS server](https://github.com/NewTec-GmbH/esp32_https_server ) | HTTPs server | MIT |
+| [USB Host Library Rev. 2.0 ](https://github.com/NewTec-GmbH/USB_Host_Shield_2.0) | SPI-USB-Adapter driver  |  GLP |
 
 # License
 This project is published under the [BSD 3-Clause "New" or "Revised" License](./LICENSE).
