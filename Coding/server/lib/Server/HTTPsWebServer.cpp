@@ -45,7 +45,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <HTTPResponse.hpp>
 #include <ResponseCode.h>
 #include <Session.h>
-#include <Store.h>
 
 const KeyValue HTTPsWebServer::m_servedFileTypes[] =
 {
@@ -64,8 +63,7 @@ const KeyValue HTTPsWebServer::m_servedFileTypes[] =
 HTTPsWebServer::HTTPsWebServer() :
     m_httpsServer(SHARED_TCP_PORT, MAX_CLIENTS),
     m_fileServeRoute("", "", &registerFileServing),
-    m_apiRoute("/api", &Session::create),
-    m_store(Store::getInstance())
+    m_apiRoute("/api", &Session::create)
 {
 }
 

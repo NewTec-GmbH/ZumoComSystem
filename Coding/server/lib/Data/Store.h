@@ -44,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <NVSManager.h>
 #include <NetworkCredentials.h>
-#include <KeyCert.h>
 #include <User.h>
 #include <FirmwareInfo.h>
 
@@ -96,34 +95,6 @@ public:
      * @return Returns true if succesful, false if error occured
      */
     bool deleteSTACredentials();
-
-    /**
-    * Get the private RSA key and the public certificate
-    *
-    * @return Returns the KeyCert instance
-    */
-    KeyCert& getKeyCert();
-
-    /**
-     * Set the private RSA key and the public certificate
-     *
-     * @param[in] keycert The new KeyCert instance to be saved
-     */
-    void setKeyCert(const KeyCert& keycert);
-
-    /**
-     * Save KeyCert to persistent storage
-     *
-     * @return Returns true if successful, false if error occured
-     */
-    bool saveKeyCert();
-
-    /**
-     * Load KeyCert from persistent storage to store
-     *
-     * @return Returns true if succesful, false if error occured
-     */
-    bool loadKeyCert();
 
     /**
      * Returns the User instance
@@ -194,9 +165,6 @@ private:
 
     /** Instance of NetworkCredentials which contains SSID and passphrase for AP mode */
     NetworkCredentials m_apCredentials;
-
-    /** Instance of KeyCert to store private RSA key as well as public certificate for HTTPs and WSS servers */
-    KeyCert m_keyCert;
 
     /** Instance of users */
     User m_users;

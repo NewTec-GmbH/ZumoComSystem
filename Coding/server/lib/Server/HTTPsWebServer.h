@@ -100,9 +100,6 @@ private:
     /** Specifies the API route */
     httpsserver::WebsocketNode m_apiRoute;
 
-    /** Store instance */
-    Store& m_store;
-
     /**
      * Handles incoming file requests
      *

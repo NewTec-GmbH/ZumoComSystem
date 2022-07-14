@@ -46,7 +46,6 @@ Store::Store() :
     m_nvsmgr(),
     m_staCredentials(),
     m_apCredentials(),
-    m_keyCert(),
     m_users()
 {
 }
@@ -100,123 +99,6 @@ bool Store::loadSTACredentials()
 bool Store::deleteSTACredentials()
 {
     return m_nvsmgr.deleteEntry("netCredentials");
-}
-
-KeyCert& Store::getKeyCert()
-{
-    return m_keyCert;
-}
-
-void Store::setKeyCert(const KeyCert& keycert)
-{
-    m_keyCert = keycert;
-}
-
-bool Store::saveKeyCert()
-{
-    /* Stores if writing to NVS was successful */
-    bool        putRSAResult    = false;
-    bool        putCertResult   = false;
-    bool        isSuccessful    = false;
-    size_t      keyBufferSize   = 0;
-    size_t      certBufferSize  = 0;
-    uint8_t*    keyBuffer       = nullptr;
-    uint8_t*    certBuffer      = nullptr;
-
-    m_keyCert.serialize(nullptr, keyBufferSize, nullptr, certBufferSize);
-
-    keyBuffer   = new(std::nothrow) uint8_t[keyBufferSize];
-    certBuffer  = new(std::nothrow) uint8_t[certBufferSize];
-
-    if ((nullptr == keyBuffer) || (nullptr == certBuffer))
-    {
-        LOG_ERROR("Out of memory. Could not create buffers for KeyCert serialization!");
-    }
-    else
-    {
-        m_keyCert.serialize(keyBuffer, keyBufferSize, certBuffer, certBufferSize);
-
-        putRSAResult    = m_nvsmgr.putEntry("rsakey", keyBuffer, keyBufferSize);
-        putCertResult   = m_nvsmgr.putEntry("sslcert", certBuffer, certBufferSize);
-
-        if ((false == putRSAResult) || (false == putCertResult))
-        {
-            LOG_ERROR("Could not save KeyCert to persistent storage");
-        }
-        else
-        {
-            isSuccessful = true;
-        }
-    }
-
-    if (nullptr != keyBuffer)
-    {
-        delete[] keyBuffer;
-    }
-
-    if (nullptr != certBuffer)
-    {
-        delete[] certBuffer;
-    }
-
-    return isSuccessful;
-}
-
-bool Store::loadKeyCert()
-{
-    bool        getRSAResult    = false;
-    bool        getCertResult   = false;
-    bool        isSuccessful    = false;
-    size_t      keyBufferSize   = 0;
-    size_t      certBufferSize  = 0;
-    uint8_t*    keyBuffer       = nullptr;
-    uint8_t*    certBuffer      = nullptr;
-
-    getRSAResult    = m_nvsmgr.readEntry("rsakey", nullptr, keyBufferSize);
-    getCertResult   = m_nvsmgr.readEntry("sslcert", nullptr, certBufferSize);
-    
-    if ((true == getRSAResult) &&
-        (true == getCertResult) &&
-        (0 < keyBufferSize) &&
-        (0 < certBufferSize))
-    {
-        keyBuffer   = new(std::nothrow) uint8_t[keyBufferSize];
-        certBuffer  = new(std::nothrow) uint8_t[certBufferSize];
-
-        if ((nullptr == keyBuffer) || (nullptr == certBuffer))
-        {
-            LOG_ERROR("Out of memory. Could not create buffers for KeyCert deserialization!");
-        }
-        else
-        {
-            /* Stores if reading from NVS was successful */
-            getRSAResult    = m_nvsmgr.readEntry("rsakey", keyBuffer, keyBufferSize);
-            getCertResult   = m_nvsmgr.readEntry("sslcert", certBuffer, certBufferSize);
-
-            if ((false == getRSAResult) || (false == getCertResult))
-            {
-                LOG_ERROR("Could not load KeyCert from persistent storage");
-            }
-            else
-            {
-                m_keyCert.deserialize(keyBuffer, keyBufferSize, certBuffer, certBufferSize);
-
-                isSuccessful = true;
-            }
-        }
-
-        if (nullptr != keyBuffer)
-        {
-            delete[] keyBuffer;
-        }
-
-        if (nullptr != certBuffer)
-        {
-            delete[] certBuffer;
-        }
-    }
-
-    return isSuccessful;
 }
 
 const User& Store::getUsers() const

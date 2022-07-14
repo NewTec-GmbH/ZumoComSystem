@@ -88,9 +88,6 @@ private:
     /** Instance of HTTPsWebServer */
     HTTPsWebServer* m_webServer;
 
-    /** The binary semaphore for synchronizing init task and KeyCert generation task */
-    static SemaphoreHandle_t m_genKeyCertSemaphore;
-
     /** Specifies how long the service handling task should be put to sleep */
     static const uint8_t SERVICE_HANDLING_SLEEP_TIME_MS = 1;
 
@@ -103,21 +100,6 @@ private:
      * Destructor
      */
     ~System();
-
-    /**
-    * Generates a private RSA key and SSL certificate
-    *
-    * @param[in] parameter Void pointer for passing optional and arbitrary arguments
-    */
-    static void genKeyCertTask(void* parameter);
-
-    /**
-     * Registers and starts an asynchronous background task which generates a private RSA key and a SSL certificate
-     * if it does not already exist. The task will automatically be deleted when the task has finished work.
-     *
-     * @return Returns true if successful, else false
-     */
-    bool registerKeyCertGenTask();
 };
 #endif /** __SYSTEM_H__ */
 
