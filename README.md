@@ -13,8 +13,6 @@ This Shield has been developed in order to provide the possibility of uploading 
 
 The communication between the Shield and the Zumo is done through Maxim's [MAX3421E](https://datasheets.maximintegrated.com/en/ds/MAX3421E.pdf) in conjunction with the [USB Host Shield 2.0](https://github.com/felis/USB_Host_Shield_2.0) Library. Due to a [bug](https://github.com/felis/USB_Host_Shield_2.0/issues/295) preventing the communication with the Zumo Robot, this project uses a [fork](https://github.com/NewTec-GmbH/USB_Host_Shield_2.0/tree/3_Endpoints_ACM) of the original library.
 
-With security in mind, the Shield uses a [HTTPs Web Server](https://github.com/NewTec-GmbH/esp32_https_server), as well as other cryptographic functionalities to secure the user's information.
-
 Additional features such as extra batteries and remote control of the robot's buttons have been also implemented.
 
 The following diagram depicts the minimal wiring setup for the successful flashing of the Zumo Robot:
@@ -53,13 +51,9 @@ If the building process is successful, proceed to upload the firmware using the 
 - Default AP SSID: “ComPlatform_xxxxxxxxx”
 - Default AP Password: “21091986”
 - Default AP IP Address: 192.168.4.1
-- Web Interface: https://`<IP Address>`/index.html or  https://complatform/index.html
+- Web Interface: https://`<IP Address>`/index.html or http://complatform/index.html
 
-:warning: Make sure to use HTTPS (Port 443), as the ZumoComSystem does **not** provide an HTTP (Port 80) connection.
-
-:key: As the CA Root Certificate is self-signed by the ZumoComSystem, modern browsers flag this as an unsafe website. This is a normal/expected behaviour and can be ignored.
-
-:key: In Debug Mode, the IP Address of the ZumoComSystem is logged to the serial monitor.
+:key: In Debug Mode, the IP Address of the ZumoComSystem is logged to the serial monitor. In Release Mode, you can find your device through in your network router or user Network Scanner.
 
 ---
 # User Interface
@@ -122,7 +116,7 @@ For more in-depth information, see the [software](./Coding/doc/README.md) and [h
 | [ArduinoJson](https://github.com/bblanchon/ArduinoJson ) | JSON handling |  MIT |
 | [Bootstrap](https://getbootstrap.com/docs/5.0/getting-started/introduction/) | Frontend Toolkit |  MIT |
 | [Crypto](https://github.com/OperatorFoundation/Crypto ) | Hashing |  MIT |
-| [ESP32 HTTPS server](https://github.com/NewTec-GmbH/esp32_https_server ) | HTTPs server | MIT |
+| [ESP32 HTTPS server](https://github.com/NewTec-GmbH/esp32_https_server/tree/feature/Arduino2.0.x ) | HTTP server | MIT |
 | [USB Host Library Rev. 2.0 ](https://github.com/NewTec-GmbH/USB_Host_Shield_2.0) | SPI-USB-Adapter driver  |  GLP |
 
 # License
