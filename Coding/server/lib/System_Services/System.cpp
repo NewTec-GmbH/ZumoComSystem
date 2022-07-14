@@ -46,14 +46,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Session.h>
 #include <Store.h>
 #include <WiFiManager.h>
-#include <HTTPsWebServer.h>
+#include <HTTPWebServer.h>
 #include <Zumo32U4.h>
 #include <FileManager.h>
 
 System::System() :
     m_store(Store::getInstance()),
     m_wifimgr(new WiFiManager()),
-    m_webServer(new HTTPsWebServer())
+    m_webServer(new HTTPWebServer())
 {
 }
 

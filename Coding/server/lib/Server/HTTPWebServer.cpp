@@ -31,22 +31,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file HTTPsWebServer.cpp
+ * @file HTTPWebServer.cpp
  * @author Luis Moser
- * @brief HTTPsWebServer class
+ * @brief HTTPWebServer class
  * @date 07/07/2021
  * @addtogroup Server
  * @{
  */
 
-#include <HTTPsWebServer.h>
+#include <HTTPWebServer.h>
 #include <Log.h>
 #include <HTTPRequest.hpp>
 #include <HTTPResponse.hpp>
 #include <ResponseCode.h>
 #include <Session.h>
 
-const KeyValue HTTPsWebServer::m_servedFileTypes[] =
+const KeyValue HTTPWebServer::m_servedFileTypes[] =
 {
     {".html", "text/html"},
     {".css", "text/css"},
@@ -60,19 +60,19 @@ const KeyValue HTTPsWebServer::m_servedFileTypes[] =
     {".eot", "font/eot"},
 };
 
-HTTPsWebServer::HTTPsWebServer() :
+HTTPWebServer::HTTPWebServer() :
     m_httpsServer(SHARED_TCP_PORT, MAX_CLIENTS),
     m_fileServeRoute("", "", &registerFileServing),
     m_apiRoute("/api", &Session::create)
 {
 }
 
-HTTPsWebServer::~HTTPsWebServer()
+HTTPWebServer::~HTTPWebServer()
 {
     stopServer();
 }
 
-bool HTTPsWebServer::startServer()
+bool HTTPWebServer::startServer()
 {
     m_httpsServer.registerNode(&m_fileServeRoute);
     m_httpsServer.setDefaultNode(&m_fileServeRoute);
@@ -84,18 +84,18 @@ bool HTTPsWebServer::startServer()
     return ((1 == m_httpsServer.start()) && (true == m_httpsServer.isRunning()));
 }
 
-void HTTPsWebServer::stopServer()
+void HTTPWebServer::stopServer()
 {
     m_httpsServer.stop();
     LOG_DEBUG("HTTPs and WSS servers have been stopped");
 }
 
-void HTTPsWebServer::handleServer()
+void HTTPWebServer::handleServer()
 {
     m_httpsServer.loop();
 }
 
-void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response)
+void HTTPWebServer::registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response)
 {
     if (request->getMethod() == "GET")
     {
@@ -175,7 +175,7 @@ void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, http
     }
 }
 
-void HTTPsWebServer::getMIMEType(const String& filePath, String& mimeType)
+void HTTPWebServer::getMIMEType(const String& filePath, String& mimeType)
 {
     const uint8_t arrLength = sizeof(m_servedFileTypes) / sizeof(m_servedFileTypes[0]);
 

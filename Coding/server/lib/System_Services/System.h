@@ -44,7 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Store;
 class WiFiManager;
-class HTTPsWebServer;
+class HTTPWebServer;
 
 #include <Arduino.h>
 
@@ -85,8 +85,8 @@ private:
     /** Instance of WiFiManager */
     WiFiManager* m_wifimgr;
 
-    /** Instance of HTTPsWebServer */
-    HTTPsWebServer* m_webServer;
+    /** Instance of HTTPWebServer */
+    HTTPWebServer* m_webServer;
 
     /** Specifies how long the service handling task should be put to sleep */
     static const uint8_t SERVICE_HANDLING_SLEEP_TIME_MS = 1;

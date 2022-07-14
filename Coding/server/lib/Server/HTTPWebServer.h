@@ -31,16 +31,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file HTTPsWebServer.h
+ * @file HTTPWebServer.h
  * @author Luis Moser
- * @brief HTTPsWebServer header
+ * @brief HTTPWebServer header
  * @date 07/07/2021
  * @addtogroup Server
  * @{
  */
 
-#ifndef __HTTPSWEBSERVER_H__
-#define __HTTPSWEBSERVER_H__
+#ifndef __HTTPWEBSERVER_H__
+#define __HTTPWEBSERVER_H__
 
 #include <Arduino.h>
 #include <HTTPSServer.hpp>
@@ -51,18 +51,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class Store;
 
 /** Wrapper class for managing the HTTPS/WSS servers */
-class HTTPsWebServer
+class HTTPWebServer
 {
 public:
     /**
      * Default Constructor
      */
-    HTTPsWebServer();
+    HTTPWebServer();
 
     /**
      * Destructor
      */
-    ~HTTPsWebServer();
+    ~HTTPWebServer();
 
     /**
      * Starts the HTTPs and WSS servers
