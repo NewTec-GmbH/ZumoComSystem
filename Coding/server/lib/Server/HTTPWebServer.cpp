@@ -61,7 +61,7 @@ const KeyValue HTTPWebServer::m_servedFileTypes[] =
 };
 
 HTTPWebServer::HTTPWebServer() :
-    m_httpsServer(SHARED_TCP_PORT, MAX_CLIENTS),
+    m_httpServer(SHARED_TCP_PORT, MAX_CLIENTS),
     m_fileServeRoute("", "", &registerFileServing),
     m_apiRoute("/api", &Session::create)
 {
@@ -74,25 +74,25 @@ HTTPWebServer::~HTTPWebServer()
 
 bool HTTPWebServer::startServer()
 {
-    m_httpsServer.registerNode(&m_fileServeRoute);
-    m_httpsServer.setDefaultNode(&m_fileServeRoute);
+    m_httpServer.registerNode(&m_fileServeRoute);
+    m_httpServer.setDefaultNode(&m_fileServeRoute);
     LOG_INFO("Registered file serving route");
 
-    m_httpsServer.registerNode(&m_apiRoute);
+    m_httpServer.registerNode(&m_apiRoute);
     LOG_INFO("Registered websocket API route");
 
-    return ((1 == m_httpsServer.start()) && (true == m_httpsServer.isRunning()));
+    return ((1 == m_httpServer.start()) && (true == m_httpServer.isRunning()));
 }
 
 void HTTPWebServer::stopServer()
 {
-    m_httpsServer.stop();
+    m_httpServer.stop();
     LOG_DEBUG("HTTPs and WSS servers have been stopped");
 }
 
 void HTTPWebServer::handleServer()
 {
-    m_httpsServer.loop();
+    m_httpServer.loop();
 }
 
 void HTTPWebServer::registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response)

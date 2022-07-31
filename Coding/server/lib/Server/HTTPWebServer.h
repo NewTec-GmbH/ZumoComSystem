@@ -43,14 +43,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __HTTPWEBSERVER_H__
 
 #include <Arduino.h>
-#include <HTTPSServer.hpp>
+#include <HTTPServer.hpp>
 #include <FileManager.h>
 #include <Session.h>
 #include <KeyValue.h>
 
 class Store;
 
-/** Wrapper class for managing the HTTPS/WSS servers */
+/** Wrapper class for managing the HTTP/WS servers */
 class HTTPWebServer
 {
 public:
@@ -65,19 +65,19 @@ public:
     ~HTTPWebServer();
 
     /**
-     * Starts the HTTPs and WSS servers
+     * Starts the HTTP and WS servers
      *
      * @return Returns true if successful, else false
      */
     bool startServer();
 
     /**
-     * Stops the HTTPs and WSS servers
+     * Stops the HTTP and WS servers
      */
     void stopServer();
 
     /**
-     * This method needs to be called in a loop so that the HTTPs and WSS servers can receive CPU time
+     * This method needs to be called in a loop so that the HTTP and WS servers can receive CPU time
      */
     void handleServer();
 
@@ -91,8 +91,8 @@ private:
     /** Specifies MIME type and which file types should be deployed by web server */
     static const KeyValue m_servedFileTypes[];
 
-    /** HTTPSServer instance */
-    httpsserver::HTTPServer m_httpsServer;
+    /** HTTPServer instance */
+    httpsserver::HTTPServer m_httpServer;
 
     /** Specifies the file serving route */
     httpsserver::ResourceNode m_fileServeRoute;
@@ -116,7 +116,7 @@ private:
      */
     static void getMIMEType(const String& filePath, String& mimeType);
 };
-#endif /** __HTTPSWEBSERVER_H__ */
+#endif /** __HTTPWEBSERVER_H__ */
 
 /**
  *  @}
