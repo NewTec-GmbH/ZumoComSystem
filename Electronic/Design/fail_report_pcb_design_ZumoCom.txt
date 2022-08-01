@@ -1,0 +1,39 @@
+Fehler im Leiterkartendesign
+
+
+
+
+V1.0
+-----------------------------------------------------------------------------------------------------------------------
+
+Mosfet Q1 schaltet nicht ab. >>> Spannungsteiler entfernen
+
+Spannungsregler 5V:
+- /SHDN Pin an VOut angeschlossen >>> muss an VIN (Pin nicht an Pad anlöten)
+- richtige spule auswählen
+- spannungteiler Floting lassen
+- FB/SENSE-Pin geht nicht auf ausgang >>> PIN 3 (FB) mit Fädeldraht auf Pin 5 (5V/Bias) >>> (Pin nicht an Pad anlöten)
+- VC Pin nicht an Vin
+
+
+Spannungsregler 3V3:
+- Spulepad zu klein >>> größer machen
+- anderer Regler mit beinchen nehmen >>> vereinfacht Löten (sehr kleiner IC)
+
+
+ESP32 
+- falsche 3V3-Versorgung >>> die vom Spannungsregler >>> Diode zwischen 3V3 und VDD
+- U_Bat_Meas nicht auf IO2 >>> auf Pin IO13
+- Test Vias für D+ u. D-
+
+
+MAX: 
+- D+/D- serieller Widerstand einfügen 22 OHM
+- Test Vias für D+ u. D-
+
+
+Perepherie
+- RGB LED-Pining passt nicht >>> mit Datenblatt abgleichen und ändern
+- 0 Ohm Widerstände buttons entfernen
+
+-----------------------------------------------------------------------------------------------------------------------
