@@ -31,59 +31,59 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file HTTPsWebServer.h
+ * @file HTTPWebServer.h
  * @author Luis Moser
- * @brief HTTPsWebServer header
+ * @brief HTTPWebServer header
  * @date 07/07/2021
  * @addtogroup Server
  * @{
  */
 
-#ifndef __HTTPSWEBSERVER_H__
-#define __HTTPSWEBSERVER_H__
+#ifndef __HTTPWEBSERVER_H__
+#define __HTTPWEBSERVER_H__
 
 #include <Arduino.h>
-#include <HTTPSServer.hpp>
+#include <HTTPServer.hpp>
 #include <FileManager.h>
 #include <Session.h>
 #include <KeyValue.h>
 
 class Store;
 
-/** Wrapper class for managing the HTTPS/WSS servers */
-class HTTPsWebServer
+/** Wrapper class for managing the HTTP/WS servers */
+class HTTPWebServer
 {
 public:
     /**
      * Default Constructor
      */
-    HTTPsWebServer();
+    HTTPWebServer();
 
     /**
      * Destructor
      */
-    ~HTTPsWebServer();
+    ~HTTPWebServer();
 
     /**
-     * Starts the HTTPs and WSS servers
+     * Starts the HTTP and WS servers
      *
      * @return Returns true if successful, else false
      */
     bool startServer();
 
     /**
-     * Stops the HTTPs and WSS servers
+     * Stops the HTTP and WS servers
      */
     void stopServer();
 
     /**
-     * This method needs to be called in a loop so that the HTTPs and WSS servers can receive CPU time
+     * This method needs to be called in a loop so that the HTTP and WS servers can receive CPU time
      */
     void handleServer();
 
 private:
     /** TCP port which is used for frontend delivery as well as backend API services */
-    static const uint16_t SHARED_TCP_PORT = 443;
+    static const uint16_t SHARED_TCP_PORT = 80;
 
     /** Max number of concurrent clients which can access the server */
     static const uint8_t MAX_CLIENTS = 4;
@@ -91,17 +91,14 @@ private:
     /** Specifies MIME type and which file types should be deployed by web server */
     static const KeyValue m_servedFileTypes[];
 
-    /** HTTPSServer instance */
-    httpsserver::HTTPSServer m_httpsServer;
+    /** HTTPServer instance */
+    httpsserver::HTTPServer m_httpServer;
 
     /** Specifies the file serving route */
     httpsserver::ResourceNode m_fileServeRoute;
 
     /** Specifies the API route */
     httpsserver::WebsocketNode m_apiRoute;
-
-    /** Store instance */
-    Store& m_store;
 
     /**
      * Handles incoming file requests
@@ -119,7 +116,7 @@ private:
      */
     static void getMIMEType(const String& filePath, String& mimeType);
 };
-#endif /** __HTTPSWEBSERVER_H__ */
+#endif /** __HTTPWEBSERVER_H__ */
 
 /**
  *  @}

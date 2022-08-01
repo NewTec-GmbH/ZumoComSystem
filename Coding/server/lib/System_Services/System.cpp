@@ -40,23 +40,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <System.h>
 #include <Log.h>
-#include <KeyCert.h>
 #include <User.h>
 #include <Key.h>
 #include <Log.h>
 #include <Session.h>
 #include <Store.h>
 #include <WiFiManager.h>
-#include <HTTPsWebServer.h>
+#include <HTTPWebServer.h>
 #include <Zumo32U4.h>
 #include <FileManager.h>
-
-SemaphoreHandle_t System::m_genKeyCertSemaphore = {0};
 
 System::System() :
     m_store(Store::getInstance()),
     m_wifimgr(new WiFiManager()),
-    m_webServer(new HTTPsWebServer())
+    m_webServer(new HTTPWebServer())
 {
 }
 
@@ -75,7 +72,6 @@ System::~System()
 
 void System::init()
 {
-    bool certGenRetCode = false;
     bool timeoutServiceRetCode = false;
     NetworkCredentials apCredentials;
 
@@ -90,24 +86,6 @@ void System::init()
     LOG_DEBUG("Reset-ISR registered");
 
     LOG_DEBUG("Init/setup task running on core #" + String(xPortGetCoreID()));
-
-    /* Initialize and aquire binary semaphore */
-    m_genKeyCertSemaphore = xSemaphoreCreateBinary();
-    if (nullptr == m_genKeyCertSemaphore)
-    {
-        LOG_ERROR("KeyCert generation semaphore could not be created!");
-    }
-
-    /* Check if a KeyCert exists, if not, generate new one asynchronously */
-    certGenRetCode = registerKeyCertGenTask();
-    if (true == certGenRetCode)
-    {
-        LOG_DEBUG("Successfully started KeyCert generation task");
-    }
-    else
-    {
-        LOG_ERROR("Could not start KeyCert generation task!");
-    }
 
     /* Generate the unique SSID for this specific ComPlatform system */
     apCredentials.setSSID("ComPlatform", false);
@@ -186,10 +164,6 @@ void System::init()
         LOG_ERROR("Could not open the Zumo32U4 driver!");
     }
 
-    /* Await KeyCert generation task execution */
-    xSemaphoreTake(m_genKeyCertSemaphore, portMAX_DELAY);
-    xSemaphoreGive(m_genKeyCertSemaphore);
-
     /* Start the background task to enable session timeouts */
     timeoutServiceRetCode = Session::start();
     if (true == timeoutServiceRetCode)
@@ -201,10 +175,10 @@ void System::init()
         LOG_ERROR("Could not start websocket API timeout service");
     }
 
-    /* Start the HTTPs web server and the WSS API server if KeyCert is available and session timeout is enabled */
-    if ((true == certGenRetCode) && (true == timeoutServiceRetCode))
+    /* Start the HTTP web server and the WS API server if session timeout is enabled */
+    if (true == timeoutServiceRetCode)
     {
-        /* Init HTTPs and WSS servers */
+        /* Init HTTP and WS servers */
         if (true == m_webServer->startServer())
         {
             LOG_DEBUG("HTTPs and WSS servers successfully started");
@@ -216,7 +190,7 @@ void System::init()
     }
     else
     {
-        LOG_ERROR("Did not start webserver because timeout service or KeyCert generation task could not be executed successfully!");
+        LOG_ERROR("Did not start webserver because timeout service could not be executed successfully!");
     }
     LOG_INFO("++++++++++++++++ Done ++++++++++++++++");
 }
@@ -253,76 +227,6 @@ void System::handleServices()
 
     /* Enter delay so that other tasks get CPU time */
     delay(SERVICE_HANDLING_SLEEP_TIME_MS);
-}
-
-void System::genKeyCertTask(void* parameter)
-{
-    Store& store = Store::getInstance();
-
-    LOG_DEBUG("KeyCert generation task running on core #" + String(xPortGetCoreID()));
-
-    /* Generate and save a new KeyCert */
-    if (false == store.loadKeyCert())
-    {
-        LOG_DEBUG("Missing KeyCert. Generating new SSLCert...");
-
-        if (true == store.getKeyCert().generateNewCert())
-        {
-            LOG_DEBUG("New KeyCert created");
-
-            if (true == store.saveKeyCert())
-            {
-                LOG_DEBUG("New KeyCert saved");
-            }
-            else
-            {
-                LOG_ERROR("Could not save the created SSL certificate to persistent storage");
-            }
-        }
-        else
-        {
-            LOG_ERROR("Could not generate a new SSL certificate. Rebooting in 2 seconds...");
-
-            const uint16_t ERROR_REBOOT_DELAY_TIME_MS = 2000;
-            delay(ERROR_REBOOT_DELAY_TIME_MS);
-            System::getInstance().reset();
-        }
-
-        LOG_DEBUG("New KeyCert successfully created");
-    }
-    else
-    {
-        LOG_DEBUG("KeyCert successfully loaded from persistent storage!");
-    }
-
-    /* Notify init task about finished task */
-    xSemaphoreGive(m_genKeyCertSemaphore);
-
-    /* Destroy this task */
-    vTaskDelete(nullptr);
-}
-
-bool System::registerKeyCertGenTask()
-{
-    /* Big stack required, otherwise RSA2048 key generation would override stack canary */
-    const uint16_t STACK_SIZE_BYTE = 16384;
-
-    /* Use lowest possible priority because this task does not have a blocking system call */
-    const uint8_t PRIORITY = 0;
-
-    /* Pin task to core 1 to avoid CPU time starvation of idle task */
-    const uint8_t CPU_CORE = 1;
-
-    BaseType_t retCode = xTaskCreatePinnedToCore(
-        genKeyCertTask,
-        "KeyCertGen",
-        STACK_SIZE_BYTE,
-        nullptr,
-        PRIORITY,
-        nullptr,
-        CPU_CORE);
-
-    return (pdPASS == retCode);
 }
 
 /**

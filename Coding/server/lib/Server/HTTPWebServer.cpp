@@ -31,23 +31,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file HTTPsWebServer.cpp
+ * @file HTTPWebServer.cpp
  * @author Luis Moser
- * @brief HTTPsWebServer class
+ * @brief HTTPWebServer class
  * @date 07/07/2021
  * @addtogroup Server
  * @{
  */
 
-#include <HTTPsWebServer.h>
+#include <HTTPWebServer.h>
 #include <Log.h>
 #include <HTTPRequest.hpp>
 #include <HTTPResponse.hpp>
 #include <ResponseCode.h>
 #include <Session.h>
-#include <Store.h>
 
-const KeyValue HTTPsWebServer::m_servedFileTypes[] =
+const KeyValue HTTPWebServer::m_servedFileTypes[] =
 {
     {".html", "text/html"},
     {".css", "text/css"},
@@ -61,43 +60,42 @@ const KeyValue HTTPsWebServer::m_servedFileTypes[] =
     {".eot", "font/eot"},
 };
 
-HTTPsWebServer::HTTPsWebServer() :
-    m_httpsServer(Store::getInstance().getKeyCert().getSSLCert(), SHARED_TCP_PORT, MAX_CLIENTS),
+HTTPWebServer::HTTPWebServer() :
+    m_httpServer(SHARED_TCP_PORT, MAX_CLIENTS),
     m_fileServeRoute("", "", &registerFileServing),
-    m_apiRoute("/api", &Session::create),
-    m_store(Store::getInstance())
+    m_apiRoute("/api", &Session::create)
 {
 }
 
-HTTPsWebServer::~HTTPsWebServer()
+HTTPWebServer::~HTTPWebServer()
 {
     stopServer();
 }
 
-bool HTTPsWebServer::startServer()
+bool HTTPWebServer::startServer()
 {
-    m_httpsServer.registerNode(&m_fileServeRoute);
-    m_httpsServer.setDefaultNode(&m_fileServeRoute);
+    m_httpServer.registerNode(&m_fileServeRoute);
+    m_httpServer.setDefaultNode(&m_fileServeRoute);
     LOG_INFO("Registered file serving route");
 
-    m_httpsServer.registerNode(&m_apiRoute);
+    m_httpServer.registerNode(&m_apiRoute);
     LOG_INFO("Registered websocket API route");
 
-    return ((1 == m_httpsServer.start()) && (true == m_httpsServer.isRunning()));
+    return ((1 == m_httpServer.start()) && (true == m_httpServer.isRunning()));
 }
 
-void HTTPsWebServer::stopServer()
+void HTTPWebServer::stopServer()
 {
-    m_httpsServer.stop();
+    m_httpServer.stop();
     LOG_DEBUG("HTTPs and WSS servers have been stopped");
 }
 
-void HTTPsWebServer::handleServer()
+void HTTPWebServer::handleServer()
 {
-    m_httpsServer.loop();
+    m_httpServer.loop();
 }
 
-void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response)
+void HTTPWebServer::registerFileServing(httpsserver::HTTPRequest* request, httpsserver::HTTPResponse* response)
 {
     if (request->getMethod() == "GET")
     {
@@ -177,7 +175,7 @@ void HTTPsWebServer::registerFileServing(httpsserver::HTTPRequest* request, http
     }
 }
 
-void HTTPsWebServer::getMIMEType(const String& filePath, String& mimeType)
+void HTTPWebServer::getMIMEType(const String& filePath, String& mimeType)
 {
     const uint8_t arrLength = sizeof(m_servedFileTypes) / sizeof(m_servedFileTypes[0]);
 
