@@ -1,0 +1,323 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title "ZumoCom-System Charger"
+Date "2022-05-06"
+Rev "V1.0"
+Comp "NewTec GmbH"
+Comment1 "Schneider, Niklas"
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L 66200221022:66200221022 J2
+U 1 1 626C9639
+P 9100 3550
+F 0 "J2" H 9350 3400 50  0000 L CNN
+F 1 "66200221022" H 9330 3505 50  0000 L CNN
+F 2 "footprints:66200221022" H 9100 3550 50  0001 L BNN
+F 3 "" H 9100 3550 50  0001 L BNN
+F 4 "Würth Elektronik" H 9100 3550 50  0001 C CNN "Manufacturer"
+F 5 "66200221022" H 9100 3550 50  0001 C CNN "Part-No."
+	1    9100 3550
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Jack-DC J1
+U 1 1 626C9B79
+P 2350 3650
+F 0 "J1" H 2407 3975 50  0000 C CNN
+F 1 "Jack-DC" H 2407 3884 50  0000 C CNN
+F 2 "Connector_BarrelJack:BarrelJack_CUI_PJ-063AH_Horizontal" H 2400 3610 50  0001 C CNN
+F 3 "~" H 2400 3610 50  0001 C CNN
+F 4 "CUI Devices" H 2350 3650 50  0001 C CNN "Manufacturer"
+F 5 "PJ-063AH" H 2350 3650 50  0001 C CNN "Part-No."
+	1    2350 3650
+	1    0    0    -1  
+$EndComp
+$Comp
+L MCP73844T:MCP73844T-840I_MS U1
+U 1 1 626CBD84
+P 5500 3650
+F 0 "U1" H 5500 4165 50  0000 C CNN
+F 1 "MCP73844T-820I" H 5500 4074 50  0000 C CNN
+F 2 "Package_SO:MSOP-8_3x3mm_P0.65mm" H 5250 4050 50  0001 C CNN
+F 3 "https://ww1.microchip.com/downloads/en/DeviceDoc/21823D.pdf" H 5250 4050 50  0001 C CNN
+F 4 "Microchip Technology" H 5500 3650 50  0001 C CNN "Manufacturer"
+F 5 "MCP73844T-820I/MS" H 5500 3650 50  0001 C CNN "Part-No."
+	1    5500 3650
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GNDREF #PWR01
+U 1 1 626CCA6E
+P 2850 4400
+F 0 "#PWR01" H 2850 4150 50  0001 C CNN
+F 1 "GNDREF" H 2855 4227 50  0000 C CNN
+F 2 "" H 2850 4400 50  0001 C CNN
+F 3 "" H 2850 4400 50  0001 C CNN
+	1    2850 4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2650 3750 2850 3750
+Wire Wire Line
+	2850 3750 2850 4400
+$Comp
+L power:GNDREF #PWR04
+U 1 1 626CD0D3
+P 9100 4350
+F 0 "#PWR04" H 9100 4100 50  0001 C CNN
+F 1 "GNDREF" H 9105 4177 50  0000 C CNN
+F 2 "" H 9100 4350 50  0001 C CNN
+F 3 "" H 9100 4350 50  0001 C CNN
+	1    9100 4350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9100 4050 9100 4350
+$Comp
+L Device:C C3
+U 1 1 626CD751
+P 6450 4150
+F 0 "C3" H 6565 4196 50  0000 L CNN
+F 1 "100n" H 6565 4105 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 6488 4000 50  0001 C CNN
+F 3 "~" H 6450 4150 50  0001 C CNN
+F 4 "Samsung Electro-Mechanics" H 6450 4150 50  0001 C CNN "Manufacturer"
+F 5 "CL10B104KB8NNWC" H 6450 4150 50  0001 C CNN "Part-No."
+	1    6450 4150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C2
+U 1 1 626CDCB2
+P 6450 3650
+F 0 "C2" H 6565 3696 50  0000 L CNN
+F 1 "10u" H 6565 3605 50  0000 L CNN
+F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 6488 3500 50  0001 C CNN
+F 3 "~" H 6450 3650 50  0001 C CNN
+F 4 "Samsung Electro-Mechanics" H 6450 3650 50  0001 C CNN "Manufacturer"
+F 5 "CL31A106KBHNNNE" H 6450 3650 50  0001 C CNN "Part-No."
+	1    6450 3650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5900 3900 6150 3900
+Wire Wire Line
+	6450 3900 6450 4000
+Wire Wire Line
+	6450 3800 6450 3900
+Connection ~ 6450 3900
+Wire Wire Line
+	5900 3750 6150 3750
+Wire Wire Line
+	6150 3750 6150 3900
+Connection ~ 6150 3900
+Wire Wire Line
+	6150 3900 6450 3900
+Wire Wire Line
+	5900 3550 6150 3550
+Wire Wire Line
+	6150 3550 6150 3500
+Wire Wire Line
+	6150 3500 6450 3500
+$Comp
+L Device:Q_PMOS_GSD Q1
+U 1 1 626CF70F
+P 6100 2750
+F 0 "Q1" V 6442 2750 50  0000 C CNN
+F 1 "Q_PMOS_GSD" V 6351 2750 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:TSOT-23_HandSoldering" H 6300 2850 50  0001 C CNN
+F 3 "https://www.taiwansemi.com/assets/uploads/datasheet/TSM500P02CX_B1811.pdf" H 6100 2750 50  0001 C CNN
+F 4 "Taiwan Semiconductor Corporation" H 6100 2750 50  0001 C CNN "Manufacturer"
+F 5 "TSM500P02CX RFG" H 6100 2750 50  0001 C CNN "Part-No."
+	1    6100 2750
+	0    1    -1   0   
+$EndComp
+Wire Wire Line
+	5900 3400 6100 3400
+Wire Wire Line
+	6100 3400 6100 2950
+Wire Wire Line
+	6300 2650 9100 2650
+Wire Wire Line
+	9100 2650 9100 3050
+Wire Wire Line
+	5100 3900 4850 3900
+Wire Wire Line
+	4200 3900 4200 3750
+Wire Wire Line
+	4200 3550 5100 3550
+Connection ~ 4200 3550
+Wire Wire Line
+	5900 2650 5050 2650
+Wire Wire Line
+	5050 2650 5050 3400
+Wire Wire Line
+	5050 3400 5100 3400
+$Comp
+L Device:R R1
+U 1 1 626D2776
+P 4200 3000
+F 0 "R1" H 4130 2954 50  0000 R CNN
+F 1 "110m" H 4130 3045 50  0000 R CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 4130 3000 50  0001 C CNN
+F 3 "~" H 4200 3000 50  0001 C CNN
+F 4 "Panasonic Electronic Components" H 4200 3000 50  0001 C CNN "Manufacturer"
+F 5 "ERJ-6BWFR075V" H 4200 3000 50  0001 C CNN "Part-No."
+	1    4200 3000
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4200 2850 4200 2650
+Wire Wire Line
+	4200 2650 5050 2650
+Wire Wire Line
+	4200 3150 4200 3550
+$Comp
+L power:GNDREF #PWR03
+U 1 1 626D3B59
+P 6450 4400
+F 0 "#PWR03" H 6450 4150 50  0001 C CNN
+F 1 "GNDREF" H 6455 4227 50  0000 C CNN
+F 2 "" H 6450 4400 50  0001 C CNN
+F 3 "" H 6450 4400 50  0001 C CNN
+	1    6450 4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6450 4300 6450 4400
+$Comp
+L Device:C C1
+U 1 1 626D58D9
+P 3700 3900
+F 0 "C1" H 3815 3946 50  0000 L CNN
+F 1 "10u" H 3815 3855 50  0000 L CNN
+F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 3738 3750 50  0001 C CNN
+F 3 "~" H 3700 3900 50  0001 C CNN
+F 4 "Samsung Electro-Mechanics" H 3700 3900 50  0001 C CNN "Manufacturer"
+F 5 "CL31A106KBHNNNE" H 3700 3900 50  0001 C CNN "Part-No."
+	1    3700 3900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3700 3550 3700 3750
+$Comp
+L power:GNDREF #PWR02
+U 1 1 626D61F5
+P 3700 4400
+F 0 "#PWR02" H 3700 4150 50  0001 C CNN
+F 1 "GNDREF" H 3705 4227 50  0000 C CNN
+F 2 "" H 3700 4400 50  0001 C CNN
+F 3 "" H 3700 4400 50  0001 C CNN
+	1    3700 4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3700 4050 3700 4400
+Wire Wire Line
+	5050 3750 5100 3750
+Connection ~ 4200 3750
+Wire Wire Line
+	4200 3750 4200 3550
+Wire Wire Line
+	3700 3550 4200 3550
+Wire Wire Line
+	3700 3550 2650 3550
+Connection ~ 3700 3550
+Connection ~ 5050 2650
+$Comp
+L Device:R R2
+U 1 1 62751E67
+P 4450 3750
+F 0 "R2" V 4350 3650 50  0000 C CNN
+F 1 "0" V 4350 3900 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 4380 3750 50  0001 C CNN
+F 3 "~" H 4450 3750 50  0001 C CNN
+F 4 "Stackpole Electronics Inc" H 4450 3750 50  0001 C CNN "Manufacturer"
+F 5 "RMCF0603ZT0R00" H 4450 3750 50  0001 C CNN "Part-No."
+	1    4450 3750
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4300 3750 4200 3750
+$Comp
+L Device:R R3
+U 1 1 62752ADF
+P 4700 3900
+F 0 "R3" V 4800 3900 50  0000 C CNN
+F 1 "100k" V 4900 3900 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 4630 3900 50  0001 C CNN
+F 3 "~" H 4700 3900 50  0001 C CNN
+F 4 "Stackpole Electronics Inc" H 4700 3900 50  0001 C CNN "Manufacturer"
+F 5 "RMCF0603FT100K" H 4700 3900 50  0001 C CNN "Part-No."
+	1    4700 3900
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4550 3900 4200 3900
+Wire Wire Line
+	4750 3750 4600 3750
+$Comp
+L Device:LED D1
+U 1 1 626D6B72
+P 4900 3750
+F 0 "D1" H 5000 3650 50  0000 C CNN
+F 1 "Orange" H 4800 3850 50  0000 C CNN
+F 2 "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 4900 3750 50  0001 C CNN
+F 3 "~" H 4900 3750 50  0001 C CNN
+F 4 "Rohm Semiconductor" H 4900 3750 50  0001 C CNN "Manufacturer"
+F 5 "SML-D12D1WT86" H 4900 3750 50  0001 C CNN "Part-No."
+	1    4900 3750
+	-1   0    0    1   
+$EndComp
+$Comp
+L Mechanical:MountingHole H1
+U 1 1 6276FC02
+P 1050 6300
+F 0 "H1" H 1150 6300 50  0000 L CNN
+F 1 "MountingHole" H 1150 6255 50  0001 L CNN
+F 2 "MountingHole:MountingHole_2.2mm_M2_Pad" H 1050 6300 50  0001 C CNN
+F 3 "~" H 1050 6300 50  0001 C CNN
+	1    1050 6300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H2
+U 1 1 62774303
+P 1050 6500
+F 0 "H2" H 1150 6500 50  0000 L CNN
+F 1 "MountingHole" H 1150 6455 50  0001 L CNN
+F 2 "MountingHole:MountingHole_2.2mm_M2_Pad" H 1050 6500 50  0001 C CNN
+F 3 "~" H 1050 6500 50  0001 C CNN
+	1    1050 6500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H3
+U 1 1 62775237
+P 1350 6300
+F 0 "H3" H 1450 6300 50  0000 L CNN
+F 1 "MountingHole" H 1450 6255 50  0001 L CNN
+F 2 "MountingHole:MountingHole_2.2mm_M2_Pad" H 1350 6300 50  0001 C CNN
+F 3 "~" H 1350 6300 50  0001 C CNN
+	1    1350 6300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H4
+U 1 1 627758CD
+P 1350 6500
+F 0 "H4" H 1450 6500 50  0000 L CNN
+F 1 "MountingHole" H 1450 6455 50  0001 L CNN
+F 2 "MountingHole:MountingHole_2.2mm_M2_Pad" H 1350 6500 50  0001 C CNN
+F 3 "~" H 1350 6500 50  0001 C CNN
+	1    1350 6500
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC
