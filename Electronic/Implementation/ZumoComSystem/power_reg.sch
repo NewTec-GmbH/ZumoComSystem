@@ -378,7 +378,7 @@ U 1 1 60C698F7
 P 8000 1500
 F 0 "L1" V 8190 1500 50  0000 C CNN
 F 1 "6.8u" V 8099 1500 50  0000 C CNN
-F 2 "Inductor_SMD:L_Coilcraft_XxL4040" H 8000 1500 50  0001 C CNN
+F 2 "footprints:L_Coilcraft_XxL4040_Handsolder" H 8000 1500 50  0001 C CNN
 F 3 "https://www.mouser.de/datasheet/2/597/xal4000-270751.pdf" H 8000 1500 50  0001 C CNN
 F 4 "Coilcraft" H 8000 1500 50  0001 C CNN "Manufacturer"
 F 5 "XAL4030-682MEC " H 8000 1500 50  0001 C CNN "Part-No."
