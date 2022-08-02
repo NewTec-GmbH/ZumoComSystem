@@ -62,10 +62,6 @@ Wire Wire Line
 Wire Wire Line
 	6050 3750 6450 3750
 Wire Wire Line
-	2550 3950 4650 3950
-Wire Wire Line
-	2550 4050 4650 4050
-Wire Wire Line
 	2250 4350 2250 4450
 Wire Wire Line
 	6050 4250 6150 4250
@@ -224,9 +220,9 @@ Wire Wire Line
 Wire Wire Line
 	3000 5400 3500 5400
 Connection ~ 3000 5950
-Text Label 3200 3950 0    50   ~ 0
+Text Label 2850 3950 0    50   ~ 0
 D+
-Text Label 3200 4050 0    50   ~ 0
+Text Label 2850 4050 0    50   ~ 0
 D-
 Text Label 4050 3350 0    50   ~ 0
 XI
@@ -341,4 +337,77 @@ F 5 "RC0603FR-070RL" H 3850 1950 50  0001 C CNN "Part-No."
 $EndComp
 Wire Wire Line
 	4000 1950 4100 1950
+$Comp
+L Connector:TestPoint_2Pole TP?
+U 1 1 62EEE2C4
+P 3300 4000
+AR Path="/60C4E4D0/62EEE2C4" Ref="TP?"  Part="1" 
+AR Path="/60C500E6/62EEE2C4" Ref="TP?"  Part="1" 
+F 0 "TP?" V 3254 4058 50  0000 L CNN
+F 1 "TP_2P" V 3345 4058 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 3300 4000 50  0001 C CNN
+F 3 "~" H 3300 4000 50  0001 C CNN
+	1    3300 4000
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2550 3950 3200 3950
+Wire Wire Line
+	3200 3800 3300 3800
+Wire Wire Line
+	4050 3800 4050 3950
+Wire Wire Line
+	4050 3950 4650 3950
+Connection ~ 3300 3800
+Wire Wire Line
+	3300 3800 3500 3800
+Wire Wire Line
+	3200 3800 3200 3950
+Wire Wire Line
+	2550 4050 3200 4050
+Wire Wire Line
+	3200 4200 3300 4200
+Wire Wire Line
+	4050 4200 4050 4050
+Wire Wire Line
+	4050 4050 4650 4050
+Wire Wire Line
+	4050 4200 3800 4200
+Connection ~ 3300 4200
+Wire Wire Line
+	3200 4050 3200 4200
+Text Label 4400 3950 0    50   ~ 0
+DR+
+Text Label 4400 4050 0    50   ~ 0
+DR-
+$Comp
+L Device:R R?
+U 1 1 62EF4C70
+P 3650 3800
+F 0 "R?" V 3443 3800 50  0000 C CNN
+F 1 "22" V 3534 3800 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 3580 3800 50  0001 C CNN
+F 3 "~" H 3650 3800 50  0001 C CNN
+F 4 "" H 3650 3800 50  0001 C CNN "Manufacturer"
+F 5 "" H 3650 3800 50  0001 C CNN "Part-No."
+	1    3650 3800
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3800 3800 4050 3800
+$Comp
+L Device:R R?
+U 1 1 62EF55BF
+P 3650 4200
+F 0 "R?" V 3443 4200 50  0000 C CNN
+F 1 "22" V 3534 4200 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 3580 4200 50  0001 C CNN
+F 3 "~" H 3650 4200 50  0001 C CNN
+F 4 "" H 3650 4200 50  0001 C CNN "Manufacturer"
+F 5 "" H 3650 4200 50  0001 C CNN "Part-No."
+	1    3650 4200
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3500 4200 3300 4200
 $EndSCHEMATC
