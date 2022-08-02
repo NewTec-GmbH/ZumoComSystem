@@ -248,31 +248,9 @@ Wire Wire Line
 Wire Wire Line
 	1000 1250 1450 1250
 Wire Wire Line
-	2350 1700 2450 1700
-Wire Wire Line
-	2750 1700 2850 1700
-Wire Wire Line
-	2850 2350 2850 2150
-Wire Wire Line
-	2850 1850 2850 1700
-$Comp
-L power:GND #PWR02
-U 1 1 62464A3F
-P 2850 2350
-F 0 "#PWR02" H 2850 2100 50  0001 C CNN
-F 1 "GND" H 2855 2177 50  0000 C CNN
-F 2 "" H 2850 2350 50  0001 C CNN
-F 3 "" H 2850 2350 50  0001 C CNN
-	1    2850 2350
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
 	3250 2000 3250 1900
 Wire Wire Line
 	3250 2000 3950 2000
-Wire Wire Line
-	2950 1700 2850 1700
-Connection ~ 2850 1700
 Wire Wire Line
 	3250 1250 3250 1500
 Text Notes 1350 1150 0    50   ~ 0
@@ -412,32 +390,6 @@ F 5 "C0805C274K5RACTU" H 8650 3950 50  0001 C CNN "Part-No."
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R R1
-U 1 1 62459142
-P 2600 1700
-F 0 "R1" V 2393 1700 50  0000 C CNN
-F 1 "10k" V 2484 1700 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2530 1700 50  0001 C CNN
-F 3 "~" H 2600 1700 50  0001 C CNN
-F 4 "TE Connectivity Passive Product" H 2600 1700 50  0001 C CNN "Manufacturer"
-F 5 "CRGCQ0603J10K" H 2600 1700 50  0001 C CNN "Part-No."
-	1    2600 1700
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:R R2
-U 1 1 6245A145
-P 2850 2000
-F 0 "R2" H 2780 1954 50  0000 R CNN
-F 1 "68k" H 2780 2045 50  0000 R CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2780 2000 50  0001 C CNN
-F 3 "~" H 2850 2000 50  0001 C CNN
-F 4 "TE Connectivity Passive Product" H 2850 2000 50  0001 C CNN "Manufacturer"
-F 5 "CRGCQ0603F68K" H 2850 2000 50  0001 C CNN "Part-No."
-	1    2850 2000
-	-1   0    0    1   
-$EndComp
-$Comp
 L Device:L L1
 U 1 1 60C698F7
 P 8000 1500
@@ -455,11 +407,11 @@ L Device:Q_PMOS_GSD Q1
 U 1 1 62648C22
 P 3150 1700
 F 0 "Q1" H 3354 1654 50  0000 L CNN
-F 1 "PMOS_GSD-RQ5C060BCTCL" H 3354 1745 50  0000 L CNN
-F 2 "footprints:SOT95P280X100-3N" H 3350 1800 50  0001 C CNN
-F 3 "https://fscdn.rohm.com/en/products/databook/datasheet/discrete/transistor/mosfet/rq5c060bctcl-e.pdf" H 3150 1700 50  0001 C CNN
-F 4 "Rohm Semiconductor" H 3150 1700 50  0001 C CNN "Manufacturer"
-F 5 "RQ5C060BCTCL" H 3150 1700 50  0001 C CNN "Part-No."
+F 1 "PMOS_GSD-TSM260P02CX RFG " H 3354 1745 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23_Handsoldering" H 3350 1800 50  0001 C CNN
+F 3 "https://www.mouser.de/datasheet/2/395/TSM260P02_D1811-1918704.pdf" H 3150 1700 50  0001 C CNN
+F 4 "Taiwan Semiconductor " H 3150 1700 50  0001 C CNN "Manufacturer"
+F 5 "TSM260P02CX RFG " H 3150 1700 50  0001 C CNN "Part-No."
 	1    3150 1700
 	1    0    0    1   
 $EndComp
@@ -580,4 +532,6 @@ F 5 "ADP2371ACPZ-3.3-R7" H 5000 1400 50  0001 C CNN "Part-No."
 	1    5000 1400
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	2350 1700 2950 1700
 $EndSCHEMATC
