@@ -201,6 +201,25 @@ X Pin_9 9 -200 200 150 R 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
+# Connector_TestPoint_2Pole
+#
+DEF Connector_TestPoint_2Pole TP 0 30 Y N 1 F N
+F0 "TP" 0 60 50 H V C CNN
+F1 "Connector_TestPoint_2Pole" 0 -70 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ Pin*
+ Test*
+$ENDFPLIST
+DRAW
+C -70 0 30 0 1 0 N
+C 70 0 30 0 1 0 N
+X 1 1 -200 0 100 R 50 50 0 1 P
+X 2 2 200 0 100 L 50 50 0 1 P
+ENDDRAW
+ENDDEF
+#
 # Connector_USB_A
 #
 DEF Connector_USB_A J 0 40 Y Y 1 F N
