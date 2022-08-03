@@ -49,19 +49,6 @@ F 5 "TSM-113-01-T-DV" H 9200 4100 50  0001 C CNN "Part-No."
 	1    9200 4100
 	1    0    0    -1  
 $EndComp
-$Comp
-L Device:LED_RGBA D11
-U 1 1 60FFBDC1
-P 2800 6900
-F 0 "D11" H 2800 7397 50  0000 C CNN
-F 1 "LED_RGBA" H 2800 7306 50  0000 C CNN
-F 2 "LED_SMD:LED_RGB_1210" H 2800 6850 50  0001 C CNN
-F 3 "https://docs.broadcom.com/doc/AV02-0610EN" H 2800 6850 50  0001 C CNN
-F 4 "Broadcom Limited" H 2800 6900 50  0001 C CNN "Manufacturer"
-F 5 "HSMF-C118" H 2800 6900 50  0001 C CNN "Part-No."
-	1    2800 6900
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	3000 6900 3250 6900
 Wire Wire Line
@@ -782,41 +769,7 @@ Wire Wire Line
 	4450 4700 4450 4600
 Wire Wire Line
 	4450 4600 4450 4500
-$Comp
-L Device:R R29
-U 1 1 617380EC
-P 3750 1550
-F 0 "R29" V 3543 1550 50  0000 C CNN
-F 1 "0" V 3634 1550 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 3680 1550 50  0001 C CNN
-F 3 "~" H 3750 1550 50  0001 C CNN
-F 4 "YAGEO" H 3750 1550 50  0001 C CNN "Manufacturer"
-F 5 "RC0603FR-070RL" H 3750 1550 50  0001 C CNN "Part-No."
-	1    3750 1550
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	3300 1550 3600 1550
-Wire Wire Line
-	3950 1550 3900 1550
 Connection ~ 6250 1550
-$Comp
-L Device:R R33
-U 1 1 617BFBB5
-P 6050 1550
-F 0 "R33" V 5843 1550 50  0000 C CNN
-F 1 "0" V 5934 1550 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 5980 1550 50  0001 C CNN
-F 3 "~" H 6050 1550 50  0001 C CNN
-F 4 "YAGEO" H 6050 1550 50  0001 C CNN "Manufacturer"
-F 5 "RC0603FR-070RL" H 6050 1550 50  0001 C CNN "Part-No."
-	1    6050 1550
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	5600 1550 5900 1550
-Wire Wire Line
-	6250 1550 6200 1550
 $Comp
 L power:GND #PWR046
 U 1 1 617DBB3D
@@ -827,19 +780,6 @@ F 2 "" H 1100 2200 50  0001 C CNN
 F 3 "" H 1100 2200 50  0001 C CNN
 	1    1100 2200
 	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R18
-U 1 1 617DBB43
-P 1550 1550
-F 0 "R18" V 1343 1550 50  0000 C CNN
-F 1 "0" V 1434 1550 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 1480 1550 50  0001 C CNN
-F 3 "~" H 1550 1550 50  0001 C CNN
-F 4 "YAGEO" H 1550 1550 50  0001 C CNN "Manufacturer"
-F 5 "RC0603FR-070RL" H 1550 1550 50  0001 C CNN "Part-No."
-	1    1550 1550
-	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR057
@@ -1190,8 +1130,6 @@ Text HLabel 2300 1200 1    50   Output ~ 0
 nBUT_A
 Text Label 2150 1550 2    50   ~ 0
 BUT_A
-Wire Wire Line
-	1700 1550 1750 1550
 Connection ~ 1750 1550
 Wire Wire Line
 	1750 1450 1750 1550
@@ -1313,8 +1251,6 @@ F 5 "KMR221GLFS" H 1100 1850 50  0001 C CNN "Part-No."
 $EndComp
 Wire Wire Line
 	1000 2150 1100 2150
-Wire Wire Line
-	1100 1550 1400 1550
 $Comp
 L power:GND #PWR059
 U 1 1 6284D0AC
@@ -1417,4 +1353,21 @@ F 5 "SI2302CDS-T1-BE3" H 7800 5000 50  0001 C CNN "Part-No."
 	1    7800 5000
 	1    0    0    -1  
 $EndComp
+$Comp
+L Device:LED_ARGB D11
+U 1 1 62EBCED3
+P 2800 6900
+F 0 "D11" H 2800 7397 50  0000 C CNN
+F 1 "LED_RGBA" H 2800 7306 50  0000 C CNN
+F 2 "footprints:LED_RGB_1210" H 2800 6850 50  0001 C CNN
+F 3 "https://docs.broadcom.com/doc/AV02-0610EN" H 2800 6850 50  0001 C CNN
+	1    2800 6900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1100 1550 1750 1550
+Wire Wire Line
+	3300 1550 3950 1550
+Wire Wire Line
+	5600 1550 6250 1550
 $EndSCHEMATC
