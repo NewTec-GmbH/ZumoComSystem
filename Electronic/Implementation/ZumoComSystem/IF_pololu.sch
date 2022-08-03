@@ -26,7 +26,7 @@ P 4900 4100
 AR Path="/60C60623" Ref="J?"  Part="1" 
 AR Path="/60C50401/60C60623" Ref="J4"  Part="1" 
 F 0 "J4" H 4950 4917 50  0000 C CNN
-F 1 "Left" H 4950 4826 50  0000 C CNN
+F 1 "Pin-Header 2x13" H 4950 4826 50  0000 C CNN
 F 2 "footprints:PinHeader_2x13_SMD_bottom" H 4900 4100 50  0001 C CNN
 F 3 "~" H 4900 4100 50  0001 C CNN
 F 4 "Samtec" H 4900 4100 50  0001 C CNN "Manufacturer"
@@ -41,7 +41,7 @@ P 9200 4100
 AR Path="/60C60629" Ref="J?"  Part="1" 
 AR Path="/60C50401/60C60629" Ref="J6"  Part="1" 
 F 0 "J6" H 9250 4917 50  0000 C CNN
-F 1 "Right" H 9250 4826 50  0000 C CNN
+F 1 "Pin-Header 2x13" H 9250 4826 50  0000 C CNN
 F 2 "footprints:PinHeader_2x13_SMD_bottom" H 9200 4100 50  0001 C CNN
 F 3 "~" H 9200 4100 50  0001 C CNN
 F 4 "Samtec" H 9200 4100 50  0001 C CNN "Manufacturer"
@@ -1370,4 +1370,8 @@ Wire Wire Line
 	3300 1550 3950 1550
 Wire Wire Line
 	5600 1550 6250 1550
+Text Notes 4850 3200 0    50   ~ 0
+left
+Text Notes 9150 3200 0    50   ~ 0
+right
 $EndSCHEMATC
