@@ -722,7 +722,7 @@ U 1 1 62EADBEE
 P 1500 3800
 F 0 "D7" H 1500 3583 50  0000 C CNN
 F 1 "Schottky (3V3,VDD)" H 1500 3674 50  0000 C CNN
-F 2 "Diode_SMD:D_SMB_Handsoldering" H 1500 3800 50  0001 C CNN
+F 2 "Diode_SMD:D_SMB" H 1500 3800 50  0001 C CNN
 F 3 "https://www.mouser.de/datasheet/2/268/Microsemi_LSM115J-1592122.pdf" H 1500 3800 50  0001 C CNN
 F 4 "Microchip Technology / Atmel " H 1500 3800 50  0001 C CNN "Manufacturer"
 F 5 "LSM115JE3/TR13 " H 1500 3800 50  0001 C CNN "Part-No."
