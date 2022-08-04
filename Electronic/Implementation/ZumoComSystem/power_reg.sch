@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 7
 Title "Zumo Communication System"
-Date "2022-05-27"
+Date "2022-08-04"
 Rev "V1.1"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -352,7 +352,7 @@ U 1 1 60C6A253
 P 8950 4200
 F 0 "L2" V 9140 4200 50  0000 C CNN
 F 1 "15u" V 9049 4200 50  0000 C CNN
-F 2 "Inductor_SMD:L_Vishay_IHLP-4040" H 8950 4200 50  0001 C CNN
+F 2 "footprints:L_Vishay_IHLP-4040_3D" H 8950 4200 50  0001 C CNN
 F 3 "https://www.mouser.de/datasheet/2/427/lp40dz5a-1762293.pdf" H 8950 4200 50  0001 C CNN
 F 4 " Vishay / Dale " H 8950 4200 50  0001 C CNN "Manufacturer"
 F 5 "IHLP4040DZER150M5A" H 8950 4200 50  0001 C CNN "Part-No."
