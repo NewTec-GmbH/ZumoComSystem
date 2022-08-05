@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 3 7
 Title "Zumo Communication System"
-Date "2022-08-04"
+Date "2022-08-05"
 Rev "V1.1"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -347,6 +347,8 @@ F 0 "TP1" V 3254 4058 50  0000 L CNN
 F 1 "TP_2P" V 3345 4058 50  0000 L CNN
 F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 3300 4000 50  0001 C CNN
 F 3 "~" H 3300 4000 50  0001 C CNN
+F 4 "-" H 3300 4000 50  0001 C CNN "Manufacturer"
+F 5 "-" H 3300 4000 50  0001 C CNN "Part-No."
 	1    3300 4000
 	0    1    1    0   
 $EndComp
@@ -388,8 +390,8 @@ F 0 "R2" V 3443 3800 50  0000 C CNN
 F 1 "22" V 3534 3800 50  0000 C CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 3580 3800 50  0001 C CNN
 F 3 "~" H 3650 3800 50  0001 C CNN
-F 4 "" H 3650 3800 50  0001 C CNN "Manufacturer"
-F 5 "" H 3650 3800 50  0001 C CNN "Part-No."
+F 4 "YAGEO" H 3650 3800 50  0001 C CNN "Manufacturer"
+F 5 "RC0603JR-1322RL " H 3650 3800 50  0001 C CNN "Part-No."
 	1    3650 3800
 	0    1    1    0   
 $EndComp
@@ -403,8 +405,8 @@ F 0 "R3" V 3443 4200 50  0000 C CNN
 F 1 "22" V 3534 4200 50  0000 C CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 3580 4200 50  0001 C CNN
 F 3 "~" H 3650 4200 50  0001 C CNN
-F 4 "" H 3650 4200 50  0001 C CNN "Manufacturer"
-F 5 "" H 3650 4200 50  0001 C CNN "Part-No."
+F 4 "YAGEO" H 3650 4200 50  0001 C CNN "Manufacturer"
+F 5 "RC0603JR-1322RL " H 3650 4200 50  0001 C CNN "Part-No."
 	1    3650 4200
 	0    -1   -1   0   
 $EndComp

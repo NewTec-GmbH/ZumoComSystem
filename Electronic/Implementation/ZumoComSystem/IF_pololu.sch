@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 7 7
 Title "Zumo Communication System"
-Date "2022-08-04"
+Date "2022-08-05"
 Rev "V1.1"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -1361,6 +1361,8 @@ F 0 "D11" H 2800 7397 50  0000 C CNN
 F 1 "LED_RGBA" H 2800 7306 50  0000 C CNN
 F 2 "footprints:LED_RGB_1210" H 2800 6850 50  0001 C CNN
 F 3 "https://docs.broadcom.com/doc/AV02-0610EN" H 2800 6850 50  0001 C CNN
+F 4 "Broadcom Limited" H 2800 6900 50  0001 C CNN "Manufacturer"
+F 5 "HSMF-C118" H 2800 6900 50  0001 C CNN "Part-No."
 	1    2800 6900
 	1    0    0    -1  
 $EndComp

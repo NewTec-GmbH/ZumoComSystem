@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 6 7
 Title "Zumo Communication System"
-Date "2022-08-04"
+Date "2022-08-05"
 Rev "V1.1"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -741,6 +741,8 @@ F 0 "TP2" V 1154 6608 50  0000 L CNN
 F 1 "TP_2P" V 1245 6608 50  0000 L CNN
 F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 1200 6550 50  0001 C CNN
 F 3 "~" H 1200 6550 50  0001 C CNN
+F 4 "-" H 1200 6550 50  0001 C CNN "Manufacturer"
+F 5 "-" H 1200 6550 50  0001 C CNN "Part-No."
 	1    1200 6550
 	0    1    1    0   
 $EndComp
@@ -769,10 +771,10 @@ Wire Notes Line
 Text Notes 9300 6250 0    50   ~ 0
 fg = 220 Hz
 $Comp
-L power:VDD #PWR?
+L power:VDD #PWR0101
 U 1 1 62F3EB7E
 P 10300 800
-F 0 "#PWR?" H 10300 650 50  0001 C CNN
+F 0 "#PWR0101" H 10300 650 50  0001 C CNN
 F 1 "VDD" H 10315 973 50  0000 C CNN
 F 2 "" H 10300 800 50  0001 C CNN
 F 3 "" H 10300 800 50  0001 C CNN
