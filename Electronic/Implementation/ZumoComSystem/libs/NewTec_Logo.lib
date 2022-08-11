@@ -1,0 +1,16 @@
+EESchema-LIBRARY Version 2.4
+#encoding utf-8
+#
+# NewTec_Logo
+#
+DEF NewTec_Logo L 0 40 Y Y 1 F N
+F0 "L" 0 100 50 H I C CNN
+F1 "NewTec_Logo" 0 0 50 H V C CNN
+F2 "footprints:NT_Kicad_Logo_2500x2500" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+S -250 50 250 -50 0 1 0 N
+ENDDRAW
+ENDDEF
+#
+#End Library
