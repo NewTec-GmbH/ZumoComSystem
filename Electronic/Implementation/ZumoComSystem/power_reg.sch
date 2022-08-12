@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 7
 Title "Zumo Communication System"
-Date "2022-05-27"
+Date "2022-08-11"
 Rev "V1.1"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -142,15 +142,7 @@ Wire Wire Line
 Wire Wire Line
 	8650 3700 8650 3800
 Wire Wire Line
-	8650 3700 7950 3700
-Wire Wire Line
 	4450 3700 4450 4300
-Connection ~ 8650 3700
-Wire Wire Line
-	4650 4400 4450 4400
-Wire Wire Line
-	4450 4400 4450 4300
-Connection ~ 4450 4300
 Wire Wire Line
 	9250 4500 9250 4200
 Wire Wire Line
@@ -186,8 +178,6 @@ Wire Wire Line
 	8050 4950 8050 5400
 Wire Wire Line
 	9250 4950 9250 5400
-Wire Wire Line
-	3950 3450 8050 3450
 Connection ~ 9250 3700
 Wire Wire Line
 	9250 3700 9250 3500
@@ -222,14 +212,7 @@ $EndComp
 Wire Wire Line
 	4450 4500 4650 4500
 Wire Wire Line
-	7850 4300 7950 4300
-Wire Wire Line
-	7950 4300 7950 3700
-Connection ~ 7950 3700
-Wire Wire Line
-	7950 3700 4450 3700
-Wire Wire Line
-	8050 3450 8050 4400
+	8050 3450 8050 4300
 Wire Wire Line
 	3950 2000 3950 3450
 Connection ~ 8050 4400
@@ -248,31 +231,9 @@ Wire Wire Line
 Wire Wire Line
 	1000 1250 1450 1250
 Wire Wire Line
-	2350 1700 2450 1700
-Wire Wire Line
-	2750 1700 2850 1700
-Wire Wire Line
-	2850 2350 2850 2150
-Wire Wire Line
-	2850 1850 2850 1700
-$Comp
-L power:GND #PWR02
-U 1 1 62464A3F
-P 2850 2350
-F 0 "#PWR02" H 2850 2100 50  0001 C CNN
-F 1 "GND" H 2855 2177 50  0000 C CNN
-F 2 "" H 2850 2350 50  0001 C CNN
-F 3 "" H 2850 2350 50  0001 C CNN
-	1    2850 2350
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
 	3250 2000 3250 1900
 Wire Wire Line
 	3250 2000 3950 2000
-Wire Wire Line
-	2950 1700 2850 1700
-Connection ~ 2850 1700
 Wire Wire Line
 	3250 1250 3250 1500
 Text Notes 1350 1150 0    50   ~ 0
@@ -325,7 +286,7 @@ L Device:C C1
 U 1 1 60D11B75
 P 3950 4850
 F 0 "C1" H 4065 4896 50  0000 L CNN
-F 1 "22uF" H 4065 4805 50  0000 L CNN
+F 1 "22u" H 4065 4805 50  0000 L CNN
 F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 3988 4700 50  0001 C CNN
 F 3 "https://product.tdk.com/info/en/catalog/datasheets/mlcc_commercial_general_en.pdf?ref_disty=digikey" H 3950 4850 50  0001 C CNN
 F 4 " Murata Electronics " H 3950 4850 50  0001 C CNN "Manufacturer"
@@ -339,7 +300,7 @@ U 1 1 60D196DD
 P 8900 3700
 F 0 "D2" H 8900 3917 50  0000 C CNN
 F 1 "30V 100mA" H 8900 3826 50  0000 C CNN
-F 2 "Diode_SMD:D_SOD-323" H 8900 3700 50  0001 C CNN
+F 2 "Diode_SMD:D_SOD-323_HandSoldering" H 8900 3700 50  0001 C CNN
 F 3 "https://www.comchiptech.com/admin/files/product/SS8050-G%20RevA181526.pdf" H 8900 3700 50  0001 C CNN
 F 4 "SMC Diode Solutions" H 8900 3700 50  0001 C CNN "Manufacturer"
 F 5 "SD103BWSA" H 8900 3700 50  0001 C CNN "Part-No."
@@ -351,7 +312,7 @@ L Device:C C3
 U 1 1 60D211FE
 P 8050 4800
 F 0 "C3" H 8165 4846 50  0000 L CNN
-F 1 "1.5nF" H 8165 4755 50  0000 L CNN
+F 1 "1.5n" H 8165 4755 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 8088 4650 50  0001 C CNN
 F 3 "https://www.we-online.de/katalog/datasheet/885012206084.pdf" H 8050 4800 50  0001 C CNN
 F 4 "TDK Corporation" H 8050 4800 50  0001 C CNN "Manufacturer"
@@ -364,7 +325,7 @@ L Device:C C5
 U 1 1 60D2533E
 P 9250 4800
 F 0 "C5" H 9365 4846 50  0000 L CNN
-F 1 "100uF" H 9365 4755 50  0000 L CNN
+F 1 "100u" H 9365 4755 50  0000 L CNN
 F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 9288 4650 50  0001 C CNN
 F 3 "https://product.tdk.com/en/system/files?file=dam/doc/product/capacitor/ceramic/mlcc/catalog/mlcc_commercial_general_en.pdf" H 9250 4800 50  0001 C CNN
 F 4 "TDK Corporation" H 9250 4800 50  0001 C CNN "Manufacturer"
@@ -386,15 +347,15 @@ F 5 "SD2114S040S5R0" H 8650 4800 50  0001 C CNN "Part-No."
 	0    1    1    0   
 $EndComp
 $Comp
-L Device:L L2
+L Device:L L3
 U 1 1 60C6A253
 P 8950 4200
-F 0 "L2" V 9140 4200 50  0000 C CNN
-F 1 "22uH" V 9049 4200 50  0000 C CNN
-F 2 "footprints:L_Wuerth_HCI-1350_3D" H 8950 4200 50  0001 C CNN
-F 3 "https://www.vishay.com/docs/34282/ihlp-6767gz-11.pdf" H 8950 4200 50  0001 C CNN
-F 4 "Vishay Dale" H 8950 4200 50  0001 C CNN "Manufacturer"
-F 5 "IHLP6767GZER220M11" H 8950 4200 50  0001 C CNN "Part-No."
+F 0 "L3" V 9140 4200 50  0000 C CNN
+F 1 "15u" V 9049 4200 50  0000 C CNN
+F 2 "footprints:L_Vishay_IHLP-4040_3D" H 8950 4200 50  0001 C CNN
+F 3 "https://www.mouser.de/datasheet/2/427/lp40dz5a-1762293.pdf" H 8950 4200 50  0001 C CNN
+F 4 " Vishay / Dale " H 8950 4200 50  0001 C CNN "Manufacturer"
+F 5 "IHLP4040DZER150M5A" H 8950 4200 50  0001 C CNN "Part-No."
 	1    8950 4200
 	0    -1   -1   0   
 $EndComp
@@ -403,7 +364,7 @@ L Device:C C4
 U 1 1 60D19B44
 P 8650 3950
 F 0 "C4" H 8400 4000 50  0000 L CNN
-F 1 "270nF" H 8300 3900 50  0000 L CNN
+F 1 "270n" H 8300 3900 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 8688 3800 50  0001 C CNN
 F 3 "https://api.kemet.com/component-edge/download/specsheet/C0805R274K5RACT500.pdf" H 8650 3950 50  0001 C CNN
 F 4 "KEMET" H 8650 3950 50  0001 C CNN "Manufacturer"
@@ -412,38 +373,12 @@ F 5 "C0805C274K5RACTU" H 8650 3950 50  0001 C CNN "Part-No."
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R R1
-U 1 1 62459142
-P 2600 1700
-F 0 "R1" V 2393 1700 50  0000 C CNN
-F 1 "10k" V 2484 1700 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2530 1700 50  0001 C CNN
-F 3 "~" H 2600 1700 50  0001 C CNN
-F 4 "TE Connectivity Passive Product" H 2600 1700 50  0001 C CNN "Manufacturer"
-F 5 "CRGCQ0603J10K" H 2600 1700 50  0001 C CNN "Part-No."
-	1    2600 1700
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:R R2
-U 1 1 6245A145
-P 2850 2000
-F 0 "R2" H 2780 1954 50  0000 R CNN
-F 1 "68k" H 2780 2045 50  0000 R CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2780 2000 50  0001 C CNN
-F 3 "~" H 2850 2000 50  0001 C CNN
-F 4 "TE Connectivity Passive Product" H 2850 2000 50  0001 C CNN "Manufacturer"
-F 5 "CRGCQ0603F68K" H 2850 2000 50  0001 C CNN "Part-No."
-	1    2850 2000
-	-1   0    0    1   
-$EndComp
-$Comp
-L Device:L L1
+L Device:L L2
 U 1 1 60C698F7
 P 8000 1500
-F 0 "L1" V 8190 1500 50  0000 C CNN
+F 0 "L2" V 8190 1500 50  0000 C CNN
 F 1 "6.8u" V 8099 1500 50  0000 C CNN
-F 2 "Inductor_SMD:L_Coilcraft_XxL4040" H 8000 1500 50  0001 C CNN
+F 2 "footprints:L_Coilcraft_XxL4040_Handsolder" H 8000 1500 50  0001 C CNN
 F 3 "https://www.mouser.de/datasheet/2/597/xal4000-270751.pdf" H 8000 1500 50  0001 C CNN
 F 4 "Coilcraft" H 8000 1500 50  0001 C CNN "Manufacturer"
 F 5 "XAL4030-682MEC " H 8000 1500 50  0001 C CNN "Part-No."
@@ -455,11 +390,11 @@ L Device:Q_PMOS_GSD Q1
 U 1 1 62648C22
 P 3150 1700
 F 0 "Q1" H 3354 1654 50  0000 L CNN
-F 1 "PMOS_GSD-RQ5C060BCTCL" H 3354 1745 50  0000 L CNN
-F 2 "footprints:SOT95P280X100-3N" H 3350 1800 50  0001 C CNN
-F 3 "https://fscdn.rohm.com/en/products/databook/datasheet/discrete/transistor/mosfet/rq5c060bctcl-e.pdf" H 3150 1700 50  0001 C CNN
-F 4 "Rohm Semiconductor" H 3150 1700 50  0001 C CNN "Manufacturer"
-F 5 "RQ5C060BCTCL" H 3150 1700 50  0001 C CNN "Part-No."
+F 1 "PMOS_GSD-TSM260P02CX RFG " H 3354 1745 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23_Handsoldering" H 3350 1800 50  0001 C CNN
+F 3 "https://www.mouser.de/datasheet/2/395/TSM260P02_D1811-1918704.pdf" H 3150 1700 50  0001 C CNN
+F 4 "Taiwan Semiconductor " H 3150 1700 50  0001 C CNN "Manufacturer"
+F 5 "TSM260P02CX RFG " H 3150 1700 50  0001 C CNN "Part-No."
 	1    3150 1700
 	1    0    0    1   
 $EndComp
@@ -537,10 +472,10 @@ Wire Wire Line
 Wire Wire Line
 	7400 1500 7850 1500
 $Comp
-L Device:R R3
+L Device:R R1
 U 1 1 6262337C
 P 6200 850
-F 0 "R3" V 5993 850 50  0000 C CNN
+F 0 "R1" V 5993 850 50  0000 C CNN
 F 1 "10k" V 6084 850 50  0000 C CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 6130 850 50  0001 C CNN
 F 3 "~" H 6200 850 50  0001 C CNN
@@ -580,4 +515,31 @@ F 5 "ADP2371ACPZ-3.3-R7" H 5000 1400 50  0001 C CNN "Part-No."
 	1    5000 1400
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	2350 1700 2950 1700
+Wire Wire Line
+	3950 3450 8050 3450
+Wire Wire Line
+	7850 4300 8050 4300
+Connection ~ 8050 4300
+Wire Wire Line
+	8050 4300 8050 4400
+Connection ~ 8650 3700
+Wire Wire Line
+	4450 3700 8650 3700
+$Comp
+L power:+5V #PWR02
+U 1 1 62EA39DD
+P 3600 3500
+F 0 "#PWR02" H 3600 3350 50  0001 C CNN
+F 1 "+5V" H 3615 3673 50  0000 C CNN
+F 2 "" H 3600 3500 50  0001 C CNN
+F 3 "" H 3600 3500 50  0001 C CNN
+	1    3600 3500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3600 3500 3600 4400
+Wire Wire Line
+	3600 4400 4650 4400
 $EndSCHEMATC
