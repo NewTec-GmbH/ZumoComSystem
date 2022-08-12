@@ -1,4 +1,4 @@
-18631804374624894
+18679435048199742
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -82040,9 +82040,100 @@ varistor SIOV
 2
 2
 footprints
-66200221022
-WR-MPC3 3.00mm Male Dual Row Angled Header with Plastic Pegs, 2 Pins
+66200221122
+WR-MPC3-3.00mm Male Dual Row Vertical Header,2 pins
 
+0
+2
+2
+footprints
+ADP2370ACPZ-3.3-R7
+
+
+0
+9
+9
+footprints
+ADP2370ACPZ-3.3-R7_original
+
+
+0
+9
+9
+footprints
+BAT_1043
+
+
+0
+2
+2
+footprints
+CUI_UJ2-AV-W4-TH
+
+
+0
+6
+6
+footprints
+DFN300X300X80-9N
+
+
+0
+9
+9
+footprints
+DFN300X300X80-9N_thermal
+
+
+0
+9
+9
+footprints
+GCT_USB4120-03-C_REVA
+
+
+0
+20
+20
+footprints
+LED_RGB_1210
+RGB LED 3.2x2.7mm http://www.avagotech.com/docs/AV02-0610EN
+LED 3227
+0
+4
+4
+footprints
+L_Coilcraft_XxL4030
+L_Coilcraft_XxL4030 https://www.coilcraft.com/pdfs/xfl4030.pdf
+L Coilcraft XxL4030
+0
+2
+2
+footprints
+L_Coilcraft_XxL4040_Handsolder
+L_Coilcraft_XxL4040 https://www.coilcraft.com/pdfs/xal4000.pdf
+L Coilcraft XxL4040
+0
+2
+2
+footprints
+L_Vishay_IHLP-4040_3D
+Inductor, Vishay, IHLP series, 10.2mmx10.2mm
+inductor vishay ihlp smd
+0
+2
+2
+footprints
+L_Wuerth_HCI-1040_3D
+Inductor, Wuerth Elektronik, Wuerth_HCI-1040, 10.2mmx10.2mm
+inductor Wuerth hci smd
+0
+2
+2
+footprints
+L_Wuerth_HCI-1350_3D
+Inductor, Wuerth Elektronik, Wuerth_HCI-1350, 12.8mmx12.8mm
+inductor Wuerth hci smd
 0
 2
 2
@@ -82054,9 +82145,121 @@ NT_Kicad_Logo_2500x2500
 0
 0
 footprints
-SOP65P490X110-8N
+PinHeader_2x13_SMD_bottom
+
+
+0
+26
+26
+footprints
+PinSocket_2x07_P2.54mm_Vertical_SMD
+surface-mounted straight socket strip, 2x07, 2.54mm pitch, double cols (from Kicad 4.0.7), script generated
+Surface mounted socket strip SMD 2x07 2.54mm double row
+0
+14
+14
+footprints
+QFN50P500X500X80-33N
+
+
+0
+33
+33
+footprints
+QFN50P500X500X80-33N_Generell
+
+
+0
+33
+32
+footprints
+QFN50P500X500X100-29N
+
+
+0
+29
+29
+footprints
+QFP50P700X700X120-32N
+
+
+0
+32
+32
+footprints
+SO-8_S
 
 
 0
 8
 8
+footprints
+SOP50P490X110-10N
+
+
+0
+10
+10
+footprints
+SOT95P280X100-3N
+
+
+0
+3
+3
+footprints
+SOT95P280X145-6N
+
+
+0
+6
+6
+footprints
+SW_KMR221GLFS
+
+
+0
+5
+5
+footprints
+SW_MLL1200S
+
+
+0
+7
+7
+footprints
+SW_Push_TL3301FF160QG_6x6mm_H9.5mm_3D_TL
+tactile push button, 6x6mm e.g. PTS645xx series, height=9.5mm
+tact sw push 6mm smd
+0
+4
+2
+footprints
+TSOT-23-6_HandSoldering
+6-pin TSOT23 package, http://cds.linear.com/docs/en/packaging/SOT_6_05-08-1636.pdf
+TSOT-23-6 MK06A TSOT-6 Hand-soldering
+0
+6
+3
+footprints
+USB_A_Molex_105057_Vertical_2
+https://www.molex.com/pdm_docs/sd/1050570001_sd.pdf
+USB A Vertical
+0
+7
+5
+footprints
+USB_C_Receptacle_JAE_DX07S024WJ3R400
+USB TYPE C, VERT RCPT PCB, SMT, http://www.jae.com/z-en/pdf_download_exec.cfm?param=SJ117928.pdf
+USB C Type-C Receptacle SMD
+0
+28
+25
+footprints
+USB_Micro-B_Molex-105133-0001-3D
+Molex Vertical Micro USB Typ-B (http://www.molex.com/pdm_docs/sd/1051330001_sd.pdf)
+Micro-USB SMD Typ-B Vertical
+0
+8
+6
