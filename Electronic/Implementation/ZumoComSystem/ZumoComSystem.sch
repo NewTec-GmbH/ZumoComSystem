@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 7
 Title "Zumo Communication System"
-Date "2022-08-11"
-Rev "V1.1"
+Date "2022-09-05"
+Rev "V1.2"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
 Comment2 ""
@@ -1953,10 +1953,10 @@ C1 02 00 00 00 00 A2 81 04 0B 00 00 00 00 88 06 12 2C 00 00 00 00 20 1A 48 B0 00
 EndData
 $EndBitmap
 $Comp
-L NewTec_Logo:NewTec_Logo L1
+L NewTec_Logo:NewTec_Logo Logo1
 U 1 1 62F4D7EF
 P 750 7700
-F 0 "L1" H 750 7800 50  0001 C CNN
+F 0 "Logo1" H 750 7800 50  0001 C CNN
 F 1 "NewTec_Logo" H 750 7700 50  0000 C CNN
 F 2 "footprints:NT_Kicad_Logo_2500x2500" H 750 7700 50  0001 C CNN
 F 3 "" H 750 7700 50  0001 C CNN
