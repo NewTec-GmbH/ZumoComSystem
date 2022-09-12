@@ -67,6 +67,27 @@ namespace GPIOPins
 
     /** Pin for info LED RGB channel BLUE (ACTIVE LOW) */
     static const uint8_t INFO_LED_B = 21;
+
+    /** Pin for analog measurement of battery voltage */
+    static const uint8_t PIN_BATT_MEASUREMENT = 13;
+
+    /** Pin for ZumoComSystem's Push Button A */
+    static const uint8_t PIN_BUTTON_A = 33;
+
+    /** Pin for ZumoComSystem's Push Button B */
+    static const uint8_t PIN_BUTTON_B = 25;
+
+    /** Pin for ZumoComSystem's Push Button C */
+    static const uint8_t PIN_BUTTON_C = 26;
+    
+    /** Pin for ZumoComSystem's LED A */
+    static const uint8_t PIN_LED_A = 34;
+
+    /** Pin for ZumoComSystem's LED B */
+    static const uint8_t PIN_LED_B = 35;
+
+    /** Pin for ZumoComSystem's LED C */
+    static const uint8_t PIN_LED_C = 32;
 };
 #endif /** __GPIOPINS_H__ */
 
