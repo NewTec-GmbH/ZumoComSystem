@@ -68,7 +68,7 @@ void IO::initGPIOs()
     setPinMode(GPIOPins::INFO_LED_B, OUTPUT);
 
     /* Set initial values */
-    writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
+    writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
     writeGPIO(GPIOPins::PIN_ROBOT_ON_OFF, HIGH);
     writeGPIO(GPIOPins::INFO_LED_R, HIGH);
     writeGPIO(GPIOPins::INFO_LED_G, HIGH);
