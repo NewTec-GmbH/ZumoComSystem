@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 7 7
 Title "Zumo Communication System"
-Date "2022-09-07"
+Date "2022-09-12"
 Rev "V1.2"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -59,32 +59,6 @@ Text HLabel 1400 6900 0    50   Input ~ 0
 nRGB_LED_G
 Text HLabel 1400 7250 0    50   Input ~ 0
 nRGB_LED_B
-$Comp
-L Device:R R28
-U 1 1 61002789
-P 2100 6900
-F 0 "R28" V 1893 6900 50  0000 C CNN
-F 1 "150" V 1984 6900 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2030 6900 50  0001 C CNN
-F 3 "~" H 2100 6900 50  0001 C CNN
-F 4 "YAGEO" H 2100 6900 50  0001 C CNN "Manufacturer"
-F 5 "RC0603FR-07150RL" H 2100 6900 50  0001 C CNN "Part-No."
-	1    2100 6900
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:R R29
-U 1 1 61002936
-P 2100 7250
-F 0 "R29" V 1893 7250 50  0000 C CNN
-F 1 "150" V 1984 7250 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2030 7250 50  0001 C CNN
-F 3 "~" H 2100 7250 50  0001 C CNN
-F 4 "YAGEO" H 2100 7250 50  0001 C CNN "Manufacturer"
-F 5 "RC0603FR-07150RL" H 2100 7250 50  0001 C CNN "Part-No."
-	1    2100 7250
-	0    1    1    0   
-$EndComp
 Wire Wire Line
 	2250 6550 2450 6550
 Wire Wire Line
@@ -1084,17 +1058,6 @@ F 5 "SI2302CDS-T1-BE3" H 5700 6250 50  0001 C CNN "Part-No."
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+5V #PWR061
-U 1 1 6222DB21
-P 3250 6500
-F 0 "#PWR061" H 3250 6350 50  0001 C CNN
-F 1 "+5V" H 3265 6673 50  0000 C CNN
-F 2 "" H 3250 6500 50  0001 C CNN
-F 3 "" H 3250 6500 50  0001 C CNN
-	1    3250 6500
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:+5V #PWR072
 U 1 1 62267367
 P 6000 4400
@@ -1109,19 +1072,6 @@ Text Notes 5950 4050 0    50   ~ 0
 Battery Voltage Zumo
 Wire Wire Line
 	2250 6900 2600 6900
-$Comp
-L Device:R R27
-U 1 1 61001F8A
-P 2100 6550
-F 0 "R27" V 1893 6550 50  0000 C CNN
-F 1 "300" V 1984 6550 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2030 6550 50  0001 C CNN
-F 3 "~" H 2100 6550 50  0001 C CNN
-F 4 "Bourns Inc." H 2100 6550 50  0001 C CNN "Manufacturer"
-F 5 "CR0603-JW-301ELF" H 2100 6550 50  0001 C CNN "Part-No."
-	1    2100 6550
-	0    1    1    0   
-$EndComp
 Text Notes 5950 4150 0    50   ~ 0
 I_max = 2.6 A 
 Wire Wire Line
@@ -1376,4 +1326,54 @@ Text Notes 4850 3200 0    50   ~ 0
 left
 Text Notes 9150 3200 0    50   ~ 0
 right
+$Comp
+L power:+3.3V #PWR?
+U 1 1 6320421B
+P 3250 6500
+F 0 "#PWR?" H 3250 6350 50  0001 C CNN
+F 1 "+3.3V" H 3265 6673 50  0000 C CNN
+F 2 "" H 3250 6500 50  0001 C CNN
+F 3 "" H 3250 6500 50  0001 C CNN
+	1    3250 6500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R27
+U 1 1 61001F8A
+P 2100 6550
+F 0 "R27" V 1893 6550 50  0000 C CNN
+F 1 "300" V 1984 6550 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2030 6550 50  0001 C CNN
+F 3 "~" H 2100 6550 50  0001 C CNN
+F 4 "Bourns Inc." H 2100 6550 50  0001 C CNN "Manufacturer"
+F 5 "CR0603-JW-301ELF" H 2100 6550 50  0001 C CNN "Part-No."
+	1    2100 6550
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R29
+U 1 1 61002936
+P 2100 7250
+F 0 "R29" V 1893 7250 50  0000 C CNN
+F 1 "100" V 1984 7250 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2030 7250 50  0001 C CNN
+F 3 "~" H 2100 7250 50  0001 C CNN
+F 4 "YAGEO" H 2100 7250 50  0001 C CNN "Manufacturer"
+F 5 "RT0603FRE07100RL" H 2100 7250 50  0001 C CNN "Part-No."
+	1    2100 7250
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R28
+U 1 1 61002789
+P 2100 6900
+F 0 "R28" V 1893 6900 50  0000 C CNN
+F 1 "100" V 1984 6900 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2030 6900 50  0001 C CNN
+F 3 "~" H 2100 6900 50  0001 C CNN
+F 4 "YAGEO" H 2100 6900 50  0001 C CNN "Manufacturer"
+F 5 "RT0603FRE07100RL" H 2100 6900 50  0001 C CNN "Part-No."
+	1    2100 6900
+	0    1    1    0   
+$EndComp
 $EndSCHEMATC
