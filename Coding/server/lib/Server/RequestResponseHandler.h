@@ -55,6 +55,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <SetSTACredentialsCommand.h>
 #include <FlashZumoCommand.h>
 #include <GetFirmwareInfoCommand.h>
+#include <GetButtonStatusCommand.h>
 
  /** Class which handles requests and responses between the API service implementations and the webserver */
 class RequestResponseHandler
@@ -116,6 +117,9 @@ private:
 
     /** Instance of GetFirmwareInfoCommand */
     GetFirmwareInfoCommand m_getFirmwareInfoCommand;
+
+    /** Instance of GetButtonStatusCommand */
+    GetButtonStatusCommand m_getButtonStatusCommand;
 
     /** Instance of SessionManager */
     SessionManager m_sessionManager;
