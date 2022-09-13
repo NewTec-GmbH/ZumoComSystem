@@ -194,9 +194,13 @@ Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& reques
     {
         command = &m_echoDemoCommand;
     }
-    else if(commandID == "getbuttonstatus")
+    else if (commandID == "getbuttonstatus")
     {
         command = &m_getButtonStatusCommand;
+    }
+    else if (commandID == "setledstatus")
+    {
+        command = &m_setLEDStatusCommand;
     }
     return command;
 }
