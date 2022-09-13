@@ -40,7 +40,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <GetButtonStatusCommand.h>
-#include <ArduinoJson.h>
 #include <Log.h>
 #include <GPIOPins.h>
 #include <Arduino.h>
