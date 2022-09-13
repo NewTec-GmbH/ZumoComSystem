@@ -56,7 +56,7 @@
     
                 <!-- Control Card -->
                 <div class="col-md my-2">
-                    <div class="card border-dark h-100">
+                    <div class="card border-dark">
                         <div class="div card-body text-center">
                             <h3 class="card-title text-center p-2">LED Control</h3>
                             <table class="table table-bordered">
@@ -86,6 +86,29 @@
                                         <td><button type="button" class="btn btn-danger" onclick="setLedStatus('RED', 1)">OFF</button></td>
                                         <td><button type="button" class="btn btn-danger" onclick="setLedStatus('GREEN', 1)">OFF</button></td>
                                         <td><button type="button" class="btn btn-danger" onclick="setLedStatus('BLUE', 1)">OFF</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card border-dark">
+                        <div class="div card-body text-center">
+                            <h3 class="card-title text-center p-2">Button Status</h3>
+                            <p class="text-center">Status is updated every second</p>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Button A</th>
+                                        <th scope="col">Button B</th>
+                                        <th scope="col">Button C</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td id="statusButtonA"></td>
+                                        <td id="statusButtonB"></td>
+                                        <td id="statusButtonC"></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -234,7 +257,20 @@
         }
 
         function getButtonStatus() {
-            console.log("Retrieving Button Status");
+            return global.wsClient.getbuttonstatus().then(function (rsp) {    
+                console.log(rsp);
+
+                document.getElementById("statusButtonA").innerText = (rsp.A ? "OFF" : "ON");
+                document.getElementById("statusButtonB").innerText = (rsp.B ? "OFF" : "ON");
+                document.getElementById("statusButtonC").innerText = (rsp.C ? "OFF" : "ON");
+
+                return Promise.resolve();
+            }).catch(function(err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                    alert("Unknown Error");
+                }
+            });
         }
 
         // Handler of Websocket Event
@@ -251,15 +287,14 @@
         $(document).ready(function () {
             global.wsClient.connect({
                 protocol: "ws",
-                // hostname: location.hostname,
-                hostname: "192.168.178.141",
+                hostname: location.hostname,
                 port: 80,
                 endpoint: "/api",
                 onEvent: onEvent,
                 onClosed: onClosed,
             }).then(function () {
                 console.log("Websocket opened.")
-                return getButtonStatus();
+                setInterval(getButtonStatus, 1000);
             }).catch(function (err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);

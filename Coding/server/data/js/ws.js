@@ -294,3 +294,19 @@ cpjs.ws.Client.prototype.setledstatus = function(led, status) {
         }
     }.bind(this));
 };
+
+// API Command: Get Button Status
+cpjs.ws.Client.prototype.getbuttonstatus = function() {
+    return new Promise(function (resolve, reject) {
+        if ((null === this.socket)) {
+            reject();
+        } else {
+            this._sendCmd({
+                commandId: "getbuttonstatus",
+                jsonPayload: "",
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};
