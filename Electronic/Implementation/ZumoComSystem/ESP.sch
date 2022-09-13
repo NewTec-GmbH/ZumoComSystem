@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 6 7
 Title "Zumo Communication System"
-Date "2022-09-12"
+Date "2022-09-13"
 Rev "V1.2"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -33,13 +33,11 @@ Wire Wire Line
 	7100 2900 7500 2900
 Wire Wire Line
 	7100 3200 7500 3200
-Text HLabel 7500 3300 2    50   Input ~ 0
-nBUT_B
 Text HLabel 7500 3400 2    50   Input ~ 0
 nBUT_C
-Text HLabel 7500 3800 2    50   Output ~ 0
+Text HLabel 7500 3700 2    50   Output ~ 0
 nLED_A
-Text HLabel 7500 3900 2    50   Output ~ 0
+Text HLabel 7500 3300 2    50   Output ~ 0
 nLED_B
 Text HLabel 7500 3600 2    50   Output ~ 0
 nLED_C
@@ -127,7 +125,7 @@ Connection ~ 10300 1600
 Wire Wire Line
 	10300 1600 10300 1300
 NoConn ~ 7100 2400
-Text HLabel 7500 3700 2    50   Input ~ 0
+Text HLabel 7500 3800 2    50   Input ~ 0
 nBUT_A
 Wire Wire Line
 	7100 3900 7500 3900
@@ -654,7 +652,7 @@ P 6500 2800
 AR Path="/60C62D7A" Ref="U?"  Part="1" 
 AR Path="/60C4E4D0/60C62D7A" Ref="U6"  Part="1" 
 F 0 "U6" H 6850 4250 50  0000 C CNN
-F 1 "ESP32-WROOM-32D-N16 " H 6950 4150 50  0000 C CNN
+F 1 "ESP32-WROOM-32D-N16 " H 7150 4150 50  0000 C CNN
 F 2 "RF_Module:ESP32-WROOM-32" H 6500 1300 50  0001 C CNN
 F 3 "https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf" H 6200 2850 50  0001 C CNN
 F 4 " Espressif Systems" H 6500 2800 50  0001 C CNN "Manufacturer"
@@ -781,4 +779,6 @@ F 3 "" H 10300 800 50  0001 C CNN
 	1    10300 800 
 	1    0    0    -1  
 $EndComp
+Text HLabel 7500 3900 2    50   Input ~ 0
+nBUT_B
 $EndSCHEMATC
