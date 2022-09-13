@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Arduino.h>
 
 GetButtonStatusCommand::GetButtonStatusCommand() :
-    Command("getfirmwareinfo", NONE),
+    Command("getbuttonstatus", NONE),
     m_io(IO::getInstance())
 {
 }
