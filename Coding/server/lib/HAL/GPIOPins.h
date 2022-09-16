@@ -53,9 +53,6 @@ namespace GPIOPins
     /** Pin for resetting the attached Zumo robot (ACTIVE LOW) */
     static const uint8_t PIN_ROBOT_RESET = 27;
 
-    /** Pin for (dis-)connecting power from Zumo robot (ACTIVE LOW) */
-    static const uint8_t PIN_ROBOT_ON_OFF = 15;
-
     /** Unconnected pin for reading random analog data to seed PRNG */
     static const uint8_t PIN_ANALOG_NOISE_SEED = 36;
 
