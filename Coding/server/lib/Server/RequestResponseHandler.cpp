@@ -53,6 +53,7 @@ RequestResponseHandler::RequestResponseHandler() :
     m_flashZumoCommand(),
     m_getFirmwareInfoCommand(),
     m_getButtonStatusCommand(),
+    m_setLEDStatusCommand(),
     m_sessionManager()
 {
 }
