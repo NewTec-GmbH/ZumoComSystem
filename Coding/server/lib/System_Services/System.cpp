@@ -49,6 +49,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <HTTPWebServer.h>
 #include <Zumo32U4.h>
 #include <FileManager.h>
+#include <Battery.h>
 
 System::System() :
     m_store(Store::getInstance()),
@@ -80,6 +81,9 @@ void System::init()
 
     /* Initialize the GPIOs */
     IO::getInstance().initGPIOs();
+
+    /* Get Battery Voltage */
+    LOG_DEBUG("Battery Voltage = " + String(Battery::getInstance().readBatteryVoltage()));
 
     /* Register an ISR for ComPlatform reset on Reset key push */
     Key::getInstance().registerSystemReset();

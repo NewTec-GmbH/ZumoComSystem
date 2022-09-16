@@ -69,7 +69,7 @@ namespace GPIOPins
     static const uint8_t INFO_LED_B = 21;
 
     /** Pin for analog measurement of battery voltage */
-    static const uint8_t PIN_BATT_MEASUREMENT = 13;
+    static const uint8_t PIN_BATT_MEASUREMENT = 35;
 
     /** Pin for ZumoComSystem's Push Button A */
     static const uint8_t PIN_BUTTON_A = 33;
@@ -81,13 +81,13 @@ namespace GPIOPins
     static const uint8_t PIN_BUTTON_C = 26;
     
     /** Pin for ZumoComSystem's LED A */
-    static const uint8_t PIN_LED_A = 34;
+   //  static const uint8_t PIN_LED_A = 34;
 
     /** Pin for ZumoComSystem's LED B */
-    static const uint8_t PIN_LED_B = 35;
+   //  static const uint8_t PIN_LED_B = 35;
 
     /** Pin for ZumoComSystem's LED C */
-    static const uint8_t PIN_LED_C = 32;
+   //  static const uint8_t PIN_LED_C = 32;
 };
 #endif /** __GPIOPINS_H__ */
 
