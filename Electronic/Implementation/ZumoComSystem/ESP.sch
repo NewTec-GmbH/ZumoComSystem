@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 6 7
 Title "Zumo Communication System"
-Date "2022-09-13"
+Date "2022-09-16"
 Rev "V1.2"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -33,14 +33,10 @@ Wire Wire Line
 	7100 2900 7500 2900
 Wire Wire Line
 	7100 3200 7500 3200
-Text HLabel 7500 3400 2    50   Input ~ 0
+Text HLabel 7500 2400 2    50   Input ~ 0
 nBUT_C
-Text HLabel 7500 3700 2    50   Output ~ 0
-nLED_A
-Text HLabel 7500 3300 2    50   Output ~ 0
-nLED_B
 Text HLabel 7500 3600 2    50   Output ~ 0
-nLED_C
+nLED_A
 Wire Wire Line
 	7100 3300 7500 3300
 Wire Wire Line
@@ -124,11 +120,11 @@ Wire Wire Line
 Connection ~ 10300 1600
 Wire Wire Line
 	10300 1600 10300 1300
-NoConn ~ 7100 2400
+NoConn ~ 7100 2300
 Text HLabel 7500 3800 2    50   Input ~ 0
 nBUT_A
 Wire Wire Line
-	7100 3900 7500 3900
+	7100 2400 7500 2400
 Text Label 9650 1600 0    50   ~ 0
 nRST_SW
 Text GLabel 10300 4750 1    50   Input ~ 0
@@ -180,10 +176,10 @@ Connection ~ 9450 5350
 Wire Wire Line
 	9450 5350 9750 5350
 NoConn ~ 7100 2200
-Text Label 7550 2300 0    50   ~ 0
+Text Label 7500 3900 0    50   ~ 0
 U_Bat_Meas
 Wire Wire Line
-	7100 2300 7550 2300
+	7100 3900 7500 3900
 NoConn ~ 1950 6550
 NoConn ~ 3350 5550
 Text Label 4150 5850 2    50   ~ 0
@@ -779,6 +775,10 @@ F 3 "" H 10300 800 50  0001 C CNN
 	1    10300 800 
 	1    0    0    -1  
 $EndComp
-Text HLabel 7500 3900 2    50   Input ~ 0
+Text HLabel 7500 3400 2    50   Output ~ 0
+nLED_C
+Text HLabel 7500 3700 2    50   Input ~ 0
 nBUT_B
+Text HLabel 7500 3300 2    50   Output ~ 0
+nLED_B
 $EndSCHEMATC
