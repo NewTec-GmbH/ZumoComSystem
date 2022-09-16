@@ -75,22 +75,7 @@ void SetLEDStatusCommand::run(const ApiRequest &request, ApiResponse &response, 
         if ((HIGH == targetStatus) || (LOW == targetStatus))
         {
             LOG_INFO("Setting LED " + targetLED + " to " + targetStatus);
-            if (targetLED.equals("A"))
-            {
-                m_io.setPinMode(GPIOPins::PIN_LED_A, OUTPUT);
-                m_io.writeGPIO(GPIOPins::PIN_LED_A, targetStatus);
-            }
-            else if (targetLED.equals("B"))
-            {
-                m_io.setPinMode(GPIOPins::PIN_LED_B, OUTPUT);
-                m_io.writeGPIO(GPIOPins::PIN_LED_B, targetStatus);
-            }
-            else if (targetLED.equals("C"))
-            {
-                m_io.setPinMode(GPIOPins::PIN_LED_C, OUTPUT);
-                m_io.writeGPIO(GPIOPins::PIN_LED_C, targetStatus);
-            }
-            else if (targetLED.equals("RED"))
+            if (targetLED.equals("RED"))
             {
                 m_io.setPinMode(GPIOPins::INFO_LED_R, OUTPUT);
                 m_io.writeGPIO(GPIOPins::INFO_LED_R, targetStatus);

@@ -80,14 +80,6 @@ namespace GPIOPins
     /** Pin for ZumoComSystem's Push Button C */
     static const uint8_t PIN_BUTTON_C = 26;
     
-    /** Pin for ZumoComSystem's LED A */
-   //  static const uint8_t PIN_LED_A = 34;
-
-    /** Pin for ZumoComSystem's LED B */
-   //  static const uint8_t PIN_LED_B = 35;
-
-    /** Pin for ZumoComSystem's LED C */
-   //  static const uint8_t PIN_LED_C = 32;
 };
 #endif /** __GPIOPINS_H__ */
 

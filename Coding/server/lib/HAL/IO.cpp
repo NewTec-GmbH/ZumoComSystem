@@ -70,9 +70,6 @@ void IO::initGPIOs()
     setPinMode(GPIOPins::PIN_BUTTON_A, INPUT);
     setPinMode(GPIOPins::PIN_BUTTON_B, INPUT);
     setPinMode(GPIOPins::PIN_BUTTON_C, INPUT);
-    setPinMode(GPIOPins::PIN_LED_A, OUTPUT);
-    setPinMode(GPIOPins::PIN_LED_B, OUTPUT);
-    setPinMode(GPIOPins::PIN_LED_C, OUTPUT);
 
     /* Set initial values */
     writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
@@ -80,9 +77,6 @@ void IO::initGPIOs()
     writeGPIO(GPIOPins::INFO_LED_R, HIGH);
     writeGPIO(GPIOPins::INFO_LED_G, HIGH);
     writeGPIO(GPIOPins::INFO_LED_B, HIGH);
-    writeGPIO(GPIOPins::PIN_LED_A, LOW);
-    writeGPIO(GPIOPins::PIN_LED_B, LOW);
-    writeGPIO(GPIOPins::PIN_LED_C, LOW);
 
     LOG_DEBUG("Initialized GPIOs");
 }
