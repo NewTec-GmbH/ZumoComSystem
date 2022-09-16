@@ -137,6 +137,10 @@ void IO::writeGPIO(const uint8_t gpio, const uint8_t value)
     xSemaphoreGive(m_ioMutex);
 }
 
+uint32_t IO::readAnalogGPIOInMillivolt(const uint8_t gpio) {
+    return analogReadMilliVolts(GPIOPins::PIN_BATT_MEASUREMENT);
+}
+
 /**
  *  @}
  */
