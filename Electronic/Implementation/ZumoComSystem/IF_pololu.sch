@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 7 7
 Title "Zumo Communication System"
-Date "2022-09-16"
+Date "2022-10-04"
 Rev "V1.2"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -578,91 +578,6 @@ F 3 "" H 1650 5200 50  0001 C CNN
 	1    1650 5200
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	5800 6050 5800 5900
-Wire Wire Line
-	5800 6450 5800 6550
-Wire Wire Line
-	5050 6250 5350 6250
-$Comp
-L power:GND #PWR065
-U 1 1 618F40E8
-P 5800 6550
-F 0 "#PWR065" H 5800 6300 50  0001 C CNN
-F 1 "GND" H 5805 6377 50  0000 C CNN
-F 2 "" H 5800 6550 50  0001 C CNN
-F 3 "" H 5800 6550 50  0001 C CNN
-	1    5800 6550
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5800 5900 6400 5900
-$Comp
-L power:+3.3V #PWR064
-U 1 1 618F40EF
-P 5800 5400
-F 0 "#PWR064" H 5800 5250 50  0001 C CNN
-F 1 "+3.3V" H 5815 5573 50  0000 C CNN
-F 2 "" H 5800 5400 50  0001 C CNN
-F 3 "" H 5800 5400 50  0001 C CNN
-	1    5800 5400
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5800 5450 5800 5400
-$Comp
-L Device:R R29
-U 1 1 618F40F6
-P 5800 5600
-F 0 "R29" H 5870 5646 50  0000 L CNN
-F 1 "10k" H 5870 5555 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 5730 5600 50  0001 C CNN
-F 3 "~" H 5800 5600 50  0001 C CNN
-F 4 "TE Connectivity Passive Product" H 5800 5600 50  0001 C CNN "Manufacturer"
-F 5 "CRGCQ0603J10K" H 5800 5600 50  0001 C CNN "Part-No."
-	1    5800 5600
-	1    0    0    -1  
-$EndComp
-Connection ~ 5800 5900
-Wire Wire Line
-	5800 5750 5800 5900
-Text HLabel 5050 6250 0    50   Input ~ 0
-nON_OFF
-Text Label 5750 4200 2    50   ~ 0
-Main_Switch
-Wire Wire Line
-	5750 4200 5200 4200
-$Comp
-L power:+3.3V #PWR061
-U 1 1 6194AF19
-P 5350 5400
-F 0 "#PWR061" H 5350 5250 50  0001 C CNN
-F 1 "+3.3V" H 5365 5573 50  0000 C CNN
-F 2 "" H 5350 5400 50  0001 C CNN
-F 3 "" H 5350 5400 50  0001 C CNN
-	1    5350 5400
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5350 5450 5350 5400
-$Comp
-L Device:R R28
-U 1 1 6194AF20
-P 5350 5600
-F 0 "R28" H 5420 5646 50  0000 L CNN
-F 1 "10k" H 5420 5555 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 5280 5600 50  0001 C CNN
-F 3 "~" H 5350 5600 50  0001 C CNN
-F 4 "TE Connectivity Passive Product" H 5350 5600 50  0001 C CNN "Manufacturer"
-F 5 "CRGCQ0603J10K" H 5350 5600 50  0001 C CNN "Part-No."
-	1    5350 5600
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5350 5750 5350 6250
-Connection ~ 5350 6250
-Wire Wire Line
-	5350 6250 5500 6250
 $Comp
 L power:+3.3V #PWR069
 U 1 1 6196F50A
@@ -698,8 +613,6 @@ Wire Wire Line
 Connection ~ 7500 5000
 Wire Wire Line
 	7500 4550 7500 5000
-Text Label 6400 5900 2    50   ~ 0
-Main_Switch
 Text HLabel 7150 5000 0    50   Input ~ 0
 nRST
 $Comp
@@ -720,21 +633,6 @@ Wire Wire Line
 Wire Wire Line
 	7900 4550 7900 4700
 Connection ~ 7900 4700
-$Comp
-L Device:Q_NMOS_GSD Q?
-U 1 1 6232FCBD
-P 5700 6250
-AR Path="/60C3F332/6232FCBD" Ref="Q?"  Part="1" 
-AR Path="/60C50401/6232FCBD" Ref="Q6"  Part="1" 
-F 0 "Q6" H 5949 6250 50  0000 C CNN
-F 1 "SI2302CDS-T1-BE3" H 6300 6150 50  0000 C CNN
-F 2 "Package_TO_SOT_SMD:SOT-23" H 5900 6350 50  0001 C CNN
-F 3 "https://www.mouser.de/datasheet/2/196/Infineon_IRLML6246_DataSheet_v01_01_EN-1228486.pdf" H 5700 6250 50  0001 C CNN
-F 4 "Vishay / Siliconix" H 5700 6250 50  0001 C CNN "Manufacturer"
-F 5 "SI2302CDS-T1-BE3" H 5700 6250 50  0001 C CNN "Part-No."
-	1    5700 6250
-	1    0    0    -1  
-$EndComp
 $Comp
 L power:+5V #PWR066
 U 1 1 62267367
@@ -1169,4 +1067,5 @@ Wire Wire Line
 	1650 5300 2100 5300
 Wire Wire Line
 	1650 5600 3050 5600
+NoConn ~ 5200 4200
 $EndSCHEMATC

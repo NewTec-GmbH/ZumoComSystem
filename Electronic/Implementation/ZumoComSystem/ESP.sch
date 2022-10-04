@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 6 7
 Title "Zumo Communication System"
-Date "2022-09-16"
+Date "2022-10-04"
 Rev "V1.2"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -57,10 +57,6 @@ Wire Wire Line
 	7100 3500 7500 3500
 Text HLabel 7500 3500 2    50   Output ~ 0
 nRST
-Wire Wire Line
-	7500 2500 7100 2500
-Text HLabel 7500 2500 2    50   Output ~ 0
-nON_OFF
 Wire Wire Line
 	7100 1700 7550 1700
 Wire Wire Line
