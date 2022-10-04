@@ -361,34 +361,8 @@ F 5 "RC1206FR-070RL" H 5750 4200 50  0001 C CNN "Part-No."
 	1    5750 4200
 	0    1    1    0   
 $EndComp
-$Comp
-L power:GND #PWR026
-U 1 1 6318C2E1
-P 5750 5400
-F 0 "#PWR026" H 5750 5150 50  0001 C CNN
-F 1 "GND" H 5755 5227 50  0000 C CNN
-F 2 "" H 5750 5400 50  0001 C CNN
-F 3 "" H 5750 5400 50  0001 C CNN
-	1    5750 5400
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR025
-U 1 1 6318C81A
-P 5250 5400
-F 0 "#PWR025" H 5250 5150 50  0001 C CNN
-F 1 "GND" H 5255 5227 50  0000 C CNN
-F 2 "" H 5250 5400 50  0001 C CNN
-F 3 "" H 5250 5400 50  0001 C CNN
-	1    5250 5400
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5250 5400 5250 5050
 Wire Wire Line
 	5250 5050 5500 5050
-Wire Wire Line
-	5750 5200 5750 5400
 Wire Wire Line
 	6000 5050 6250 5050
 Wire Wire Line
@@ -416,4 +390,17 @@ F 3 "~" H 5750 5050 50  0001 C CNN
 $EndComp
 Text Notes 5850 900  0    79   ~ 0
 Schutzschaltung\n
+Text Label 6300 3700 0    50   ~ 0
+VM
+Wire Wire Line
+	5050 5050 5250 5050
+Connection ~ 5250 5050
+Text Label 5050 5050 0    50   ~ 0
+VM
+Wire Wire Line
+	5250 5400 5250 5050
+Wire Wire Line
+	5750 5200 5750 5400
+Wire Wire Line
+	5750 5400 5250 5400
 $EndSCHEMATC
