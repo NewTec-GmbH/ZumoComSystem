@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 6 7
 Title "Zumo Communication System"
-Date "2022-10-04"
+Date "2022-10-07"
 Rev "V1.2"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -35,12 +35,6 @@ Wire Wire Line
 	7100 3200 7500 3200
 Text HLabel 7500 2400 2    50   Input ~ 0
 nBUT_C
-Text HLabel 7500 3600 2    50   Output ~ 0
-nLED_A
-Wire Wire Line
-	7100 3300 7500 3300
-Wire Wire Line
-	7100 3600 7500 3600
 Wire Wire Line
 	7100 3700 7500 3700
 Wire Wire Line
@@ -90,8 +84,6 @@ Wire Wire Line
 	5450 1600 5450 1550
 Wire Wire Line
 	5450 1600 5900 1600
-Wire Wire Line
-	7100 3400 7500 3400
 Wire Wire Line
 	10300 2300 10300 2200
 $Comp
@@ -771,10 +763,10 @@ F 3 "" H 10300 800 50  0001 C CNN
 	1    10300 800 
 	1    0    0    -1  
 $EndComp
-Text HLabel 7500 3400 2    50   Output ~ 0
-nLED_C
 Text HLabel 7500 3700 2    50   Input ~ 0
 nBUT_B
-Text HLabel 7500 3300 2    50   Output ~ 0
-nLED_B
+NoConn ~ 7100 3600
+NoConn ~ 7100 3400
+NoConn ~ 7100 3300
+NoConn ~ 7100 2500
 $EndSCHEMATC

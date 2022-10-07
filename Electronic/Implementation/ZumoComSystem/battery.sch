@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 4 7
 Title "Zumo Communication System"
-Date "2022-10-04"
+Date "2022-10-07"
 Rev "V1.2"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
@@ -218,17 +218,15 @@ F 5 "S-8252AAL-M6T1U" H 5700 3200 50  0001 C CNN "Part-No."
 	1    5700 3200
 	1    0    0    -1  
 $EndComp
-Text Label 7400 2450 0    50   ~ 0
+Text Label 7300 2050 0    50   ~ 0
 V_Bat
 Wire Wire Line
-	7150 2450 7750 2450
-Wire Wire Line
-	7750 2050 7750 2450
+	7150 2050 7550 2050
 Wire Wire Line
 	7150 2050 7150 2450
-Text GLabel 7150 2050 1    50   Input ~ 0
+Text GLabel 7150 1950 1    50   Input ~ 0
 VBAT_ZCS
-Text HLabel 7750 2050 1    50   BiDi ~ 0
+Text HLabel 7550 2050 2    50   BiDi ~ 0
 V_Bat
 Connection ~ 7150 2450
 $Comp
@@ -324,10 +322,7 @@ F 5 "66200221122" H 8800 3250 50  0001 C CNN "Part-No."
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	7750 2450 8800 2450
-Wire Wire Line
 	8800 2450 8800 2750
-Connection ~ 7750 2450
 Wire Wire Line
 	7750 4200 8800 4200
 Wire Wire Line
@@ -403,4 +398,9 @@ Wire Wire Line
 	5750 5200 5750 5400
 Wire Wire Line
 	5750 5400 5250 5400
+Wire Wire Line
+	7150 2450 8800 2450
+Wire Wire Line
+	7150 2050 7150 1950
+Connection ~ 7150 2050
 $EndSCHEMATC
