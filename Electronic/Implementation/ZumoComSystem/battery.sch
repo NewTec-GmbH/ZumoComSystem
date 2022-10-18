@@ -383,8 +383,6 @@ F 3 "~" H 5750 5050 50  0001 C CNN
 	1    5750 5050
 	1    0    0    -1  
 $EndComp
-Text Notes 5850 900  0    79   ~ 0
-Schutzschaltung\n
 Text Label 6300 3700 0    50   ~ 0
 VM
 Wire Wire Line
