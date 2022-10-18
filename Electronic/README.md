@@ -5,6 +5,7 @@ Do NOT use v1.1 -> use v1.2 (or higher) instead
 <br><br>
 
 ## Design
+<<<<<<< HEAD
 <<<<<<< ours
 
 ## Features
