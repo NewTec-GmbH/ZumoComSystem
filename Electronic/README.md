@@ -4,32 +4,6 @@
 Do NOT use v1.1 -> use v1.2 (or higher) instead
 <br><br>
 
-## Design
-<<<<<<< HEAD
-<<<<<<< ours
-
-## Features
-  - Status LED
-  - 2x 18650 Batteries
-  -
-
-## Toolchain
-  - KiCAD
-
-## Changelog
-### v1.2
-  - Removed ...
-  - Fixed ...
-  - 
-  
-### v1.1 (15.08.2022)
-  - Removed ...
-  - Fixed ...
-  - 
-  
-### v1.0 (13.05.2022)
-  - First Prototype Version
-=======
 ![ZumoCom-System](../Electronic/Design/ZumoComSystem.png)
 ## Features
 * Status LED
