@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 7
 Title "Zumo Communication System"
-Date "2022-08-11"
-Rev "V1.1"
+Date "2022-10-07"
+Rev "V1.2"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
 Comment2 ""
@@ -215,7 +215,6 @@ Wire Wire Line
 	8050 3450 8050 4300
 Wire Wire Line
 	3950 2000 3950 3450
-Connection ~ 8050 4400
 Connection ~ 3950 3450
 Wire Wire Line
 	3950 3450 3950 4200
@@ -347,10 +346,10 @@ F 5 "SD2114S040S5R0" H 8650 4800 50  0001 C CNN "Part-No."
 	0    1    1    0   
 $EndComp
 $Comp
-L Device:L L3
+L Device:L L2
 U 1 1 60C6A253
 P 8950 4200
-F 0 "L3" V 9140 4200 50  0000 C CNN
+F 0 "L2" V 9140 4200 50  0000 C CNN
 F 1 "15u" V 9049 4200 50  0000 C CNN
 F 2 "footprints:L_Vishay_IHLP-4040_3D" H 8950 4200 50  0001 C CNN
 F 3 "https://www.mouser.de/datasheet/2/427/lp40dz5a-1762293.pdf" H 8950 4200 50  0001 C CNN
@@ -373,10 +372,10 @@ F 5 "C0805C274K5RACTU" H 8650 3950 50  0001 C CNN "Part-No."
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:L L2
+L Device:L L1
 U 1 1 60C698F7
 P 8000 1500
-F 0 "L2" V 8190 1500 50  0000 C CNN
+F 0 "L1" V 8190 1500 50  0000 C CNN
 F 1 "6.8u" V 8099 1500 50  0000 C CNN
 F 2 "footprints:L_Coilcraft_XxL4040_Handsolder" H 8000 1500 50  0001 C CNN
 F 3 "https://www.mouser.de/datasheet/2/597/xal4000-270751.pdf" H 8000 1500 50  0001 C CNN
@@ -521,9 +520,6 @@ Wire Wire Line
 	3950 3450 8050 3450
 Wire Wire Line
 	7850 4300 8050 4300
-Connection ~ 8050 4300
-Wire Wire Line
-	8050 4300 8050 4400
 Connection ~ 8650 3700
 Wire Wire Line
 	4450 3700 8650 3700

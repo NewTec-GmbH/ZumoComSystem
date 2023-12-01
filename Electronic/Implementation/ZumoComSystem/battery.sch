@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 4 7
 Title "Zumo Communication System"
-Date "2022-08-11"
-Rev "V1.1"
+Date "2022-10-07"
+Rev "V1.2"
 Comp "NewTec GmbH"
 Comment1 "Schneider, Niklas"
 Comment2 ""
@@ -67,10 +67,10 @@ $EndComp
 Wire Wire Line
 	7750 4200 7750 4250
 $Comp
-L power:GND #PWR026
+L power:GND #PWR029
 U 1 1 62256923
 P 7750 4250
-F 0 "#PWR026" H 7750 4000 50  0001 C CNN
+F 0 "#PWR029" H 7750 4000 50  0001 C CNN
 F 1 "GND" H 7755 4077 50  0000 C CNN
 F 2 "" H 7750 4250 50  0001 C CNN
 F 3 "" H 7750 4250 50  0001 C CNN
@@ -85,21 +85,6 @@ Wire Wire Line
 	6050 3700 6550 3700
 Wire Wire Line
 	6050 3600 6050 3700
-Wire Wire Line
-	5850 4200 6000 4200
-$Comp
-L Device:R R9
-U 1 1 6224F0C3
-P 5700 4200
-F 0 "R9" V 5493 4200 50  0000 C CNN
-F 1 "0" V 5584 4200 50  0000 C CNN
-F 2 "Resistor_SMD:R_1206_3216Metric_Pad1.42x1.75mm_HandSolder" V 5630 4200 50  0001 C CNN
-F 3 "~" H 5700 4200 50  0001 C CNN
-F 4 "YAGEO" H 5700 4200 50  0001 C CNN "Manufacturer"
-F 5 "RC1206FR-070RL" H 5700 4200 50  0001 C CNN "Part-No."
-	1    5700 4200
-	0    1    1    0   
-$EndComp
 Wire Wire Line
 	4900 4200 5050 4200
 Connection ~ 4900 4200
@@ -127,7 +112,7 @@ F 5 "RC0603FR-072KL" H 6550 4000 50  0001 C CNN "Part-No."
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5450 4200 5550 4200
+	5450 4200 5600 4200
 Wire Wire Line
 	4100 3200 5150 3200
 Connection ~ 4100 3200
@@ -233,26 +218,22 @@ F 5 "S-8252AAL-M6T1U" H 5700 3200 50  0001 C CNN "Part-No."
 	1    5700 3200
 	1    0    0    -1  
 $EndComp
-Text Label 7400 2450 0    50   ~ 0
+Text Label 7300 2050 0    50   ~ 0
 V_Bat
-Text Notes 4750 1300 0    79   ~ 0
-Schutzschaltung\n
 Wire Wire Line
-	7150 2450 7750 2450
-Wire Wire Line
-	7750 2050 7750 2450
+	7150 2050 7550 2050
 Wire Wire Line
 	7150 2050 7150 2450
-Text GLabel 7150 2050 1    50   Input ~ 0
+Text GLabel 7150 1950 1    50   Input ~ 0
 VBAT_ZCS
-Text HLabel 7750 2050 1    50   BiDi ~ 0
+Text HLabel 7550 2050 2    50   BiDi ~ 0
 V_Bat
 Connection ~ 7150 2450
 $Comp
-L power:GND #PWR025
+L power:GND #PWR028
 U 1 1 60C86FBB
 P 7150 3450
-F 0 "#PWR025" H 7150 3200 50  0001 C CNN
+F 0 "#PWR028" H 7150 3200 50  0001 C CNN
 F 1 "GND" H 7155 3277 50  0000 C CNN
 F 2 "" H 7150 3450 50  0001 C CNN
 F 3 "" H 7150 3450 50  0001 C CNN
@@ -341,10 +322,7 @@ F 5 "66200221122" H 8800 3250 50  0001 C CNN "Part-No."
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	7750 2450 8800 2450
-Wire Wire Line
 	8800 2450 8800 2750
-Connection ~ 7750 2450
 Wire Wire Line
 	7750 4200 8800 4200
 Wire Wire Line
@@ -352,4 +330,75 @@ Wire Wire Line
 Connection ~ 7750 4200
 Text Notes 9050 2900 0    50   ~ 0
 Connector to Charger
+$Comp
+L power:GNDREF #PWR027
+U 1 1 63187BCB
+P 6250 5400
+F 0 "#PWR027" H 6250 5150 50  0001 C CNN
+F 1 "GNDREF" H 6255 5227 50  0000 C CNN
+F 2 "" H 6250 5400 50  0001 C CNN
+F 3 "" H 6250 5400 50  0001 C CNN
+	1    6250 5400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5900 4200 6000 4200
+$Comp
+L Device:R R9
+U 1 1 6224F0C3
+P 5750 4200
+F 0 "R9" V 5543 4200 50  0000 C CNN
+F 1 "0" V 5634 4200 50  0000 C CNN
+F 2 "Resistor_SMD:R_1206_3216Metric_Pad1.42x1.75mm_HandSolder" V 5680 4200 50  0001 C CNN
+F 3 "~" H 5750 4200 50  0001 C CNN
+F 4 "YAGEO" H 5750 4200 50  0001 C CNN "Manufacturer"
+F 5 "RC1206FR-070RL" H 5750 4200 50  0001 C CNN "Part-No."
+	1    5750 4200
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5250 5050 5500 5050
+Wire Wire Line
+	6000 5050 6250 5050
+Wire Wire Line
+	6250 5050 6250 5400
+Wire Notes Line
+	5000 4750 5000 5800
+Wire Notes Line
+	5000 5800 6500 5800
+Wire Notes Line
+	6500 5800 6500 4750
+Wire Notes Line
+	6500 4750 5000 4750
+Text Notes 5000 6150 0    50   ~ 0
+Jumper to reset U4 (new Batteries) -> (2-3)\n\n!!!set the jumper back to the default position (1-2)\nafter resetting the BMS U4!!!
+$Comp
+L Jumper:Jumper_3_Bridged12 JP1
+U 1 1 63186056
+P 5750 5050
+F 0 "JP1" H 5750 5163 50  0000 C CNN
+F 1 "Jumper_3_Bridged12" H 5750 5163 50  0001 C CNN
+F 2 "footprints:PinHeader_1x03_P2.54mm_Vertical_3_2_1" H 5750 5050 50  0001 C CNN
+F 3 "~" H 5750 5050 50  0001 C CNN
+	1    5750 5050
+	1    0    0    -1  
+$EndComp
+Text Label 6300 3700 0    50   ~ 0
+VM
+Wire Wire Line
+	5050 5050 5250 5050
+Connection ~ 5250 5050
+Text Label 5050 5050 0    50   ~ 0
+VM
+Wire Wire Line
+	5250 5400 5250 5050
+Wire Wire Line
+	5750 5200 5750 5400
+Wire Wire Line
+	5750 5400 5250 5400
+Wire Wire Line
+	7150 2450 8800 2450
+Wire Wire Line
+	7150 2050 7150 1950
+Connection ~ 7150 2050
 $EndSCHEMATC
