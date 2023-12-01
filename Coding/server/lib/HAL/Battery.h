@@ -1,7 +1,7 @@
 /*
 BSD 3-Clause License
 
-Copyright (c) 2021, NewTec GmbH
+Copyright (c) 2022, NewTec GmbH
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -31,54 +31,58 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file GPIOPins.h
- * @author Luis Moser
- * @brief GPIOPins header
- * @date 07/28/2021
+ * @file Battery.h
+ * @author Gabryel Reyes
+ * @brief Battery header
+ * @date 09/15/2022
  * @addtogroup HAL
  * @{
  */
 
-#ifndef __GPIOPINS_H__
-#define __GPIOPINS_H__
+#ifndef __BATTERY_H__
+#define __BATTERY_H__
 
-#include <Arduino.h>
+#include <IO.h>
 
- /** Namespace for specifying all used GPIOs of the ESP32 */
-namespace GPIOPins
+ /** Abstraction of Battery pack features */
+class Battery
 {
-    /** Pin for push button for system reset/AP mode start (ACTIVE LOW) */
-    static const uint8_t PIN_WIFI_AND_RESET_KEY = 4;
+public:
 
-    /** Pin for resetting the attached Zumo robot (ACTIVE LOW) */
-    static const uint8_t PIN_ROBOT_RESET = 27;
+    /**
+     * Get Battery instance
+     *
+     * @return Returns the Battery singleton instance
+     */
+    static Battery& getInstance()
+    {
+        static Battery instance;
+        return instance;
+    }
+    /**
+     * Default Constructor
+     */
+    Battery();
 
-    /** Unconnected pin for reading random analog data to seed PRNG */
-    static const uint8_t PIN_ANALOG_NOISE_SEED = 36;
+    /**
+     * Destructor
+     */
+    ~Battery();
 
-    /** Pin for info LED RGB channel RED (ACTIVE LOW) */
-    static const uint8_t INFO_LED_R = 16;
+    /**
+     * Reads the total voltage of the Batteries.
+     * @return Returns the Voltage in millivolts.
+     */
+    uint32_t readBatteryVoltage();
 
-    /** Pin for info LED RGB channel GREEN (ACTIVE LOW) */
-    static const uint8_t INFO_LED_G = 22;
+private:
+   /** Instance/Reference to IO class for GPIO access */
+    IO& m_io;
 
-    /** Pin for info LED RGB channel BLUE (ACTIVE LOW) */
-    static const uint8_t INFO_LED_B = 21;
-
-    /** Pin for analog measurement of battery voltage */
-    static const uint8_t PIN_BATT_MEASUREMENT = 35;
-
-    /** Pin for ZumoComSystem's Push Button A */
-    static const uint8_t PIN_BUTTON_A = 33;
-
-    /** Pin for ZumoComSystem's Push Button B */
-    static const uint8_t PIN_BUTTON_B = 25;
-
-    /** Pin for ZumoComSystem's Push Button C */
-    static const uint8_t PIN_BUTTON_C = 26;
-    
+    /** Reference voltage of the ADCs in millivolts*/
+    static const uint32_t REFERENCE_VOLTAGE = 3300;
 };
-#endif /** __GPIOPINS_H__ */
+#endif /** __BATTERY_H__ */
 
 /**
  *  @}

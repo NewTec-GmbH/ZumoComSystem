@@ -241,9 +241,9 @@ bool Zumo32U4::restart(bool forceRestart)
     if (true == m_stateMachine.setState(CLOSED, forceRestart))
     {
         /* Pull down RESET to GND once to restart in normal mode */
-        m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
-        delay(HIGH_TIME_MS);
         m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
+        delay(HIGH_TIME_MS);
+        m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
 
         retCode = true;
     }
@@ -259,15 +259,15 @@ void Zumo32U4::enterBootloaderMode()
     m_io.setPinMode(GPIOPins::PIN_ROBOT_RESET, OUTPUT);
 
     /* Pull down RESET to GND twice in under 750ms to enter bootloader mode */
-    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
-    delay(LOW_TIME_MS);
     m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
+    delay(LOW_TIME_MS);
+    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
 
     delay(WAIT_TIME_MS);
 
-    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
-    delay(LOW_TIME_MS);
     m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
+    delay(LOW_TIME_MS);
+    m_io.writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
 }
 
 bool Zumo32U4::exitBootloaderMode()

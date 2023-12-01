@@ -1,7 +1,7 @@
 /*
 BSD 3-Clause License
 
-Copyright (c) 2021, NewTec GmbH
+Copyright (c) 2022, NewTec GmbH
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -31,54 +31,44 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file GPIOPins.h
- * @author Luis Moser
- * @brief GPIOPins header
- * @date 07/28/2021
- * @addtogroup HAL
+ * @file GetButtonStatusCommand.cpp
+ * @author Gabryel Reyes
+ * @brief GetButtonStatusCommand class
+ * @date 09/12/2022
+ * @addtogroup API
  * @{
  */
 
-#ifndef __GPIOPINS_H__
-#define __GPIOPINS_H__
-
+#include <GetButtonStatusCommand.h>
+#include <Log.h>
+#include <GPIOPins.h>
 #include <Arduino.h>
 
- /** Namespace for specifying all used GPIOs of the ESP32 */
-namespace GPIOPins
+GetButtonStatusCommand::GetButtonStatusCommand() :
+    Command("getbuttonstatus", NONE),
+    m_io(IO::getInstance())
 {
-    /** Pin for push button for system reset/AP mode start (ACTIVE LOW) */
-    static const uint8_t PIN_WIFI_AND_RESET_KEY = 4;
+}
 
-    /** Pin for resetting the attached Zumo robot (ACTIVE LOW) */
-    static const uint8_t PIN_ROBOT_RESET = 27;
+GetButtonStatusCommand::~GetButtonStatusCommand()
+{
+}
 
-    /** Unconnected pin for reading random analog data to seed PRNG */
-    static const uint8_t PIN_ANALOG_NOISE_SEED = 36;
-
-    /** Pin for info LED RGB channel RED (ACTIVE LOW) */
-    static const uint8_t INFO_LED_R = 16;
-
-    /** Pin for info LED RGB channel GREEN (ACTIVE LOW) */
-    static const uint8_t INFO_LED_G = 22;
-
-    /** Pin for info LED RGB channel BLUE (ACTIVE LOW) */
-    static const uint8_t INFO_LED_B = 21;
-
-    /** Pin for analog measurement of battery voltage */
-    static const uint8_t PIN_BATT_MEASUREMENT = 35;
-
-    /** Pin for ZumoComSystem's Push Button A */
-    static const uint8_t PIN_BUTTON_A = 33;
-
-    /** Pin for ZumoComSystem's Push Button B */
-    static const uint8_t PIN_BUTTON_B = 25;
-
-    /** Pin for ZumoComSystem's Push Button C */
-    static const uint8_t PIN_BUTTON_C = 26;
+void GetButtonStatusCommand::run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx)
+{
+    String serialButtonStatus = "";
     
-};
-#endif /** __GPIOPINS_H__ */
+    uint8_t statusButtonA = m_io.readGPIODebounced(GPIOPins::PIN_BUTTON_A);
+    uint8_t statusButtonB = m_io.readGPIODebounced(GPIOPins::PIN_BUTTON_B);
+    uint8_t statusButtonC = m_io.readGPIODebounced(GPIOPins::PIN_BUTTON_C);
+
+    serialButtonStatus = "{\"A\":" + String(statusButtonA) +
+                         ", \"B\":" + String(statusButtonB) +
+                         ", \"C\":" + String(statusButtonC) + "}";
+
+    response.setStatusCode(SUCCESS);
+    response.setJsonPayload(serialButtonStatus);
+}
 
 /**
  *  @}

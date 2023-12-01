@@ -1,7 +1,7 @@
 /*
 BSD 3-Clause License
 
-Copyright (c) 2021, NewTec GmbH
+Copyright (c) 2022, NewTec GmbH
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -31,54 +31,48 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /**
- * @file GPIOPins.h
- * @author Luis Moser
- * @brief GPIOPins header
- * @date 07/28/2021
- * @addtogroup HAL
+ * @file SetLEDStatusCommand.h
+ * @author Gabryel Reyes
+ * @brief SetLEDStatusCommand header
+ * @date 09/12/2022
+ * @addtogroup API
  * @{
  */
 
-#ifndef __GPIOPINS_H__
-#define __GPIOPINS_H__
+#ifndef __SETLEDSTATUSCOMMAND_H__
+#define __SETLEDSTATUSCOMMAND_H__
 
-#include <Arduino.h>
+#include <Command.h>
+#include <IO.h>
 
- /** Namespace for specifying all used GPIOs of the ESP32 */
-namespace GPIOPins
+ /** API service for setting the LED Status */
+class SetLEDStatusCommand : public Command
 {
-    /** Pin for push button for system reset/AP mode start (ACTIVE LOW) */
-    static const uint8_t PIN_WIFI_AND_RESET_KEY = 4;
+public:
+    /**
+     * Default Constructor
+     */
+    SetLEDStatusCommand();
 
-    /** Pin for resetting the attached Zumo robot (ACTIVE LOW) */
-    static const uint8_t PIN_ROBOT_RESET = 27;
+    /**
+     * Destructor
+     */
+    ~SetLEDStatusCommand();
 
-    /** Unconnected pin for reading random analog data to seed PRNG */
-    static const uint8_t PIN_ANALOG_NOISE_SEED = 36;
+    /**
+     * Implements the API service business logic
+     *
+     * @param[in] request Reference to the incoming ApiRequest
+     * @param[out] response Reference to the outgoing ApiResponse
+     * @param[in] connectionCtx Pointer to Session class instance
+     */
+    void run(const ApiRequest& request, ApiResponse& response, Session* connectionCtx);
 
-    /** Pin for info LED RGB channel RED (ACTIVE LOW) */
-    static const uint8_t INFO_LED_R = 16;
-
-    /** Pin for info LED RGB channel GREEN (ACTIVE LOW) */
-    static const uint8_t INFO_LED_G = 22;
-
-    /** Pin for info LED RGB channel BLUE (ACTIVE LOW) */
-    static const uint8_t INFO_LED_B = 21;
-
-    /** Pin for analog measurement of battery voltage */
-    static const uint8_t PIN_BATT_MEASUREMENT = 35;
-
-    /** Pin for ZumoComSystem's Push Button A */
-    static const uint8_t PIN_BUTTON_A = 33;
-
-    /** Pin for ZumoComSystem's Push Button B */
-    static const uint8_t PIN_BUTTON_B = 25;
-
-    /** Pin for ZumoComSystem's Push Button C */
-    static const uint8_t PIN_BUTTON_C = 26;
-    
+private:
+   /** Instance/Reference to IO class for GPIO access */
+    IO& m_io;
 };
-#endif /** __GPIOPINS_H__ */
+#endif /** __SETLEDSTATUSCOMMAND_H__ */
 
 /**
  *  @}

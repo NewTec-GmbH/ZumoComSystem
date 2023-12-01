@@ -97,6 +97,14 @@ public:
      */
     void writeGPIO(const uint8_t gpio, const uint8_t value);
 
+    /**
+     * Reads the specified GPIO analog input and returns the value in millivolt.
+     *
+     * @param[in] gpio The GPIO pin to be written to
+     * @return Voltage in millivolt
+     */
+    uint32_t readAnalogGPIOInMillivolt(const uint8_t gpio);
+    
 private:
     /** Mutex which is used to avoid that two or more concurrent tasks, which use the IO class, can have write access to the GPIOs at once */
     SemaphoreHandle_t m_ioMutex;

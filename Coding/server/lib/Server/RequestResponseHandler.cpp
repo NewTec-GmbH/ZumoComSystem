@@ -52,6 +52,8 @@ RequestResponseHandler::RequestResponseHandler() :
     m_setSTACredentialsCommand(),
     m_flashZumoCommand(),
     m_getFirmwareInfoCommand(),
+    m_getButtonStatusCommand(),
+    m_setLEDStatusCommand(),
     m_sessionManager()
 {
 }
@@ -192,6 +194,14 @@ Command* RequestResponseHandler::getCommandOfApiRequest(const ApiRequest& reques
     else if (commandID == "echodemo")
     {
         command = &m_echoDemoCommand;
+    }
+    else if (commandID == "getbuttonstatus")
+    {
+        command = &m_getButtonStatusCommand;
+    }
+    else if (commandID == "setledstatus")
+    {
+        command = &m_setLEDStatusCommand;
     }
     return command;
 }

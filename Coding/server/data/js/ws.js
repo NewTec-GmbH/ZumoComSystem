@@ -278,3 +278,35 @@ cpjs.ws.Client.prototype.setstacredentials = function(ssid, passphrase) {
         }
     }.bind(this));
 };
+
+// API Command: Set LED Status
+cpjs.ws.Client.prototype.setledstatus = function(led, status) {
+    return new Promise(function (resolve, reject) {
+        if ((null === this.socket) || (typeof (led) === undefined) || (typeof (status) === undefined)) {
+            reject();
+        } else {
+            this._sendCmd({
+                commandId: "setledstatus",
+                jsonPayload: "{\"led\":\"" + led + "\", \"status\":\"" + status + "\"}",
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};
+
+// API Command: Get Button Status
+cpjs.ws.Client.prototype.getbuttonstatus = function() {
+    return new Promise(function (resolve, reject) {
+        if ((null === this.socket)) {
+            reject();
+        } else {
+            this._sendCmd({
+                commandId: "getbuttonstatus",
+                jsonPayload: "",
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};

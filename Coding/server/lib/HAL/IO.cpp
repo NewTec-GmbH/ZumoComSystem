@@ -61,15 +61,17 @@ void IO::initGPIOs()
     /* Set GPIO direction */
     setPinMode(GPIOPins::PIN_WIFI_AND_RESET_KEY, INPUT_PULLUP);
     setPinMode(GPIOPins::PIN_ROBOT_RESET, OUTPUT);
-    setPinMode(GPIOPins::PIN_ROBOT_ON_OFF, OUTPUT);
     setPinMode(GPIOPins::PIN_ANALOG_NOISE_SEED, INPUT);
     setPinMode(GPIOPins::INFO_LED_R, OUTPUT);
     setPinMode(GPIOPins::INFO_LED_G, OUTPUT);
     setPinMode(GPIOPins::INFO_LED_B, OUTPUT);
+    setPinMode(GPIOPins::PIN_BATT_MEASUREMENT, INPUT);
+    setPinMode(GPIOPins::PIN_BUTTON_A, INPUT);
+    setPinMode(GPIOPins::PIN_BUTTON_B, INPUT);
+    setPinMode(GPIOPins::PIN_BUTTON_C, INPUT);
 
     /* Set initial values */
-    writeGPIO(GPIOPins::PIN_ROBOT_RESET, HIGH);
-    writeGPIO(GPIOPins::PIN_ROBOT_ON_OFF, HIGH);
+    writeGPIO(GPIOPins::PIN_ROBOT_RESET, LOW);
     writeGPIO(GPIOPins::INFO_LED_R, HIGH);
     writeGPIO(GPIOPins::INFO_LED_G, HIGH);
     writeGPIO(GPIOPins::INFO_LED_B, HIGH);
@@ -125,6 +127,10 @@ void IO::writeGPIO(const uint8_t gpio, const uint8_t value)
     xSemaphoreTake(m_ioMutex, portMAX_DELAY);
     digitalWrite(gpio, value);
     xSemaphoreGive(m_ioMutex);
+}
+
+uint32_t IO::readAnalogGPIOInMillivolt(const uint8_t gpio) {
+    return analogReadMilliVolts(GPIOPins::PIN_BATT_MEASUREMENT);
 }
 
 /**
