@@ -34,9 +34,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.0,
-          "height": 3.4,
-          "width": 2.5
+          "drill": 3.0,
+          "height": 3.9,
+          "width": 3.9
         },
         "silk_line_width": 0.12,
         "silk_text_italic": false,
@@ -45,11 +45,30 @@
         "silk_text_thickness": 0.15,
         "silk_text_upright": false,
         "zones": {
-          "min_clearance": 0.19999999999999998
+          "min_clearance": 0.3
         }
       },
-      "diff_pair_dimensions": [],
-      "drc_exclusions": [],
+      "diff_pair_dimensions": [
+        {
+          "gap": 0.0,
+          "via_gap": 0.0,
+          "width": 0.0
+        }
+      ],
+      "drc_exclusions": [
+        "courtyards_overlap|134750001|119350001|3d14817c-2e36-40e1-8547-5401c46b4513|fcd78ada-4731-48ac-918e-f613d59307e9",
+        "silk_edge_clearance|126175000|144500000|00000000-0000-0000-0000-0000622815fc|36ff53e1-841f-45e2-be8f-1dcecf649379",
+        "silk_edge_clearance|127675000|144500000|00000000-0000-0000-0000-0000622815fc|af5a2d28-f0a3-4b6a-b09a-78a3eccef0bb",
+        "silk_edge_clearance|137800000|144490000|00000000-0000-0000-0000-0000622815fc|ce1bcf0f-46df-4159-8993-89ca615ebc9c",
+        "silk_edge_clearance|156200000|144490000|00000000-0000-0000-0000-0000622815fc|09c73650-c3f5-4e7a-b8b4-907b73683752",
+        "silk_edge_clearance|156200000|144490000|00000000-0000-0000-0000-0000622815fc|2b21a16b-dbde-4e2c-a283-9b82bb0eb0b6",
+        "text_height|115425000|139875000|00000000-0000-0000-0000-0000622105ab|00000000-0000-0000-0000-000000000000",
+        "text_height|155900000|89550000|00000000-0000-0000-0000-0000631984a9|00000000-0000-0000-0000-000000000000",
+        "via_dangling|142675000|113805000|fa450867-228e-45f9-b98d-639cf275e7b9|00000000-0000-0000-0000-000000000000",
+        "via_dangling|142675000|116205000|407596ec-2d6a-4bbd-a5d8-0ac29dd63147|00000000-0000-0000-0000-000000000000",
+        "via_dangling|145075000|113805000|dd073dd7-c175-45db-8604-b61685290f1e|00000000-0000-0000-0000-000000000000",
+        "via_dangling|145075000|116205000|685fcc91-0363-449c-85e4-2e423b2edc18|00000000-0000-0000-0000-000000000000"
+      ],
       "meta": {
         "filename": "board_design_settings.json",
         "version": 2
@@ -104,8 +123,6 @@
         "via_dangling": "warning",
         "zones_intersect": "error"
       },
-      "rule_severitieslegacy_courtyards_overlap": true,
-      "rule_severitieslegacy_no_courtyard_defined": false,
       "rules": {
         "max_error": 0.005,
         "min_clearance": 0.0,
@@ -172,9 +189,13 @@
         0.4,
         0.6
       ],
-      "via_dimensions": [],
-      "zones_allow_external_fillets": false,
-      "zones_use_no_outline": true
+      "via_dimensions": [
+        {
+          "diameter": 0.0,
+          "drill": 0.0
+        }
+      ],
+      "zones_allow_external_fillets": false
     },
     "layer_presets": [],
     "viewports": []
@@ -387,7 +408,7 @@
       "pin_to_pin": "warning",
       "power_pin_not_driven": "error",
       "similar_labels": "warning",
-      "simulation_model_issue": "error",
+      "simulation_model_issue": "ignore",
       "unannotated": "error",
       "unit_value_mismatch": "error",
       "unresolved_variable": "error",
@@ -783,19 +804,18 @@
       "intersheets_ref_show": false,
       "intersheets_ref_suffix": "",
       "junction_size_choice": 3,
-      "label_size_ratio": 0.25,
-      "pin_symbol_size": 0.0,
-      "text_offset_ratio": 0.08
+      "label_size_ratio": 0.375,
+      "pin_symbol_size": 25.0,
+      "text_offset_ratio": 0.15
     },
     "legacy_lib_dir": "",
     "legacy_lib_list": [],
     "meta": {
       "version": 1
     },
-    "net_format_name": "Pcbnew",
+    "net_format_name": "",
     "ngspice": {
       "fix_include_paths": true,
-      "fix_passive_vals": false,
       "meta": {
         "version": 0
       },
@@ -803,8 +823,7 @@
       "workbook_filename": ""
     },
     "page_layout_descr_file": "",
-    "plot_directory": "",
-    "spice_adjust_passive_values": false,
+    "plot_directory": "output/",
     "spice_current_sheet_as_root": false,
     "spice_external_command": "spice \"%I\"",
     "spice_model_current_sheet_as_root": true,
@@ -815,32 +834,36 @@
   },
   "sheets": [
     [
-      "881327a8-34ca-4886-9f08-38aaf67d3d19",
+      "9bd626fa-46dd-47ae-a7b7-25f6be2e5c27",
       ""
     ],
     [
-      "00000000-0000-0000-0000-000060c3f332",
+      "654c76ef-f691-4c45-9863-fe7c40065172",
+      "MCU"
+    ],
+    [
+      "5aef8b65-dd22-4936-89eb-1c93774def70",
+      "IO"
+    ],
+    [
+      "36343993-8bc8-460e-a919-34dba5144d61",
+      "Zumo_Connector"
+    ],
+    [
+      "e52bffab-4079-48da-a6b9-401096ad4de4",
+      "Display_Passthrough"
+    ],
+    [
+      "aaa37362-47b8-4fd3-8977-e9f3436d2a7c",
       "Battery"
     ],
     [
-      "00000000-0000-0000-0000-000060c3f428",
-      "USB_Power"
+      "3cdef04c-eb9d-4305-87df-b1c292974d02",
+      "USB_UART"
     ],
     [
-      "00000000-0000-0000-0000-000060c4f1bf",
-      "Power_Regulation"
-    ],
-    [
-      "00000000-0000-0000-0000-000060c4e4d0",
-      "ESP"
-    ],
-    [
-      "00000000-0000-0000-0000-000060c500e6",
-      "USB_MAX"
-    ],
-    [
-      "00000000-0000-0000-0000-000060c50401",
-      "IF_Pololu"
+      "82bf8564-246a-44c9-96c9-b82f525b42db",
+      "Power_Supply"
     ]
   ],
   "text_variables": {}
