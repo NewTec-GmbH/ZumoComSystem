@@ -6,7 +6,7 @@
 
   (title_block
     (title "ZumoComSystem")
-    (date "2023-12-05")
+    (date "2023-12-18")
     (rev "2.0")
     (company "NewTec GmbH")
     (comment 1 "Reyes, Gabryel")
@@ -3933,7 +3933,7 @@
     (property "Value" "8.55VWM 14.5VC" (at 240.792 79.883 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "Diode_SMD:D_SMB_Handsoldering" (at 238.76 78.74 0)
+    (property "Footprint" "footprints:D_SMB_Handsoldering" (at 238.76 78.74 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "https://www.vishay.com/docs/88370/p6smb.pdf" (at 238.76 78.74 0)
