@@ -1,11 +1,24 @@
-# ZumoComSystem
+# ZumoComSystem <!-- omit in toc -->
 Shield for the [Pololu 32U4 Zumo Robot](https://www.pololu.com/product/2510) that provides it with wireless capabilities.
+
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![Repo Status](https://www.repostatus.org/badges/latest/unsupported.svg)](https://www.repostatus.org)
+[![PlatformIO CI](https://github.com/NewTec-GmbH/ZumoComSystem/actions/workflows/ci.yml/badge.svg)](https://github.com/NewTec-GmbH/ZumoComSystem/actions/workflows/ci.yml)
 
 - [Overview](#overview)
 - [Installation](#installation)
+  - [Toolchain](#toolchain)
+  - [Preparation](#preparation)
+  - [Build and Upload](#build-and-upload)
+  - [Booting](#booting)
 - [User Interface](#user-interface)
+  - [:house: Home Page](#house-home-page)
+  - [:cloud: Upload Card](#cloud-upload-card)
+  - [:zap: Flash Card](#zap-flash-card)
+    - [:gear: Settings Page and Reboot](#gear-settings-page-and-reboot)
 - [Documentation](#documentation)
 - [Used Libraries](#used-libraries)
+- [License](#license)
 
 ---
 # Overview
